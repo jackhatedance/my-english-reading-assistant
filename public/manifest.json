@@ -17,7 +17,7 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage"
+    "storage","contextMenus"
   ],
   "content_scripts": [
     {
@@ -27,7 +27,8 @@
       "run_at": "document_idle",
       "js": [
         "contentScript.js"
-      ]
+      ],
+      "css": ["contentScript.css"]
     }
   ]
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 import './popup.css';
+import {loadKnownWords, loadUnknownWords, saveKnownWords, saveUnknownWords} from './vocabularyStore.js';
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -10,16 +11,18 @@ import './popup.css';
   // To get storage access, we have to mention it in `permissions` property of manifest.json file
   // More information on Permissions can we found at
   // https://developer.chrome.com/extensions/declare_permissions
-  const counterStorage = {
+   
+
+  const enabledStorage = {
     get: (cb) => {
-      chrome.storage.sync.get(['count'], (result) => {
-        cb(result.count);
+      chrome.storage.sync.get(['enabled'], (result) => {
+        cb(result.enabled);
       });
     },
     set: (value, cb) => {
       chrome.storage.sync.set(
         {
-          count: value,
+          enabled: value,
         },
         () => {
           cb();
@@ -27,37 +30,35 @@ import './popup.css';
       );
     },
   };
+ 
 
-  function setupCounter(initialValue = 0) {
-    document.getElementById('counter').innerHTML = initialValue;
+  function setupEnabled(initialValue = false) {
+    document.getElementById('enabledCheckbox').checked = initialValue;
 
-    document.getElementById('incrementBtn').addEventListener('click', () => {
-      updateCounter({
-        type: 'INCREMENT',
+    document.getElementById('enabledCheckbox').addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      updateEnabled({        
       });
-    });
-
-    document.getElementById('decrementBtn').addEventListener('click', () => {
-      updateCounter({
-        type: 'DECREMENT',
-      });
+      
     });
   }
 
-  function updateCounter({ type }) {
-    counterStorage.get((count) => {
-      let newCount;
+  
 
-      if (type === 'INCREMENT') {
-        newCount = count + 1;
-      } else if (type === 'DECREMENT') {
-        newCount = count - 1;
+//toggle
+  function updateEnabled() {
+    enabledStorage.get((enabled) => {
+      let newValue;
+
+      if (enabled) {
+        newValue = false;
       } else {
-        newCount = count;
+        newValue = true;
       }
 
-      counterStorage.set(newCount, () => {
-        document.getElementById('counter').innerHTML = newCount;
+      enabledStorage.set(newValue, () => {
+        document.getElementById('enabledCheckbox').checked = newValue;
 
         // Communicate with content script of
         // active tab by sending a message
@@ -67,13 +68,13 @@ import './popup.css';
           chrome.tabs.sendMessage(
             tab.id,
             {
-              type: 'COUNT',
+              type: 'ENABLED',
               payload: {
-                count: newCount,
+                enabled: newValue,
               },
             },
             (response) => {
-              console.log('Current count value passed to contentScript file');
+              console.log('Current enabled value passed to contentScript file');
             }
           );
         });
@@ -81,21 +82,58 @@ import './popup.css';
     });
   }
 
-  function restoreCounter() {
-    // Restore count value
-    counterStorage.get((count) => {
-      if (typeof count === 'undefined') {
-        // Set counter value as 0
-        counterStorage.set(0, () => {
-          setupCounter(0);
-        });
-      } else {
-        setupCounter(count);
-      }
+
+
+  async function init() {
+     
+
+    enabledStorage.get((enabled) => {
+    
+      enabledStorage.set(false, () => {
+        setupEnabled(false);
+      });
+    
+    });
+
+    let knownWordsResult = await loadKnownWords();
+    let knownWords = knownWordsResult;
+    if(!knownWords){
+      knownWords= [];
+    }    
+    document.getElementById('knownWords').value = knownWords.join('\n');
+
+    let unknownWordsResult = await loadUnknownWords();
+    let unknownWords = unknownWordsResult ? unknownWordsResult : [];
+    document.getElementById('unknownWords').value = unknownWords.join('\n');
+
+    document.getElementById('save').addEventListener('click', () => {
+      let knownWordsArray = document.getElementById('knownWords').value.split('\n');
+      let unknownWordsArray = document.getElementById('unknownWords').value.split('\n');
+      save({
+        knownWords: knownWordsArray,
+        unknownWords: unknownWordsArray
+      });
     });
   }
 
-  document.addEventListener('DOMContentLoaded', restoreCounter);
+  
+
+  async function save(settings){
+    if(settings.knownWords){
+      let uw = settings.knownWords;
+      await saveKnownWords(uw);
+      settings.knownWords = null;
+    }
+    if(settings.unknownWords){
+      let uw = settings.unknownWords;
+      await saveUnknownWords(uw);
+      settings.unknownWords = null;
+    }
+   // await chrome.storage.sync.set(settings);
+    
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
 
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(

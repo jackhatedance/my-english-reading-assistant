@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "My Chrome Extension",
   "private": true,
+  "type": "module",
   "scripts": {
-    "watch": "webpack --mode=development --watch --config config/webpack.config.js",
-    "build": "webpack --mode=production --config config/webpack.config.js",
+    "watch": "webpack --mode=development --watch --config config/webpack.config.cjs",
+    "build": "webpack --mode=production --config config/webpack.config.cjs",
     "pack": "node pack.js",
+    "test": "mocha",
     "repack": "npm run build && npm run pack",
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
   },
@@ -16,9 +18,15 @@
     "css-loader": "^6.10.0",
     "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.8.0",
+    "mocha": "^8.4.0",
+    "mocha-loader": "^5.1.5",
     "prettier": "^2.8.8",
     "webpack": "^5.90.3",
     "webpack-cli": "^4.10.0",
-    "webpack-merge": "^5.10.0"
+    "webpack-merge": "^5.10.0",
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/register": "^7.7.4"
   }
 }

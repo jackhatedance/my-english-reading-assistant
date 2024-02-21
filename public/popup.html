@@ -7,17 +7,25 @@
   </head>
   <body>
     <div class="app">
-      <p class="counter-label">Counter</p>
-      <div id="counter" class="counter"></div>
-      <div class="button-container">
-        <button id="decrementBtn" class="button">-</button>
-        <button id="incrementBtn" class="button">+</button>
-      </div>
-
+       
       <hr class="divider" />
 
       <p class="title">Chrome Extension is Ready!</p>
       <p class="subtitle">Start by updating <code>popup.html</code></p>
+
+      <label class="switch">
+        <input type="checkbox" id="enabledCheckbox">
+        <span class="slider"></span>
+      </label>
+
+      <hr class="divider" />
+      <p><label for="knownWords">Known Words:</label></p>
+      <textarea id="knownWords" name="knownWords" rows="4" maxlength="500000"></textarea>
+      
+      <p><label for="unknownWords">Unknown Words:</label></p>
+      <textarea id="unknownWords" name="unknownWords" rows="4" maxlength="500000"></textarea>
+      <button id="save" class="button">Save</button>
+      
     </div>
 
     <script src="popup.js"></script>
