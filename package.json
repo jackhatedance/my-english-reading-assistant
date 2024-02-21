@@ -23,10 +23,9 @@
     "prettier": "^2.8.8",
     "webpack": "^5.90.3",
     "webpack-cli": "^4.10.0",
-    "webpack-merge": "^5.10.0",
-    "@babel/cli": "^7.7.4",
-    "@babel/core": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/register": "^7.7.4"
+    "webpack-merge": "^5.10.0"
+  },
+  "dependencies": {
+    "wink-lemmatizer": "^3.0.4"
   }
 }

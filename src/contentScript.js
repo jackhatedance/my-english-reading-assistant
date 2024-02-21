@@ -36,70 +36,113 @@ chrome.runtime.sendMessage(
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  let response = {};
   if (request.type === 'COUNT') {
     console.log(`Current count is ${request.payload.count}`);
   }
+
+  if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
+    let initialized = isPageAnnotationInitialized()
+    console.log(`Current page annotation is initialized: ${initialized}`);
+    response = {initialized:initialized};
+  }
+
   if (request.type === 'ENABLED') {
     console.log(`Current enabled is ${request.payload.enabled}`);
     if(request.payload.enabled){
-      enable(request.payload.enabled);
+      setupAnnotations(request.payload.enabled);
+    }else {
+      refreshAnnotations();
+    }
+
+  }
+  if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
+    console.log(`add known word: ${request.payload.word}`);
+    if(request.payload.word){
+      //hideAnnotation(request.payload.word);
+      refreshAnnotations();
     }
 
   }
 
   // Send an empty response
   // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
-  sendResponse({});
+  sendResponse(response);
   return true;
 });
 
 var knownWords, unknownWords;
-async function enable(enabled) {
+async function setupAnnotations(enabled) {
 
-  //await chrome.storage.local.set({ knownWords: ['I', 'am'], unknownWords: ['outskirt', 'fuzzy', 'month', 'fluster', 'access'] });
-  //console.log("Value is set");
-
-  if (enabled) {
-
-    knownWords = await loadKnownWords();
-    if(!knownWords){
-      knownWords= [];
-    }
-
-    unknownWords = await loadUnknownWords();
-    if(!unknownWords){
-      unknownWords= [];
-    }               
-
-    document.querySelectorAll('p').forEach((element) => { 
-        let html = element.innerHTML; 
-
-        let result = html.replaceAll(/\w+/g, function (x) {
-          let baseFormWord = searchWordBaseForm(x);
-          
-          //finally,
-          if(baseFormWord){// find the correct form which has definition in dictionary
-            if(!isKnown(baseFormWord)) { 
-              let definition = lookupShort(baseFormWord);                       
-              return format(x, definition);
-            }else {         
-              return x;
-            }
-          }else {         
-            return x;
-          }
-        });
-
-        element.innerHTML = result;
-    });			
+  knownWords = await loadKnownWords();
+  if(!knownWords){
+    knownWords= [];
   }
+
+  unknownWords = await loadUnknownWords();
+  if(!unknownWords){
+    unknownWords= [];
+  }               
+
+  document.querySelectorAll('p').forEach((element) => { 
+      let html = element.innerHTML; 
+
+      let result = html.replaceAll(/\w+/g, function (x) {
+        let baseFormWord = searchWordBaseForm(x);
+        
+        //finally,
+        if(baseFormWord){// find the correct form which has definition in dictionary
+          
+            let definition = lookupShort(baseFormWord);                       
+            return format(x, definition, baseFormWord);
+          
+        }else {         
+          return x;
+        }
+      });
+
+      element.innerHTML = result;
+  });
+
+  
+  refreshAnnotations();
+
+
+}
+
+function isPageAnnotationInitialized(){
+  return document.querySelectorAll('.mea-highlight').length >0;
+}
+
+/**
+ * 
+ * refresh all word's display
+ */
+async function refreshAnnotations(){
+  let enabled = await chrome.storage.sync.get(['enabled']);
+  knownWords = await loadKnownWords();
+
+  document.querySelectorAll('.mea-highlight').forEach((element) => { 
+    let baseFormWord = element.getAttribute('base-form-word'); 
+
+    if(enabled){
+
+      if(isKnown(baseFormWord)){
+        element.classList.add("hide");
+      } else {
+        element.classList.remove("hide");
+      }
+    } else {
+      element.classList.add("hide");
+    }
+  });			
 }
 
 
-
-const pattern = '<span class="mea-highlight">#word#<span class="mea-annotation">#annotation#</span></span>';
-function format(word, annotation) {
-  return pattern.replace('#word#', word).replace('#annotation#', annotation);
+const pattern = '<span class="mea-highlight hide" base-form-word="#base-form-word#">#word#<span class="mea-annotation">#annotation#</span></span>';
+function format(word, annotation, baseFormWord) {
+  return pattern.replaceAll('#word#', word).replaceAll('#annotation#', annotation)
+    .replaceAll('#base-form-word#', baseFormWord);
 }
 
 //const knownWords = ['I', 'am'];

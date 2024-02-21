@@ -7,6 +7,25 @@ import {searchWordBaseForm} from './language.js'
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
 
+
+function sendMsg(type, baseForm){
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs[0];
+    chrome.tabs.sendMessage(
+      tab.id,
+      {
+        type: type,
+        payload: {
+          word: baseForm,
+        },
+      },
+      (response) => {
+        console.log('add know word is passed to contentScript file');
+      }
+    );
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function () {
   
   // Create a parent item and two children.
@@ -38,13 +57,13 @@ chrome.contextMenus.onClicked.addListener((item, tab) => {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
       addKnownWord(baseForm);
-      console.log("add known word: " + baseForm);
+      sendMsg('ADD_KNOWN_WORD', baseForm);
     }
   } else if(item.menuItemId == 'unknown') {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
       removeKnownWord(baseForm);
-      console.log("remove known word: " + baseForm);
+      sendMsg('REMOVE_KNOWN_WORD', baseForm);
     }
   }
 

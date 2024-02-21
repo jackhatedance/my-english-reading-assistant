@@ -1,5 +1,8 @@
+'use strict';
+
 import {lookup} from './dictionary.js';
 
+import * as lemmatize from 'wink-lemmatizer';
 
 function searchWordBaseForm(input){
     //no modification
@@ -12,13 +15,25 @@ function searchWordBaseForm(input){
         definition = lookup(word);
     }
 
-    //try singular
+    //let knife = lemmatize.noun('knivest');
+    //console.log('knives:'+knife);
+
+    
     if(!definition) {
-        word = singularize(input);
+        word = lemmatize.adjective(input);
         definition = lookup(word);
     }
 
-    //try another tense
+    if(!definition) {
+        word = lemmatize.noun(input);
+        definition = lookup(word);
+    }
+
+    if(!definition) {
+        word = lemmatize.verb(input);
+        definition = lookup(word);
+    }
+    
 
 
     //finally,

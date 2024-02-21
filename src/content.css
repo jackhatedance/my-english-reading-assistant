@@ -16,3 +16,14 @@
   white-space: nowrap;
   color: blue;
 }
+
+.mea-highlight.hide {
+  position: unset;
+  display: unset;
+  margin-top: unset;
+  background-color: unset;
+}
+
+.mea-highlight.hide .mea-annotation {
+  display: none;
+}
