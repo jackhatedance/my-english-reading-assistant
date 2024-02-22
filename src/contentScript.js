@@ -2,7 +2,7 @@
 
 import './content.css';
 import { lookupShort } from './dictionary.js';
-import {loadKnownWords, loadUnknownWords} from './vocabularyStore.js';
+import {loadKnownWords} from './vocabularyStore.js';
 import {searchWordBaseForm} from './language.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -16,10 +16,7 @@ import {searchWordBaseForm} from './language.js';
 // See https://developer.chrome.com/extensions/content_scripts
 
 // Log `title` of current active web page
-const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
-console.log(
-  `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
-);
+
 
 // Communicate with background file by sending a message
 chrome.runtime.sendMessage(
@@ -36,6 +33,7 @@ chrome.runtime.sendMessage(
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(`Current request type is ${request.type}`);
   let response = {};
   if (request.type === 'COUNT') {
     console.log(`Current count is ${request.payload.count}`);
@@ -47,12 +45,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     response = {initialized:initialized};
   }
 
+  if (request.type === 'IS_PAGE_ANNOTATION_ENABLED') {
+    let enabled = isPageAnnotationEnabled()
+    console.log(`Current page annotation is enabled: ${enabled}`);
+    response = {enabled:enabled};
+  }
+
   if (request.type === 'ENABLED') {
     console.log(`Current enabled is ${request.payload.enabled}`);
     if(request.payload.enabled){
-      setupAnnotations(request.payload.enabled);
+      if(!isPageAnnotationInitialized()){
+        initPageAnnotations(()=>{
+          refreshAnnotations(request.payload.enabled);
+        });
+      }else{
+        refreshAnnotations(request.payload.enabled);
+      }
+      
     }else {
-      refreshAnnotations();
+      refreshAnnotations(false);
     }
 
   }
@@ -60,7 +71,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`add known word: ${request.payload.word}`);
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
-      refreshAnnotations();
+      let enabled = isPageAnnotationEnabled();
+      refreshAnnotations(enabled);
     }
 
   }
@@ -71,19 +83,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true;
 });
 
-var knownWords, unknownWords;
-async function setupAnnotations(enabled) {
+var knownWords;
+
+async function initPageAnnotations(resolve) {
 
   knownWords = await loadKnownWords();
   if(!knownWords){
     knownWords= [];
   }
 
-  unknownWords = await loadUnknownWords();
-  if(!unknownWords){
-    unknownWords= [];
-  }               
-
+  
+  //iterate all elements
+  visitElement(document.body,(element)=>{
+    //console.log(element.nodeName + element.nodeType);
+    if(element.children.length == 0){
+      annotateLeafElement(element);
+    }
+  });
+/*
   document.querySelectorAll('p').forEach((element) => { 
       let html = element.innerHTML; 
 
@@ -103,23 +120,70 @@ async function setupAnnotations(enabled) {
 
       element.innerHTML = result;
   });
+  */
+  resolve();
+}
 
-  
-  refreshAnnotations();
 
+function visitElement(element, visitor) {
+  visitor(element);
 
+  let children = element.children;
+  for(var i = 0; i < children.length; i++) {      
+    visitElement(children[i], visitor);      
+  }
+}
+
+function visit(node, visitor) {
+  visitor(node);
+
+  let children = node.childNodes;
+  for(var i = 0; i < children.length; i++) {      
+    visit(children[i], visitor);      
+  }
+}
+
+function annotateLeafElement(element){
+  let html = element.innerHTML; 
+
+  let result = html.replaceAll(/\w+/g, function (x) {
+    let baseFormWord = searchWordBaseForm(x);
+    
+    //finally,
+    if(baseFormWord){// find the correct form which has definition in dictionary
+      
+        let definition = lookupShort(baseFormWord);                       
+        return format(x, definition, baseFormWord);
+      
+    }else {         
+      return x;
+    }
+  });
+
+  element.innerHTML = result;
 }
 
 function isPageAnnotationInitialized(){
   return document.querySelectorAll('.mea-highlight').length >0;
 }
 
+function isPageAnnotationEnabled(){
+  let result = document.body.getAttribute('mea-enabled');
+  if(result === 'true') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /**
  * 
  * refresh all word's display
  */
-async function refreshAnnotations(){
-  let enabled = await chrome.storage.sync.get(['enabled']);
+async function refreshAnnotations(enabled){
+  //set flag
+  document.body.setAttribute('mea-enabled', enabled);
+
   knownWords = await loadKnownWords();
 
   document.querySelectorAll('.mea-highlight').forEach((element) => { 
@@ -139,20 +203,14 @@ async function refreshAnnotations(){
 }
 
 
-const pattern = '<span class="mea-highlight hide" base-form-word="#base-form-word#">#word#<span class="mea-annotation">#annotation#</span></span>';
+const pattern = '<div class="mea-highlight hide" base-form-word="#base-form-word#">#word#<div class="mea-annotation">#annotation#</div></div>';
 function format(word, annotation, baseFormWord) {
   return pattern.replaceAll('#word#', word).replaceAll('#annotation#', annotation)
     .replaceAll('#base-form-word#', baseFormWord);
 }
 
-//const knownWords = ['I', 'am'];
-//const unknownWords = ['outskirt', 'fuzzy', 'month'];
 
 function isKnown(word) {
   return knownWords.indexOf(word) >= 0;
-}
-
-function isUnknown(word) {
-  return unknownWords.indexOf(word) >= 0;
 }
 

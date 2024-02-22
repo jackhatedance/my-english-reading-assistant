@@ -49,20 +49,20 @@ chrome.runtime.onInstalled.addListener(function () {
 
 });
 
-chrome.contextMenus.onClicked.addListener((item, tab) => {
+chrome.contextMenus.onClicked.addListener(async(item, tab) => {
   
   let word = item.selectionText;
   console.log("select word: " + word);
   if(item.menuItemId == 'known') {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
-      addKnownWord(baseForm);
+      await addKnownWord(baseForm);
       sendMsg('ADD_KNOWN_WORD', baseForm);
     }
   } else if(item.menuItemId == 'unknown') {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
-      removeKnownWord(baseForm);
+      await removeKnownWord(baseForm);
       sendMsg('REMOVE_KNOWN_WORD', baseForm);
     }
   }

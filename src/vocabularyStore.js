@@ -4,28 +4,11 @@ async function loadKnownWords(){
     return  await chunkedRead('knownWords');
 }
 
-async function loadUnknownWords(){
-    return  await chunkedRead('unknownWords');
-}
-
 async function saveKnownWords(data){
     return  await chunkedWrite('knownWords', data);
 }
 
-async function saveUnknownWords(data){
-    return  await chunkedWrite('unknownWords', data);
-}
-
 async function addKnownWord(knownWord){
-    
-    //remove from unknownWords
-    let unknownWords = await loadUnknownWords();
-    const unknownWordSet = new Set(unknownWords);
-    unknownWordSet.delete(knownWord);
-    unknownWords = Array.from(unknownWordSet);
-
-    await saveUnknownWords(unknownWords);
-
 
     //add into knownWords
     let knownWords = await loadKnownWords();
@@ -48,4 +31,4 @@ async function removeKnownWord(knownWord){
     await saveKnownWords(knownWords);
 
 }
-export {loadKnownWords, loadUnknownWords, saveKnownWords, saveUnknownWords, addKnownWord, removeKnownWord};
+export {loadKnownWords, saveKnownWords, addKnownWord, removeKnownWord};
