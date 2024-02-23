@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'IS_PAGE_ANNOTATION_ENABLED') {
-    let enabled = isPageAnnotationEnabled()
+    let enabled = isPageAnnotationEnabled();
     console.log(`Current page annotation is enabled: ${enabled}`);
     response = {enabled:enabled};
   }
@@ -54,7 +54,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'ENABLED') {
     console.log(`Current enabled is ${request.payload.enabled}`);
     if(request.payload.enabled){
-      if(!isPageAnnotationInitialized()){
+      if(!isAllDocumentsAnnotationInitialized()){
         initPageAnnotations(()=>{
           refreshAnnotations(request.payload.enabled);
         });
@@ -67,6 +67,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
   }
+
+  if (request.type === 'REFRESH_PAGE') {
+    console.log(`refresh page`);
+    let enabled = isPageAnnotationEnabled();
+    
+    if(enabled){//master document
+      //init all documents
+      initPageAnnotations(()=>{
+        refreshAnnotations(enabled);
+      });
+    }
+  
+  }
+
   if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
     console.log(`add known word: ${request.payload.word}`);
     if(request.payload.word){
@@ -92,43 +106,67 @@ async function initPageAnnotations(resolve) {
     knownWords= [];
   }
 
+  if(!isDocumentAnnotationInitialized(document)){
+    initDocumentAnnotations(document, false);
+  }
+
+  let iframeDocuments = getAllIframeDocuments();
+  iframeDocuments.forEach((document)=>{
+    if(!isDocumentAnnotationInitialized(document)){
+      initDocumentAnnotations(document, true);
+    }
+  });
+
   
-  //iterate all elements
+  resolve();
+}
+
+function initDocumentAnnotations(document, isIframe){
   visitElement(document.body,(element)=>{
     //console.log(element.nodeName + element.nodeType);
     if(element.children.length == 0){
       annotateLeafElement(element);
     }
   });
-/*
-  document.querySelectorAll('p').forEach((element) => { 
-      let html = element.innerHTML; 
-
-      let result = html.replaceAll(/\w+/g, function (x) {
-        let baseFormWord = searchWordBaseForm(x);
-        
-        //finally,
-        if(baseFormWord){// find the correct form which has definition in dictionary
-          
-            let definition = lookupShort(baseFormWord);                       
-            return format(x, definition, baseFormWord);
-          
-        }else {         
-          return x;
-        }
-      });
-
-      element.innerHTML = result;
-  });
-  */
-  resolve();
+  if(isIframe){
+    addStyle(document);    
+  }
 }
 
+function addStyle(document){
+  var link = document.createElement("link");
+  link.href = chrome.runtime.getURL("contentScript.css");
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  document.getElementsByTagName("head")[0].appendChild(link);
+  
+}
+
+function getAllDocuments(){
+  let documents = [document];
+  document.querySelectorAll('iframe').forEach((iframe)=>{
+    documents.push(iframe.contentWindow.document);
+  });
+  return documents;
+}
+
+function getAllIframeDocuments(){
+  let documents = [];
+  document.querySelectorAll('iframe').forEach((iframe)=>{
+    documents.push(iframe.contentWindow.document);
+  });
+  return documents;
+}
 
 function visitElement(element, visitor) {
   visitor(element);
 
   let children = element.children;
+  /*
+  if(element.nodeName=='IFRAME'){
+    children = element.contentWindow.document.body.children;
+  }
+*/
   for(var i = 0; i < children.length; i++) {      
     visitElement(children[i], visitor);      
   }
@@ -167,6 +205,18 @@ function isPageAnnotationInitialized(){
   return document.querySelectorAll('.mea-highlight').length >0;
 }
 
+function isAllDocumentsAnnotationInitialized(){
+  let documents = getAllDocuments();
+  
+  return documents.every((document)=>{
+    document.querySelectorAll('.mea-highlight').length >0
+  });
+}
+
+function isDocumentAnnotationInitialized(document){
+  return document.querySelectorAll('.mea-highlight').length >0;
+}
+
 function isPageAnnotationEnabled(){
   let result = document.body.getAttribute('mea-enabled');
   if(result === 'true') {
@@ -176,11 +226,17 @@ function isPageAnnotationEnabled(){
   }
 }
 
+async function refreshAnnotations(enabled) {
+  getAllDocuments().forEach((document)=>{
+    refreshAnnotationsForOne(document, enabled);
+  });
+
+}
 /**
  * 
  * refresh all word's display
  */
-async function refreshAnnotations(enabled){
+async function refreshAnnotationsForOne(document, enabled){
   //set flag
   document.body.setAttribute('mea-enabled', enabled);
 

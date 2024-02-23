@@ -35,15 +35,36 @@ import {loadKnownWords, saveKnownWords} from './vocabularyStore.js';
   function setupEnabled(enabled) {
     document.getElementById('enabledCheckbox').checked = enabled;
 
+    console.log('add switch click event listener 1');
     document.getElementById('enabledCheckbox').addEventListener('click', (e) => {
       e.preventDefault();
-      console.log(e);
+      console.log('switch clicked');
 
-      isPageAnnotationEnabled((enabled1) => {
-        toggleEnabled(enabled1);
+      isPageAnnotationEnabled((enabled) => {
+        toggleEnabled(enabled);
       });
       
       
+    });
+    console.log('add switch click event listener 2');
+
+
+    document.getElementById('refresh').addEventListener('click', (e) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
+        chrome.tabs.sendMessage(
+          tab.id,
+          {
+            type: 'REFRESH_PAGE',
+            payload: {            
+            },
+          },
+          (response) => {
+            console.log('refresh page response');
+            //resolve(response);
+          }
+        );
+      });
     });
   }
 
