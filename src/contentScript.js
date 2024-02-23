@@ -275,6 +275,13 @@ function format(word, annotation, baseFormWord) {
 
 
 function isKnown(word) {
-  return knownWords.indexOf(word) >= 0;
+  let baseForm = word;
+  let found = knownWords.indexOf(baseForm) >= 0;
+  if(!found){
+    let lowercaseWord = word.toLowerCase();
+    found = knownWords.indexOf(lowercaseWord) >= 0;
+  }
+
+  return found;
 }
 
