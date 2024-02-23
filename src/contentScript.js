@@ -145,7 +145,11 @@ function addStyle(document){
 function getAllDocuments(){
   let documents = [document];
   document.querySelectorAll('iframe').forEach((iframe)=>{
-    documents.push(iframe.contentWindow.document);
+    try {
+      documents.push(iframe.contentWindow.document);
+    }catch(e){
+      //some iframes are blocked
+    }
   });
   return documents;
 }
@@ -153,7 +157,11 @@ function getAllDocuments(){
 function getAllIframeDocuments(){
   let documents = [];
   document.querySelectorAll('iframe').forEach((iframe)=>{
-    documents.push(iframe.contentWindow.document);
+    try {
+      documents.push(iframe.contentWindow.document);
+    }catch(e){
+      //some iframes are blocked
+    }
   });
   return documents;
 }
