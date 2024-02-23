@@ -1,15 +1,30 @@
 # <img src="public/icons/icon_48.png" width="45" align="left"> My English Reading Assistant
 
-My Chrome Extension
+My Chrome Extension of English reader assistant
+
+
 
 ## Features
 
-- Feature 1
-- Feature 2
+- It shows definition of the words which not in your vocabulary.
 
-## Install
+normal webpage:
 
-[**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
+<img src="public/screenshots/webpage.png" width="400">
+
+online epub reader:
+
+<img src="public/screenshots/epub.png" width="400">
+
+context menu to adjust your vocabulary:
+
+<img src="public/screenshots/context-menu.png" width="400">
+
+## Install Chrome extension
+
+refer to https://github.com/dutiyesh/chrome-extension-cli
+
+
 
 ## Contribution
 
