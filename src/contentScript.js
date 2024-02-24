@@ -190,6 +190,11 @@ function visit(node, visitor) {
 }
 
 function annotateLeafElement(element){
+  if(element.classList.contains('mea-highlight') ||
+    element.classList.contains('mea-annotation')){
+      return;
+  }
+
   let html = element.innerHTML; 
 
   let result = html.replaceAll(/\w+/g, function (x) {
@@ -198,7 +203,12 @@ function annotateLeafElement(element){
     //finally,
     if(baseFormWord){// find the correct form which has definition in dictionary
       
-        let definition = lookupShort(baseFormWord);                       
+        let definition = lookupShort(baseFormWord);
+        
+        //fix right click selection issue
+        if(isStartWithAlphabet(definition)){
+          definition = ':'+definition;
+        }                       
         return format(x, definition, baseFormWord);
       
     }else {         
@@ -207,6 +217,11 @@ function annotateLeafElement(element){
   });
 
   element.innerHTML = result;
+}
+
+function isStartWithAlphabet(definition){
+  var english = /^[A-Za-z].*$/;
+  return english.test(definition);
 }
 
 function isPageAnnotationInitialized(){

@@ -2,8 +2,7 @@
 .mea-highlight {
   position: relative;
   display: inline-block;
-  margin-top: 0px;
-  background-color: lightgoldenrodyellow;
+  margin-top: 0px;  
 }
 
 .mea-highlight .mea-annotation {
