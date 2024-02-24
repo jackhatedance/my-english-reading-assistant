@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "My English Reading Assistant",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "It will show word definition for those words that not in your vocabulary.",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
