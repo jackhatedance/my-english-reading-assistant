@@ -10,9 +10,10 @@
   position: absolute;
   width:100%;
   bottom: 60%;
-  font-size: 0.5em !important;
+  font-size: 0.4em !important;
   text-align: center;
   white-space: nowrap;
+  margin-bottom: 0.4em;
   color: blue;
 }
 
