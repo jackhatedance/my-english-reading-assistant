@@ -2,7 +2,8 @@
 .mea-highlight {
   position: relative;
   display: inline-block;
-  margin-top: 0px;  
+  margin-top: 0px;
+  text-indent: 0px;
 }
 
 .mea-highlight .mea-annotation {
