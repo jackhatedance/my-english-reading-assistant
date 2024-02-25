@@ -1,6 +1,6 @@
 'use strict';
 
-import {addKnownWord, removeKnownWord} from './vocabularyStore.js';
+import {addKnownWord, removeKnownWord, isKnown} from './vocabularyStore.js';
 import {searchWordBaseForm} from './language.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
@@ -28,6 +28,14 @@ function sendMsg(type, baseForm){
 
 chrome.runtime.onInstalled.addListener(function () {
   
+  
+  let toggle = chrome.contextMenus.create({
+    title: 'Known/Unknown: %s',
+    contexts: ['selection'],
+    id: 'toggle'
+  });
+
+  /*
   // Create a parent item and two children.
   let parent = chrome.contextMenus.create({
     title: 'MyEnglishAssistant',
@@ -46,20 +54,32 @@ chrome.runtime.onInstalled.addListener(function () {
     parentId: parent,
     id: 'unknown'
   });
-
+*/
 });
 
 chrome.contextMenus.onClicked.addListener(async(item, tab) => {
   
   let word = item.selectionText;
   console.log("select word: " + word);
-  if(item.menuItemId == 'known') {
+  if(item.menuItemId === 'toggle') {
+    let baseForm = searchWordBaseForm(word);
+    if(baseForm){
+      if(!await isKnown(baseForm)){
+        await addKnownWord(baseForm);
+        sendMsg('ADD_KNOWN_WORD', baseForm);
+      } else {
+        await removeKnownWord(baseForm);
+        sendMsg('REMOVE_KNOWN_WORD', baseForm);
+      }
+      //sendMsg('TOGGLE_WORD', baseForm);
+    }
+  } else if(item.menuItemId === 'known') {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
       await addKnownWord(baseForm);
       sendMsg('ADD_KNOWN_WORD', baseForm);
     }
-  } else if(item.menuItemId == 'unknown') {
+  } else if(item.menuItemId === 'unknown') {
     let baseForm = searchWordBaseForm(word);
     if(baseForm){
       await removeKnownWord(baseForm);

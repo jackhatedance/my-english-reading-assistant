@@ -31,4 +31,21 @@ async function removeKnownWord(knownWord){
     await saveKnownWords(knownWords);
 
 }
-export {loadKnownWords, saveKnownWords, addKnownWord, removeKnownWord};
+
+
+async function isKnown(word) {
+    
+    let knownWords = await loadKnownWords();
+    
+
+    let baseForm = word;
+    let found = knownWords.indexOf(baseForm) >= 0;
+    if(!found){
+      let lowercaseWord = word.toLowerCase();
+      found = knownWords.indexOf(lowercaseWord) >= 0;
+    }
+  
+    return found;
+  }
+
+export {loadKnownWords, saveKnownWords, addKnownWord, removeKnownWord, isKnown};

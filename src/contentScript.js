@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
-    console.log(`add known word: ${request.payload.word}`);
+    console.log(`${request.type} known word: ${request.payload.word}`);
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
       let enabled = isPageAnnotationEnabled();
