@@ -30,7 +30,7 @@ chrome.runtime.onInstalled.addListener(function () {
   
   
   let toggle = chrome.contextMenus.create({
-    title: 'Known/Unknown: %s',
+    title: 'Known <-> Unknown: %s',
     contexts: ['selection'],
     id: 'toggle'
   });
