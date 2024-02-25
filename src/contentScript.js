@@ -268,7 +268,7 @@ function containsIframeChild(element){
 function annotateTextContent(textContent){
   let html = textContent; 
 
-  let result = html.replaceAll(/(\w+)/g, function (x) {
+  let result = html.replaceAll(/([a-zA-Z']+)/g, function (x) {
     let baseFormWord = searchWordBaseForm(x);
     
     //finally,
