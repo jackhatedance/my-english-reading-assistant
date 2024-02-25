@@ -111,12 +111,14 @@ async function initPageAnnotations(resolve) {
   }
 
   let iframeDocuments = getAllIframeDocuments();
-  iframeDocuments.forEach((document)=>{
-    if(!isDocumentAnnotationInitialized(document)){
-      initDocumentAnnotations(document, true);
+  //console.log('start iframe annotattion');
+  for(var iframeDocument of iframeDocuments) {
+    if(!isDocumentAnnotationInitialized(iframeDocument)){
+      //console.log('start iframe initDocumentAnnotations');
+      initDocumentAnnotations(iframeDocument, true);
     }
-  });
-
+  }
+  
   
   resolve();
 }
@@ -124,9 +126,8 @@ async function initPageAnnotations(resolve) {
 function initDocumentAnnotations(document, isIframe){
   visitElement(document.body,(element)=>{
     //console.log(element.nodeName + element.nodeType);
-    if(element.children.length == 0){
-      annotateLeafElement(element);
-    }
+    
+    annotateChildTextContents(element);
   });
   if(isIframe){
     addStyle(document);    
@@ -144,26 +145,42 @@ function addStyle(document){
 
 function getAllDocuments(){
   let documents = [document];
-  document.querySelectorAll('iframe').forEach((iframe)=>{
-    try {
-      documents.push(iframe.contentWindow.document);
-    }catch(e){
-      //some iframes are blocked
-    }
-  });
+  
+  for(const doc of getAllIframeDocuments()) {
+    documents.push(doc);    
+  }
+
   return documents;
 }
 
 function getAllIframeDocuments(){
   let documents = [];
-  document.querySelectorAll('iframe').forEach((iframe)=>{
+  let iframes = document.querySelectorAll('iframe');
+  console.log('iframes length:'+iframes.length);
+  for(const iframe of iframes) {
     try {
-      documents.push(iframe.contentWindow.document);
+      let document = iframe.contentDocument;
+      if(document){
+        documents.push(iframe.contentDocument);
+      }
     }catch(e){
-      //some iframes are blocked
+      console.log('access iframe error:'+e);
     }
-  });
+  }
+
   return documents;
+}
+
+function containsIframeThatNeedBeProtected(element){
+  //case of epubjs
+  let iframe = element.querySelector('iframe');
+  if(iframe){
+    let id = iframe.id;
+    if(id){
+      return id.startsWith('epubjs');
+    }
+  }
+  return false;  
 }
 
 function visitElement(element, visitor) {
@@ -175,8 +192,9 @@ function visitElement(element, visitor) {
     children = element.contentWindow.document.body.children;
   }
 */
-  for(var i = 0; i < children.length; i++) {      
-    visitElement(children[i], visitor);      
+  
+  for(const child of children) {      
+    visitElement(child, visitor);      
   }
 }
 
@@ -189,6 +207,89 @@ function visit(node, visitor) {
   }
 }
 
+function annotateChildTextContents(element){
+  //console.log('element.nodeName:'+element.nodeName);
+  //console.log('element Id:'+element.getAttribute('id'));
+  
+  const textTags = [
+    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+    'P',
+    'UL','OL','LI',
+    'BLOCKQUOTE',
+    'EM',
+    'STRONG',
+    'I',
+    'CODE',
+    'PRE',
+    'S',
+    'SPAN',
+    'DIV'
+  ];
+  
+  if(!textTags.includes(element.nodeName)){
+    return;
+  }
+
+  if(element.nodeName==='DIV' && containsIframeThatNeedBeProtected(element)){
+    //console.log('containsIframeThatNeedBeProtected');
+    return;
+  }
+
+  if(
+    element.classList.contains('mea-highlight') ||
+    element.classList.contains('mea-annotation')){
+      return;
+  }
+
+  let html = element.innerHTML;
+  for(var i=0; i< element.childNodes.length;i++){
+    let childNode = element.childNodes[i];
+    if(childNode.nodeName==='#text'){
+      let textContent = childNode.textContent;
+      let annotatedTextContent = annotateTextContent(childNode.textContent);
+      //console.log('nodeName:'+childNode.nodeName);
+      //console.log('textContent:'+textContent);
+      //console.log('annotatedTextContent:'+annotatedTextContent);
+      html = html.replaceAll(textContent, annotatedTextContent);
+    }
+  }
+
+  element.innerHTML = html;
+}
+
+function containsIframeChild(element){
+  for(const childNode of element.childNodes){
+    if(childNode.nodeName==='IFRAME'){
+      return true;
+    }
+  }
+  return false;
+}
+function annotateTextContent(textContent){
+  let html = textContent; 
+
+  let result = html.replaceAll(/(\w+)/g, function (x) {
+    let baseFormWord = searchWordBaseForm(x);
+    
+    //finally,
+    if(baseFormWord){// find the correct form which has definition in dictionary
+      
+        let definition = lookupShort(baseFormWord);
+        
+        //fix right click selection issue
+        if(isStartWithAlphabet(definition)){
+          definition = ':'+definition;
+        }                       
+        return format(x, definition, baseFormWord);
+      
+    }else {         
+      return x;
+    }
+  });
+
+  return result;
+}
+
 function annotateLeafElement(element){
   if(element.classList.contains('mea-highlight') ||
     element.classList.contains('mea-annotation')){
@@ -197,7 +298,7 @@ function annotateLeafElement(element){
 
   let html = element.innerHTML; 
 
-  let result = html.replaceAll(/\w+/g, function (x) {
+  let result = html.replaceAll(/([^<>]\w+[^<>])/g, function (x) {
     let baseFormWord = searchWordBaseForm(x);
     
     //finally,
@@ -250,10 +351,9 @@ function isPageAnnotationEnabled(){
 }
 
 async function refreshAnnotations(enabled) {
-  getAllDocuments().forEach((document)=>{
-    refreshAnnotationsForOne(document, enabled);
-  });
-
+  for(const doc of getAllDocuments()){
+    await refreshAnnotationsForOne(doc, enabled);
+  }
 }
 /**
  * 
