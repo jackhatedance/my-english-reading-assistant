@@ -9,7 +9,7 @@ function lookup(word) {
 function lookupShort(word) {
     let def = dict[word];
     if(def){
-        def = removeWordClass(def);
+        //def = removeWordClass(def);
         //def = firstMeaning(def);
     }
 

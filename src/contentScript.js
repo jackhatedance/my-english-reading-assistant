@@ -4,6 +4,7 @@ import './content.css';
 import { lookupShort } from './dictionary.js';
 import {loadKnownWords} from './vocabularyStore.js';
 import {searchWordBaseForm} from './language.js';
+import {findSiteConfig} from './site-match.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -106,16 +107,22 @@ async function initPageAnnotations(resolve) {
     knownWords= [];
   }
 
+  let siteConfig = findSiteConfig(document);
+  
   if(!isDocumentAnnotationInitialized(document)){
-    initDocumentAnnotations(document, false);
+    let documentConfig = siteConfig.getDocumentConfig(document);
+  
+    initDocumentAnnotations(document, false, documentConfig);
   }
 
-  let iframeDocuments = getAllIframeDocuments();
+  //let iframeDocuments = getAllIframeDocuments();
+  let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
   //console.log('start iframe annotattion');
-  for(var iframeDocument of iframeDocuments) {
+  for(var iframeDocumentConfig of iframeDocumentConfigs) {
+    let iframeDocument = iframeDocumentConfig.document;
     if(!isDocumentAnnotationInitialized(iframeDocument)){
-      //console.log('start iframe initDocumentAnnotations');
-      initDocumentAnnotations(iframeDocument, true);
+      console.log('start iframe initDocumentAnnotations');
+      initDocumentAnnotations(iframeDocument, true, iframeDocumentConfig);
     }
   }
   
@@ -123,15 +130,20 @@ async function initPageAnnotations(resolve) {
   resolve();
 }
 
-function initDocumentAnnotations(document, isIframe){
-  visitElement(document.body,(element)=>{
-    //console.log(element.nodeName + element.nodeType);
-    
-    annotateChildTextContents(element);
-  });
+function initDocumentAnnotations(document, isIframe, documentConfig) {
+  
+  if(documentConfig.canProcess){
+  
+    visitElement(document.body,(element)=>{
+      //console.log(element.nodeName + element.nodeType);
+      annotateChildTextContents(element, isIframe);
+    });  
+  }
+
   if(isIframe){
     addStyle(document);    
   }
+
 }
 
 function addStyle(document){
@@ -171,16 +183,28 @@ function getAllIframeDocuments(){
   return documents;
 }
 
-function containsIframeThatNeedBeProtected(element){
-  //case of epubjs
-  let iframe = element.querySelector('iframe');
-  if(iframe){
-    let id = iframe.id;
-    if(id){
-      return id.startsWith('epubjs');
-    }
+function canAnnotate(element){
+  const textTags = [
+    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+    'P',
+    'UL','OL','LI',
+    'BLOCKQUOTE',
+    'EM',
+    'STRONG',
+    'I',
+    'CODE',
+    'PRE',
+    'S',
+    'SPAN',
+    'DIV'
+  ];
+  
+  if(!textTags.includes(element.nodeName)){
+    return false;
   }
-  return false;  
+
+  
+  return true;  
 }
 
 function visitElement(element, visitor) {
@@ -207,30 +231,11 @@ function visit(node, visitor) {
   }
 }
 
-function annotateChildTextContents(element){
-  //console.log('element.nodeName:'+element.nodeName);
-  //console.log('element Id:'+element.getAttribute('id'));
+function annotateChildTextContents(element, isIframe){
+  console.log('element.nodeName:'+element.nodeName);
+  console.log('element Id:'+element.getAttribute('id'));
   
-  const textTags = [
-    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-    'P',
-    'UL','OL','LI',
-    'BLOCKQUOTE',
-    'EM',
-    'STRONG',
-    'I',
-    'CODE',
-    'PRE',
-    'S',
-    'SPAN',
-    'DIV'
-  ];
-  
-  if(!textTags.includes(element.nodeName)){
-    return;
-  }
-
-  if(element.nodeName==='DIV' && containsIframeThatNeedBeProtected(element)){
+  if(!canAnnotate(element)){
     //console.log('containsIframeThatNeedBeProtected');
     return;
   }
@@ -246,11 +251,17 @@ function annotateChildTextContents(element){
     let childNode = element.childNodes[i];
     if(childNode.nodeName==='#text'){
       let textContent = childNode.textContent;
-      let annotatedTextContent = annotateTextContent(childNode.textContent);
+      let annotatedTextContent = annotateTextContent(textContent);
+      let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;");
+
+      //console.log('innerHTML:'+html);
       //console.log('nodeName:'+childNode.nodeName);
       //console.log('textContent:'+textContent);
+      //console.log('unescapedTextContent:'+unescapedTextContent);
       //console.log('annotatedTextContent:'+annotatedTextContent);
-      html = html.replaceAll(textContent, annotatedTextContent);
+      
+      html = html.replaceAll(unescapedTextContent, annotatedTextContent);
+      //console.log('annotated innerHTML:'+html);
     }
   }
 

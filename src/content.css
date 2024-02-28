@@ -14,7 +14,8 @@
   text-align: center;
   white-space: nowrap;
   margin-bottom: 0.4em;
-  color: blue;
+  color: grey;
+  opacity: 30%;
 }
 
 .mea-highlight.hide {
