@@ -16,7 +16,7 @@ html {
 
 body {
   width: 350px;
-  height: 200px;
+  height: 400px;
 }
 
 .app {
@@ -137,4 +137,8 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+#knownWords {
+  overflow-y: scroll;
 }

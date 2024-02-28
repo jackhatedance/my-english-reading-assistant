@@ -1,7 +1,7 @@
 'use strict';
 
 import './popup.css';
-import {loadKnownWords, saveKnownWords} from './vocabularyStore.js';
+
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -33,6 +33,14 @@ import {loadKnownWords, saveKnownWords} from './vocabularyStore.js';
  
 
   function setupEnabled(enabled) {
+
+    document.getElementById('options').addEventListener('click', (e) => {
+      //e.preventDefault();
+      chrome.runtime.openOptionsPage();
+      
+    });
+
+
     document.getElementById('enabledCheckbox').checked = enabled;
 
     console.log('add switch click event listener 1');
@@ -129,33 +137,9 @@ import {loadKnownWords, saveKnownWords} from './vocabularyStore.js';
     });
 
     
-
-    let knownWordsResult = await loadKnownWords();
-    let knownWords = knownWordsResult;
-    if(!knownWords){
-      knownWords= [];
-    }    
-    document.getElementById('knownWords').value = knownWords.join('\n');
-
-    document.getElementById('save').addEventListener('click', () => {
-      let knownWordsArray = document.getElementById('knownWords').value.split('\n');
-
-      save({
-        knownWords: knownWordsArray
-      });
-    });
   }
 
   
-
-  async function save(settings){
-    if(settings.knownWords){
-      let uw = settings.knownWords;
-      await saveKnownWords(uw);
-      settings.knownWords = null;
-    }
-    
-  }
 
   document.addEventListener('DOMContentLoaded', init);
 

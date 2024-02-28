@@ -2,13 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My Chrome Extension</title>
+    <title>My English Reading Assistant</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="app">
        
-     
+      <a id="options" href="#">Options</a>
+      <br/>
       <p class="subtitle">Show/Hide definition in Chinese</p>
       <label class="switch">
         <input type="checkbox" id="enabledCheckbox">
@@ -17,13 +18,6 @@
       <br/>
       <button id="refresh" class="button">Refresh Page</button>
 
-      <hr class="divider" />
-      <p><label for="knownWords">My vocabulary</label></p>
-      <textarea id="knownWords" name="knownWords" rows="4" maxlength="500000"></textarea>
-      
-      <br />
-      <button id="save" class="button">Save</button>
-      
     </div>
 
     <script src="popup.js"></script>

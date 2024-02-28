@@ -4,6 +4,29 @@ async function loadKnownWords(){
     return  await chunkedRead('knownWords');
 }
 
+function loadDefaultKnownWords(){
+    const errorHandler = function (e) {
+        console.log(e);
+    };
+
+    return new Promise((resolve, reject) => {
+        chrome.runtime.getPackageDirectoryEntry(function(root) {
+            root.getFile("defaultVocabulary.txt", {}, function(fileEntry) {
+                fileEntry.file(function(file) {
+                    var reader = new FileReader();
+                    reader.onloadend = function(e) {
+                        let text = this.result;
+                        //console.log(text);
+                        //return text;
+                        resolve(text.split('\n'));
+                    };
+                    reader.readAsText(file);                
+                }, errorHandler);
+            }, errorHandler);
+        });
+    });
+}
+
 async function saveKnownWords(data){
     return  await chunkedWrite('knownWords', data);
 }
@@ -48,4 +71,4 @@ async function isKnown(word) {
     return found;
   }
 
-export {loadKnownWords, saveKnownWords, addKnownWord, removeKnownWord, isKnown};
+export {loadKnownWords, loadDefaultKnownWords, saveKnownWords, addKnownWord, removeKnownWord, isKnown};
