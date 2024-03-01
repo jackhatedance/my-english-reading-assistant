@@ -3,7 +3,7 @@
 import './content.css';
 import { lookupShort } from './dictionary.js';
 import {loadKnownWords} from './vocabularyStore.js';
-import {searchWordBaseForm} from './language.js';
+import {searchWord} from './language.js';
 import {findSiteConfig} from './site-match.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -120,9 +120,11 @@ async function initPageAnnotations(resolve) {
   //console.log('start iframe annotattion');
   for(var iframeDocumentConfig of iframeDocumentConfigs) {
     let iframeDocument = iframeDocumentConfig.document;
-    if(!isDocumentAnnotationInitialized(iframeDocument)){
-      console.log('start iframe initDocumentAnnotations');
-      initDocumentAnnotations(iframeDocument, true, iframeDocumentConfig);
+    if(iframeDocument){
+      if(!isDocumentAnnotationInitialized(iframeDocument)){
+        console.log('start iframe initDocumentAnnotations');
+        initDocumentAnnotations(iframeDocument, true, iframeDocumentConfig);
+      }
     }
   }
   
@@ -232,8 +234,8 @@ function visit(node, visitor) {
 }
 
 function annotateChildTextContents(element, isIframe){
-  console.log('element.nodeName:'+element.nodeName);
-  console.log('element Id:'+element.getAttribute('id'));
+  //console.log('element.nodeName:'+element.nodeName);
+  //console.log('element Id:'+element.getAttribute('id'));
   
   if(!canAnnotate(element)){
     //console.log('containsIframeThatNeedBeProtected');
@@ -280,18 +282,26 @@ function annotateTextContent(textContent){
   let html = textContent; 
 
   let result = html.replaceAll(/([a-zA-Z][a-zA-Z']+)/g, function (x) {
-    let baseFormWord = searchWordBaseForm(x);
+    let searchResult = searchWord({
+      query: x,
+      allowLemma: true,
+      allowStem: true,
+    });
     
     //finally,
-    if(baseFormWord){// find the correct form which has definition in dictionary
+    if(searchResult){// find the correct form which has definition in dictionary
+      let baseFormWord = searchResult.word;
+      let definition = lookupShort(baseFormWord);
       
-        let definition = lookupShort(baseFormWord);
-        
-        //fix right click selection issue
-        if(isStartWithAlphabet(definition)){
-          definition = ':'+definition;
-        }                       
-        return format(x, definition, baseFormWord);
+      if(searchResult.searchType ==='stem'){
+        definition = '根'+searchResult.word+':'+definition;
+      }
+
+      //fix right click selection issue
+      if(isStartWithAlphabet(definition)){
+        definition = ':'+definition;
+      }                       
+      return format(x, definition, baseFormWord);
       
     }else {         
       return x;
