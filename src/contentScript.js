@@ -92,6 +92,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   }
 
+  if (request.type === 'KNOWN_WORDS_UPDATED') {
+    console.log(`${request.type}`);
+    
+    //hideAnnotation(request.payload.word);
+    let enabled = isPageAnnotationEnabled();
+    refreshAnnotations(enabled);
+  }
+
+  if (request.type === 'GET_VOCABULARY_INFO_OF_PAGE' ) {
+    console.log(`${request.type}`);
+    
+    let pageInfo = getVocabularyInfoOfPage();
+    response.pageInfo = pageInfo;
+    //console.log('unknownWordsOnPage:'+ JSON.stringify(response.words));
+  }
+
   // Send an empty response
   // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
   sendResponse(response);
@@ -99,6 +115,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 var knownWords;
+
+
+/**
+ * 
+ * @returns unknownWords, unknownWordsRatio
+ */
+function getVocabularyInfoOfPage() {
+  
+  let documents = getAllDocuments();
+  let unknownWordSet = new Set();
+  
+  let unknownWordsCount=0;
+  let knownWordsCount=0;
+  for(let document of documents) {
+    let elements = document.querySelectorAll('.mea-highlight:not(.hide)');
+    
+    for(var e of elements) {
+      unknownWordSet.add(e.getAttribute('base-form-word'));
+      unknownWordsCount++;
+    }
+
+    elements = document.querySelectorAll('.mea-highlight.hide');
+    for(var e of elements) {
+      knownWordsCount++;
+    }
+  }
+  let unknownWords = Array.from(unknownWordSet);
+  let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
+  return {
+    unknownWords: unknownWords,
+    unknownWordsRatio: unknownWordsRatio,
+  };
+}
 
 async function initPageAnnotations(resolve) {
 
@@ -372,15 +421,33 @@ function isPageAnnotationEnabled(){
 }
 
 async function refreshAnnotations(enabled) {
+  let unknownWordSet = new Set();
+
   for(const doc of getAllDocuments()){
-    await refreshAnnotationsForOne(doc, enabled);
+    await refreshAnnotationsForOne(doc, enabled, (word) => {
+      unknownWordSet.add(word);
+    });
   }
+
+  let pageInfo = getVocabularyInfoOfPage();
+  //send message to side panel
+  chrome.runtime.sendMessage(
+    {
+      type: 'REFRESH_PAGE_FINISHED',
+      payload: {
+        pageInfo: pageInfo
+      },
+    },
+    (response) => {
+      //console.log(response.message);
+    }
+  );
 }
 /**
  * 
  * refresh all word's display
  */
-async function refreshAnnotationsForOne(document, enabled){
+async function refreshAnnotationsForOne(document, enabled, onUnknownWord){
   //set flag
   document.body.setAttribute('mea-enabled', enabled);
 
@@ -395,6 +462,10 @@ async function refreshAnnotationsForOne(document, enabled){
         element.classList.add("hide");
       } else {
         element.classList.remove("hide");
+
+        if(onUnknownWord){
+          onUnknownWord(baseFormWord);
+        }
       }
     } else {
       element.classList.add("hide");
