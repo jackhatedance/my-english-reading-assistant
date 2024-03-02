@@ -36,17 +36,17 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
   chrome.contextMenus.create({
-    title: 'Enable',
+    title: 'Show Definitions',
     contexts: ['page'],
     id: 'enable'
   });
   chrome.contextMenus.create({
-    title: 'Disable',
+    title: 'Hide Definitions',
     contexts: ['page'],
     id: 'disable'
   });
   chrome.contextMenus.create({
-    title: 'Refresh',
+    title: 'Refresh Definitions',
     contexts: ['page'],
     id: 'refresh'
   });

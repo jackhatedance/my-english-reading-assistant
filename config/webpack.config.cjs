@@ -13,6 +13,7 @@ const config = (env, argv) =>
       options: PATHS.src + '/options.js',
       contentScript: PATHS.src + '/contentScript.js',
       background: PATHS.src + '/background.js',
+      sidePanel: PATHS.src + '/sidePanel.js',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });
