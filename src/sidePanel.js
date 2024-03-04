@@ -37,9 +37,11 @@ import {addKnownWord} from './vocabularyStore.js';
           //console.log('get unknown words:'+ JSON.stringify(response.words));
           //resolve(response);
           
-          if(response.pageInfo){
+          if(response && response.pageInfo){
             let pageInfo = response.pageInfo;
             renderPage(pageInfo);
+          } else {
+            renderPage({enabled:false});
           }
           
         }
@@ -48,8 +50,30 @@ import {addKnownWord} from './vocabularyStore.js';
   }
 
   function renderPage(pageInfo){
-    renderRatio(pageInfo.unknownWordsRatio);
-    renderUnknownWordList(pageInfo.unknownWords);
+    
+    if(pageInfo.enabled){
+      renderRatio(pageInfo.unknownWordsRatio);
+      renderUnknownWordList(pageInfo.unknownWords);
+      showPage();
+    } else {
+      hidePage();
+    }
+  }
+
+  function hidePage(){
+    let app = document.getElementById('app');
+    app.style.display="none";
+
+    let notAvailable = document.getElementById('notAvailable');
+    notAvailable.style.display=null;
+
+  }
+  function showPage(){
+    let app = document.getElementById('app');
+    app.style.display=null;
+
+    let notAvailable = document.getElementById('notAvailable');
+    notAvailable.style.display="none";
   }
 
   function renderRatio(ratio){
@@ -108,7 +132,7 @@ import {addKnownWord} from './vocabularyStore.js';
   }
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === 'REFRESH_PAGE_FINISHED') {
+    if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
       renderPage(request.payload.pageInfo);
       // Log message coming from the `request` parameter
       //console.log(request.payload.message);
