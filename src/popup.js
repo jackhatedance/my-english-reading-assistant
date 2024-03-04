@@ -124,8 +124,13 @@ import './popup.css';
           },
         },
         (response) => {
-          console.log('is page enabled response: '+ response.enabled);
-          resolve(response.enabled);
+
+          //console.log('is page enabled response: '+ response.enabled);
+          let enabled = false;
+          if(response){
+            enabled = response.enabled;
+          }
+          resolve(enabled);
         }
       );
     });

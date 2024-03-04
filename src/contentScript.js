@@ -57,14 +57,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.payload.enabled){
       if(!isAllDocumentsAnnotationInitialized()){
         initPageAnnotations(()=>{
-          refreshAnnotations(request.payload.enabled);
+          resetPageAnnotationVisibility(request.payload.enabled);
         });
       }else{
-        refreshAnnotations(request.payload.enabled);
+        resetPageAnnotationVisibility(request.payload.enabled);
       }
       
     }else {
-      refreshAnnotations(false);
+      resetPageAnnotationVisibility(false);
     }
 
   }
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(enabled){//master document
       //init all documents
       initPageAnnotations(()=>{
-        refreshAnnotations(enabled);
+        resetPageAnnotationVisibility(enabled);
       });
     }
   
@@ -87,7 +87,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
       let enabled = isPageAnnotationEnabled();
-      refreshAnnotations(enabled);
+      resetPageAnnotationVisibility(enabled);
     }
 
   }
@@ -97,7 +97,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     //hideAnnotation(request.payload.word);
     let enabled = isPageAnnotationEnabled();
-    refreshAnnotations(enabled);
+    resetPageAnnotationVisibility(enabled);
   }
 
   if (request.type === 'GET_VOCABULARY_INFO_OF_PAGE' ) {
@@ -143,7 +143,9 @@ function getVocabularyInfoOfPage() {
   }
   let unknownWords = Array.from(unknownWordSet);
   let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
+  let enabled = isPageAnnotationEnabled();
   return {
+    enabled: enabled,
     unknownWords: unknownWords,
     unknownWordsRatio: unknownWordsRatio,
   };
@@ -420,11 +422,11 @@ function isPageAnnotationEnabled(){
   }
 }
 
-async function refreshAnnotations(enabled) {
+async function resetPageAnnotationVisibility(enabled) {
   let unknownWordSet = new Set();
 
   for(const doc of getAllDocuments()){
-    await refreshAnnotationsForOne(doc, enabled, (word) => {
+    await resetDocumentAnnotationVisibility(doc, enabled, (word) => {
       unknownWordSet.add(word);
     });
   }
@@ -433,7 +435,7 @@ async function refreshAnnotations(enabled) {
   //send message to side panel
   chrome.runtime.sendMessage(
     {
-      type: 'REFRESH_PAGE_FINISHED',
+      type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
       payload: {
         pageInfo: pageInfo
       },
@@ -445,9 +447,9 @@ async function refreshAnnotations(enabled) {
 }
 /**
  * 
- * refresh all word's display
+ * reset all word's display attribute according to vocabulary
  */
-async function refreshAnnotationsForOne(document, enabled, onUnknownWord){
+async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWord){
   //set flag
   document.body.setAttribute('mea-enabled', enabled);
 
