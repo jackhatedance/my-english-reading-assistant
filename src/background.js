@@ -45,32 +45,14 @@ chrome.runtime.onInstalled.addListener(function () {
     contexts: ['page'],
     id: 'disable'
   });
+  /*
   chrome.contextMenus.create({
     title: 'Refresh Definitions',
     contexts: ['page'],
     id: 'refresh'
   });
-
-  /*
-  // Create a parent item and two children.
-  let parent = chrome.contextMenus.create({
-    title: 'MyEnglishAssistant',
-    contexts: ['selection'],
-    id: 'parent'
-  });
-  chrome.contextMenus.create({
-    contexts: ['selection'],
-    title: 'Known',
-    parentId: parent,
-    id: 'known'
-  });
-  chrome.contextMenus.create({
-    contexts: ['selection'],
-    title: 'Unknown',
-    parentId: parent,
-    id: 'unknown'
-  });
-*/
+  */
+  
 });
 
 chrome.contextMenus.onClicked.addListener(async(item, tab) => {
