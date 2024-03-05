@@ -24,6 +24,9 @@ const siteConfigs = [
                 }
             }
             return configs;
+        },
+        needRefreshPageAnnotation(topDocument){
+            return false;
         }
     },
     {
@@ -58,6 +61,24 @@ const siteConfigs = [
                 }
             }
             return configs;
+        },
+        needRefreshPageAnnotation(topDocument){
+            let topVisible = topDocument.body.getAttribute('mea-visible');
+            if(!topVisible){
+                return false;
+            }
+
+            let iframes = document.querySelectorAll('iframe');
+            let configs = [];
+            for(const iframe of iframes){
+                if(iframe) {
+                    let iframeVisible = iframe?.contentDocument?.body?.getAttribute('mea-visible');
+                    if(topVisible != iframeVisible){
+                        return true;
+                    }              
+                }
+            }
+            return false;
         }
     },
 

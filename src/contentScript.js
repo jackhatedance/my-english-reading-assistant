@@ -46,10 +46,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     response = {initialized:initialized};
   }
 
-  if (request.type === 'IS_PAGE_ANNOTATION_ENABLED') {
-    let enabled = isPageAnnotationEnabled();
-    console.log(`Current page annotation is enabled: ${enabled}`);
-    response = {enabled:enabled};
+  if (request.type === 'IS_PAGE_ANNOTATION_VISIBLE') {
+    let visible = isPageAnnotationVisible();
+    console.log(`Current page annotation is visible: ${visible}`);
+    response = {visible:visible};
   }
 
   if (request.type === 'ENABLED') {
@@ -71,12 +71,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.type === 'REFRESH_PAGE') {
     console.log(`refresh page`);
-    let enabled = isPageAnnotationEnabled();
+    let visible = isPageAnnotationVisible();
     
-    if(enabled){//master document
+    if(visible){//master document
       //init all documents
       initPageAnnotations(()=>{
-        resetPageAnnotationVisibility(enabled);
+        resetPageAnnotationVisibility(visible);
       });
     }
   
@@ -86,8 +86,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`${request.type} known word: ${request.payload.word}`);
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
-      let enabled = isPageAnnotationEnabled();
-      resetPageAnnotationVisibility(enabled);
+      let visible = isPageAnnotationVisible();
+      resetPageAnnotationVisibility(visible);
     }
 
   }
@@ -96,8 +96,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(`${request.type}`);
     
     //hideAnnotation(request.payload.word);
-    let enabled = isPageAnnotationEnabled();
-    resetPageAnnotationVisibility(enabled);
+    let visible = isPageAnnotationVisible();
+    resetPageAnnotationVisibility(visible);
   }
 
   if (request.type === 'GET_VOCABULARY_INFO_OF_PAGE' ) {
@@ -113,6 +113,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   sendResponse(response);
   return true;
 });
+
+setInterval(refreshTimer, 500);
+
+function refreshTimer() {
+  let siteConfig = findSiteConfig(document);
+
+  if(siteConfig.needRefreshPageAnnotation(document)){
+    //console.log('needRefreshPageAnnotation');
+    initPageAnnotations(()=>{
+      resetPageAnnotationVisibility(true);
+    });
+  }
+
+  
+}
 
 var knownWords;
 
@@ -143,9 +158,9 @@ function getVocabularyInfoOfPage() {
   }
   let unknownWords = Array.from(unknownWordSet);
   let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
-  let enabled = isPageAnnotationEnabled();
+  let visible = isPageAnnotationVisible();
   return {
-    enabled: enabled,
+    enabled: visible,
     unknownWords: unknownWords,
     unknownWordsRatio: unknownWordsRatio,
   };
@@ -186,15 +201,14 @@ async function initPageAnnotations(resolve) {
 function initDocumentAnnotations(document, isIframe, documentConfig) {
   
   if(documentConfig.canProcess){
-  
+    if(isIframe){
+      addStyle(document);    
+    }
+
     visitElement(document.body,(element)=>{
       //console.log(element.nodeName + element.nodeType);
       annotateChildTextContents(element, isIframe);
     });  
-  }
-
-  if(isIframe){
-    addStyle(document);    
   }
 
 }
@@ -413,8 +427,8 @@ function isDocumentAnnotationInitialized(document){
   return document.querySelectorAll('.mea-highlight').length >0;
 }
 
-function isPageAnnotationEnabled(){
-  let result = document.body.getAttribute('mea-enabled');
+function isPageAnnotationVisible(){
+  let result = document.body.getAttribute('mea-visible');
   if(result === 'true') {
     return true;
   } else {
@@ -423,11 +437,11 @@ function isPageAnnotationEnabled(){
 }
 
 async function resetPageAnnotationVisibility(enabled) {
-  let unknownWordSet = new Set();
+  //let unknownWordSet = new Set();
 
   for(const doc of getAllDocuments()){
     await resetDocumentAnnotationVisibility(doc, enabled, (word) => {
-      unknownWordSet.add(word);
+      //unknownWordSet.add(word);
     });
   }
 
@@ -451,7 +465,7 @@ async function resetPageAnnotationVisibility(enabled) {
  */
 async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWord){
   //set flag
-  document.body.setAttribute('mea-enabled', enabled);
+  document.body.setAttribute('mea-visible', enabled);
 
   knownWords = await loadKnownWords();
 

@@ -2,6 +2,8 @@
 
 import './sidePanel.css';
 import {addKnownWord} from './vocabularyStore.js';
+import {searchWord} from './language.js';
+import { lookupShort } from './dictionary.js';
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -94,7 +96,9 @@ import {addKnownWord} from './vocabularyStore.js';
       //li.appendChild(text);
       ul.appendChild(li);
 
-      const liInnerHTML = `${word} <button class='mea-remove' word="${word}"><image src='svg/remove-button.svg' width="10"></image></button>`;
+      let definition = lookupShort(word);
+      
+      const liInnerHTML = `${word}: <span class="definition">${definition}</span> <button class='mea-remove' word="${word}"><image src='svg/remove-button.svg' width="10"></image></button>`;
 
       li.innerHTML = liInnerHTML;
     }
@@ -153,6 +157,20 @@ import {addKnownWord} from './vocabularyStore.js';
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (tab.active) {
       refreshUnknownWordList();
+    }
+  });
+
+  document.getElementById('showAllDefinitions').addEventListener('click', (e) => {
+    let definitionElements = document.querySelectorAll('.definition');
+    for(let def of definitionElements){
+      def.style.display = null;
+    }
+  });
+
+  document.getElementById('hideAllDefinitions').addEventListener('click', (e) => {
+    let definitionElements = document.querySelectorAll('.definition');
+    for(let def of definitionElements){
+      def.style.display = 'none';
     }
   });
 

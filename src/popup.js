@@ -32,7 +32,7 @@ import './popup.css';
   };
  
 
-  function setupEnabled(enabled) {
+  function setupVisible(visible) {
 
     document.getElementById('options').addEventListener('click', (e) => {
       //e.preventDefault();
@@ -41,15 +41,15 @@ import './popup.css';
     });
 
 
-    document.getElementById('enabledCheckbox').checked = enabled;
+    document.getElementById('enabledCheckbox').checked = visible;
 
     console.log('add switch click event listener 1');
     document.getElementById('enabledCheckbox').addEventListener('click', (e) => {
       e.preventDefault();
       console.log('switch clicked');
 
-      isPageAnnotationEnabled((enabled) => {
-        toggleEnabled(enabled);
+      isPageAnnotationVisible((visible) => {
+        toggleEnabled(visible);
       });
       
       
@@ -110,7 +110,7 @@ import './popup.css';
      
   }
 
-  async function isPageAnnotationEnabled(resolve){
+  async function isPageAnnotationVisible(resolve){
     // Communicate with content script of
     // active tab by sending a message
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -119,26 +119,26 @@ import './popup.css';
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: 'IS_PAGE_ANNOTATION_ENABLED',
+          type: 'IS_PAGE_ANNOTATION_VISIBLE',
           payload: {            
           },
         },
         (response) => {
 
           //console.log('is page enabled response: '+ response.enabled);
-          let enabled = false;
+          let visible = false;
           if(response){
-            enabled = response.enabled;
+            visible = response.visible;
           }
-          resolve(enabled);
+          resolve(visible);
         }
       );
     });
   }
 
   async function init() {
-    isPageAnnotationEnabled((enabled) => {
-      setupEnabled(enabled);
+    isPageAnnotationVisible((visible) => {
+      setupVisible(visible);
     });
 
     

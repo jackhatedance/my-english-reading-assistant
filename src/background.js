@@ -102,7 +102,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-async function isPageAnnotationEnabled(resolve){
+async function isPageAnnotationVisible(resolve){
   // Communicate with content script of
   // active tab by sending a message
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -111,13 +111,13 @@ async function isPageAnnotationEnabled(resolve){
     chrome.tabs.sendMessage(
       tab.id,
       {
-        type: 'IS_PAGE_ANNOTATION_ENABLED',
+        type: 'IS_PAGE_ANNOTATION_VISIBLE',
         payload: {            
         },
       },
       (response) => {
-        console.log('is page enabled response: '+ response.enabled);
-        resolve(response.enabled);
+        console.log('is page visible response: '+ response.visible);
+        resolve(response.visible);
       }
     );
   });
