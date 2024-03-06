@@ -63,38 +63,51 @@ function searchWord(request){
 
     //let knife = lemmatize.noun('knivest');
     //console.log('knives:'+knife);
+    if(!definition) {
+        if(request.allowLemma){
+            if(!definition) {
+                word = lemmatize.adjective(input);
+                definition = lookup(word);
+            }
 
-    if(request.allowLemma){
-        if(!definition) {
-            word = lemmatize.adjective(input);
-            definition = lookup(word);
-        }
+            if(!definition) {
+                word = lemmatize.noun(input);
+                definition = lookup(word);
+            }
 
-        if(!definition) {
-            word = lemmatize.noun(input);
-            definition = lookup(word);
+            if(!definition) {
+                word = lemmatize.verb(input);
+                definition = lookup(word);
+            }
+            searchType='lemma';
         }
-
-        if(!definition) {
-            word = lemmatize.verb(input);
-            definition = lookup(word);
-        }
-        searchType='lemma';
     }
-    
-    if(request.allowStem){
-    /*    
-        
-        if(!definition) {
-            //word = porterStemmer( input );
-            
-            word = lancasterStemmer(input);
 
-            console.log('query:'+input+',stem:'+word);
-            definition = lookup(word);
-            searchType='stem';
+    if(!definition) {
+        if(request.allowRemoveSuffix){
+            if(!definition) {
+                word = removeSuffix(input);
+                definition = lookup(word);
+            }
+            searchType='removeSuffix';
         }
-        */
+    }
+
+    if(!definition) {
+        if(request.allowStem){
+        /*    
+            
+            if(!definition) {
+                //word = porterStemmer( input );
+                
+                word = lancasterStemmer(input);
+
+                console.log('query:'+input+',stem:'+word);
+                definition = lookup(word);
+                searchType='stem';
+            }
+            */
+        }
     }
 
     //finally,
@@ -115,6 +128,67 @@ function searchWord(request){
     }
 }
 
+const suffixes = [
+
+"age",
+"al",
+"ance",
+"ence",
+"dom",
+"ee",
+"er",
+"or",
+"hood",
+"ism",
+"ist",
+"ity",
+"ty",
+"ment",
+"ness",
+"ry",
+"ship",
+"sion",
+"tion",
+"xion",
+
+"able",
+"ible",
+"al",
+"en",
+"ese",
+"ful",
+"i",
+"ic",
+"ish",
+"ive",
+"ian",
+"less",
+"ly",
+"ous",
+"y",
+"ate",
+"en",
+"fly",
+"ise",
+"ize",
+
+"ly",
+"ward",
+"wise",
+
+];
+function removeSuffix(word){
+    for(let suffix of suffixes){
+        if(word.endsWith(suffix)){
+            let newWord = word.substring(0,word.length-suffix.length);
+            let definition = lookup(newWord);
+            if(definition){
+                return newWord;
+            }
+        }
+    }
+    return word;
+}
 
 function singularize(word) {
     const endings = {

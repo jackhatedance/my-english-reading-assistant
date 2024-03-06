@@ -32,6 +32,7 @@ async function saveKnownWords(data){
 }
 
 async function addKnownWord(knownWord){
+    console.log('add word:'+ knownWord);
 
     //add into knownWords
     let knownWords = await loadKnownWords();
@@ -44,7 +45,8 @@ async function addKnownWord(knownWord){
 }
 
 async function removeKnownWord(knownWord){
-    
+    console.log('remove word:'+ knownWord);
+
     //remove from knownWords
     let knownWords = await loadKnownWords();
     const knownWordSet = new Set(knownWords);

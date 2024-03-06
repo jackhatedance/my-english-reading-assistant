@@ -16,6 +16,7 @@ import { lookupShort } from './dictionary.js';
    
 
 
+  var definitionVisible = false;
   
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -63,19 +64,18 @@ import { lookupShort } from './dictionary.js';
   }
 
   function hidePage(){
-    let app = document.getElementById('app');
-    app.style.display="none";
-
-    let notAvailable = document.getElementById('notAvailable');
-    notAvailable.style.display=null;
-
+    setPageAvailable(false);
   }
   function showPage(){
+    setPageAvailable(true);
+  }
+  
+  function setPageAvailable(available){
     let app = document.getElementById('app');
-    app.style.display=null;
+    app.style.display= available? null : 'none';
 
     let notAvailable = document.getElementById('notAvailable');
-    notAvailable.style.display="none";
+    notAvailable.style.display=available?'none':null;
   }
 
   function renderRatio(ratio){
@@ -98,9 +98,11 @@ import { lookupShort } from './dictionary.js';
 
       let definition = lookupShort(word);
       
-      const liInnerHTML = `${word}: <span class="definition">${definition}</span> <button class='mea-remove' word="${word}"><image src='svg/remove-button.svg' width="10"></image></button>`;
+      let display = definitionVisible? 'unset':'none';
+      const liInnerHTML = `${word}: <span class="definition" style="display:${display};">${definition}</span> <button class='mea-remove' word="${word}"><image src='svg/remove-button.svg' width="10"></image></button>`;
 
       li.innerHTML = liInnerHTML;
+
     }
 
     let removeButtons = document.querySelectorAll('.mea-remove');
@@ -161,18 +163,23 @@ import { lookupShort } from './dictionary.js';
   });
 
   document.getElementById('showAllDefinitions').addEventListener('click', (e) => {
-    let definitionElements = document.querySelectorAll('.definition');
-    for(let def of definitionElements){
-      def.style.display = null;
-    }
+    definitionVisible = true;
+
+    setDefinitions();
   });
 
   document.getElementById('hideAllDefinitions').addEventListener('click', (e) => {
+    definitionVisible = false;
+
+    setDefinitions();
+  });
+
+  function setDefinitions(){
     let definitionElements = document.querySelectorAll('.definition');
     for(let def of definitionElements){
-      def.style.display = 'none';
+      def.style.display = definitionVisible ? null:'none';
     }
-  });
+  }
 
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(

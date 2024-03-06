@@ -64,6 +64,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
       query: word,
       allowLemma: true,
       allowStem: true,
+      allowRemoveSuffix: true,
     });
     if(searchResult){
       let baseForm = searchResult.word;

@@ -351,6 +351,7 @@ function annotateTextContent(textContent){
       query: x,
       allowLemma: true,
       allowStem: true,
+      allowRemoveSuffix: true,
     });
     
     //finally,
@@ -360,6 +361,9 @@ function annotateTextContent(textContent){
       
       if(searchResult.searchType ==='stem'){
         definition = '根'+searchResult.word+':'+definition;
+      }
+      if(searchResult.searchType ==='removeSuffix'){
+        definition = '源'+searchResult.word+':'+definition;
       }
 
       //fix right click selection issue
