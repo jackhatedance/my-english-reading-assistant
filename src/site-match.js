@@ -32,14 +32,16 @@ const siteConfigs = [
     {
         name:'epubjs',
         match: function(document){
-            let iframes = document.querySelectorAll('iframe');
-            let isEpubjs = Array.from(iframes).some((iframe)=>{
+            let found =false;
+            searchSubIframesRecursively(document, (iframe)=>{
                 let id = iframe.id;
                 if(id){
-                return id.startsWith('epubjs');
+                    if(id.startsWith('epubjs')){
+                        found = true;
+                    }
                 }
             });
-            return isEpubjs;
+            return found;
         },
         getDocumentConfig: function(document){
             let config = {
@@ -49,7 +51,62 @@ const siteConfigs = [
             return config;
         },
         getIframeDocumentConfigs: function(document){
+            let configs = [];
+            searchSubIframesRecursively(document, (iframe)=>{
+                let id = iframe.id;
+                if(id && id.startsWith('epubjs')){
+                    let config = {
+                        document:iframe.contentDocument,
+                        canProcess: true
+                    };
+                    configs.push(config);
+                }
+            });
+
+            return configs;
+        },
+        needRefreshPageAnnotation(topDocument){
+            let topVisible = topDocument.body.getAttribute('mea-visible');
+            if(!topVisible){
+                return false;
+            }
+
             let iframes = document.querySelectorAll('iframe');
+            let configs = [];
+            for(const iframe of iframes){
+                if(iframe) {
+                    let iframeVisible = iframe?.contentDocument?.body?.getAttribute('mea-visible');
+                    if(topVisible != iframeVisible){
+                        return true;
+                    }              
+                }
+            }
+            return false;
+        }
+    },
+    {
+        name:'fviewer',
+        match: function(document){
+            let iframes = document.querySelectorAll('iframe');
+            let isFrmview = Array.from(iframes).some((iframe)=>{
+                let id = iframe.id;
+                if(id){
+                return id.startsWith('convertfrmview');
+                }
+            });
+            return false;
+        },
+        getDocumentConfig: function(document){
+            let config = {
+                document: document,
+                canProcess: false,
+            };
+            return config;
+        },
+        getIframeDocumentConfigs: function(document){
+            let fviewerIframe = document.querySelector('iframe');
+            
+            let iframes = fviewerIframe.contentDocument.querySelectorAll('iframe');
             let configs = [];
             for(const iframe of iframes){
                 if(iframe) {
@@ -84,6 +141,19 @@ const siteConfigs = [
 
 ];
 
+function searchSubIframesRecursively(document, visitor){
+    let iframes = document.querySelectorAll('iframe');
+    for(const iframe of iframes){
+        if(iframe) {
+            visitor(iframe);
+
+            let iframeDocument = iframe.contentDocument;
+            if(iframeDocument){
+                searchSubIframesRecursively(iframeDocument, visitor);
+            }
+        }        
+    }
+}
 function findSiteConfig(document){
     let result = siteConfigs[0];
     //descend order

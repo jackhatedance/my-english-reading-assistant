@@ -181,7 +181,6 @@ async function initPageAnnotations(resolve) {
     initDocumentAnnotations(document, false, documentConfig);
   }
 
-  //let iframeDocuments = getAllIframeDocuments();
   let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
   //console.log('start iframe annotattion');
   for(var iframeDocumentConfig of iframeDocumentConfigs) {
@@ -223,28 +222,12 @@ function addStyle(document){
 }
 
 function getAllDocuments(){
+  let siteConfig = findSiteConfig(document);
+
   let documents = [document];
   
-  for(const doc of getAllIframeDocuments()) {
-    documents.push(doc);    
-  }
-
-  return documents;
-}
-
-function getAllIframeDocuments(){
-  let documents = [];
-  let iframes = document.querySelectorAll('iframe');
-  console.log('iframes length:'+iframes.length);
-  for(const iframe of iframes) {
-    try {
-      let document = iframe.contentDocument;
-      if(document){
-        documents.push(iframe.contentDocument);
-      }
-    }catch(e){
-      console.log('access iframe error:'+e);
-    }
+  for(const config of siteConfig.getIframeDocumentConfigs(document)) {
+    documents.push(config.document);    
   }
 
   return documents;
@@ -335,14 +318,6 @@ function annotateChildTextContents(element, isIframe){
   element.innerHTML = html;
 }
 
-function containsIframeChild(element){
-  for(const childNode of element.childNodes){
-    if(childNode.nodeName==='IFRAME'){
-      return true;
-    }
-  }
-  return false;
-}
 function annotateTextContent(textContent){
   let html = textContent; 
 
