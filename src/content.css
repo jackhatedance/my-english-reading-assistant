@@ -9,11 +9,11 @@
 .mea-highlight .mea-annotation {
   position: absolute;
   width:100%;
-  bottom: 60%;
+  bottom: 1.2em;
   font-size: 0.4em !important;
   text-align: center;
   white-space: nowrap;
-  margin-bottom: 0.4em;
+  margin-bottom: 1em;
   color: grey;
   opacity: 30%;
 }
