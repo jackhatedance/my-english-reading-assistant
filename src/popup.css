@@ -16,7 +16,6 @@ html {
 
 body {
   width: 350px;
-  height: 200px;
 }
 
 .app {
@@ -137,4 +136,17 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.annotation-settings {
+  border: solid 1px;
+  padding: 10px;
+  div {
+    padding: 5px;
+  }
+}
+
+#options-container {
+  width:100%;
+  text-align:right;
 }

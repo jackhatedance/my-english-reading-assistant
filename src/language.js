@@ -84,12 +84,20 @@ function searchWord(request){
     }
 
     if(!definition) {
-        if(request.allowRemoveSuffix){
+        if(request.removeSuffixOrPrefix){
             if(!definition) {
                 word = removeSuffix(input);
-                definition = lookup(word);
+                if(word.length > 2){
+                    definition = lookup(word);
+                }
             }
-            searchType='removeSuffix';
+            if(!definition) {
+                word = removePrefix(input);
+                if(word.length > 2){
+                    definition = lookup(word);
+                }
+            }
+            searchType='removeSuffixOrPrefix';
         }
     }
 
@@ -127,6 +135,53 @@ function searchWord(request){
         return null;
     }
 }
+
+const prefixes = [
+    "anti",
+    "auto",
+    "de",
+    "dis",
+    "down",
+    "extra",
+    "hyper",
+    "il",
+    "im",
+    "in",
+    "ir",
+    "inter",
+    "mega",
+    "mid",
+    "mis",
+    "non",
+    "over",
+    "out",
+    "post",
+    "pre",
+    "pro",
+    "re",
+    "semi",
+    "sub",
+    "super",
+    "tele",
+    "trans",
+    "ultra",
+    "un",
+    "under",
+    "up",
+   
+    ];
+    function removePrefix(word){
+        for(let prefix of prefixes){
+            if(word.startsWith(prefix)){
+                let newWord = word.substring(prefix.length);
+                let definition = lookup(newWord);
+                if(definition){
+                    return newWord;
+                }
+            }
+        }
+        return word;
+    }
 
 const suffixes = [
 

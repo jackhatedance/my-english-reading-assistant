@@ -72,7 +72,6 @@ const saveOptions = () => {
     var textToWrite = text;
     var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
 
-    console.log(formatDate('Sun May 11,2014'));
     let yyyymmdd = formatDate(new Date());
     var fileNameToSaveAs = `my-vocabulary-${yyyymmdd}.txt`; //filename.extension
   

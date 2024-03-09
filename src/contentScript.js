@@ -5,6 +5,7 @@ import { lookupShort } from './dictionary.js';
 import {loadKnownWords} from './vocabularyStore.js';
 import {searchWord} from './language.js';
 import {findSiteConfig} from './site-match.js';
+import {getSiteOptions, getDefaultSiteOptions} from './optionService.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -18,6 +19,41 @@ import {findSiteConfig} from './site-match.js';
 
 // Log `title` of current active web page
 
+async function getAnnotationOptions(){
+  
+  let options = await getCurrentSiteOptions();
+  if(!options){
+    options = await getDefaultSiteOptions();
+  }
+  return options.annotation;
+}
+
+async function getCurrentSiteOptions(){
+  let siteDomain = document.location.hostname;
+  let options = await getSiteOptions(siteDomain);
+  
+  return options;
+}
+
+window.addEventListener ("load", myMain, false);
+function myMain(){
+
+  var jsInitChecktimer = setTimeout (checkForJS_Finish, 100);
+
+  function checkForJS_Finish () {
+    
+    getCurrentSiteOptions().then(siteOptions=>{
+      if(siteOptions.enabled){
+        initPageAnnotations(()=>{
+          resetPageAnnotationVisibility(true);
+        });
+      }
+    });
+    
+  }
+
+  
+}
 
 // Communicate with background file by sending a message
 chrome.runtime.sendMessage(
@@ -28,32 +64,32 @@ chrome.runtime.sendMessage(
     },
   },
   (response) => {
-    console.log(response.message);
+    //console.log(response.message);
   }
 );
 
 // Listen for message
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(`Current request type is ${request.type}`);
+  //console.log(`Current request type is ${request.type}`);
   let response = {};
   if (request.type === 'COUNT') {
-    console.log(`Current count is ${request.payload.count}`);
+    //console.log(`Current count is ${request.payload.count}`);
   }
 
   if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
-    console.log(`Current page annotation is initialized: ${initialized}`);
+    //console.log(`Current page annotation is initialized: ${initialized}`);
     response = {initialized:initialized};
   }
 
   if (request.type === 'IS_PAGE_ANNOTATION_VISIBLE') {
     let visible = isPageAnnotationVisible();
-    console.log(`Current page annotation is visible: ${visible}`);
+    //console.log(`Current page annotation is visible: ${visible}`);
     response = {visible:visible};
   }
 
   if (request.type === 'ENABLED') {
-    console.log(`Current enabled is ${request.payload.enabled}`);
+    //console.log(`Current enabled is ${request.payload.enabled}`);
     if(request.payload.enabled){
       if(!isAllDocumentsAnnotationInitialized()){
         initPageAnnotations(()=>{
@@ -70,7 +106,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'REFRESH_PAGE') {
-    console.log(`refresh page`);
+    //console.log(`refresh page`);
     let visible = isPageAnnotationVisible();
     
     if(visible){//master document
@@ -83,7 +119,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
-    console.log(`${request.type} known word: ${request.payload.word}`);
+    //console.log(`${request.type} known word: ${request.payload.word}`);
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
       let visible = isPageAnnotationVisible();
@@ -93,26 +129,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'KNOWN_WORDS_UPDATED') {
-    console.log(`${request.type}`);
+    //console.log(`${request.type}`);
     
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibility(visible);
   }
 
-  if (request.type === 'GET_VOCABULARY_INFO_OF_PAGE' ) {
-    console.log(`${request.type}`);
+  if (request.type === 'GET_PAGE_INFO' ) {
+    //console.log(`${request.type}`);
     
-    let pageInfo = getVocabularyInfoOfPage();
-    response.pageInfo = pageInfo;
-    //console.log('unknownWordsOnPage:'+ JSON.stringify(response.words));
+    //let pageInfo = await getPageInfo();
+    getPageInfo().then((pageInfo) => {
+      response.pageInfo = pageInfo;
+      
+      //console.log('pageInfo response:'+ JSON.stringify(response));
+
+      sendResponse(response);
+    });
+    return true;
   }
 
-  // Send an empty response
-  // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
+  if (request.type === 'CHANGE_STYLE') {
+    //console.log(`change style`);
+    if(request.payload){
+      //annotationOptions = request.payload;
+      //changeStyle(await getAnnotationOptions());
+      getAnnotationOptions().then(options =>{
+        changeStyle(options);
+      });
+    }
+  
+  }
+
+
   sendResponse(response);
-  return true;
+  return;
 });
+
 
 setInterval(refreshTimer, 500);
 
@@ -131,12 +185,65 @@ function refreshTimer() {
 
 var knownWords;
 
+function findStyleSheet(document){
+  for(let sheet of document.styleSheets){
+    if(sheet.title==='mea-style'){
+      return sheet;
+    }
+  }
+  return null;
+}
+function indexOfMeaAnnotation(styleSheet){
+  for(let i =0; i< styleSheet.cssRules.length;i++){
+    let rule = styleSheet.cssRules[i];
+    if(rule.selectorText === '.mea-annotation'){
+      return i;
+    }
+  }
+  return -1;
+}
+function generateCssRule(options){
+
+  let top = `${options.position * -1}em`;
+  let fontSize = `${options.fontSize}em`;
+  let opacity = `${options.opacity}`;
+  let color = `${options.color}`;
+
+  let rule=`.mea-annotation {
+    position: absolute;
+    width:100%;
+    top: ${top};
+    font-size: ${fontSize} !important;
+    text-align: center;
+    white-space: nowrap;
+    color: ${color};
+    opacity: ${opacity};
+  }`;
+  return rule;
+}
+function changeStyle(options){
+  let documents = getAllDocuments();
+  for(let document of documents){
+    let styleSheet = findStyleSheet(document);
+    if(styleSheet){
+      let index = indexOfMeaAnnotation(styleSheet);
+      if(index >=0){
+        styleSheet.deleteRule(index);
+      }
+      let rule = generateCssRule(options);
+      styleSheet.insertRule(rule,0);
+      //console.log('changed style of a document');
+    }
+  }
+  //console.log('changeStyle');
+}
 
 /**
  * 
- * @returns unknownWords, unknownWordsRatio
+ * @returns unknownWords, unknownWordsRatio, annotationOptions
  */
-function getVocabularyInfoOfPage() {
+async function getPageInfo() {
+  
   
   let documents = getAllDocuments();
   let unknownWordSet = new Set();
@@ -159,10 +266,14 @@ function getVocabularyInfoOfPage() {
   let unknownWords = Array.from(unknownWordSet);
   let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
   let visible = isPageAnnotationVisible();
+  let siteOptions = await getCurrentSiteOptions();
+  let domain = document.location.hostname;
   return {
-    enabled: visible,
+    domain:domain,
+    visible: visible,
     unknownWords: unknownWords,
     unknownWordsRatio: unknownWordsRatio,
+    siteOptions : siteOptions,
   };
 }
 
@@ -187,7 +298,7 @@ async function initPageAnnotations(resolve) {
     let iframeDocument = iframeDocumentConfig.document;
     if(iframeDocument){
       if(!isDocumentAnnotationInitialized(iframeDocument)){
-        console.log('start iframe initDocumentAnnotations');
+        //console.log('start iframe initDocumentAnnotations');
         initDocumentAnnotations(iframeDocument, true, iframeDocumentConfig);
       }
     }
@@ -197,12 +308,16 @@ async function initPageAnnotations(resolve) {
   resolve();
 }
 
-function initDocumentAnnotations(document, isIframe, documentConfig) {
+async function initDocumentAnnotations(document, isIframe, documentConfig) {
   
   if(documentConfig.canProcess){
-    if(isIframe){
-      addStyle(document);    
-    }
+    
+    addStyle(document);   
+    
+    let time = setTimeout(async function () {
+      changeStyle(await getAnnotationOptions());
+    }, 1000);
+    
 
     visitElement(document.body,(element)=>{
       //console.log(element.nodeName + element.nodeType);
@@ -217,9 +332,11 @@ function addStyle(document){
   link.href = chrome.runtime.getURL("contentScript.css");
   link.type = "text/css";
   link.rel = "stylesheet";
+  link.title = "mea-style";
   document.getElementsByTagName("head")[0].appendChild(link);
-  
+  //console.log('addstyle');
 }
+
 
 function getAllDocuments(){
   let siteConfig = findSiteConfig(document);
@@ -326,7 +443,7 @@ function annotateTextContent(textContent){
       query: x,
       allowLemma: true,
       allowStem: true,
-      allowRemoveSuffix: true,
+      allowRemoveSuffixOrPrefix: true,
     });
     
     //finally,
@@ -337,8 +454,8 @@ function annotateTextContent(textContent){
       if(searchResult.searchType ==='stem'){
         definition = '根'+searchResult.word+':'+definition;
       }
-      if(searchResult.searchType ==='removeSuffix'){
-        definition = '源'+searchResult.word+':'+definition;
+      if(searchResult.searchType ==='removeSuffixOrPrefix'){
+        definition = '相关'+searchResult.word+':'+definition;
       }
 
       //fix right click selection issue
@@ -424,7 +541,7 @@ async function resetPageAnnotationVisibility(enabled) {
     });
   }
 
-  let pageInfo = getVocabularyInfoOfPage();
+  let pageInfo = await getPageInfo();
   //send message to side panel
   chrome.runtime.sendMessage(
     {

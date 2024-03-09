@@ -29,7 +29,7 @@
       "js": [
         "contentScript.js"
       ],
-      "css": ["contentScript.css"]
+      "css": []
     }
   ],
   "side_panel": {

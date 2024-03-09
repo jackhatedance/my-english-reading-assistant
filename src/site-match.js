@@ -15,7 +15,7 @@ const siteConfigs = [
             let iframes = document.querySelectorAll('iframe');
             let configs = [];
             for(const iframe of iframes){
-                if(iframe) {
+                if(iframe && iframe.contentDocument) {
                     let config = {
                         document:iframe.contentDocument,
                         canProcess: true
@@ -33,6 +33,15 @@ const siteConfigs = [
         name:'epubjs',
         match: function(document){
             let found =false;
+
+            const sites = ['app.flowoss.com'];
+            for(let site of sites){
+                let hostname = document.location.hostname;
+                if(site===hostname){
+                    return true;
+                }
+            }
+
             searchSubIframesRecursively(document, (iframe)=>{
                 let id = iframe.id;
                 if(id){
@@ -164,7 +173,7 @@ function findSiteConfig(document){
             break;
         }
     }
-    console.log('find site config:'+result.name);
+    //console.log('find site config:'+result.name);
     return result;
 }
 export {findSiteConfig};

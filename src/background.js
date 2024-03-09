@@ -20,7 +20,7 @@ function sendMsg(type, baseForm){
         },
       },
       (response) => {
-        console.log('add know word is passed to contentScript file');
+        //console.log('add know word is passed to contentScript file');
       }
     );
   });
@@ -58,13 +58,13 @@ chrome.runtime.onInstalled.addListener(function () {
 chrome.contextMenus.onClicked.addListener(async(item, tab) => {
   
   let word = item.selectionText;
-  console.log("select word: " + word);
+  //console.log("select word: " + word);
   if(item.menuItemId === 'toggle') {
     let searchResult = searchWord({
       query: word,
       allowLemma: true,
       allowStem: true,
-      allowRemoveSuffix: true,
+      allowRemoveSuffixOrPrefix: true,
     });
     if(searchResult){
       let baseForm = searchResult.word;
@@ -94,7 +94,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }, my name is Bac. I am from Background. It's great to hear from you.`;
 
     // Log message coming from the `request` parameter
-    console.log(request.payload.message);
+    //console.log(request.payload.message);
     // Send a response message
     sendResponse({
       message,
@@ -117,7 +117,7 @@ async function isPageAnnotationVisible(resolve){
         },
       },
       (response) => {
-        console.log('is page visible response: '+ response.visible);
+        //console.log('is page visible response: '+ response.visible);
         resolve(response.visible);
       }
     );
@@ -140,7 +140,7 @@ function setEnabled(enabled) {
           },
         },
         (response) => {
-          console.log('Current enabled value passed to contentScript file:'+ enabled);
+          //console.log('Current enabled value passed to contentScript file:'+ enabled);
         }
       );
     });
@@ -160,7 +160,7 @@ function refresh(){
         },
       },
       (response) => {
-        console.log('refresh page response');
+        //console.log('refresh page response');
         //resolve(response);
       }
     );

@@ -31,20 +31,19 @@ import { lookupShort } from './dictionary.js';
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: 'GET_VOCABULARY_INFO_OF_PAGE',
+          type: 'GET_PAGE_INFO',
           payload: {            
           },
         },
         (response) => {
 
-          //console.log('get unknown words:'+ JSON.stringify(response.words));
-          //resolve(response);
+          //console.log('get pageInfo response:'+ JSON.stringify(response));
           
           if(response && response.pageInfo){
             let pageInfo = response.pageInfo;
             renderPage(pageInfo);
           } else {
-            renderPage({enabled:false});
+            renderPage({visible:false});
           }
           
         }
@@ -54,7 +53,7 @@ import { lookupShort } from './dictionary.js';
 
   function renderPage(pageInfo){
     
-    if(pageInfo.enabled){
+    if(pageInfo.visible){
       renderRatio(pageInfo.unknownWordsRatio);
       renderUnknownWordList(pageInfo.unknownWords);
       showPage();
@@ -109,7 +108,7 @@ import { lookupShort } from './dictionary.js';
     for(let btn of removeButtons){
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
-        console.log(`remove word ${baseForm}`);
+        //console.log(`remove word ${baseForm}`);
         await addKnownWord(baseForm);
         sendMessageKnownWordsUpdated();
 
@@ -190,7 +189,7 @@ import { lookupShort } from './dictionary.js';
       },
     },
     (response) => {
-      console.log(response.message);
+      //console.log(response.message);
     }
   );
 })();

@@ -6,14 +6,13 @@
   text-indent: 0px;
 }
 
-.mea-highlight .mea-annotation {
+.mea-annotation {
   position: absolute;
   width:100%;
-  bottom: 1.2em;
+  top: -1em;
   font-size: 0.4em !important;
   text-align: center;
   white-space: nowrap;
-  margin-bottom: 1em;
   color: grey;
   opacity: 30%;
 }
