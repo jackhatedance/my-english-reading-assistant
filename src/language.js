@@ -55,47 +55,62 @@ function searchWord(request){
     let word = input;
     let definition = lookup(word);
 
+    let transformResult;
+
     //try lower case
     if(!definition) {
-        word = input.toLowerCase();
-        definition = lookup(word);
+        transformResult = transformLowercase(input);
+        word = transformResult.word;
+        definition = transformResult.definition;
     }
 
-    //let knife = lemmatize.noun('knivest');
-    //console.log('knives:'+knife);
+    //use lowercase word from here
+    input = word;
+
+    //lemma
     if(!definition) {
         if(request.allowLemma){
-            if(!definition) {
-                word = lemmatize.adjective(input);
-                definition = lookup(word);
-            }
+            transformResult = transformLemmatize(input);
 
-            if(!definition) {
-                word = lemmatize.noun(input);
-                definition = lookup(word);
-            }
+            word = transformResult.word;
+            definition = transformResult.definition;
 
-            if(!definition) {
-                word = lemmatize.verb(input);
-                definition = lookup(word);
-            }
             searchType='lemma';
         }
     }
 
+    //prefix, suffix, lemma
     if(!definition) {
-        if(request.removeSuffixOrPrefix){
+        if(request.allowRemoveSuffixOrPrefix){
             if(!definition) {
-                word = removeSuffix(input);
-                if(word.length > 2){
-                    definition = lookup(word);
-                }
+                transformResult = transformRemoveSuffix(input);
+
+                word = transformResult.word;
+                definition = transformResult.definition;
+            }
+            if(!definition) {
+                transformResult = transformRemovePrefix(input);
+
+                word = transformResult.word;
+                definition = transformResult.definition;
             }
             if(!definition) {
                 word = removePrefix(input);
+                word = removeSuffix(word);
                 if(word.length > 2){
-                    definition = lookup(word);
+                    if(word!==input){
+                        definition = lookup(word);
+                    }
+                    
+                    //lemma
+                    if(!definition){
+                        transformResult = transformLemmatize(word);
+
+                        word = transformResult.word;
+                        definition = transformResult.definition; 
+                    }
                 }
+
             }
             searchType='removeSuffixOrPrefix';
         }
@@ -133,6 +148,86 @@ function searchWord(request){
     } else {
         //console.log('search result: none')
         return null;
+    }
+}
+
+function transformLowercase(input){
+    let word = input.toLowerCase();
+    let definition;
+    if(word !== input){
+        definition = lookup(word);
+    }
+    return {
+        word,
+        definition,
+    }
+}
+
+function transformLemmatize(input){
+    let word;
+    let definition;
+    
+    if(!definition) {
+        word = singularize(input);
+        if(word !== input){
+            definition = lookup(word);
+        }
+    }
+
+    if(!definition) {
+        word = lemmatize.adjective(input);
+        if(word !== input){
+            definition = lookup(word);
+        }
+    }
+
+    if(!definition) {
+        word = lemmatize.noun(input);
+        if(word !== input){
+            definition = lookup(word);
+        }                
+    }
+
+    if(!definition) {
+        word = lemmatize.verb(input);
+        if(word !== input){
+            definition = lookup(word);
+        }
+    }
+
+    return {
+        word,
+        definition,
+    }
+}
+
+function transformRemovePrefix(input){
+    let definition;
+    let word = removePrefix(input);
+    if(word.length > 2){
+        if(word!==input){
+            definition = lookup(word);
+        }
+    }
+
+    return {
+        word,
+        definition,
+    }
+}
+
+
+function transformRemoveSuffix(input){
+    let definition;
+    let word = removeSuffix(input);
+    if(word.length > 2){
+        if(word!==input){
+            definition = lookup(word);
+        }
+    }
+    return {
+        word,
+        definition,
     }
 }
 
@@ -174,10 +269,7 @@ const prefixes = [
         for(let prefix of prefixes){
             if(word.startsWith(prefix)){
                 let newWord = word.substring(prefix.length);
-                let definition = lookup(newWord);
-                if(definition){
-                    return newWord;
-                }
+                return newWord;
             }
         }
         return word;
@@ -236,10 +328,7 @@ function removeSuffix(word){
     for(let suffix of suffixes){
         if(word.endsWith(suffix)){
             let newWord = word.substring(0,word.length-suffix.length);
-            let definition = lookup(newWord);
-            if(definition){
-                return newWord;
-            }
+            return newWord;            
         }
     }
     return word;

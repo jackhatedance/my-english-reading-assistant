@@ -455,7 +455,7 @@ function annotateTextContent(textContent){
         definition = '根'+searchResult.word+':'+definition;
       }
       if(searchResult.searchType ==='removeSuffixOrPrefix'){
-        definition = '相关'+searchResult.word+':'+definition;
+        definition = '源'+searchResult.word+':'+definition;
       }
 
       //fix right click selection issue
