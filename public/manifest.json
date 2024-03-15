@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "My English Reading Assistant",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "It will show word definition for those words that not in your vocabulary.",
   "icons": {
     "16": "icons/icon_16.png",
@@ -37,7 +37,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "contentScript.css" ],
+      "resources": [ "contentScript.css", "svg/*", "icons/*" ],
       "matches": [ "<all_urls>" ]
     }
     

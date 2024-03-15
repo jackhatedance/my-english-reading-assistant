@@ -2,7 +2,7 @@
 
 import './content.css';
 import { lookupShort } from './dictionary.js';
-import {loadKnownWords} from './vocabularyStore.js';
+import {loadKnownWords, addKnownWord, removeKnownWord} from './vocabularyStore.js';
 import {searchWord} from './language.js';
 import {findSiteConfig} from './site-match.js';
 import {getSiteOptions, getDefaultSiteOptions} from './optionService.js';
@@ -156,7 +156,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       //annotationOptions = request.payload;
       //changeStyle(await getAnnotationOptions());
       getAnnotationOptions().then(options =>{
-        changeStyle(options);
+        changeStyleForAllDocuments(options);
       });
     }
   
@@ -221,21 +221,25 @@ function generateCssRule(options){
   }`;
   return rule;
 }
-function changeStyle(options){
+
+function changeStyle(document, options){
+  let styleSheet = findStyleSheet(document);
+  if(styleSheet){
+    let index = indexOfMeaAnnotation(styleSheet);
+    if(index >=0){
+      styleSheet.deleteRule(index);
+    }
+    let rule = generateCssRule(options);
+    styleSheet.insertRule(rule,0);
+    //console.log('changed style of a document');
+  }
+}
+
+function changeStyleForAllDocuments(options){
   let documents = getAllDocuments();
   for(let document of documents){
-    let styleSheet = findStyleSheet(document);
-    if(styleSheet){
-      let index = indexOfMeaAnnotation(styleSheet);
-      if(index >=0){
-        styleSheet.deleteRule(index);
-      }
-      let rule = generateCssRule(options);
-      styleSheet.insertRule(rule,0);
-      //console.log('changed style of a document');
-    }
+    changeStyle(document, options);
   }
-  //console.log('changeStyle');
 }
 
 /**
@@ -313,16 +317,22 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
   if(documentConfig.canProcess){
     
     addStyle(document);   
+    //console.log('initDocumentAnnotations');
+    
     
     let time = setTimeout(async function () {
-      changeStyle(await getAnnotationOptions());
-    }, 1000);
+      changeStyle(document, await getAnnotationOptions());
+    }, 2000);
     
 
     visitElement(document.body,(element)=>{
       //console.log(element.nodeName + element.nodeType);
       annotateChildTextContents(element, isIframe);
     });  
+
+    addToolbar(document);
+    addEventListener(document);
+    
   }
 
 }
@@ -337,6 +347,114 @@ function addStyle(document){
   //console.log('addstyle');
 }
 
+function addToolbar(document){
+  let questionMarkImgUrl = chrome.runtime.getURL("icons/questionmark.png");
+  let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
+
+  var elemDiv = document.createElement('div');
+  elemDiv.innerHTML = `
+    <button class='mea-add-unknown'>
+      <img src='${questionMarkImgUrl}'></img>
+    </button>
+    <button class='mea-remove-unknown'>
+      <img src='${tickImgUrl}'></img>
+    </button>  
+    `;
+
+  elemDiv.classList.add('mea-container');
+  elemDiv.classList.add('mea-toolbar');
+  document.body.appendChild(elemDiv);
+  
+}
+
+function hideToolbar(document) {
+  document.querySelector('.mea-toolbar').style.visibility = 'hidden';
+}
+
+function addEventListener(document){
+  
+  document.querySelectorAll('.mea-highlight').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+    
+      let show = false;
+
+      let highlightElement = e.target.closest('.mea-highlight');
+      let baseFormWord = highlightElement.getAttribute('base-form-word');
+
+      console.log('baseFormWord:'+baseFormWord);
+      //gSelection = selection.toString();
+      if(baseFormWord) {
+        show = true;
+
+        let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
+
+        toolbarElement.style.top = window.scrollY + highlightElement.getBoundingClientRect().top - toolbarElement.offsetHeight + 'px';
+        
+        let offsetLeft = highlightElement.getBoundingClientRect().left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
+        
+        let left = window.scrollX + offsetLeft;
+        
+        toolbarElement.style.left =  left + 'px';
+        
+        
+        
+        toolbarElement.style.visibility = 'visible';
+
+        toolbarElement.setAttribute('base-form-word', baseFormWord);
+
+        //toolbarElement.querySelector('.mea-toolbar-word').innerHTML = baseFormWord;
+        //console.log('tooltip style:'+ toobarElement.style.cssText);
+      }
+    
+      
+      if(!show) {
+        let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
+
+        toolbarElement.style.visibility = 'hidden';
+      }
+    });
+  });
+
+  document.querySelectorAll('.mea-toolbar .close').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+      hideToolbar(document);
+    });
+  });
+
+  document.querySelectorAll('.mea-add-unknown').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+      
+      let baseFormWord = e.target.closest('.mea-toolbar').getAttribute('base-form-word');
+
+      if(baseFormWord){
+        
+        console.log('add unknown:'+ baseFormWord);
+
+        await removeKnownWord(baseFormWord);
+        let visible = isPageAnnotationVisible();
+        resetPageAnnotationVisibility(visible);
+        hideToolbar(document);
+      }
+    });
+  });
+
+  document.querySelectorAll('.mea-remove-unknown').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+      
+      let baseFormWord = e.target.closest('.mea-toolbar').getAttribute('base-form-word');
+
+      if(baseFormWord){
+        
+        console.log('remove unknown:'+ baseFormWord);
+
+        await addKnownWord(baseFormWord);
+        let visible = isPageAnnotationVisible();
+        resetPageAnnotationVisibility(visible);
+        hideToolbar(document);
+      }
+    });
+  });
+}
 
 function getAllDocuments(){
   let siteConfig = findSiteConfig(document);
@@ -389,15 +507,6 @@ function visitElement(element, visitor) {
   }
 }
 
-function visit(node, visitor) {
-  visitor(node);
-
-  let children = node.childNodes;
-  for(var i = 0; i < children.length; i++) {      
-    visit(children[i], visitor);      
-  }
-}
-
 function annotateChildTextContents(element, isIframe){
   //console.log('element.nodeName:'+element.nodeName);
   //console.log('element Id:'+element.getAttribute('id'));
@@ -407,10 +516,14 @@ function annotateChildTextContents(element, isIframe){
     return;
   }
 
-  if(
-    element.classList.contains('mea-highlight') ||
-    element.classList.contains('mea-annotation')){
+  /*
+  if(containsMeaClass(element)){
       return;
+  }
+  */
+
+  if(isMeaElement(element)){
+    return;
   }
 
   let html = element.innerHTML;
@@ -433,6 +546,24 @@ function annotateChildTextContents(element, isIframe){
   }
 
   element.innerHTML = html;
+}
+
+function containsMeaClass(element){
+  for(let clazz of element.classList){
+    if(clazz.startsWith('mea-')){
+      return true;
+    }
+  }
+  return false;
+}
+
+function isMeaElement(element){
+  let meaContainer = element.closest('.mea-container');
+  if(meaContainer){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function annotateTextContent(textContent){
@@ -470,36 +601,6 @@ function annotateTextContent(textContent){
   });
 
   return result;
-}
-
-function annotateLeafElement(element){
-  if(element.classList.contains('mea-highlight') ||
-    element.classList.contains('mea-annotation')){
-      return;
-  }
-
-  let html = element.innerHTML; 
-
-  let result = html.replaceAll(/([^<>]\w+[^<>])/g, function (x) {
-    let baseFormWord = searchWordBaseForm(x);
-    
-    //finally,
-    if(baseFormWord){// find the correct form which has definition in dictionary
-      
-        let definition = lookupShort(baseFormWord);
-        
-        //fix right click selection issue
-        if(isStartWithAlphabet(definition)){
-          definition = ':'+definition;
-        }                       
-        return format(x, definition, baseFormWord);
-      
-    }else {         
-      return x;
-    }
-  });
-
-  element.innerHTML = result;
 }
 
 function isStartWithAlphabet(definition){
@@ -586,10 +687,15 @@ async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWor
 }
 
 
-const pattern = '<div class="mea-highlight hide" base-form-word="#base-form-word#">#word#<div class="mea-annotation">#annotation#</div></div>';
+
 function format(word, annotation, baseFormWord) {
-  return pattern.replaceAll('#word#', word).replaceAll('#annotation#', annotation)
-    .replaceAll('#base-form-word#', baseFormWord);
+  let imgUrl = chrome.runtime.getURL('icons/questionmark.png');
+  let s = `
+    <div class="mea-container mea-highlight hide" base-form-word="${baseFormWord}">
+      ${word}
+      <div class="mea-annotation">${annotation}</div>
+    </div>`;
+  return s;
 }
 
 
