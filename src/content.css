@@ -6,6 +6,24 @@
   text-indent: 0px;
 }
 
+.mea-highlight:hover, .mea-highlight.hide:hover {
+  position: relative;
+  display: inline-block;
+  margin-top: 0px;
+  text-indent: 0px;
+
+  .mea-annotation {
+    visibility: visible;
+    opacity: 1;
+    background-color: white;
+    
+    font-size: 1em;
+    border: solid 1px;
+    display: table;
+    z-index: 999;
+  }
+}
+
 .mea-annotation {
   position: absolute;
   width:100%;
@@ -25,8 +43,9 @@
 }
 
 .mea-highlight.hide .mea-annotation {
-  display: none;
+  visibility: hidden;
 }
+
 
 .mea-toolbar {
   position: absolute;
@@ -40,24 +59,17 @@
   text-align: center;
   color: black;
   
-  .close {
-    position: relative;
-    float: right;
-    background: red;
-	  color: white;
-    top: -10px;
-    right: -10px;
-  }
 
   button {
     border: none;
     margin-right: 2px;
     padding:0px;
     padding-inline: none;
+    background: white;
 
     img {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
     }
   }
 }

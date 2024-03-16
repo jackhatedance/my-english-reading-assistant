@@ -154,7 +154,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //console.log(`change style`);
     if(request.payload){
       //annotationOptions = request.payload;
-      //changeStyle(await getAnnotationOptions());
       getAnnotationOptions().then(options =>{
         changeStyleForAllDocuments(options);
       });
@@ -222,7 +221,19 @@ function generateCssRule(options){
   return rule;
 }
 
+function containsMeaStyle(document){
+  let styleSheet = findStyleSheet(document);
+  if(styleSheet){
+    let index = indexOfMeaAnnotation(styleSheet);
+    if(index >=0){
+      return true;
+    }
+  }
+  return false;
+}
+
 function changeStyle(document, options){
+  
   let styleSheet = findStyleSheet(document);
   if(styleSheet){
     let index = indexOfMeaAnnotation(styleSheet);
@@ -231,7 +242,7 @@ function changeStyle(document, options){
     }
     let rule = generateCssRule(options);
     styleSheet.insertRule(rule,0);
-    //console.log('changed style of a document');
+    console.log('changed style of a document');
   }
 }
 
@@ -319,12 +330,19 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
     addStyle(document);   
     //console.log('initDocumentAnnotations');
     
-    
-    let time = setTimeout(async function () {
-      changeStyle(document, await getAnnotationOptions());
-    }, 2000);
-    
+    var x = 0;
+    var intervalID = setInterval(async function () {
 
+      if(containsMeaStyle(document)){
+        changeStyle(document, await getAnnotationOptions());
+        window.clearInterval(intervalID);
+      };
+
+      if (++x === 30) {
+          window.clearInterval(intervalID);
+      }
+    }, 1000);
+    
     visitElement(document.body,(element)=>{
       //console.log(element.nodeName + element.nodeType);
       annotateChildTextContents(element, isIframe);
@@ -344,7 +362,7 @@ function addStyle(document){
   link.rel = "stylesheet";
   link.title = "mea-style";
   document.getElementsByTagName("head")[0].appendChild(link);
-  //console.log('addstyle');
+  console.log('add style');
 }
 
 function addToolbar(document){
@@ -381,7 +399,7 @@ function addEventListener(document){
       let highlightElement = e.target.closest('.mea-highlight');
       let baseFormWord = highlightElement.getAttribute('base-form-word');
 
-      console.log('baseFormWord:'+baseFormWord);
+      //console.log('baseFormWord:'+baseFormWord);
       //gSelection = selection.toString();
       if(baseFormWord) {
         show = true;
@@ -428,7 +446,7 @@ function addEventListener(document){
 
       if(baseFormWord){
         
-        console.log('add unknown:'+ baseFormWord);
+        //console.log('add unknown:'+ baseFormWord);
 
         await removeKnownWord(baseFormWord);
         let visible = isPageAnnotationVisible();
@@ -445,7 +463,7 @@ function addEventListener(document){
 
       if(baseFormWord){
         
-        console.log('remove unknown:'+ baseFormWord);
+        //console.log('remove unknown:'+ baseFormWord);
 
         await addKnownWord(baseFormWord);
         let visible = isPageAnnotationVisible();
