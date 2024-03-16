@@ -43,7 +43,7 @@
 }
 
 .mea-highlight.hide .mea-annotation {
-  visibility: hidden;
+  display: none;
 }
 
 
