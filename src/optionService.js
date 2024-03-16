@@ -1,6 +1,6 @@
 'use strict';
 
-
+import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from './vocabularyStore.js';
 
 async function getDefaultSiteOptions(){
 
@@ -77,4 +77,28 @@ function fixSiteDomain(domain){
     return domain;
 }
 
-export {getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault};
+async function initVocabularyIfEmpty(){
+    console.log('initVocabularyIfEmpty');
+    let knownWordsResult = await loadKnownWords();
+    
+    console.log(JSON.stringify(knownWordsResult));
+
+    if(isEmptyVocabulary(knownWordsResult)){
+        console.log('initVocabulary');
+        let knownWordsResult = await loadDefaultKnownWords();
+        await saveKnownWords(knownWordsResult);
+    }
+}
+
+function isEmptyVocabulary(vocabulary){
+    if(vocabulary){
+        for(let item of vocabulary){
+            if(item){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+  
+export {getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};

@@ -130,10 +130,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.type === 'KNOWN_WORDS_UPDATED') {
     //console.log(`${request.type}`);
-    
+    let source = request.payload.source;
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibility(visible);
+    resetPageAnnotationVisibility(visible, source);
   }
 
   if (request.type === 'GET_PAGE_INFO' ) {
@@ -366,7 +366,7 @@ function addStyle(document){
 }
 
 function addToolbar(document){
-  let questionMarkImgUrl = chrome.runtime.getURL("icons/questionmark.png");
+  let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
   let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 
   var elemDiv = document.createElement('div');
@@ -657,7 +657,7 @@ function isPageAnnotationVisible(){
   }
 }
 
-async function resetPageAnnotationVisibility(enabled) {
+async function resetPageAnnotationVisibility(enabled, source) {
   //let unknownWordSet = new Set();
 
   for(const doc of getAllDocuments()){
@@ -672,7 +672,8 @@ async function resetPageAnnotationVisibility(enabled) {
     {
       type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
       payload: {
-        pageInfo: pageInfo
+        pageInfo: pageInfo,
+        source: source,
       },
     },
     (response) => {
@@ -713,7 +714,7 @@ async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWor
 
 
 function format(word, annotation, baseFormWord) {
-  let imgUrl = chrome.runtime.getURL('icons/questionmark.png');
+  let imgUrl = chrome.runtime.getURL('icons/question-mark.png');
   let s = `
     <div class="mea-container mea-highlight hide" base-form-word="${baseFormWord}">
       ${word}

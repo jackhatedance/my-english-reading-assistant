@@ -1,7 +1,7 @@
 'use strict';
 
 import './sidePanel.css';
-import {addKnownWord} from './vocabularyStore.js';
+import {addKnownWord, removeKnownWord} from './vocabularyStore.js';
 import {searchWord} from './language.js';
 import { lookupShort } from './dictionary.js';
 
@@ -98,11 +98,56 @@ import { lookupShort } from './dictionary.js';
       let definition = lookupShort(word);
       
       let display = definitionVisible? 'unset':'none';
-      const liInnerHTML = `${word}: <span class="definition" style="display:${display};">${definition}</span> <button class='mea-remove' word="${word}"><image src='svg/remove-button.svg' width="10"></image></button>`;
+      const liInnerHTML = `
+        <div class='list-item'>
+          <span class='word'>${word}</span>: 
+          
+          <button class='mea-show-definition' word="${word}" title='show definition'>
+            <image src='icons/lookup.png' width="12"></image>
+          </button>
+          <button class='mea-unknown' word="${word}" title="I don't know it">
+            <image src='icons/question-mark.png' width="12"></image>
+          </button>
+          <button class='mea-remove' word="${word}" title="I know it">
+            <image src='icons/tick.png' width="12"></image>
+          </button>
+          
+
+          <p class="definition" style="display:${display};">${definition}</p> 
+        </div>
+        `;
 
       li.innerHTML = liInnerHTML;
 
     }
+
+    document.querySelectorAll('.mea-show-definition').forEach( element => {
+      let button = element;
+      button.addEventListener('click', async (e) => {
+        
+        let definitionElement = e.target.closest('.list-item').querySelector('.definition');
+        definitionElement.style.display = null;
+
+        let baseForm = e.currentTarget.getAttribute('word');
+        console.log(`show definition: ${baseForm}`);     
+      });
+    });
+
+    document.querySelectorAll('.mea-unknown').forEach( element => {
+      let btn = element;
+      
+      btn.addEventListener('click', async (e) => {
+        let baseForm = e.currentTarget.getAttribute('word');
+        //console.log(`remove word ${baseForm}`);
+        await removeKnownWord(baseForm);
+        sendMessageKnownWordsUpdated();
+
+        let btn = e.currentTarget;
+        let wordElement = e.target.closest('.list-item').querySelector('.word');
+        wordElement.style['text-decoration'] = null;
+      });    
+    
+    });
 
     let removeButtons = document.querySelectorAll('.mea-remove');
     for(let btn of removeButtons){
@@ -112,7 +157,9 @@ import { lookupShort } from './dictionary.js';
         await addKnownWord(baseForm);
         sendMessageKnownWordsUpdated();
 
-        refreshUnknownWordList();
+        let btn = e.currentTarget;
+        let wordElement = e.target.closest('.list-item').querySelector('.word');
+        wordElement.style['text-decoration'] = 'line-through';
       });
     }
   }
@@ -126,6 +173,7 @@ import { lookupShort } from './dictionary.js';
         {
           type: 'KNOWN_WORDS_UPDATED',
           payload: {            
+            source:'side-panel',
           },
         },
         (response) => {
@@ -138,6 +186,11 @@ import { lookupShort } from './dictionary.js';
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
+
+      if(request.payload.source === 'side-panel'){
+        return;
+      }
+
       renderPage(request.payload.pageInfo);
       // Log message coming from the `request` parameter
       //console.log(request.payload.message);

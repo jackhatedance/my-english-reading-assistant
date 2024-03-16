@@ -24,8 +24,9 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
-  text-align: center;
+  text-align: left;
   padding: 20px;
+  margin: 10px;
 }
 
 .title {
@@ -79,4 +80,9 @@ code {
 
 .word-list {
   text-align: left;
+  width: 100%;
+}
+
+.list-item {
+  height: 5em;
 }

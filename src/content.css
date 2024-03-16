@@ -20,7 +20,8 @@
     font-size: 1em;
     border: solid 1px;
     display: table;
-    z-index: 999;
+    z-index: 99;
+    line-height: normal;
   }
 }
 
@@ -33,11 +34,12 @@
   white-space: nowrap;
   color: grey;
   opacity: 30%;
+  line-height: normal;
 }
 
 .mea-highlight.hide {
   position: unset;
-  display: unset;
+  display: inline-block;
   margin-top: unset;
   background-color: unset;
 }
@@ -58,7 +60,7 @@
   background: white;
   text-align: center;
   color: black;
-  
+  z-index: 100;
 
   button {
     border: none;

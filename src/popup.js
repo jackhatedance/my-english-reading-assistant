@@ -1,7 +1,7 @@
 'use strict';
 
 import './popup.css';
-import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions} from './optionService.js';
+import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions, initVocabularyIfEmpty} from './optionService.js';
 
 
 (function () {
@@ -234,6 +234,8 @@ import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions} from './opti
   }
 
   function init() {
+    initVocabularyIfEmpty();
+    
     getPageInfo((_pageInfo) => {
       pageInfo = _pageInfo;
       setupPage(pageInfo);
