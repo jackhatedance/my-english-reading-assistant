@@ -406,22 +406,25 @@ function addEventListener(document){
 
         let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
 
-        toolbarElement.style.top = window.scrollY + highlightElement.getBoundingClientRect().top - toolbarElement.offsetHeight + 'px';
-        
-        let offsetLeft = highlightElement.getBoundingClientRect().left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
-        
-        let left = window.scrollX + offsetLeft;
-        
-        toolbarElement.style.left =  left + 'px';
-        
-        
-        
-        toolbarElement.style.visibility = 'visible';
+        if(toolbarElement) {
 
-        toolbarElement.setAttribute('base-form-word', baseFormWord);
+          toolbarElement.style.top = window.scrollY + highlightElement.getBoundingClientRect().top - toolbarElement.offsetHeight + 'px';
+          
+          let offsetLeft = highlightElement.getBoundingClientRect().left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
+          
+          let left = window.scrollX + offsetLeft;
+          
+          toolbarElement.style.left =  left + 'px';
+          
+          
+          
+          toolbarElement.style.visibility = 'visible';
 
-        //toolbarElement.querySelector('.mea-toolbar-word').innerHTML = baseFormWord;
-        //console.log('tooltip style:'+ toobarElement.style.cssText);
+          toolbarElement.setAttribute('base-form-word', baseFormWord);
+
+          //toolbarElement.querySelector('.mea-toolbar-word').innerHTML = baseFormWord;
+          //console.log('tooltip style:'+ toobarElement.style.cssText);
+        }
       }
     
       
@@ -540,7 +543,7 @@ function annotateChildTextContents(element, isIframe){
   }
   */
 
-  if(isMeaElement(element)){
+  if(isInMeaElement(element)){
     return;
   }
 
@@ -575,7 +578,7 @@ function containsMeaClass(element){
   return false;
 }
 
-function isMeaElement(element){
+function isInMeaElement(element){
   let meaContainer = element.closest('.mea-container');
   if(meaContainer){
     return true;
@@ -605,6 +608,9 @@ function annotateTextContent(textContent){
       }
       if(searchResult.searchType ==='removeSuffixOrPrefix'){
         definition = '源'+searchResult.word+':'+definition;
+      }
+      if(searchResult.searchType ==='lemma' && searchResult.lemmaType ==='irregular'){
+        definition = '原'+searchResult.word+':'+definition;
       }
 
       //fix right click selection issue

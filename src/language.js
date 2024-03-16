@@ -50,6 +50,7 @@ function searchWord(request){
 
     let input = request.query;
     let searchType = 'raw';
+    let lemmaType = 'regular';
 
     //no modification
     let word = input;
@@ -68,6 +69,18 @@ function searchWord(request){
     input = word;
 
     //lemma
+    if(definition && definition.includes('的过去式')) {
+        let index = definition.includes('的过去式');
+
+        if(request.allowLemma){
+            word = definition.substring(0, index);
+            definition = lookup(word);
+
+            searchType='lemma';
+            lemmaType = 'irregular'
+        }
+    }
+
     if(!definition) {
         if(request.allowLemma){
             transformResult = transformLemmatize(input);
@@ -139,6 +152,7 @@ function searchWord(request){
         let result = {
             query : request.query,
             searchType: searchType,
+            lemmaType: lemmaType,
             word: word,
             definition: definition,
         };
