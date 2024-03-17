@@ -1,6 +1,6 @@
 'use strict';
 
-import {addKnownWord, removeKnownWord, isKnown} from './vocabularyStore.js';
+import {addKnownWord, removeKnownWord, isKnown, loadKnownWords, loadDefaultKnownWords, saveKnownWords} from './vocabularyStore.js';
 import {searchWord} from './language.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
@@ -52,6 +52,7 @@ chrome.runtime.onInstalled.addListener(function () {
     id: 'refresh'
   });
   */
+  initVocabulary();
   
 });
 
