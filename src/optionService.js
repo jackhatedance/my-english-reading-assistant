@@ -78,10 +78,10 @@ function fixSiteDomain(domain){
 }
 
 async function initVocabularyIfEmpty(){
-    console.log('initVocabularyIfEmpty');
+    //console.log('initVocabularyIfEmpty');
     let knownWordsResult = await loadKnownWords();
     
-    console.log(JSON.stringify(knownWordsResult));
+    //console.log(JSON.stringify(knownWordsResult));
 
     if(isEmptyVocabulary(knownWordsResult)){
         console.log('initVocabulary');
