@@ -3,7 +3,7 @@
 My Browser Extension of English reading assistant
 
 
-[user guide](src/guide.md)
+[使用说明中文版](src/guide.md)
 
 ## Features
 
