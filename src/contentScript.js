@@ -327,6 +327,8 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
   
   if(documentConfig.canProcess){
     
+
+    document.body.setAttribute('mea-initialized', true);
     addStyle(document);   
     //console.log('initDocumentAnnotations');
     
@@ -381,6 +383,7 @@ function addToolbar(document){
 
   elemDiv.classList.add('mea-container');
   elemDiv.classList.add('mea-toolbar');
+  elemDiv.style.visibility = 'hidden';
   document.body.appendChild(elemDiv);
   
 }
@@ -433,12 +436,6 @@ function addEventListener(document){
 
         toolbarElement.style.visibility = 'hidden';
       }
-    });
-  });
-
-  document.querySelectorAll('.mea-toolbar .close').forEach((element) => {
-    element.addEventListener('click', async (e) => {
-      hideToolbar(document);
     });
   });
 
@@ -633,19 +630,26 @@ function isStartWithAlphabet(definition){
 }
 
 function isPageAnnotationInitialized(){
-  return document.querySelectorAll('.mea-highlight').length >0;
+  return isDocumentAnnotationInitialized(document)
 }
 
 function isAllDocumentsAnnotationInitialized(){
   let documents = getAllDocuments();
   
   return documents.every((document)=>{
-    document.querySelectorAll('.mea-highlight').length >0
+    return isDocumentAnnotationInitialized(document);
   });
 }
 
 function isDocumentAnnotationInitialized(document){
-  return document.querySelectorAll('.mea-highlight').length >0;
+
+  let meaInitialized = document.body.getAttribute('mea-initialized');
+  if(meaInitialized){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function isPageAnnotationVisible(){

@@ -69,11 +69,13 @@ function searchWord(request){
     input = word;
 
     //lemma
-    if(definition && definition.includes('的过去式')) {
-        let index = definition.includes('的过去式');
+    if(definition) {
 
-        if(request.allowLemma){
-            word = definition.substring(0, index);
+        let result = definition.match('^([a-z]+)的((过去式)|(过去分词)|(过去式和过去分词))$'); 
+        
+        console.log('match result:'+result);   
+        if(result != null && request.allowLemma){
+            word = result[1];
             definition = lookup(word);
 
             searchType='lemma';
