@@ -1,19 +1,21 @@
 
-# 使用说明
+# 提交bug
 
-## 基本功能
+如果有意见和建议，可以[发电子邮件](mailto:mera@dingjianghao.com)或者到[github](https://github.com/jackhatedance/my-english-reading-assistant)提交Bug。
+
+# 基本功能
 <img src="screenshots/webpage.png" width="400">
 
 这个浏览器插件能自动在英语网页里显示陌生单词的解释（目前只支持中文）。
 
 想阅读英文书籍或网页，但是词汇量不够？手工为每一个生词查字典又嫌麻烦？这个软件就是为解决上述烦恼而生。
 
-## 安装
+# 安装
 一般用户都是从浏览器的插件市场是搜索并安装的。如果有软件开发基础的，有可能从github下载源码，自行打包，然后打开浏览器开发者模式，就可以本地安装。
 
 <img src="screenshots/chrome web store.png" height="200">
 
-## 个人词汇表
+# 个人词汇表
 插件安装好以后，第一步是要初始化个人词汇表。因为软件是根据词汇表来确定某个单词是否认识。在弹窗上有一个按钮可以打开设置页面。
 
 <img src="screenshots/options.png" height="400">
