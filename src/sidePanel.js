@@ -105,13 +105,13 @@ import { lookupShort } from './dictionary.js';
           <button class='mea-show-definition' word="${word}" title='show definition'>
             <image src='icons/lookup.png' width="12"></image>
           </button>
-          <button class='mea-unknown' word="${word}" title="I don't know it">
-            <image src='icons/question-mark.png' width="12"></image>
-          </button>
+          
           <button class='mea-remove' word="${word}" title="I know it">
             <image src='icons/tick.png' width="12"></image>
           </button>
-          
+          <button class='mea-unknown' word="${word}" title="I don't know it">
+            <image src='icons/question-mark.png' width="12"></image>
+          </button>
 
           <p class="definition" style="display:${display};">${definition}</p> 
         </div>

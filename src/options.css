@@ -1,9 +1,31 @@
-
+div{
+  margin: 5px;
+}
 
 html {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
     sans-serif;
   color: #222;
+}
+
+.section {
+  padding: 5px;
+  margin: 5px;
+  border-bottom: solid 1px rgb(199, 195, 195);
+  width: 100%;
+  display: flex;
+
+  .label {
+    width: 30%;
+  }
+
+  .input {
+    width: 40%;
+  }
+
+  .action {
+    width: 30%;
+  }
 }
 
 
@@ -15,6 +37,11 @@ html {
   flex-direction: column;
   text-align: center;
   padding: 20px;
+  width: fit-content;
+}
+
+hr{
+  width: 100%;
 }
 
 .title {

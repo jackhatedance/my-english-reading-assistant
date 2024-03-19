@@ -5,8 +5,8 @@ import {loadKnownWords, loadAndMergeWordLists, saveKnownWords} from './vocabular
 
 // Saves options to chrome.storage
 const saveOptions = () => {
-    
-    let knownWordsArray = document.getElementById('knownWords').value.split('\n');
+    const splitter = /\r*\n/;
+    let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
 
     save({
       knownWords: knownWordsArray
@@ -23,8 +23,7 @@ const saveOptions = () => {
       knownWords= [];
     }    
 
-    document.getElementById('knownWords').value = knownWords.join('\n');
-    document.getElementById('count').innerHTML = knownWords.length;
+    updateVocabulary(knownWords);
   };
 
   const resetVocabulary = async () => {
@@ -40,8 +39,8 @@ const saveOptions = () => {
     if(!knownWords){
       knownWords= [];
     }    
-    document.getElementById('knownWords').value = knownWords.join('\n');
-    document.getElementById('count').innerHTML = knownWords.length;
+
+    updateVocabulary(knownWords);
   };
 
   function backupVocabulary() {
@@ -51,6 +50,28 @@ const saveOptions = () => {
 
   };
 
+  function loadFromFile() {
+    
+    var file = document.getElementById("file").files[0];
+    if(!file){
+        alert('pick file first.');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e){
+      //console.log(e.target.result);
+      let array = e.target.result.split(/\r*\n/);
+      updateVocabulary(array);
+    }
+    reader.readAsText(file);
+
+  };
+
+  function updateVocabulary(wordArray){
+    document.getElementById('knownWords').value = wordArray.join('\n');
+    document.getElementById('count').innerHTML = wordArray.length;
+  }
 
   async function save(settings){
     if(settings.knownWords){
@@ -105,3 +126,4 @@ const saveOptions = () => {
   document.getElementById('backupVocabulary').addEventListener('click', backupVocabulary);
   document.getElementById('resetVocabulary').addEventListener('click', resetVocabulary);
   document.getElementById('save').addEventListener('click', saveOptions);
+  document.getElementById('loadFromFile').addEventListener('click', loadFromFile);
