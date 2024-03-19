@@ -5,13 +5,31 @@ async function loadKnownWords(){
 }
 
 function loadDefaultKnownWords(){
+    return loadWordList("default.txt");
+}
+
+async function loadAndMergeWordLists(listnames){
+    let wordSet = new Set();
+    for(let listname of listnames){
+        let filename = 'wordlists/'+listname + '.txt';
+        let wordList = await loadWordList(filename);
+
+        for(let word of wordList){
+            wordSet.add(word);
+        }
+    }
+    let mergedWordArray = Array.from(wordSet);
+    return mergedWordArray;
+}
+
+function loadWordList(filename){
     const errorHandler = function (e) {
         console.log(e);
     };
 
     return new Promise((resolve, reject) => {
         chrome.runtime.getPackageDirectoryEntry(function(root) {
-            root.getFile("defaultVocabulary.txt", {}, function(fileEntry) {
+            root.getFile(filename, {}, function(fileEntry) {
                 fileEntry.file(function(file) {
                     var reader = new FileReader();
                     reader.onloadend = function(e) {
@@ -73,4 +91,4 @@ async function isKnown(word) {
     return found;
   }
 
-export {loadKnownWords, loadDefaultKnownWords, saveKnownWords, addKnownWord, removeKnownWord, isKnown};
+export {loadKnownWords, loadDefaultKnownWords, loadAndMergeWordLists, saveKnownWords, addKnownWord, removeKnownWord, isKnown};

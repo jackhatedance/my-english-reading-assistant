@@ -26,7 +26,9 @@
     "webpack-merge": "^5.10.0"
   },
   "dependencies": {
+    "html-loader": "^5.0.0",
     "lancaster-stemmer": "^2.1.0",
+    "markdown-loader": "^8.0.0",
     "wink-lemmatizer": "^3.0.4"
   }
 }

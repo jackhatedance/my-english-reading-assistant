@@ -1,7 +1,7 @@
 'use strict';
 
 import './options.css';
-import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from './vocabularyStore.js';
+import {loadKnownWords, loadAndMergeWordLists, saveKnownWords} from './vocabularyStore.js';
 
 // Saves options to chrome.storage
 const saveOptions = () => {
@@ -22,18 +22,26 @@ const saveOptions = () => {
     if(!knownWords){
       knownWords= [];
     }    
-    document.getElementById('knownWords').value = knownWords.join('\n');
 
+    document.getElementById('knownWords').value = knownWords.join('\n');
+    document.getElementById('count').innerHTML = knownWords.length;
   };
 
   const resetVocabulary = async () => {
-    let knownWordsResult = await loadDefaultKnownWords();
+    var options = document.getElementById('wordLists').selectedOptions;
+    var wordLists = Array.from(options).map(({ value }) => value);
+
+    if(wordLists.length==0){
+        alert('please select word lists.');
+    }
+
+    let knownWordsResult = await loadAndMergeWordLists(wordLists);
     let knownWords = knownWordsResult;
     if(!knownWords){
       knownWords= [];
     }    
     document.getElementById('knownWords').value = knownWords.join('\n');
-
+    document.getElementById('count').innerHTML = knownWords.length;
   };
 
   function backupVocabulary() {

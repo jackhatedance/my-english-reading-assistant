@@ -10,11 +10,25 @@
        
       
 
+      <br />
+      <h3>Select the word lists</h3>
+      <p>multiple selection is allowed(use Ctrl/Command key).</p>
+      <select id="wordLists" multiple size="8">
+        <option value="中考-2000">中考-2000</option>
+        <option value="CET4-4600">CET4-4600</option>
+        <option value="CET6-2200">CET6-2200</option>
+        <option value="GRE-8000">GRE-8000</option>
+        <option value="TOEFL-4500">TOEFL-4500</option>
+        <option value="英语专业四八级-13000">英语专业四八级-13000</option>        
+      </select>
+      <span>危险操作，操作前请备份</span>
+      <button id="resetVocabulary" class="button">Initialize My Vocabulary</button>
       
-
-      <p><label for="knownWords">My Vocabulary</label></p>
-      <textarea id="knownWords" name="knownWords" rows="4" maxlength="500000"></textarea>
-      
+      <br />
+      <h3>My Vocabulary</h3>
+      <p>Copy & Paste is allowed</p>
+      <textarea id="knownWords" name="knownWords" rows="10" maxlength="500000"></textarea>
+      <p>total:<span id="count"></span></p>
       <br />
       
       <button id="save" class="button">Save</button>
@@ -22,8 +36,6 @@
       <br />
       <button id="backupVocabulary" class="button">Backup Vocabulary To File</button>
       
-      <br />
-      <button id="resetVocabulary" class="button">Initialize Vocabulary(8000 words)</button><span>危险操作，操作前请备份</span>
       
     </div>
 

@@ -48,10 +48,12 @@ import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions, initVocabula
       return;
     }
 
+    document.getElementById('help').addEventListener('click', (e) => {
+      chrome.tabs.create({url: chrome.runtime.getURL('guide.html')});
+    });
+
     document.getElementById('options').addEventListener('click', (e) => {
-      //e.preventDefault();
       chrome.runtime.openOptionsPage();
-      
     });
 
     document.getElementById('site').innerHTML = pageInfo.domain;
@@ -235,7 +237,7 @@ import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions, initVocabula
 
   function init() {
     initVocabularyIfEmpty();
-    
+
     getPageInfo((_pageInfo) => {
       pageInfo = _pageInfo;
       setupPage(pageInfo);

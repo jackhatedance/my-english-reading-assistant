@@ -1,7 +1,10 @@
 'use strict';
 
+
+
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 
 const PATHS = require('./paths.cjs');
 
@@ -33,23 +36,31 @@ const common = {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
-      // Check for images imported in .js files and
       {
         test: IMAGE_TYPES,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              outputPath: 'images',
-              name: '[name].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext]'
+        }
       },
       {
         test: /test\.js$/,
         use: 'mocha-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.md$/,
+        use: [
+          {
+            loader: "html-loader",
+          },
+          {
+            loader: "markdown-loader",
+            options: {
+              
+            },
+          },
+        ],
       },
     ],
   },

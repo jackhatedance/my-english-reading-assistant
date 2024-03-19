@@ -14,6 +14,7 @@ const config = (env, argv) =>
       contentScript: PATHS.src + '/contentScript.js',
       background: PATHS.src + '/background.js',
       sidePanel: PATHS.src + '/sidePanel.js',
+      guide: PATHS.src + '/guide.js',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });
