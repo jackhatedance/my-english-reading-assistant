@@ -5,7 +5,7 @@ async function loadKnownWords(){
 }
 
 function loadDefaultKnownWords(){
-    return loadWordList("default.txt");
+    return loadWordList("常用-8000.txt");
 }
 
 async function loadAndMergeWordLists(listnames){

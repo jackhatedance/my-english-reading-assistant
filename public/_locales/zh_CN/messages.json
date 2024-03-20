@@ -46,7 +46,7 @@
         "message":"选择词汇表"
     },
     "optionsInitializeVocabularyLabelDesc":{
-        "message":"允许多选(使用Ctrl/Command键)."
+        "message":"允许多选(使用Ctrl/Command键) 不含常用词汇的词汇表需要与其他常用词汇表一起使用."
     },
     "optionsInitializeVocabularyActionWarning":{
         "message":"危险，操作前先备份"

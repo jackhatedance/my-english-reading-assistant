@@ -46,7 +46,7 @@
         "message":"Select the word lists"
     },
     "optionsInitializeVocabularyLabelDesc":{
-        "message":"multiple selection is allowed(use Ctrl/Command key)."
+        "message":"multiple selection is allowed(use Ctrl/Command key) Vocabulary lists that do not contain commonly used words need to be used in conjunction with other commonly used vocabulary lists."
     },
     "optionsInitializeVocabularyActionWarning":{
         "message":"Dangerous, backup first."
