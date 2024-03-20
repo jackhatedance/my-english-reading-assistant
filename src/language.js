@@ -73,7 +73,7 @@ function searchWord(request){
 
         let result = definition.match('^([a-z]+)的((过去式)|(过去分词)|(过去式和过去分词))$'); 
         
-        console.log('match result:'+result);   
+        //console.log('match result 1:'+result);   
         if(result != null && request.allowLemma){
             word = result[1];
             definition = lookup(word);
@@ -140,7 +140,7 @@ function searchWord(request){
                 
                 word = lancasterStemmer(input);
 
-                console.log('query:'+input+',stem:'+word);
+                //console.log('query:'+input+',stem:'+word);
                 definition = lookup(word);
                 searchType='stem';
             }

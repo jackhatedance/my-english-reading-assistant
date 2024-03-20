@@ -16,6 +16,10 @@ async function getDefaultSiteOptions(){
             }
         };
     }
+
+    //force to false, otherwise all unsaved sites will be enabled by default, bad experience
+    options.enabled = false;
+
     return options;
     
 }
@@ -23,7 +27,7 @@ async function getDefaultSiteOptions(){
 function loadSiteOptionsFromStorage(siteDomain){
     return new Promise(resolve => {
         chrome.storage.local.get(['sitesOptions'], (result) => {
-            //console.log('load sitesOptions:'+JSON.stringify(result.sitesOptions));
+            console.log('load sitesOptions:'+JSON.stringify(result.sitesOptions));
             
             let siteOptions = undefined;
             if(result.sitesOptions){
@@ -84,7 +88,7 @@ async function initVocabularyIfEmpty(){
     //console.log(JSON.stringify(knownWordsResult));
 
     if(isEmptyVocabulary(knownWordsResult)){
-        console.log('initVocabulary');
+        //console.log('initVocabulary');
         let knownWordsResult = await loadDefaultKnownWords();
         await saveKnownWords(knownWordsResult);
     }
