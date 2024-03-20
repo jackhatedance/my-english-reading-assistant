@@ -11,7 +11,7 @@ function loadDefaultKnownWords(){
 async function loadAndMergeWordLists(listnames){
     let wordSet = new Set();
     for(let listname of listnames){
-        let filename = 'wordlists/'+listname + '.txt';
+        let filename = listname + '.txt';
         let wordList = await loadWordList(filename);
 
         for(let word of wordList){
@@ -23,13 +23,14 @@ async function loadAndMergeWordLists(listnames){
 }
 
 function loadWordList(filename){
+    //console.log('loadWordList:'+filename)
     const errorHandler = function (e) {
         console.log(e);
     };
 
     return new Promise((resolve, reject) => {
         chrome.runtime.getPackageDirectoryEntry(function(root) {
-            root.getFile(filename, {}, function(fileEntry) {
+            root.getFile('wordlists/' + filename, {}, function(fileEntry) {
                 fileEntry.file(function(file) {
                     var reader = new FileReader();
                     reader.onloadend = function(e) {
