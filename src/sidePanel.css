@@ -78,11 +78,18 @@ code {
   opacity: 0.1;
 }
 
+.toolbar {
+  margin: 20px;
+  * {
+    margin: 5px;
+  }
+}
+
 .word-list {
   text-align: left;
   width: 100%;
 }
 
 .list-item {
-  height: 5em;
+  margin: 5px;
 }
