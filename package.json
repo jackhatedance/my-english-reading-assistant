@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.cjs",
     "build": "webpack --mode=production --config config/webpack.config.cjs",
-    "pack": "node pack.js",
+    "pack": "node pack.cjs",
     "test": "mocha",
     "repack": "npm run build && npm run pack",
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
