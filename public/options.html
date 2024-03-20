@@ -2,17 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My Test Extension Options</title>
+    <title>__MSG_optionsPageTitle__</title>
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
     <div class="app">
-      <h1>Options</h1>
+      <h1>__MSG_optionsTitle__</h1>
       <hr>
       <div class="section">
         <div class="label">
-          <h3>Select the word lists</h3>
-          <p>multiple selection is allowed(use Ctrl/Command key).</p>
+          <h3>__MSG_optionsInitializeVocabularyLabel__</h3>
+          <p>__MSG_optionsInitializeVocabularyLabelDesc__</p>
         </div>
 
         <div class="input">
@@ -26,46 +26,46 @@
           </select>
         </div>
         <div class="action">
-          <span>危险操作，操作前请备份</span>
-          <button id="resetVocabulary" class="button">Initialize My Vocabulary</button>
+          <span>__MSG_optionsInitializeVocabularyActionWarning__</span>
+          <button id="resetVocabulary" class="button">__MSG_optionsInitializeVocabularyAction__</button>
         </div>
       </div>
       
       
       <div class="section">
         <div class="label">
-          <h3>My Vocabulary</h3>
-          <p>Copy & Paste is allowed</p>
+          <h3>__MSG_optionsEditVocabularyLabel__</h3>
+          <p>__MSG_optionsEditVocabularyLabelDesc__</p>
         </div>
         <div class="input">
           <textarea id="knownWords" name="knownWords" rows="10" maxlength="500000"></textarea>
-          <p>total:<span id="count"></span></p>
+          <p>__MSG_optionsEditVocabularyTotal__<span id="count"></span></p>
         </div>
         <div class="action">
-          <button id="save" class="button">Save</button>
+          <button id="save" class="button">__MSG_optionsEditVocabularyAction__</button>
         </div>
       </div>
       
       <div class="section">
         <div class="label">
-          read vocabulary from file
+          __MSG_optionsImportLabelDesc__
         </div>
         <div class="input">
           <input type="file" id="file">
         </div>
         <div class="action">
-          <button id="loadFromFile" class="button">Import</button>
+          <button id="loadFromFile" class="button">__MSG_optionsImportAction__</button>
         </div>
       </div>
       <div class="section">
         <div class="label">
-          backup vocabulary to file
+          __MSG_optionsExportLabelDesc__
         </div>
        
         <div class="input">
         </div>
         <div class="action">
-          <button id="backupVocabulary" class="button">Export</button>
+          <button id="backupVocabulary" class="button">__MSG_optionsExportAction__</button>
         </div>
       </div>
       

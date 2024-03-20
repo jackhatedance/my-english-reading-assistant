@@ -1,8 +1,10 @@
 'use strict';
 
 import './popup.css';
-import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions, initVocabularyIfEmpty} from './optionService.js';
+import {setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './optionService.js';
+import {localizeHtmlPage} from './locale.js';
 
+localizeHtmlPage();
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -107,8 +109,9 @@ import {setSiteOptions, setSiteOptionsAsDefault, getDefaultOptions, initVocabula
     document.getElementById('resetAnnotationSettings').addEventListener('click', async (e) => {
       
       //console.log('resetAnnotationSettings');
-      let options = await getDefaultAnnotationOptions();
-      updateOptionsUI(options);
+      let siteOptions = await getDefaultSiteOptions();
+      let annotationOptions = siteOptions.annotation;
+      updateOptionsUI(annotationOptions);
       applyStyles();
     });
 

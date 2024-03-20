@@ -2,9 +2,10 @@
 
 import './sidePanel.css';
 import {addKnownWord, removeKnownWord} from './vocabularyStore.js';
-import {searchWord} from './language.js';
 import { lookupShort } from './dictionary.js';
+import {localizeHtmlPage} from './locale.js';
 
+localizeHtmlPage();
 (function () {
   // We will make use of Storage API to get and store `count` value
   // More information on Storage API can we found at
@@ -129,7 +130,7 @@ import { lookupShort } from './dictionary.js';
         definitionElement.style.display = null;
 
         let baseForm = e.currentTarget.getAttribute('word');
-        console.log(`show definition: ${baseForm}`);     
+        //console.log(`show definition: ${baseForm}`);     
       });
     });
 

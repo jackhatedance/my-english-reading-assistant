@@ -1,0 +1,107 @@
+{
+    "extensionName":{
+        "message":"我的英文阅读助手"
+    },
+    "popupHelp":{
+        "message":"帮助"
+    },
+    "popupOptions":{
+        "message":"设置"
+    },
+    "popupShowHideDefinition":{
+        "message":"显示/隐藏释义"
+    },
+    "popupAlwaysShowDefinition":{
+        "message":"总是在这个网站显示释义"
+    },
+    "popupDefinitionAdjustment":{
+        "message":"释义调整"
+    },
+    "popupPositionLabel":{
+        "message":"上下位置调整"
+    },
+    "popupFontSizeLabel":{
+        "message":"字体尺寸"
+    },
+    "popupColorLabel":{
+        "message":"颜色"
+    },
+    "popupOpacityLabel":{
+        "message":"不透明度"
+    },
+    "popupResetButton":{
+        "message":"重置"
+    },
+    "popupSaveAsDefault":{
+        "message":"保存为默认值"
+    },
+
+    "optionsPageTitle":{
+        "message":"我的英文阅读助手设置"
+    },
+    "optionsTitle":{
+        "message":"设置"
+    },
+    "optionsInitializeVocabularyLabel":{
+        "message":"选择词汇表"
+    },
+    "optionsInitializeVocabularyLabelDesc":{
+        "message":"允许多选(使用Ctrl/Command键)."
+    },
+    "optionsInitializeVocabularyActionWarning":{
+        "message":"危险，操作前先备份"
+    },
+    "optionsInitializeVocabularyAction":{
+        "message":"初始化个人词汇表"
+    },
+
+    "optionsEditVocabularyLabel":{
+        "message":"我的词汇表"
+    },
+    "optionsEditVocabularyLabelDesc":{
+        "message":"允许复制粘贴"
+    },
+    "optionsEditVocabularyTotal":{
+        "message":"总数："
+    },
+    "optionsEditVocabularyAction":{
+        "message":"保存"
+    },
+
+    "optionsImportLabelDesc":{
+        "message":"从文件读取词汇表"
+    },
+    "optionsImportAction":{
+        "message":"导入"
+    },
+
+
+    "optionsExportLabelDesc":{
+        "message":"备份词汇表到文件"
+    },
+    "optionsExportAction":{
+        "message":"导出"
+    },
+
+    "sidepanelPageTitle":{
+        "message":"我的英文阅读助手侧栏"
+    },
+    "sidepanelNotAvailable":{
+        "message":"不可用"
+    },
+    "sidepanelTitle":{
+        "message":"当前页面上的生词"
+    },
+    "sidepanelTitleDesc":{
+        "message":"移除你已经认识的单词"
+    },
+    "sidepanelShowDefinitions":{
+        "message":"显示释义"
+    },
+    "sidepanelHideDefinitions":{
+        "message":"隐藏释义"
+    }
+
+
+
+}

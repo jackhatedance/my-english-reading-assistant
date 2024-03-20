@@ -1,0 +1,107 @@
+{
+    "extensionName":{
+        "message":"My English Reading Assistant"
+    },
+    "popupHelp":{
+        "message":"Help"
+    },
+    "popupOptions":{
+        "message":"Options"
+    },
+    "popupShowHideDefinition":{
+        "message":"Show/Hide Definition"
+    },
+    "popupAlwaysShowDefinition":{
+        "message":"always show definition on this site: "
+    },
+    "popupDefinitionAdjustment":{
+        "message":"Definition Adjustment"
+    },
+    "popupPositionLabel":{
+        "message":"Position Up/Down"
+    },
+    "popupFontSizeLabel":{
+        "message":"Font Size"
+    },
+    "popupColorLabel":{
+        "message":"Color"
+    },
+    "popupOpacityLabel":{
+        "message":"Opacity"
+    },
+    "popupResetButton":{
+        "message":"Reset"
+    },
+    "popupSaveAsDefault":{
+        "message":"Save As Default"
+    },
+
+    "optionsPageTitle":{
+        "message":"My English Reading Assistant Options"
+    },
+    "optionsTitle":{
+        "message":"Options"
+    },
+    "optionsInitializeVocabularyLabel":{
+        "message":"Select the word lists"
+    },
+    "optionsInitializeVocabularyLabelDesc":{
+        "message":"multiple selection is allowed(use Ctrl/Command key)."
+    },
+    "optionsInitializeVocabularyActionWarning":{
+        "message":"Dangerous, backup first."
+    },
+    "optionsInitializeVocabularyAction":{
+        "message":"Initialize My Vocabulary"
+    },
+
+    "optionsEditVocabularyLabel":{
+        "message":"My Vocabulary"
+    },
+    "optionsEditVocabularyLabelDesc":{
+        "message":"Copy & Paste is allowed"
+    },
+    "optionsEditVocabularyTotal":{
+        "message":"total:"
+    },
+    "optionsEditVocabularyAction":{
+        "message":"Save"
+    },
+
+    "optionsImportLabelDesc":{
+        "message":"read vocabulary from file"
+    },
+    "optionsImportAction":{
+        "message":"Import"
+    },
+
+
+    "optionsExportLabelDesc":{
+        "message":"backup vocabulary to file"
+    },
+    "optionsExportAction":{
+        "message":"Export"
+    },
+
+    "sidepanelPageTitle":{
+        "message":"My English Reading Assistant Side Panel"
+    },
+    "sidepanelNotAvailable":{
+        "message":"not available"
+    },
+    "sidepanelTitle":{
+        "message":"Unknown words on page"
+    },
+    "sidepanelTitleDesc":{
+        "message":"remove the words you already known"
+    },
+    "sidepanelShowDefinitions":{
+        "message":"Show Definitions"
+    },
+    "sidepanelHideDefinitions":{
+        "message":"Hide Definitions"
+    }
+
+
+
+}

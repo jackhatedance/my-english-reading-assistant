@@ -2,6 +2,9 @@
 
 import './options.css';
 import {loadKnownWords, loadAndMergeWordLists, saveKnownWords} from './vocabularyStore.js';
+import {localizeHtmlPage} from './locale.js';
+
+localizeHtmlPage();
 
 // Saves options to chrome.storage
 const saveOptions = () => {
