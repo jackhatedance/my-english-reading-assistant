@@ -62,16 +62,20 @@
   color: black;
   z-index: 100;
 
-  button {
-    border: none;
-    margin-right: 2px;
-    padding:0px;
-    padding-inline: none;
-    background: white;
+}
 
-    img {
-      width: 16px;
-      height: 16px;
-    }
-  }
+.mea-toolbar-button {
+  border: none;
+  margin-right: 2px;
+  padding:0px;
+  padding-inline: none;
+  background: white;
+
+  
+}
+
+.mea-icon {
+  width: 16px;
+  height: 16px;
+
 }

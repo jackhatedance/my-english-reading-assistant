@@ -242,7 +242,7 @@ function changeStyle(document, options){
     }
     let rule = generateCssRule(options);
     styleSheet.insertRule(rule,0);
-    console.log('changed style of a document');
+    //console.log('changed style of a document');
   }
 }
 
@@ -293,7 +293,7 @@ async function getPageInfo() {
 }
 
 async function initPageAnnotations(resolve) {
-
+  //console.log('initPageAnnotations');
   knownWords = await loadKnownWords();
   if(!knownWords){
     knownWords= [];
@@ -364,7 +364,7 @@ function addStyle(document){
   link.rel = "stylesheet";
   link.title = "mea-style";
   document.getElementsByTagName("head")[0].appendChild(link);
-  console.log('add style');
+  //console.log('add style');
 }
 
 function addToolbar(document){
@@ -373,11 +373,11 @@ function addToolbar(document){
 
   var elemDiv = document.createElement('div');
   elemDiv.innerHTML = `
-    <button class='mea-add-unknown'>
-      <img src='${questionMarkImgUrl}'></img>
+    <button class='mea-add-unknown mea-toolbar-button'>
+      <img class='mea-icon' src='${questionMarkImgUrl}'></img>
     </button>
-    <button class='mea-remove-unknown'>
-      <img src='${tickImgUrl}'></img>
+    <button class='mea-remove-unknown mea-toolbar-button'>
+      <img class='mea-icon' src='${tickImgUrl}'></img>
     </button>  
     `;
 
