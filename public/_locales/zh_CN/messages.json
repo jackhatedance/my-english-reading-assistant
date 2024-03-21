@@ -2,6 +2,12 @@
     "extensionName":{
         "message":"我的英文阅读助手"
     },
+    "extensionDescription":{
+        "message":"它会在网页中显示陌生单词的词典释义。"
+    },
+    "extensionDefaultTitle":{
+        "message":"我的英文阅读助手"
+    },
     "popupHelp":{
         "message":"帮助"
     },

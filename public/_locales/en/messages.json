@@ -2,6 +2,12 @@
     "extensionName":{
         "message":"My English Reading Assistant"
     },
+    "extensionDescription":{
+        "message":"It will show word definition for those words that not in your vocabulary."
+    },
+    "extensionDefaultTitle":{
+        "message":"My English Reading Assistant"
+    },
     "popupHelp":{
         "message":"Help"
     },
