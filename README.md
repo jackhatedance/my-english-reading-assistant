@@ -12,9 +12,9 @@ My Browser Extension of English reading assistant
 
 ### Short description
 
-这款软件能自动为你展示陌生单词的字典释义。
+检测网页里不认识的单词并展示其字典释义，帮助英文学习者顺畅阅读英文网页。
 
-This software can show you the dictionary definitions of unfamiliar words.
+Detect unknown words in web pages and display their dictionary definitions to help English learners read English web pages smoothly.
 
 ### Long Description
 

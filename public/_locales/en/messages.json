@@ -3,7 +3,7 @@
         "message":"My English Reading Assistant"
     },
     "extensionDescription":{
-        "message":"It will show word definition for those words that not in your vocabulary."
+        "message":"Detect unknown words in web pages and display their dictionary definitions to help English learners read English web pages smoothly."
     },
     "extensionDefaultTitle":{
         "message":"My English Reading Assistant"

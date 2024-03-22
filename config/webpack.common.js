@@ -2,11 +2,11 @@
 
 
 
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import RemarkHTML from 'remark-html';
 
-
-const PATHS = require('./paths.cjs');
+import PATHS from './paths.cjs';
 
 // used in the module rules and in the stats exlude list
 const IMAGE_TYPES = /\.(png|jpe?g|gif|svg)$/i;
@@ -62,6 +62,7 @@ const common = {
           },
         ],
       },
+      
     ],
   },
   plugins: [
@@ -81,4 +82,4 @@ const common = {
   ],
 };
 
-module.exports = common;
+export {common};

@@ -1,9 +1,9 @@
 'use strict';
 
-const { merge } = require('webpack-merge');
+import { merge } from 'webpack-merge';
 
-const common = require('./webpack.common.cjs');
-const PATHS = require('./paths.cjs');
+import {common} from './webpack.common.js';
+import PATHS from './paths.cjs';
 
 // Merge webpack configuration files
 const config = (env, argv) =>
@@ -19,4 +19,5 @@ const config = (env, argv) =>
     devtool: argv.mode === 'production' ? false : 'source-map',
   });
 
-module.exports = config;
+
+export default config;

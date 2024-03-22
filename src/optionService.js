@@ -11,8 +11,8 @@ async function getDefaultSiteOptions(){
             annotation: {
                 fontSize: 0.4,
                 position: 0.5,        
-                opacity: 0.3,
-                color: '#808080',
+                opacity: 0.5,
+                color: '#0000ff',
             }
         };
     }
@@ -27,7 +27,7 @@ async function getDefaultSiteOptions(){
 function loadSiteOptionsFromStorage(siteDomain){
     return new Promise(resolve => {
         chrome.storage.local.get(['sitesOptions'], (result) => {
-            console.log('load sitesOptions:'+JSON.stringify(result.sitesOptions));
+            //console.log('load sitesOptions:'+JSON.stringify(result.sitesOptions));
             
             let siteOptions = undefined;
             if(result.sitesOptions){
