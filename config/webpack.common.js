@@ -4,7 +4,6 @@
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import RemarkHTML from 'remark-html';
 
 import PATHS from './paths.cjs';
 

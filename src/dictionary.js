@@ -1,6 +1,8 @@
 import {dict} from './dict.js'
 
 function lookup(word) {
+    //console.log(dict);
+
     let def = dict[word];
     
     return def;
