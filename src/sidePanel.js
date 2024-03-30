@@ -1,9 +1,11 @@
 'use strict';
 
 import './sidePanel.css';
-import {addKnownWord, removeKnownWord} from './vocabularyStore.js';
+import {loadKnownWords, markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import { lookupShort } from './dictionary.js';
 import {localizeHtmlPage} from './locale.js';
+import {getWordParts, isKnown} from './language.js';
+import {initializeOptionService} from './optionService.js';
 
 localizeHtmlPage();
 (function () {
@@ -20,13 +22,14 @@ localizeHtmlPage();
   var definitionVisible = false;
   
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await initializeOptionService();
     refreshUnknownWordList();
     
 
   });
 
-  function refreshUnknownWordList(){
+  async function refreshUnknownWordList(){
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
       chrome.tabs.sendMessage(
@@ -52,11 +55,11 @@ localizeHtmlPage();
     });
   }
 
-  function renderPage(pageInfo){
+  async function renderPage(pageInfo){
     
     if(pageInfo.visible){
       renderRatio(pageInfo.unknownWordsRatio);
-      renderUnknownWordList(pageInfo.unknownWords);
+      await renderUnknownWordList(pageInfo.unknownWords);
       showPage();
     } else {
       hidePage();
@@ -84,37 +87,117 @@ localizeHtmlPage();
     ratioElement.innerHTML=`${percentage}%`;
   }
 
-  function renderUnknownWordList(words){
+
+  async function buildTargetWords(words){
+    let knownWords = await loadKnownWords();
+
+    let expandedWords = [];
+    for(let wordObj of words){
+      let {base} = wordObj;
+      let target = base;
+      
+      //itself
+      expandedWords.push({target: base});
+      
+      //parts
+      let parts = getWordParts(base);
+      let from = base;
+
+      if(parts){
+        for(let part of parts){
+          target = part.dictEntry;
+          
+
+          if(!isKnown(target, knownWords)){
+            expandedWords.push({target, from});
+          }
+        }
+      }
+    }
+
+    
+    //word array to merge
+    let targetObjMap = new Map();
+    
+    for(let wordObj of expandedWords) {
+      let {target, from} = wordObj;
+            
+      let targetObj = targetObjMap.get(target);
+      if(!targetObj){
+        targetObj = {target, from:[]};
+        targetObjMap.set(target, targetObj);
+      }
+
+      targetObj.from.push(from);
+      
+    }
+    let array = Array.from(targetObjMap, ([name, value]) => ({target: name, from: value.from}));
+    return array;
+  }
+
+  async function renderUnknownWordList(words){
     let ul = document.getElementById('unknownWordList');
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
     }
 
-    for(let word of words){
+    let targetWords = await buildTargetWords(words);
+    
+    //console.log('targetWords:'+JSON.stringify(targetWords));
+
+    for(let wordObj of targetWords){
+      let {target, from } = wordObj;
+      let word = target;
+      let fromArray = from;
+      let fromStr='';
+      if(fromArray){
+        fromStr = fromArray.join(',');
+      }
+
       let li = document.createElement("li");
       //var text = document.createTextNode(word);
       //li.appendChild(text);
       ul.appendChild(li);
 
+      //query root word
+      
       let definition = lookupShort(word);
+
+      if(!definition){
+        continue;
+      }
+
+      let wordStr = fromStr? `${word} (${fromStr})` : word;
       
       let display = definitionVisible? 'unset':'none';
       const liInnerHTML = `
         <div class='list-item'>
-          <span class='word'>${word}</span>: 
+          <div class="word-and-actions">
+            
+            <span class='word'>${wordStr}:</span>
+            
+            <div class="actions">
+              <button class='mea-show-definition' word="${word}" title='show definition'>
+                <image src='icons/lookup.png' width="12"></image>
+              </button>
+              
+              <button class='mea-remove' word="${word}" title="I know it">
+                <image src='icons/tick.png' width="12"></image>
+              </button>
+              <button class='mea-unknown' word="${word}" title="I don't know it">
+                <image src='icons/question-mark.png' width="12"></image>
+              </button>
+              <button class='mea-not-sure' word="${word}" title="I am not sure">
+                <image src='icons/clear.png' width="12"></image>
+              </button>
+            </div>
+          </div>
           
-          <button class='mea-show-definition' word="${word}" title='show definition'>
-            <image src='icons/lookup.png' width="12"></image>
-          </button>
-          
-          <button class='mea-remove' word="${word}" title="I know it">
-            <image src='icons/tick.png' width="12"></image>
-          </button>
-          <button class='mea-unknown' word="${word}" title="I don't know it">
-            <image src='icons/question-mark.png' width="12"></image>
-          </button>
+          <div class="definition-container">
+            <p class="definition" style="display:${display};">${definition}</p> 
+          </div>
 
-          <p class="definition" style="display:${display};">${definition}</p> 
+          
         </div>
         `;
 
@@ -139,8 +222,8 @@ localizeHtmlPage();
       
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
-        //console.log(`remove word ${baseForm}`);
-        await removeKnownWord(baseForm);
+        //console.log(`mark word as unknown ${baseForm}`);
+        await markWordAsUnknown(baseForm);
         sendMessageKnownWordsUpdated();
 
         let btn = e.currentTarget;
@@ -154,13 +237,35 @@ localizeHtmlPage();
     for(let btn of removeButtons){
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
-        //console.log(`remove word ${baseForm}`);
-        await addKnownWord(baseForm);
+        //console.log(`mark word as known ${baseForm}`);
+        await markWordAsKnown(baseForm);
         sendMessageKnownWordsUpdated();
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
         wordElement.style['text-decoration'] = 'line-through';
+      });
+    }
+
+    let clearButtons = document.querySelectorAll('.mea-not-sure');
+    for(let btn of clearButtons){
+      btn.addEventListener('click', async (e) => {
+        let baseForm = e.currentTarget.getAttribute('word');
+        //console.log(`remove word mark ${baseForm}`);
+        await removeWordMark(baseForm);
+        sendMessageKnownWordsUpdated();
+
+        let btn = e.currentTarget;
+        let wordElement = e.target.closest('.list-item').querySelector('.word');
+        
+        let decoration = null;
+
+        let knownWords = await loadKnownWords();
+
+        if(isKnown(baseForm, knownWords)){
+          decoration = 'line-through';
+        }
+        wordElement.style['text-decoration'] = decoration;
       });
     }
   }

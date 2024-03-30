@@ -47,20 +47,6 @@ code {
 }
 
 
-.button {
-  border: 0;
-  display: inline-block;
-  padding: 10px 20px;
-  margin-right: 4px;
-  margin-left: 4px;
-  background-color: bisque;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-  user-select: none;
-}
 
 .button:focus {
   outline: none;
@@ -87,8 +73,27 @@ code {
 .word-list {
   text-align: left;
   width: 100%;
+
+  
+  li:nth-child(odd) {
+    background-color: #bed8d6;
+  }
 }
 
 .list-item {
-  margin: 5px;
+  padding: 5px;
+  height: auto;
+  
+}
+
+.word-and-actions{
+  clear:both;
+}
+
+.actions {
+  float:right;
+
+  button {
+    font-size: 5px;
+  }
 }

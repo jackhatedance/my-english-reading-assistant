@@ -1,15 +1,38 @@
-import {dict} from './dict.js'
+import {dict as dictLarge} from './dict.js'
+import {dict as dictSmall} from './dict-small.js'
+import {dict as dictAffix} from './dict-affix.js'
 
-function lookup(word) {
+function lookup(word, dicts) {
     //console.log(dict);
 
-    let def = dict[word];
-    
+    //try small dict first, hits 90%
+    let def;
+
+    for(let name of dicts){
+        let dict = getDict(name);
+        def = dict[word];
+        if(def){
+           break; 
+        }
+    }    
+
     return def;
 }
 
+function getDict(name){
+    if(name==='small'){
+        return dictSmall;
+    }else if(name==='large'){
+        return dictLarge;
+    }else if(name==='affix'){
+        return dictAffix;
+    }else{
+        return null;
+    }
+}
+
 function lookupShort(word) {
-    let def = dict[word];
+    let def = lookup(word, ['affix', 'small','large']);
     if(def){
         //def = removeWordClass(def);
         //def = firstMeaning(def);

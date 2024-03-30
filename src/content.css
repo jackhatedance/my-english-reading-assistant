@@ -1,51 +1,54 @@
 
-.mea-highlight {
+.mea-highlight {  
   position: relative;
-  display: inline-block;
   margin-top: 0px;
   text-indent: 0px;
-}
-
-.mea-highlight:hover, .mea-highlight.hide:hover {
-  position: relative;
   display: inline-block;
-  margin-top: 0px;
-  text-indent: 0px;
 
-  .mea-annotation {
-    visibility: visible;
-    opacity: 1;
-    background-color: white;
-    
-    font-size: 1em;
-    border: solid 1px;
-    display: table;
-    z-index: 99;
-    line-height: normal;
+  &.hide {
+    &::after {
+      visibility: hidden;
+    }
   }
+
+  &:hover, &.hide:hover {
+    &::after{
+      background-color: white;
+      border: solid 1px;
+      opacity: 1;
+      z-index: 99;
+      visibility: visible;
+
+      content: attr(data-footnote);
+    }
+  }
+
+  &:not([data-parts='']) {
+    &:hover, &.hide:hover {
+      &::after{
+        content: attr(data-footnote) ' [' attr(data-parts) ']';
+      }
+    }
+  } 
 }
 
-.mea-annotation {
+
+
+
+.mea-highlight::after {
+  content: attr(data-footnote);
   position: absolute;
-  width:100%;
-  top: -1em;
-  font-size: 0.4em !important;
-  text-align: center;
-  white-space: nowrap;
-  color: grey;
-  opacity: 30%;
+  width: max-content;
   line-height: normal;
-}
-
-.mea-highlight.hide {
-  position: unset;
-  display: inline-block;
-  margin-top: unset;
-  background-color: unset;
-}
-
-.mea-highlight.hide .mea-annotation {
-  display: none;
+  text-indent: 0px;
+  
+  white-space: nowrap;
+  left: 0;
+  top: -1.5em;
+  font-size: 0.5em;
+  color: grey;
+  opacity: 0.5;
+  visibility: hidden;
 }
 
 

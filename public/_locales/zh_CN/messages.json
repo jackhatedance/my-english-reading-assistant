@@ -70,10 +70,7 @@
     "optionsEditVocabularyTotal":{
         "message":"总数："
     },
-    "optionsEditVocabularyAction":{
-        "message":"保存"
-    },
-
+    
     "optionsImportLabelDesc":{
         "message":"从文件读取词汇表"
     },
@@ -89,6 +86,19 @@
         "message":"导出"
     },
 
+    "optionsRootAndAffixLabel":{
+        "message":"词根与词缀"
+    },
+    "optionsRootAndAffixLabelDesc":{
+        "message":"打开词根与词缀模式时，只要你认识单词的词根和词缀，那么默认就认为你也认识该单词了。可以极大地减少单词的标记工作。"
+    },
+    "optionsRootAndAffixModeLabel":{
+        "message":"词根与词缀模式"
+    },
+    "optionsunknownWordsLabel":{
+        "message":"不认识的单词"
+    },
+
     "sidepanelPageTitle":{
         "message":"我的英文阅读助手侧栏"
     },
@@ -99,13 +109,17 @@
         "message":"当前页面上的生词"
     },
     "sidepanelTitleDesc":{
-        "message":"移除你已经认识的单词"
+        "message":"标记你已经认识的单词"
     },
     "sidepanelShowDefinitions":{
         "message":"显示释义"
     },
     "sidepanelHideDefinitions":{
         "message":"隐藏释义"
+    },
+
+    "optionsSaveAction":{
+        "message":"保存"
     }
 
 

@@ -1,7 +1,8 @@
 'use strict';
 
-import {addKnownWord, removeKnownWord, isKnown} from './vocabularyStore.js';
-import {searchWord} from './language.js'
+import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
+import {searchWord, isKnown} from './language.js'
+import {getOptions} from './optionService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -63,17 +64,28 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
     let searchResult = searchWord({
       query: word,
       allowLemma: true,
-      allowStem: true,
-      allowRemoveSuffixOrPrefix: true,
+      allowRemoveSuffixOrPrefix: false,
     });
     if(searchResult){
       let baseForm = searchResult.word;
-      if(!await isKnown(baseForm)){
-        await addKnownWord(baseForm);
-        sendMsg('ADD_KNOWN_WORD', baseForm);
+      
+      let options = await getOptions();
+      let rootMode = options.rootAndAffix.enabled;
+
+      let targetWord = baseForm;
+      if(rootMode && searchResult.roots) {
+        let roots = searchResult.roots;
+        if(roots.length == 1){
+          targetWord = roots[0];
+        }
+      }
+
+      if(!await isKnown(targetWord)){
+        await markWordAsKnown(targetWord);
+        sendMsg('ADD_KNOWN_WORD', targetWord);
       } else {
-        await removeKnownWord(baseForm);
-        sendMsg('REMOVE_KNOWN_WORD', baseForm);
+        await markWordAsUnknown(targetWord);
+        sendMsg('REMOVE_KNOWN_WORD', targetWord);
       }
       //sendMsg('TOGGLE_WORD', baseForm);
     }

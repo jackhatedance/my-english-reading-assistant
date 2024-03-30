@@ -1,11 +1,11 @@
 'use strict';
 
 import './content.css';
-import { lookupShort } from './dictionary.js';
-import {loadKnownWords, addKnownWord, removeKnownWord} from './vocabularyStore.js';
-import {searchWord} from './language.js';
+import {loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark} from './vocabularyStore.js';
+import {searchWord, isKnown, getWordParts} from './language.js';
+import {lookup} from './dictionary.js';
 import {findSiteConfig} from './site-match.js';
-import {getSiteOptions, getDefaultSiteOptions} from './optionService.js';
+import {initializeOptionService, getOptionsFromCache, getSiteOptions, getDefaultSiteOptions} from './optionService.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -195,7 +195,7 @@ function findStyleSheet(document){
 function indexOfMeaAnnotation(styleSheet){
   for(let i =0; i< styleSheet.cssRules.length;i++){
     let rule = styleSheet.cssRules[i];
-    if(rule.selectorText === '.mea-annotation'){
+    if(rule.selectorText === '.mea-highlight::after'){
       return i;
     }
   }
@@ -208,13 +208,16 @@ function generateCssRule(options){
   let opacity = `${options.opacity}`;
   let color = `${options.color}`;
 
-  let rule=`.mea-annotation {
+  let rule=`.mea-highlight::after {
+    content: attr(data-footnote);
     position: absolute;
-    width:100%;
+    width:max-content;
+    line-height: normal;
+    text-indent: 0px;
+    white-space: nowrap;
+    left: 0;
     top: ${top};
     font-size: ${fontSize} !important;
-    text-align: center;
-    white-space: nowrap;
     color: ${color};
     opacity: ${opacity};
   }`;
@@ -261,7 +264,7 @@ async function getPageInfo() {
   
   
   let documents = getAllDocuments();
-  let unknownWordSet = new Set();
+  let unknownWordMap = new Map();
   
   let unknownWordsCount=0;
   let knownWordsCount=0;
@@ -269,7 +272,10 @@ async function getPageInfo() {
     let elements = document.querySelectorAll('.mea-highlight:not(.hide)');
     
     for(var e of elements) {
-      unknownWordSet.add(e.getAttribute('base-form-word'));
+      //let targetWord = getTargetWordFromElement(e);
+      let base = e.getAttribute('data-base-word');
+      
+      unknownWordMap.set(base, {base, });
       unknownWordsCount++;
     }
 
@@ -278,7 +284,9 @@ async function getPageInfo() {
       knownWordsCount++;
     }
   }
-  let unknownWords = Array.from(unknownWordSet);
+
+  let unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
+
   let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
   let visible = isPageAnnotationVisible();
   let siteOptions = await getCurrentSiteOptions();
@@ -292,8 +300,14 @@ async function getPageInfo() {
   };
 }
 
+function getBaseWordFromElement(element){
+  return element.getAttribute('data-base-word'); 
+}
+
 async function initPageAnnotations(resolve) {
   //console.log('initPageAnnotations');
+  await initializeOptionService();
+
   knownWords = await loadKnownWords();
   if(!knownWords){
     knownWords= [];
@@ -370,6 +384,7 @@ function addStyle(document){
 function addToolbar(document){
   let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
   let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
+  let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
   var elemDiv = document.createElement('div');
   elemDiv.innerHTML = `
@@ -378,6 +393,9 @@ function addToolbar(document){
     </button>
     <button class='mea-remove-unknown mea-toolbar-button'>
       <img class='mea-icon' src='${tickImgUrl}'></img>
+    </button>  
+    <button class='mea-remove-not-sure mea-toolbar-button'>
+      <img class='mea-icon' src='${clearImgUrl}'></img>
     </button>  
     `;
 
@@ -392,19 +410,17 @@ function hideToolbar(document) {
   document.querySelector('.mea-toolbar').style.visibility = 'hidden';
 }
 
-function addEventListener(document){
-  
+async function addEventListener(document){
   document.querySelectorAll('.mea-highlight').forEach((element) => {
     element.addEventListener('click', async (e) => {
     
       let show = false;
 
       let highlightElement = e.target.closest('.mea-highlight');
-      let baseFormWord = highlightElement.getAttribute('base-form-word');
+      let targetWord = getBaseWordFromElement(highlightElement);
 
-      //console.log('baseFormWord:'+baseFormWord);
       //gSelection = selection.toString();
-      if(baseFormWord) {
+      if(targetWord) {
         show = true;
 
         let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
@@ -423,9 +439,8 @@ function addEventListener(document){
           
           toolbarElement.style.visibility = 'visible';
 
-          toolbarElement.setAttribute('base-form-word', baseFormWord);
+          toolbarElement.setAttribute('data-target-word', targetWord);
 
-          //toolbarElement.querySelector('.mea-toolbar-word').innerHTML = baseFormWord;
           //console.log('tooltip style:'+ toobarElement.style.cssText);
         }
       }
@@ -442,13 +457,12 @@ function addEventListener(document){
   document.querySelectorAll('.mea-add-unknown').forEach((element) => {
     element.addEventListener('click', async (e) => {
       
-      let baseFormWord = e.target.closest('.mea-toolbar').getAttribute('base-form-word');
+      let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
 
-      if(baseFormWord){
+      if(targetWord){
         
-        //console.log('add unknown:'+ baseFormWord);
-
-        await removeKnownWord(baseFormWord);
+        
+        await markWordAsUnknown(targetWord);
         let visible = isPageAnnotationVisible();
         resetPageAnnotationVisibility(visible);
         hideToolbar(document);
@@ -459,13 +473,27 @@ function addEventListener(document){
   document.querySelectorAll('.mea-remove-unknown').forEach((element) => {
     element.addEventListener('click', async (e) => {
       
-      let baseFormWord = e.target.closest('.mea-toolbar').getAttribute('base-form-word');
+      let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
 
-      if(baseFormWord){
+      if(targetWord){
         
-        //console.log('remove unknown:'+ baseFormWord);
+        
+        await markWordAsKnown(targetWord);
+        let visible = isPageAnnotationVisible();
+        resetPageAnnotationVisibility(visible);
+        hideToolbar(document);
+      }
+    });
+  });
+  document.querySelectorAll('.mea-remove-not-sure').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+      
+      let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
 
-        await addKnownWord(baseFormWord);
+      if(targetWord){
+        
+        
+        await removeWordMark(targetWord);
         let visible = isPageAnnotationVisible();
         resetPageAnnotationVisibility(visible);
         hideToolbar(document);
@@ -566,15 +594,6 @@ function annotateChildTextContents(element, isIframe){
   element.innerHTML = html;
 }
 
-function containsMeaClass(element){
-  for(let clazz of element.classList){
-    if(clazz.startsWith('mea-')){
-      return true;
-    }
-  }
-  return false;
-}
-
 function isInMeaElement(element){
   let meaContainer = element.closest('.mea-container');
   if(meaContainer){
@@ -587,41 +606,78 @@ function isInMeaElement(element){
 function annotateTextContent(textContent){
   let html = textContent; 
 
-  let result = html.replaceAll(/([a-zA-Z][a-zA-Z']+)/g, function (x) {
+  let result = html.replaceAll(/([a-zA-Z][a-zA-Z'\u2018\u2019&\-]+)/g, function (x) {
+    //console.log(x);
     let searchResult = searchWord({
       query: x,
       allowLemma: true,
-      allowStem: true,
-      allowRemoveSuffixOrPrefix: true,
+      allowRemoveSuffixOrPrefix: false,      
     });
-    
+    //console.log(JSON.stringify(searchResult));
     //finally,
     if(searchResult){// find the correct form which has definition in dictionary
-      let baseFormWord = searchResult.word;
-      let definition = lookupShort(baseFormWord);
-      
-      if(searchResult.searchType ==='stem'){
-        definition = '根'+searchResult.word+':'+definition;
-      }
-      if(searchResult.searchType ==='removeSuffixOrPrefix'){
-        definition = '源'+searchResult.word+':'+definition;
-      }
-      if(searchResult.searchType ==='lemma' && searchResult.lemmaType ==='irregular'){
-        definition = '原'+searchResult.word+':'+definition;
-      }
+      return annotateWord(searchResult);
+    } else if(x.includes('-')) {
+      let subwords = x.split('-');
 
-      //fix right click selection issue
-      if(isStartWithAlphabet(definition)){
-        definition = ':'+definition;
-      }                       
-      return format(x, definition, baseFormWord);
-      
-    }else {         
+      let annotatedSubwords = [];
+      for(let subword of subwords){
+        searchResult = searchWord({
+          query: subword,
+          allowLemma: true,
+          allowRemoveSuffixOrPrefix: false,      
+        });
+        if(searchResult){// find the correct form which has definition in dictionary
+          let annotatedSubword = annotateWord(searchResult);
+          annotatedSubwords.push(annotatedSubword);
+        }
+      }
+      return annotatedSubwords.join('-');
+
+    } else {         
+      //console.log('search failed');
       return x;
     }
   });
 
   return result;
+}
+
+function annotateWord(searchResult){
+  let query = searchResult.query;
+  let baseWord = searchResult.word;
+  let definition = searchResult.definition;
+  
+  if(searchResult.searchType ==='stem'){
+    definition = '根'+searchResult.word+':'+definition;
+  }
+  if(searchResult.searchType ==='removeSuffixOrPrefix'){
+    definition = '源'+searchResult.word+':'+definition;
+  }
+  if(searchResult.searchType ==='lemma' && searchResult.lemmaType ==='irregular'){
+    definition = '原'+searchResult.word+':'+definition;
+  }
+
+  //fix right click selection issue
+  if(isStartWithAlphabet(definition)){
+    //definition = ':'+definition;
+  }      
+  
+  //only support one-root
+  let root ='';
+  
+  let wordPartObjs = getWordParts(baseWord);
+  let parts='';
+  if(wordPartObjs){
+    let partArray = [];
+    for(let partObj of wordPartObjs){
+      partArray.push(partObj.word);
+    }
+    parts = partArray.join(' ');
+  }
+  let formatted =  format(query, definition, baseWord, parts);
+  //console.log('formatted:'+formatted);                 
+  return formatted;
 }
 
 function isStartWithAlphabet(definition){
@@ -695,18 +751,21 @@ async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWor
 
   knownWords = await loadKnownWords();
 
+
+
   document.querySelectorAll('.mea-highlight').forEach((element) => { 
-    let baseFormWord = element.getAttribute('base-form-word'); 
+    
+    let targetWord = getBaseWordFromElement(element);
 
     if(enabled){
-
-      if(isKnown(baseFormWord)){
+      
+      if(isKnown(targetWord, knownWords)){
         element.classList.add("hide");
       } else {
         element.classList.remove("hide");
 
         if(onUnknownWord){
-          onUnknownWord(baseFormWord);
+          onUnknownWord(targetWord);
         }
       }
     } else {
@@ -717,25 +776,12 @@ async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWor
 
 
 
-function format(word, annotation, baseFormWord) {
-  let imgUrl = chrome.runtime.getURL('icons/question-mark.png');
-  let s = `
-    <div class="mea-container mea-highlight hide" base-form-word="${baseFormWord}">
+function format(word, annotation, baseWord, parts) {
+ 
+  let s = `<span class="mea-container mea-highlight hide" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${annotation}">
       ${word}
-      <div class="mea-annotation">${annotation}</div>
-    </div>`;
+    </span>`;
   return s;
 }
 
-
-function isKnown(word) {
-  let baseForm = word;
-  let found = knownWords.indexOf(baseForm) >= 0;
-  if(!found){
-    let lowercaseWord = word.toLowerCase();
-    found = knownWords.indexOf(lowercaseWord) >= 0;
-  }
-
-  return found;
-}
 

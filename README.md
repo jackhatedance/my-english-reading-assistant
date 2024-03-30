@@ -46,7 +46,9 @@ refer to https://github.com/dutiyesh/chrome-extension-cli
 ## Contribution
 
 
-some word list are from [english-wordlists](https://github.com/mahavivo/english-wordlists)
+open source projects used in this project:
+* some word list are from [english-wordlists](https://github.com/mahavivo/english-wordlists)
+* [lemma database](https://github.com/skywind3000/lemma.en)
 
 ---
 

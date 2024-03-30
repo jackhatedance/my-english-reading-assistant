@@ -70,10 +70,7 @@
     "optionsEditVocabularyTotal":{
         "message":"total:"
     },
-    "optionsEditVocabularyAction":{
-        "message":"Save"
-    },
-
+    
     "optionsImportLabelDesc":{
         "message":"read vocabulary from file"
     },
@@ -89,6 +86,19 @@
         "message":"Export"
     },
 
+    "optionsRootAndAffixLabel":{
+        "message":"Root and Affix"
+    },
+    "optionsRootAndAffixLabelDesc":{
+        "message":"When you turn on the root and affix mode, as long as you know the root and affix of a word, it will be assumed that you also know the word by default. Can greatly reduce word tagging work."
+    },
+    "optionsRootAndAffixModeLabel":{
+        "message":"root and affix mode"
+    },
+    "optionsunknownWordsLabel":{
+        "message":"Unknown words"
+    },
+
     "sidepanelPageTitle":{
         "message":"My English Reading Assistant Side Panel"
     },
@@ -99,13 +109,17 @@
         "message":"Unknown words on page"
     },
     "sidepanelTitleDesc":{
-        "message":"remove the words you already known"
+        "message":"marking the words that you known"
     },
     "sidepanelShowDefinitions":{
         "message":"Show Definitions"
     },
     "sidepanelHideDefinitions":{
         "message":"Hide Definitions"
+    },
+
+    "optionsSaveAction":{
+        "message":"Save"
     }
 
 

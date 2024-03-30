@@ -50,46 +50,63 @@ async function saveKnownWords(data){
     return  await chunkedWrite('knownWords', data);
 }
 
-async function addKnownWord(knownWord){
-    //console.log('add word:'+ knownWord);
+async function markWordAsKnown(word){
+    //console.log('mark word as known:'+ word);
 
     //add into knownWords
     let knownWords = await loadKnownWords();
     const knownWordSet = new Set(knownWords);
-    knownWordSet.add(knownWord);
+    knownWordSet.add(word);
+    knownWordSet.delete('#'+word);
     knownWords = Array.from(knownWordSet);
 
     await saveKnownWords(knownWords);
 
 }
 
-async function removeKnownWord(knownWord){
-    //console.log('remove word:'+ knownWord);
+async function markWordAsUnknown(word){
+    //console.log('mark word as unknown :'+ word);
 
     //remove from knownWords
     let knownWords = await loadKnownWords();
     const knownWordSet = new Set(knownWords);
-    knownWordSet.delete(knownWord);
+    knownWordSet.delete(word);
+    knownWordSet.add('#'+word);
     knownWords = Array.from(knownWordSet);
 
     await saveKnownWords(knownWords);
 
 }
 
+async function removeWordMark(word){
+    //console.log('mark word as unknown :'+ word);
 
-async function isKnown(word) {
-    
+    //remove from knownWords
     let knownWords = await loadKnownWords();
+    const knownWordSet = new Set(knownWords);
+    knownWordSet.delete(word);
+    knownWordSet.delete('#'+word);
+    knownWords = Array.from(knownWordSet);
+
+    await saveKnownWords(knownWords);
+
+}
+
+function existWordRecord(key, vocabulary){
     
-
-    let baseForm = word;
-    let found = knownWords.indexOf(baseForm) >= 0;
-    if(!found){
-      let lowercaseWord = word.toLowerCase();
-      found = knownWords.indexOf(lowercaseWord) >= 0;
+    if(!vocabulary){
+        vocabulary = loadKnownWords();
     }
-  
+    
+    let found = vocabulary.indexOf(key) >= 0;
+    if(!found){
+      let lowercaseWord = key.toLowerCase();
+      found = vocabulary.indexOf(lowercaseWord) >= 0;
+    }
+    //console.log('existWordRecord:'+key+', found:'+found);
     return found;
-  }
+}
 
-export {loadKnownWords, loadDefaultKnownWords, loadAndMergeWordLists, saveKnownWords, addKnownWord, removeKnownWord, isKnown};
+
+
+export {loadKnownWords, loadDefaultKnownWords, loadAndMergeWordLists, saveKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark, existWordRecord};

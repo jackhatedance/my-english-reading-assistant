@@ -2,17 +2,25 @@
 
 import './options.css';
 import {loadKnownWords, loadAndMergeWordLists, saveKnownWords} from './vocabularyStore.js';
+import {getOptions, setOptions} from './optionService.js';
 import {localizeHtmlPage} from './locale.js';
+
 
 localizeHtmlPage();
 
 // Saves options to chrome.storage
-const saveOptions = () => {
+const saveOptionsUI = () => {
     const splitter = /\r*\n/;
     let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
-
+    let wordMarkRootMode = document.getElementById('rootMode').checked;
+    
     save({
-      knownWords: knownWordsArray
+      knownWords: knownWordsArray,
+      options: {
+        rootAndAffix:{
+          enabled:wordMarkRootMode,
+        },
+      }
     });
 
   };
@@ -27,6 +35,13 @@ const saveOptions = () => {
     }    
 
     updateVocabulary(knownWords);
+    
+
+    //word mark
+    let options = await getOptions();
+
+    updateWordMark(options.rootAndAffix?.enabled);
+    
   };
 
   const resetVocabulary = async () => {
@@ -73,7 +88,13 @@ const saveOptions = () => {
 
   function updateVocabulary(wordArray){
     document.getElementById('knownWords').value = wordArray.join('\n');
-    document.getElementById('count').innerHTML = wordArray.length;
+
+    const knownCount = wordArray.filter((w) => !w.startsWith('#')).length;    
+    document.getElementById('count').innerHTML = knownCount;
+  }
+
+  function updateWordMark(rootMode){
+    document.getElementById('rootMode').checked = rootMode;
   }
 
   async function save(settings){
@@ -82,7 +103,11 @@ const saveOptions = () => {
       await saveKnownWords(uw);
       settings.knownWords = null;
     }
-    
+
+    if(settings.options){
+      let options = settings.options;
+      await setOptions(options);
+    }
   }
 
   function formatDate(date) {
@@ -128,5 +153,5 @@ const saveOptions = () => {
   document.addEventListener('DOMContentLoaded', restoreOptions);
   document.getElementById('backupVocabulary').addEventListener('click', backupVocabulary);
   document.getElementById('resetVocabulary').addEventListener('click', resetVocabulary);
-  document.getElementById('save').addEventListener('click', saveOptions);
+  document.getElementById('save').addEventListener('click', saveOptionsUI);
   document.getElementById('loadFromFile').addEventListener('click', loadFromFile);

@@ -2,6 +2,8 @@
 
 import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from './vocabularyStore.js';
 
+var gOptions;
+
 async function getDefaultSiteOptions(){
 
     let options = await loadSiteOptionsFromStorage('default');
@@ -56,6 +58,33 @@ function saveSiteOptionsToStorage(siteDomain, options){
     });    
 }
 
+function getOptions(){
+    return new Promise(resolve => {
+        chrome.storage.local.get(['options'], (result) => {
+            let options = result.options;
+            if(!options){
+                options = {};
+            }
+            if(!options.rootAndAffix) {
+                options.rootAndAffix = {
+                    enabled: false,
+                };
+            }
+            if(!options.unknownWords){
+                options.unknownWords = [];
+            }
+            resolve(options);
+        });
+    });
+}
+
+function setOptions(options){
+    return new Promise(resolve => {
+        let object = {options: options};
+        chrome.storage.local.set(object, resolve);
+    });    
+}
+
 
 function setSiteOptionsAsDefault(options){
     setSiteOptions('default', options);
@@ -104,5 +133,13 @@ function isEmptyVocabulary(vocabulary){
     }
     return true;
 }
+
+async function initializeOptionService(){
+    gOptions = await getOptions();
+}
+
+function getOptionsFromCache(){
+    return gOptions;
+} 
   
-export {getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};
+export {getOptions, initializeOptionService, getOptionsFromCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};
