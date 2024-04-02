@@ -8,6 +8,9 @@
     "extensionDefaultTitle":{
         "message":"我的英文阅读助手"
     },
+    "popupReport":{
+        "message":"报告"
+    },
     "popupHelp":{
         "message":"帮助"
     },
@@ -98,6 +101,23 @@
     "optionsunknownWordsLabel":{
         "message":"不认识的单词"
     },
+    "optionsReportLabel":{
+        "message":"报告"
+    },
+    "optionsReportLabelDesc":{
+        "message":"保存阅读活动并展示阅读报告"
+    },
+    "optionsReportModeLabel":{
+        "message":"启用报告"
+    },
+    "optionsDeleteReadingHistoryAction":{
+        "message":"清除历史数据"
+    },
+
+
+    "optionsSaveAction":{
+        "message":"保存"
+    },
 
     "sidepanelPageTitle":{
         "message":"我的英文阅读助手侧栏"
@@ -107,6 +127,9 @@
     },
     "sidepanelTitle":{
         "message":"当前页面上的生词"
+    },
+    "sidepanelWordStatisticsLabel":{
+        "message":"比例："
     },
     "sidepanelTitleDesc":{
         "message":"标记你已经认识的单词"
@@ -118,10 +141,73 @@
         "message":"隐藏释义"
     },
 
-    "optionsSaveAction":{
-        "message":"保存"
+
+    "reportReadingActivitiesTitle":{
+        "message":"阅读活动"
+    },
+    "reportReadingActivitiesHeaderTime":{
+        "message":"时间"
+    },
+    "reportReadingActivitiesHeaderSite":{
+        "message":"网站"
+    },
+    "reportReadingActivitiesHeaderTitle":{
+        "message":"标题"
+    },
+    "reportReadingActivitiesHeaderWordCount":{
+        "message":"词数"
+    },
+    "reportReadingActivitiesHeaderDuration":{
+        "message":"持续时间"
+    },
+    "reportReadingActivitiesHeaderVocabulary":{
+        "message":"词汇变化"
+    },
+
+    "reportPageSummariesTitle":{
+        "message":"页面（书籍）统计"
+    },
+    "reportPageSummariesHeaderTitle":{
+        "message":"标题"
+    },
+    "reportPageSummariesHeaderStartReadTime":{
+        "message":"开始阅读时间"
+    },
+    "reportPageSummariesHeaderLastReadTime":{
+        "message":"最后阅读时间"
+    },
+    "reportPageSummariesHeaderDuration":{
+        "message":"持续时间"
+    },
+    "reportPageSummariesHeaderVocabulary":{
+        "message":"词汇变化"
+    },
+
+
+    "reportSiteSummariesTitle":{
+        "message":"网站统计"
+    },
+    "reportSiteSummariesHeaderName":{
+        "message":"名称"
+    },
+    "reportSiteSummariesHeaderStartReadTime":{
+        "message":"开始阅读时间"
+    },
+    "reportSiteSummariesHeaderLastReadTime":{
+        "message":"最后阅读时间"
+    },
+    "reportSiteSummariesHeaderDuration":{
+        "message":"持续时间"
+    },
+    "reportSiteSummariesHeaderVocabulary":{
+        "message":"词汇变化"
+    },
+
+    "reportVocabularyChartTitle":{
+        "message":"词汇量图"
+    },
+    "reportVocabularyChartLabel":{
+        "message":"词汇量"
     }
-
-
 
 }

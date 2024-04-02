@@ -15,6 +15,7 @@ const config = (env, argv) =>
       background: PATHS.src + '/background.js',
       sidePanel: PATHS.src + '/sidePanel.js',
       guide: PATHS.src + '/guide.js',
+      report: PATHS.src + '/report.js',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });

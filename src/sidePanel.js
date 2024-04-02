@@ -1,7 +1,7 @@
 'use strict';
 
 import './sidePanel.css';
-import {loadKnownWords, markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
+import {loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark} from './vocabularyStore.js';
 import { lookupShort } from './dictionary.js';
 import {localizeHtmlPage} from './locale.js';
 import {getWordParts, isKnown} from './language.js';
@@ -58,7 +58,7 @@ localizeHtmlPage();
   async function renderPage(pageInfo){
     
     if(pageInfo.visible){
-      renderRatio(pageInfo.unknownWordsRatio);
+      renderRatio(pageInfo.totalWordCount, pageInfo.unknownWordsCount, pageInfo.unknownWordsRatio);
       await renderUnknownWordList(pageInfo.unknownWords);
       showPage();
     } else {
@@ -81,10 +81,10 @@ localizeHtmlPage();
     notAvailable.style.display=available?'none':null;
   }
 
-  function renderRatio(ratio){
-    let ratioElement = document.getElementById('ratio');
+  function renderRatio(totalWordCount, unknownWordsCount, ratio){
+    let ratioElement = document.getElementById('wordStatistics');
     let percentage = Math.floor(ratio * 100);
-    ratioElement.innerHTML=`${percentage}%`;
+    ratioElement.innerHTML=`${unknownWordsCount}/${totalWordCount} (${percentage}%)`;
   }
 
 
@@ -181,13 +181,13 @@ localizeHtmlPage();
                 <image src='icons/lookup.png' width="12"></image>
               </button>
               
-              <button class='mea-remove' word="${word}" title="I know it">
+              <button class='mea-mark-known' word="${word}" title="I know it">
                 <image src='icons/tick.png' width="12"></image>
               </button>
-              <button class='mea-unknown' word="${word}" title="I don't know it">
+              <button class='mea-mark-unknown' word="${word}" title="I don't know it">
                 <image src='icons/question-mark.png' width="12"></image>
               </button>
-              <button class='mea-not-sure' word="${word}" title="I am not sure">
+              <button class='mea-mark-clear' word="${word}" title="I am not sure">
                 <image src='icons/clear.png' width="12"></image>
               </button>
             </div>
@@ -217,14 +217,14 @@ localizeHtmlPage();
       });
     });
 
-    document.querySelectorAll('.mea-unknown').forEach( element => {
+    document.querySelectorAll('.mea-mark-unknown').forEach( element => {
       let btn = element;
       
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`mark word as unknown ${baseForm}`);
-        await markWordAsUnknown(baseForm);
-        sendMessageKnownWordsUpdated();
+        let countChanges = await markWordAsUnknown(baseForm);
+        sendMessageKnownWordsUpdated('unknown', countChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -233,13 +233,13 @@ localizeHtmlPage();
     
     });
 
-    let removeButtons = document.querySelectorAll('.mea-remove');
+    let removeButtons = document.querySelectorAll('.mea-mark-known');
     for(let btn of removeButtons){
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`mark word as known ${baseForm}`);
-        await markWordAsKnown(baseForm);
-        sendMessageKnownWordsUpdated();
+        let countChanges = await markWordAsKnown(baseForm);
+        sendMessageKnownWordsUpdated('known', countChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -247,13 +247,13 @@ localizeHtmlPage();
       });
     }
 
-    let clearButtons = document.querySelectorAll('.mea-not-sure');
+    let clearButtons = document.querySelectorAll('.mea-mark-clear');
     for(let btn of clearButtons){
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`remove word mark ${baseForm}`);
-        await removeWordMark(baseForm);
-        sendMessageKnownWordsUpdated();
+        let countChanges = await removeWordMark(baseForm);
+        sendMessageKnownWordsUpdated('clear', countChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -271,7 +271,7 @@ localizeHtmlPage();
   }
 
 
-  function sendMessageKnownWordsUpdated(){
+  function sendMessageKnownWordsUpdated(type, countChanges){
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
       chrome.tabs.sendMessage(
@@ -287,7 +287,23 @@ localizeHtmlPage();
           //renderUnknownWordList(response.words);
         }
       );
+
+      //send to background
+      chrome.runtime.sendMessage(
+        {
+          type: 'MARK_WORD',
+          payload: {
+            contentTabId: tab.id,
+            changes: countChanges,
+          },
+        },
+        (response) => {
+          //console.log(response.message);
+        }
+      );
     });
+
+    
   }
 
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

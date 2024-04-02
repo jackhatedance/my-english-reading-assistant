@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>__MSG_reportPageTitle__</title>
+    <link rel="stylesheet" href="report.css" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      
+      <div class="section">
+        <h1>__MSG_reportReadingActivitiesTitle__</h1>
+        <table id="history">
+          <tr>
+            <th>__MSG_reportReadingActivitiesHeaderTime__</th>
+            <th>__MSG_reportReadingActivitiesHeaderSite__</th>
+            <th>__MSG_reportReadingActivitiesHeaderTitle__</th>
+            <th>__MSG_reportReadingActivitiesHeaderWordCount__</th>
+            <th>__MSG_reportReadingActivitiesHeaderDuration__</th>
+            <th>__MSG_reportReadingActivitiesHeaderVocabulary__</th>
+          </tr>        
+        </table>
+      </div>
+
+      <div class="section">
+        <h1>__MSG_reportPageSummariesTitle__</h1>
+        <table id="pageSummaries">
+          <tr>
+            <th>__MSG_reportReadingActivitiesHeaderTitle__</th>
+            <th>__MSG_reportPageSummariesHeaderStartReadTime__</th>
+            <th>__MSG_reportPageSummariesHeaderLastReadTime__</th>
+            <th>__MSG_reportPageSummariesHeaderDuration__</th>
+            <th>__MSG_reportPageSummariesHeaderVocabulary__</th>
+          </tr>        
+        </table>
+      </div>
+
+      <div class="section">
+      <h1>__MSG_reportSiteSummariesTitle__</h1>
+        <table id="siteSummaries">
+          <tr>
+            <th>__MSG_reportSiteSummariesHeaderName__</th>
+            <th>__MSG_reportSiteSummariesHeaderStartReadTime__</th>
+            <th>__MSG_reportSiteSummariesHeaderLastReadTime__</th>
+            <th>__MSG_reportSiteSummariesHeaderDuration__</th>
+            <th>__MSG_reportSiteSummariesHeaderVocabulary__</th>
+          </tr>        
+        </table>
+      </div>
+      
+      <div class="section">
+        <h1>__MSG_reportVocabularyChartTitle__</h1>
+        <canvas id="vocabularyChart"></canvas>
+      </div>
+    </div>
+
+    <script src="report.js"></script>
+
+    <!--
+      This HTML file opens when you click on icon from the toolbar.
+
+      To begin the development, run `npm run watch`.
+      To create a production bundle, use `npm run build`.
+    -->
+  </body>
+</html>

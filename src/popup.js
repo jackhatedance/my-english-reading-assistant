@@ -3,6 +3,7 @@
 import './popup.css';
 import {setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './optionService.js';
 import {localizeHtmlPage} from './locale.js';
+import {initializeOptionService, getOptionsFromCache} from './optionService.js';
 
 localizeHtmlPage();
 
@@ -37,6 +38,8 @@ localizeHtmlPage();
  
 
   function setupPage(pageInfo) {
+    let options = getOptionsFromCache();
+
     document.getElementById('test').addEventListener('click', (e) => {
       
       getPageInfo((pageInfo) => {
@@ -45,9 +48,18 @@ localizeHtmlPage();
       
     });
 
-    //console.log('setupPage:'+ JSON.stringify(pageInfo));
+    //console.log('setup page:'+ JSON.stringify(pageInfo));
     if(!pageInfo){
       return;
+    }
+
+    if(options.report.enabled){
+      document.getElementById('report').addEventListener('click', (e) => {
+        chrome.tabs.create({url: chrome.runtime.getURL('report.html')});
+      });
+    } else {
+      //hide
+      document.getElementById('report').style.visibility = 'hidden';
     }
 
     document.getElementById('help').addEventListener('click', (e) => {
@@ -238,8 +250,11 @@ localizeHtmlPage();
     });
   }
 
-  function init() {
+  async function init() {
+    await initializeOptionService();
+
     initVocabularyIfEmpty();
+    
 
     getPageInfo((_pageInfo) => {
       pageInfo = _pageInfo;

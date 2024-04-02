@@ -55,13 +55,18 @@ async function markWordAsKnown(word){
 
     //add into knownWords
     let knownWords = await loadKnownWords();
+    let count0 = calculateKnownWordsCount(knownWords);
+
     const knownWordSet = new Set(knownWords);
     knownWordSet.add(word);
     knownWordSet.delete('#'+word);
     knownWords = Array.from(knownWordSet);
 
+    let count1 = calculateKnownWordsCount(knownWords);
+
     await saveKnownWords(knownWords);
 
+    return count1 - count0;
 }
 
 async function markWordAsUnknown(word){
@@ -69,13 +74,19 @@ async function markWordAsUnknown(word){
 
     //remove from knownWords
     let knownWords = await loadKnownWords();
+
+    let count0 = calculateKnownWordsCount(knownWords);
+
     const knownWordSet = new Set(knownWords);
     knownWordSet.delete(word);
     knownWordSet.add('#'+word);
     knownWords = Array.from(knownWordSet);
 
+    let count1 = calculateKnownWordsCount(knownWords);
+
     await saveKnownWords(knownWords);
 
+    return count1 - count0;
 }
 
 async function removeWordMark(word){
@@ -83,13 +94,21 @@ async function removeWordMark(word){
 
     //remove from knownWords
     let knownWords = await loadKnownWords();
+    let count0 = calculateKnownWordsCount(knownWords);
+
     const knownWordSet = new Set(knownWords);
     knownWordSet.delete(word);
     knownWordSet.delete('#'+word);
     knownWords = Array.from(knownWordSet);
 
-    await saveKnownWords(knownWords);
+    let count1 = calculateKnownWordsCount(knownWords);
 
+    await saveKnownWords(knownWords);
+    return count1 - count0;
+}
+
+function calculateKnownWordsCount(wordArray) {
+    return wordArray.filter((w) => !w.startsWith('#')).length;  
 }
 
 function existWordRecord(key, vocabulary){
@@ -109,4 +128,4 @@ function existWordRecord(key, vocabulary){
 
 
 
-export {loadKnownWords, loadDefaultKnownWords, loadAndMergeWordLists, saveKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark, existWordRecord};
+export {loadKnownWords, loadDefaultKnownWords, loadAndMergeWordLists, saveKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark, existWordRecord, calculateKnownWordsCount};

@@ -1,18 +1,19 @@
 'use strict';
 
 import './options.css';
-import {loadKnownWords, loadAndMergeWordLists, saveKnownWords} from './vocabularyStore.js';
+import {loadKnownWords, loadAndMergeWordLists, saveKnownWords, calculateKnownWordsCount} from './vocabularyStore.js';
 import {getOptions, setOptions} from './optionService.js';
 import {localizeHtmlPage} from './locale.js';
-
+import {deleteAllReadingHistory} from './activityService.js';
 
 localizeHtmlPage();
 
-// Saves options to chrome.storage
-const saveOptionsUI = () => {
+  // Saves options to chrome.storage
+  const saveOptionsUI = () => {
     const splitter = /\r*\n/;
     let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
     let wordMarkRootMode = document.getElementById('rootMode').checked;
+    let enableReport = document.getElementById('enableReport').checked;
     
     save({
       knownWords: knownWordsArray,
@@ -20,10 +21,17 @@ const saveOptionsUI = () => {
         rootAndAffix:{
           enabled:wordMarkRootMode,
         },
+        report:{
+          enabled: enableReport,
+        }
       }
     });
 
   };
+
+  function deleteReadingHistoryUI(){
+    deleteAllReadingHistory();
+  }
   
   // Restores select box and checkbox state using the preferences
   // stored in chrome.storage.
@@ -41,6 +49,7 @@ const saveOptionsUI = () => {
     let options = await getOptions();
 
     updateWordMark(options.rootAndAffix?.enabled);
+    updateReport(options.report);
     
   };
 
@@ -89,12 +98,17 @@ const saveOptionsUI = () => {
   function updateVocabulary(wordArray){
     document.getElementById('knownWords').value = wordArray.join('\n');
 
-    const knownCount = wordArray.filter((w) => !w.startsWith('#')).length;    
+    const knownCount = calculateKnownWordsCount(wordArray);   
+    
     document.getElementById('count').innerHTML = knownCount;
   }
 
   function updateWordMark(rootMode){
     document.getElementById('rootMode').checked = rootMode;
+  }
+
+  function updateReport(reportOptions){
+    document.getElementById('enableReport').checked = reportOptions.enabled;
   }
 
   async function save(settings){
@@ -107,6 +121,7 @@ const saveOptionsUI = () => {
     if(settings.options){
       let options = settings.options;
       await setOptions(options);
+      await refreshOptionsCache();
     }
   }
 
@@ -155,3 +170,4 @@ const saveOptionsUI = () => {
   document.getElementById('resetVocabulary').addEventListener('click', resetVocabulary);
   document.getElementById('save').addEventListener('click', saveOptionsUI);
   document.getElementById('loadFromFile').addEventListener('click', loadFromFile);
+  document.getElementById('deleteReadingHistory').addEventListener('click', deleteReadingHistoryUI);

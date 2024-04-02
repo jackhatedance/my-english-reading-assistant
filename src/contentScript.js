@@ -19,6 +19,9 @@ import {initializeOptionService, getOptionsFromCache, getSiteOptions, getDefault
 
 // Log `title` of current active web page
 
+//used to check if title changed
+var gUrl;
+
 async function getAnnotationOptions(){
   
   let options = await getCurrentSiteOptions();
@@ -37,7 +40,7 @@ async function getCurrentSiteOptions(){
 
 window.addEventListener ("load", myMain, false);
 function myMain(){
-
+  //console.log('page on load');
   var jsInitChecktimer = setTimeout (checkForJS_Finish, 100);
 
   function checkForJS_Finish () {
@@ -167,9 +170,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-setInterval(refreshTimer, 500);
+setInterval(monitorTimer, 500);
 
-function refreshTimer() {
+function monitorTimer() {
   let siteConfig = findSiteConfig(document);
 
   if(siteConfig.needRefreshPageAnnotation(document)){
@@ -177,6 +180,14 @@ function refreshTimer() {
     initPageAnnotations(()=>{
       resetPageAnnotationVisibility(true);
     });
+  }
+
+  let url = siteConfig.getUrl(document);
+  if(gUrl && gUrl !== url){
+    //update gloabl variable
+    gUrl = url;
+
+    sendMessageToBackground(siteConfig, 'PAGE_URL_CHANGED');
   }
 
   
@@ -287,13 +298,16 @@ async function getPageInfo() {
 
   let unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
 
-  let unknownWordsRatio = unknownWordsCount / (unknownWordsCount + knownWordsCount);
+  let totalWordCount = unknownWordsCount + knownWordsCount;
+  let unknownWordsRatio = unknownWordsCount / totalWordCount;
   let visible = isPageAnnotationVisible();
   let siteOptions = await getCurrentSiteOptions();
   let domain = document.location.hostname;
   return {
     domain:domain,
     visible: visible,
+    totalWordCount: totalWordCount,
+    unknownWordsCount: unknownWordsCount,
     unknownWords: unknownWords,
     unknownWordsRatio: unknownWordsRatio,
     siteOptions : siteOptions,
@@ -333,8 +347,36 @@ async function initPageAnnotations(resolve) {
     }
   }
   
+
+  //send message to background
+  //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
+  sendMessageToBackground(siteConfig, 'INIT_PAGE_ANNOTATIONS_FINISHED');
+  
   
   resolve();
+}
+
+async function sendMessageToBackground(siteConfig, type){
+  let pageInfo = await getPageInfo();
+  let site = document.location.hostname;
+  if(document.location.protocol ==='file:'){
+    site='[local]';
+  }
+  let url = siteConfig.getUrl(document);
+  chrome.runtime.sendMessage(
+    {
+      type: type,
+      payload: {
+        title: document.title,
+        url: url,
+        site: site,
+        totalWordCount: pageInfo.totalWordCount,
+      },
+    },
+    (response) => {
+      //console.log(response.message);
+    }
+  );
 }
 
 async function initDocumentAnnotations(document, isIframe, documentConfig) {
@@ -382,19 +424,24 @@ function addStyle(document){
 }
 
 function addToolbar(document){
+  //check if existed
+  if(document.querySelector('.mea-toolbar')){
+    return;
+  }
+  
   let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
   let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
   let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
   var elemDiv = document.createElement('div');
   elemDiv.innerHTML = `
-    <button class='mea-add-unknown mea-toolbar-button'>
+    <button class='mea-mark-unknown mea-toolbar-button'>
       <img class='mea-icon' src='${questionMarkImgUrl}'></img>
     </button>
-    <button class='mea-remove-unknown mea-toolbar-button'>
+    <button class='mea-mark-known mea-toolbar-button'>
       <img class='mea-icon' src='${tickImgUrl}'></img>
     </button>  
-    <button class='mea-remove-not-sure mea-toolbar-button'>
+    <button class='mea-mark-clear mea-toolbar-button'>
       <img class='mea-icon' src='${clearImgUrl}'></img>
     </button>  
     `;
@@ -454,7 +501,7 @@ async function addEventListener(document){
     });
   });
 
-  document.querySelectorAll('.mea-add-unknown').forEach((element) => {
+  document.querySelectorAll('.mea-mark-unknown').forEach((element) => {
     element.addEventListener('click', async (e) => {
       
       let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
@@ -462,15 +509,18 @@ async function addEventListener(document){
       if(targetWord){
         
         
-        await markWordAsUnknown(targetWord);
+        let wordChanges = await markWordAsUnknown(targetWord);
+        sendMessageMarkWord(wordChanges);
+
         let visible = isPageAnnotationVisible();
         resetPageAnnotationVisibility(visible);
         hideToolbar(document);
+
       }
     });
   });
 
-  document.querySelectorAll('.mea-remove-unknown').forEach((element) => {
+  document.querySelectorAll('.mea-mark-known').forEach((element) => {
     element.addEventListener('click', async (e) => {
       
       let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
@@ -478,14 +528,16 @@ async function addEventListener(document){
       if(targetWord){
         
         
-        await markWordAsKnown(targetWord);
+        let wordChanges = await markWordAsKnown(targetWord);
+        sendMessageMarkWord(wordChanges);
+
         let visible = isPageAnnotationVisible();
         resetPageAnnotationVisibility(visible);
         hideToolbar(document);
       }
     });
   });
-  document.querySelectorAll('.mea-remove-not-sure').forEach((element) => {
+  document.querySelectorAll('.mea-mark-clear').forEach((element) => {
     element.addEventListener('click', async (e) => {
       
       let targetWord = e.target.closest('.mea-toolbar').getAttribute('data-target-word');
@@ -493,13 +545,30 @@ async function addEventListener(document){
       if(targetWord){
         
         
-        await removeWordMark(targetWord);
+        let wordChanges = await removeWordMark(targetWord);
+        sendMessageMarkWord(wordChanges);
+
         let visible = isPageAnnotationVisible();
         resetPageAnnotationVisibility(visible);
         hideToolbar(document);
       }
     });
   });
+}
+
+function sendMessageMarkWord(countChanges){
+  //send to background
+  chrome.runtime.sendMessage(
+    {
+      type: 'MARK_WORD',
+      payload: {        
+        changes: countChanges,
+      },
+    },
+    (response) => {
+      //console.log(response.message);
+    }
+  );
 }
 
 function getAllDocuments(){
@@ -578,14 +647,15 @@ function annotateChildTextContents(element, isIframe){
     if(childNode.nodeName==='#text'){
       let textContent = childNode.textContent;
       let annotatedTextContent = annotateTextContent(textContent);
-      let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;");
+      let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
+        .replace(/&/g, "&amp;");
 
       //console.log('innerHTML:'+html);
       //console.log('nodeName:'+childNode.nodeName);
       //console.log('textContent:'+textContent);
       //console.log('unescapedTextContent:'+unescapedTextContent);
       //console.log('annotatedTextContent:'+annotatedTextContent);
-      
+            
       html = html.replaceAll(unescapedTextContent, annotatedTextContent);
       //console.log('annotated innerHTML:'+html);
     }
@@ -616,7 +686,9 @@ function annotateTextContent(textContent){
     //console.log(JSON.stringify(searchResult));
     //finally,
     if(searchResult){// find the correct form which has definition in dictionary
-      return annotateWord(searchResult);
+      let annotatedWord = annotateWord(searchResult);
+      //console.log(x+'-> '+ annotatedWord);
+      return annotatedWord;
     } else if(x.includes('-')) {
       let subwords = x.split('-');
 
@@ -777,9 +849,10 @@ async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWor
 
 
 function format(word, annotation, baseWord, parts) {
- 
-  let s = `<span class="mea-container mea-highlight hide" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${annotation}">
-      ${word}
+  let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
+  let escapedWord = word.replace(/&/g, "&amp;");
+  let s = `<span class="mea-container mea-highlight hide" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}">
+      ${escapedWord}
     </span>`;
   return s;
 }

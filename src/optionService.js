@@ -138,8 +138,12 @@ async function initializeOptionService(){
     gOptions = await getOptions();
 }
 
+async function refreshOptionsCache(){
+    gOptions = await getOptions();
+}
+
 function getOptionsFromCache(){
     return gOptions;
 } 
   
-export {getOptions, initializeOptionService, getOptionsFromCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};

@@ -8,6 +8,9 @@
     "extensionDefaultTitle":{
         "message":"My English Reading Assistant"
     },
+    "popupReport":{
+        "message":"Report"
+    },
     "popupHelp":{
         "message":"Help"
     },
@@ -99,6 +102,23 @@
         "message":"Unknown words"
     },
 
+    "optionsReportLabel":{
+        "message":"Report"
+    },
+    "optionsReportLabelDesc":{
+        "message":"save reading acitivity and show reading report"
+    },
+    "optionsReportModeLabel":{
+        "message":"Enable Report"
+    },
+    "optionsDeleteReadingHistoryAction":{
+        "message":"Clear History Data"
+    },
+    
+    "optionsSaveAction":{
+        "message":"Save"
+    },
+
     "sidepanelPageTitle":{
         "message":"My English Reading Assistant Side Panel"
     },
@@ -107,6 +127,9 @@
     },
     "sidepanelTitle":{
         "message":"Unknown words on page"
+    },
+    "sidepanelWordStatisticsLabel":{
+        "message":"ratio:"
     },
     "sidepanelTitleDesc":{
         "message":"marking the words that you known"
@@ -118,9 +141,74 @@
         "message":"Hide Definitions"
     },
 
-    "optionsSaveAction":{
-        "message":"Save"
+    "reportReadingActivitiesTitle":{
+        "message":"Reading Activities"
+    },
+    "reportReadingActivitiesHeaderTime":{
+        "message":"Time"
+    },
+    "reportReadingActivitiesHeaderSite":{
+        "message":"Site"
+    },
+    "reportReadingActivitiesHeaderTitle":{
+        "message":"Title"
+    },
+    "reportReadingActivitiesHeaderWordCount":{
+        "message":"Words"
+    },
+    "reportReadingActivitiesHeaderDuration":{
+        "message":"Duration"
+    },
+    "reportReadingActivitiesHeaderVocabulary":{
+        "message":"Vocabulary Changes"
+    },
+
+    "reportPageSummariesTitle":{
+        "message":"Page(Book) Summaries"
+    },
+    "reportPageSummariesHeaderTitle":{
+        "message":"Title"
+    },
+    "reportPageSummariesHeaderStartReadTime":{
+        "message":"Start Read Time"
+    },
+    "reportPageSummariesHeaderLastReadTime":{
+        "message":"Last Read Time"
+    },
+    "reportPageSummariesHeaderDuration":{
+        "message":"Duration"
+    },
+    "reportPageSummariesHeaderVocabulary":{
+        "message":"Vocabulary Changes"
+    },
+
+    "reportSiteSummariesTitle":{
+        "message":"Site Summaries"
+    },
+    "reportSiteSummariesHeaderName":{
+        "message":"Title"
+    },
+    "reportSiteSummariesHeaderStartReadTime":{
+        "message":"Start Read Time"
+    },
+    "reportSiteSummariesHeaderLastReadTime":{
+        "message":"Last Read Time"
+    },
+    "reportSiteSummariesHeaderDuration":{
+        "message":"Duration"
+    },
+    "reportSiteSummariesHeaderVocabulary":{
+        "message":"Vocabulary Changes"
+    },
+
+    "reportVocabularyChartTitle":{
+        "message":"Vocabulary Size Chart"
+    },
+    "reportVocabularyChartLabel":{
+        "message":"vocabulary size"
     }
+    
+
 
 
 

@@ -2,12 +2,14 @@
 
 import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
-import {getOptions} from './optionService.js';
+import {initializeOptionService, getOptionsFromCache} from './optionService.js';
+import {addActivityToStorage} from './activityService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
 
+const gTabInfoMap = new Map();
 
 function sendMsg(type, baseForm){
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -27,8 +29,8 @@ function sendMsg(type, baseForm){
   });
 }
 
-chrome.runtime.onInstalled.addListener(function () {
-  
+chrome.runtime.onInstalled.addListener(async function () {
+  await initializeOptionService();
   
   let toggle = chrome.contextMenus.create({
     title: 'Known <-> Unknown: %s',
@@ -111,31 +113,115 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({
       message,
     });
+  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED'
+      || request.type === 'PAGE_URL_CHANGED'){
+
+    //console.log('page changed, type:' + request.type);
+    //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
+    let tabId =sender.tab.id;
+
+    let title = request.payload.title;
+    let url = request.payload.url;
+    let site = request.payload.site;
+    let totalWordCount = request.payload.totalWordCount;
+    let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: new Date(), changes:0, totalWordCount: totalWordCount};
+    saveActivities(tabId, newTabInfo);
+    
+  } else if(request.type === 'MARK_WORD'){
+    let tabId;
+    if(request.payload.contentTabId){
+      tabId = request.payload.contentTabId;
+    } else{
+      tabId =sender.tab.id;
+    }
+    let changes = request.payload.changes;
+    let tabInfo = gTabInfoMap.get(tabId);
+    tabInfo.changes = tabInfo.changes + changes;
+    
+    //(`mark word tabId:${tabId}, changes:${changes}`);
   }
 });
 
 
-async function isPageAnnotationVisible(resolve){
-  // Communicate with content script of
-  // active tab by sending a message
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs[0];
+function saveActivities(tabId, newTabInfo){
+  
+  //console.log('new tab info:'+ JSON.stringify(newTabInfo));
+  let oldTabInfo = gTabInfoMap.get(tabId);
+  if(!oldTabInfo){
+    //console.log(`open page ${newTabInfo.title}`);
+    gTabInfoMap.set(tabId, newTabInfo);
+  } else {
+    //check if url/title changed
+    if(oldTabInfo.url !== newTabInfo.url){
+      finishReadingPage(oldTabInfo);
 
-    chrome.tabs.sendMessage(
-      tab.id,
-      {
-        type: 'IS_PAGE_ANNOTATION_VISIBLE',
-        payload: {            
-        },
-      },
-      (response) => {
-        //console.log('is page visible response: '+ response.visible);
-        resolve(response.visible);
-      }
-    );
-  });
+      //console.log(`open page ${newTabInfo.title}`);
+      gTabInfoMap.set(tabId, newTabInfo);
+    }else{
+      //do nothing
+    }
+
+  }
 }
+chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
+  if(changeInfo.status==='complete'){
+    //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
+    let tabInfo = gTabInfoMap.get(tabId);
+    if(tabInfo){
+      console.log(`on updated page: ${tabInfo.title}`);
+      saveActivities();
+    }
+  }
+  
+});
 
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  //console.log('activeInfo:'+JSON.stringify(activeInfo));
+
+  let tabId = activeInfo.tabId;
+  gTabInfoMap.forEach((value, key, map) => {
+    let tabInfo = value;
+    if(tabId === key){
+      tabInfo.startTime = new Date();
+    }else{
+      finishReadingPage(tabInfo);
+    }
+  });
+
+});
+
+chrome.tabs.onRemoved.addListener((tabId,removeInfo) => {
+  //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
+  let tabInfo = gTabInfoMap.get(tabId);
+  if(tabInfo){
+    finishReadingPage(tabInfo);
+  }
+});
+
+function finishReadingPage(tabInfo){
+  let options = getOptionsFromCache();
+  if(!options.report.enabled){
+    return;
+  }
+
+  if(tabInfo.startTime){
+
+    let endTime = new Date();
+    var timeDiff = (endTime.getTime() - tabInfo.startTime.getTime()) / 1000;
+    
+    tabInfo.startTime = null;
+    //console.log(`finish read page <<${tabInfo.title}>> in ${timeDiff} seconds, word changes:${tabInfo.changes}`);
+    addActivityToStorage({
+      site: tabInfo.site,
+      url: tabInfo.url,
+      sessionId: tabInfo.tabId,
+      duration: timeDiff,
+      title: tabInfo.title,
+      totalWordCount: tabInfo.totalWordCount,
+      wordChanges:tabInfo.changes, 
+    });
+  }
+}
 
 function setEnabled(enabled) {
     // Communicate with content script of

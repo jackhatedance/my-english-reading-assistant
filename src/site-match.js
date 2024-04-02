@@ -1,9 +1,11 @@
 const siteConfigs = [
     {
         name:'default',
+        //site match
         match: function(document){
             return true;
         },
+        //top document config
         getDocumentConfig: function(document){
             let config = {
                 document: document,
@@ -11,6 +13,7 @@ const siteConfigs = [
             };
             return config;
         },
+        //iframe document configs
         getIframeDocumentConfigs: function(document){
             let iframes = document.querySelectorAll('iframe');
             let configs = [];
@@ -25,8 +28,13 @@ const siteConfigs = [
             }
             return configs;
         },
+        //timer to refresh page annotation peridonically
         needRefreshPageAnnotation(topDocument){
             return false;
+        },
+        //the url to identify the real page (could be in in iframe)
+        getUrl(topDocument){
+            return topDocument.location.href;
         }
     },
     {
@@ -91,6 +99,15 @@ const siteConfigs = [
                 }
             }
             return false;
+        },
+        getUrl(topDocument){
+            let url = topDocument.location.href;
+
+            let iframeDocuments = this.getIframeDocumentConfigs(topDocument);
+            if(iframeDocuments.length > 0){
+                url = iframeDocuments[0].document.baseURI;
+            }
+            return url;
         }
     },
     {
@@ -145,6 +162,15 @@ const siteConfigs = [
                 }
             }
             return false;
+        },
+        getUrl(topDocument){
+            let url = topDocument.location.href;
+
+            let iframeDocuments = this.getIframeDocumentConfigs(topDocument);
+            if(iframeDocuments.length > 0){
+                url = iframeDocuments[0].document.baseURI;
+            }
+            return url;
         }
     },
 

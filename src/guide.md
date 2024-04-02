@@ -108,6 +108,34 @@
 
 大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读epub格式的电子书。只要在浏览器内打开epub阅读器即可。
 
+一些推荐的英文书
+阶段一:词汇量1k-3k
+* the little prince 小王子
+* charlotte's web 夏洛特的蜘蛛网
+* charlie and the chocolate factory 查理和他的巧克力工厂
+
+阶段二:词汇量3k-5k
+* Flipped怦然心动(多少人的入门书!)
+* The Giver赐予者
+* Tuesdays with Morrie相约星期二
+* The ReasonlJump我想飞进天空
+* The Nightingale and the Rose夜莺与玫瑰
+* Letter from an Unknown Woman一个陌生女人的来信
+* The Five People You Meet in Heaven你在天堂遇见的五个人
+
+鲁阶段三:词汇量5k-7k
+* Lean in向前一步
+* Animal Farm动物农场
+* The Joy Luck Club喜福会
+* When Breath Becomes Air当呼吸化为空气
+* The Bridges of Madison County廊桥遗梦
+
+阶段四:词汇量7k+
+* Jane Eyre简爱
+* Educated你当像鸟飞往你的山
+* Pride and Prejudice傲慢与偏见
+* The Greatest Gastby了不起的盖茨比
+
 <img src="screenshots/cn/epub-book.png" width="800">
 
 推荐阅读epub格式电子书的网站：https://app.flowoss.com/
