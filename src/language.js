@@ -54,7 +54,7 @@ function searchWordWithDict(request, dicts){
     input = word;
 
     //try captialize, such god -> God
-    if(!definition){
+    if(!definition && input.length > 1){
         word = input[0].toUpperCase() + input.substring(1);
         definition = lookup(word, dicts);
     }
