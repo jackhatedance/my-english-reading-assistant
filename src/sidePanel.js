@@ -170,6 +170,10 @@ localizeHtmlPage();
       let wordStr = fromStr? `${word} (${fromStr})` : word;
       
       let display = definitionVisible? 'unset':'none';
+      let showDefinitionTips = chrome.i18n.getMessage('sidepanelWordActionShowDefinition');
+      let markAsKnownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsKnown');
+      let markAsUnknownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsUnknown');
+      let clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
       const liInnerHTML = `
         <div class='list-item'>
           <div class="word-and-actions">
@@ -177,17 +181,17 @@ localizeHtmlPage();
             <span class='word'>${wordStr}:</span>
             
             <div class="actions">
-              <button class='mea-show-definition' word="${word}" title='show definition'>
+              <button class='mea-show-definition' word="${word}" title='${showDefinitionTips}'>
                 <image src='icons/lookup.png' width="12"></image>
               </button>
               
-              <button class='mea-mark-known' word="${word}" title="I know it">
+              <button class='mea-mark-known' word="${word}" title="${markAsKnownTips}">
                 <image src='icons/tick.png' width="12"></image>
               </button>
-              <button class='mea-mark-unknown' word="${word}" title="I don't know it">
+              <button class='mea-mark-unknown' word="${word}" title="${markAsUnknownTips}">
                 <image src='icons/question-mark.png' width="12"></image>
               </button>
-              <button class='mea-mark-clear' word="${word}" title="I am not sure">
+              <button class='mea-mark-clear' word="${word}" title="${clearMarkTips}">
                 <image src='icons/clear.png' width="12"></image>
               </button>
             </div>
