@@ -6,7 +6,7 @@
 # 基本功能
 希望通过阅读英文书籍或者文章来提高英文水平，但是词汇量不够，手工为每一个生词查字典又嫌麻烦？这个软件就是为解决上述问题而生。
 
-<img src="screenshots/cn/web-page.png" width="400">
+<img src="screenshots/cn/web-page.png" width="600">
 
 这个浏览器插件能自动在英语网页里显示陌生单词的解释。词典释义目前只支持中文，将来有可能支持英文（适合高水平用户）。
 
@@ -26,18 +26,24 @@
 # 个人词汇表
 插件安装好以后，第一步是要初始化个人词汇表。因为软件是根据词汇表来确定某个单词是否认识。在弹窗上有一个按钮可以打开设置页面。
 
-<img src="screenshots/options.png" height="400">
+<img src="screenshots/cn/options-vocabulary.png" height="400">
+
+系统默认是选用“常用8000”来初始化个人词汇表的。大部分用户都需要重新选择适合自己的词汇表进行初始化。
 
 如何找到适合自己的词汇表？首先，要了解自己的词汇量水平。在了解了自己的词汇量以后，就可以在设置里相应的初始化词汇表了。注意，这个词汇表只是粗略的设置，想要更加精确的接近个人真实的词汇量，还需要后续的单词标记工作。一般来说，看完1，2本小说以后，集中的标记工作就告一段落了。
 
 个人词汇表说白了就是一个文本文件，每一行一个单词。在设置页面可以复制粘贴或者编辑并保存。
 如果用户自己已经有个人词汇表，则可以直接复制粘贴进来，或者直接从文本文件导入。
 
+
+
 操作完词汇表以后需要保存。
 
 词汇表的标记也是一项需要付出的劳动，所以要定期备份。
 
 ## 词根词缀模式
+
+<img src="screenshots/cn/options-root-and-affix.png" weight="400">
 许多单词是可以拆分为词根词缀的，只要我们认识词根词缀，那么这个单词的意思就大概率是理解的。比如单词hopeless是可以拆分为hope和less.那么如果这两个单词我们都认识，就可以猜测出这个hopeless的意思。
 
 打开词根词缀模式，软件判断某个单词是否认识的逻辑如下：
@@ -50,6 +56,11 @@
 提供此模式的目的是减少单词标记的工作量, 也是非常符合大脑的记忆原理。
 
 注意：词根数据库目前还在完善中。有一些单词的词根没有被拆分。
+
+## 报告
+设置是否启用报告功能。如果启用的话，则阅读活动会被记录下来，并可以查看相关的报告。
+
+<img src="screenshots/cn/options-report.png" weight="400">
 
 # 弹窗
 点击浏览器右上角的插件按钮，就会出现弹窗。
@@ -103,12 +114,37 @@
 
 如果不确定某个单词自己是否认识，可以移除标记。在开启词根词缀的模式下，这个操作是有意义的。
 
+# 报告
+在设置里启用阅读报告以后可以使用该功能。数据都是保存在浏览器本地的。这个模块是为了帮助读者分析了解自己的阅读习惯，占用的时间，词汇量的增长情况。
+
+## 词汇量变化图
+可以看到过去一段时间个人词汇量的进步情况。
+
+<img src="screenshots/cn/report-vocabulary-chart.png" width="400">
+
+## 网站统计
+可以看到平时常去的英文网站，所花的时间和词汇量的增长。
+<img src="screenshots/cn/report-site-summaries.png" width="400">
+
+## 页面统计
+可以看到具体页面的阅读时间和词汇量的变化。
+<img src="screenshots/cn/report-page-summaries.png" width="600">
+
+## 阅读详情
+可以看到阅读的流水账。还可以点击重新打开某个页面。
+<img src="screenshots/cn/report-activities.png" width="600">
 
 # 电子书
 
 大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读epub格式的电子书。只要在浏览器内打开epub阅读器即可。
 
+<img src="screenshots/cn/epub-book.png" width="800">
+
+推荐阅读epub格式电子书的网站：https://app.flowoss.com/
+
+
 一些推荐的英文书
+
 阶段一:词汇量1k-3k
 * the little prince 小王子
 * charlotte's web 夏洛特的蜘蛛网
@@ -135,10 +171,6 @@
 * Educated你当像鸟飞往你的山
 * Pride and Prejudice傲慢与偏见
 * The Greatest Gastby了不起的盖茨比
-
-<img src="screenshots/cn/epub-book.png" width="800">
-
-推荐阅读epub格式电子书的网站：https://app.flowoss.com/
 
 # 显示器
 最好使用4k分辨率以上的显示器，字体比较清晰，阅读体验更好。
