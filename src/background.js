@@ -2,7 +2,7 @@
 
 import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
-import {initializeOptionService, getOptionsFromCache} from './optionService.js';
+import {initializeOptionService, getOptionsFromCache, refreshOptionsCache} from './optionService.js';
 import {addActivityToStorage} from './activityService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
@@ -48,13 +48,13 @@ chrome.runtime.onInstalled.addListener(async function () {
     contexts: ['page'],
     id: 'disable'
   });
-  /*
+  
   chrome.contextMenus.create({
     title: 'Refresh Definitions',
     contexts: ['page'],
     id: 'refresh'
   });
-  */
+  
   
 });
 
@@ -71,7 +71,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
     if(searchResult){
       let baseForm = searchResult.word;
       
-      let options = await getOptions();
+      let options = getOptionsFromCache();
       let rootMode = options.rootAndAffix.enabled;
 
       let targetWord = baseForm;
@@ -113,10 +113,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({
       message,
     });
-  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED'
-      || request.type === 'PAGE_URL_CHANGED'){
+  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
 
-    //console.log('page changed, type:' + request.type);
+    console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
     let tabId =sender.tab.id;
 
@@ -127,6 +126,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: new Date(), changes:0, totalWordCount: totalWordCount};
     saveActivities(tabId, newTabInfo);
     
+  } else if(request.type === 'OPTIONS_CHANGED'){
+
+    console.log('options changed, reload options to cache');
+    refreshOptionsCache();
+
+  } else if(request.type === 'PAGE_URL_CHANGED'){
+
+    console.log('page changed, type:' + request.type);
+    //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
+    let tabId =sender.tab.id;
+
+    let oldTabInfo = gTabInfoMap.get(tabId);
+    if(oldTabInfo){
+      finishReadingPage(oldTabInfo);
+    }
+
+    //the new tabInfo will arrive in 'INIT_PAGE_ANNOTATIONS_FINISHED' event
+    gTabInfoMap.delete(tabId);
+
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
@@ -144,7 +162,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 function saveActivities(tabId, newTabInfo){
-  
+  if(!tabId){
+    console.log('tabId is undefined');
+  }
   //console.log('new tab info:'+ JSON.stringify(newTabInfo));
   let oldTabInfo = gTabInfoMap.get(tabId);
   if(!oldTabInfo){
@@ -169,7 +189,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
     let tabInfo = gTabInfoMap.get(tabId);
     if(tabInfo){
       console.log(`on updated page: ${tabInfo.title}`);
-      saveActivities();
+      //saveActivities(tabId, tabInfo);
     }
   }
   
@@ -180,6 +200,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 
   let tabId = activeInfo.tabId;
   gTabInfoMap.forEach((value, key, map) => {
+    if(!value){
+      console.log('tabInfo is null, key:'+key);
+    }
     let tabInfo = value;
     if(tabId === key){
       tabInfo.startTime = new Date();
@@ -200,6 +223,7 @@ chrome.tabs.onRemoved.addListener((tabId,removeInfo) => {
 
 function finishReadingPage(tabInfo){
   let options = getOptionsFromCache();
+  console.log('get options from cache:'+JSON.stringify(options));
   if(!options.report.enabled){
     return;
   }
@@ -207,7 +231,7 @@ function finishReadingPage(tabInfo){
   if(tabInfo.startTime){
 
     let endTime = new Date();
-    var timeDiff = (endTime.getTime() - tabInfo.startTime.getTime()) / 1000;
+    var timeDiff = (endTime.getTime() - tabInfo.startTime.getTime());
     
     tabInfo.startTime = null;
     //console.log(`finish read page <<${tabInfo.title}>> in ${timeDiff} seconds, word changes:${tabInfo.changes}`);
@@ -254,7 +278,8 @@ function refresh(){
       tab.id,
       {
         type: 'REFRESH_PAGE',
-        payload: {            
+        payload: {      
+          force: true      
         },
       },
       (response) => {

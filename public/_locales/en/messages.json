@@ -141,11 +141,24 @@
         "message":"Hide Definitions"
     },
 
+    "sidepanelWordActionShowDefinition":{
+        "message":"Show Definition"
+    },
+    "sidepanelWordActionMarkAsKnown":{
+        "message":"I known it"
+    },
+    "sidepanelWordActionMarkAsUnknown":{
+        "message":"I don't know it"
+    },
+    "sidepanelWordActionClearMark":{
+        "message":"I am not sure"
+    },
+
     "reportReadingActivitiesTitle":{
         "message":"Reading Activities"
     },
-    "reportReadingActivitiesHeaderTime":{
-        "message":"Time"
+    "reportReadingActivitiesHeaderEndTime":{
+        "message":"End Time"
     },
     "reportReadingActivitiesHeaderSite":{
         "message":"Site"

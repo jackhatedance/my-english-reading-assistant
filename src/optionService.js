@@ -70,8 +70,11 @@ function getOptions(){
                     enabled: false,
                 };
             }
-            if(!options.unknownWords){
-                options.unknownWords = [];
+            
+            if(!options.report){
+                options.report = {
+                    enabled:false,
+                };
             }
             resolve(options);
         });
@@ -136,10 +139,12 @@ function isEmptyVocabulary(vocabulary){
 
 async function initializeOptionService(){
     gOptions = await getOptions();
+    //console.log('initialize gOptions:'+JSON.stringify(gOptions));
 }
 
 async function refreshOptionsCache(){
     gOptions = await getOptions();
+    //console.log('refresh gOptions:'+JSON.stringify(gOptions));
 }
 
 function getOptionsFromCache(){

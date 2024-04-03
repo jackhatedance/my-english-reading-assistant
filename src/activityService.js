@@ -22,14 +22,18 @@ function loadActivitiesFromStorage(){
 }
 
 async function addActivityToStorage(newActivity){
-    const MIN_DURATION_IN_SECONDS = 5;
-    if(newActivity.duration<MIN_DURATION_IN_SECONDS
+    console.log('add new activity:'+JSON.stringify(newActivity));
+
+    const MIN_DURATION_IN_MILLISECONDS = 5 * 1000;
+    const MIN_PAGE_WORD_COUNT = 10;
+    const MAX_SESSION_TIME_IN_HOUR = 4;
+
+    if(newActivity.duration < MIN_DURATION_IN_MILLISECONDS
         && newActivity.wordChanges == 0){
         return;
     }
 
-    const MIN_WORD_COUNT = 10;
-    if(newActivity.duration<MIN_WORD_COUNT){
+    if(newActivity.totalWordCount < MIN_PAGE_WORD_COUNT){
         return;
     }
     
@@ -43,7 +47,7 @@ async function addActivityToStorage(newActivity){
 
     let vocabulary = await loadKnownWords();
     let vocabularySize = calculateKnownWordsCount(vocabulary);
-    const MAX_SESSION_TIME_IN_HOUR = 6;
+    
     
     //merge session data
     let merged = false;

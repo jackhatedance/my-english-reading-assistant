@@ -3,9 +3,8 @@
 import './content.css';
 import {loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark} from './vocabularyStore.js';
 import {searchWord, isKnown, getWordParts} from './language.js';
-import {lookup} from './dictionary.js';
 import {findSiteConfig} from './site-match.js';
-import {initializeOptionService, getOptionsFromCache, getSiteOptions, getDefaultSiteOptions} from './optionService.js';
+import {initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions} from './optionService.js';
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -77,21 +76,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   let response = {};
   if (request.type === 'COUNT') {
     //console.log(`Current count is ${request.payload.count}`);
-  }
-
-  if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
+  } else if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
     //console.log(`Current page annotation is initialized: ${initialized}`);
     response = {initialized:initialized};
-  }
-
-  if (request.type === 'IS_PAGE_ANNOTATION_VISIBLE') {
+  } else if (request.type === 'IS_PAGE_ANNOTATION_VISIBLE') {
     let visible = isPageAnnotationVisible();
     //console.log(`Current page annotation is visible: ${visible}`);
     response = {visible:visible};
-  }
-
-  if (request.type === 'ENABLED') {
+  } else if (request.type === 'ENABLED') {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if(request.payload.enabled){
       if(!isAllDocumentsAnnotationInitialized()){
@@ -106,22 +99,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       resetPageAnnotationVisibility(false);
     }
 
-  }
-
-  if (request.type === 'REFRESH_PAGE') {
-    //console.log(`refresh page`);
+  } else if (request.type === 'REFRESH_PAGE') {
+    console.log(`refresh page`);
     let visible = isPageAnnotationVisible();
     
     if(visible){//master document
+      if(request.payload.force){
+        clearAllDocumentsAnnotationInitializationMark();
+      }   
+   
       //init all documents
       initPageAnnotations(()=>{
         resetPageAnnotationVisibility(visible);
       });
     }
   
-  }
-
-  if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
+  } else if (request.type === 'ADD_KNOWN_WORD' || request.type === 'REMOVE_KNOWN_WORD') {
     //console.log(`${request.type} known word: ${request.payload.word}`);
     if(request.payload.word){
       //hideAnnotation(request.payload.word);
@@ -129,17 +122,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       resetPageAnnotationVisibility(visible);
     }
 
-  }
-
-  if (request.type === 'KNOWN_WORDS_UPDATED') {
+  } else if (request.type === 'KNOWN_WORDS_UPDATED') {
     //console.log(`${request.type}`);
     let source = request.payload.source;
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibility(visible, source);
-  }
-
-  if (request.type === 'GET_PAGE_INFO' ) {
+  } else if (request.type === 'GET_PAGE_INFO' ) {
     //console.log(`${request.type}`);
     
     //let pageInfo = await getPageInfo();
@@ -151,6 +140,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse(response);
     });
     return true;
+  } else if(request.type === 'OPTIONS_CHANGED' ) {
+    refreshOptionsCache();
   }
 
   if (request.type === 'CHANGE_STYLE') {
@@ -183,14 +174,14 @@ function monitorTimer() {
   }
 
   let url = siteConfig.getUrl(document);
+  //console.log('gUrl:'+gUrl +',\nurl:'+url);
   if(gUrl && gUrl !== url){
-    //update gloabl variable
-    gUrl = url;
-
     sendMessageToBackground(siteConfig, 'PAGE_URL_CHANGED');
   }
-
   
+  //update gloabl variable
+  gUrl = url;
+    
 }
 
 var knownWords;
@@ -357,6 +348,8 @@ async function initPageAnnotations(resolve) {
 }
 
 async function sendMessageToBackground(siteConfig, type){
+  console.log('send message to background, type:'+type);
+
   let pageInfo = await getPageInfo();
   let site = document.location.hostname;
   if(document.location.protocol ==='file:'){
@@ -385,7 +378,10 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
     
 
     document.body.setAttribute('mea-initialized', true);
-    addStyle(document);   
+
+    if(!findStyleSheet(document)){
+      addStyle(document);   
+    }
     //console.log('initDocumentAnnotations');
     
     var x = 0;
@@ -770,6 +766,9 @@ function isAllDocumentsAnnotationInitialized(){
 }
 
 function isDocumentAnnotationInitialized(document){
+  if(!document.body){
+    console.log('body is null');
+  }
 
   let meaInitialized = document.body.getAttribute('mea-initialized');
   if(meaInitialized){
@@ -778,6 +777,14 @@ function isDocumentAnnotationInitialized(document){
   else{
     return false;
   }
+}
+
+function clearAllDocumentsAnnotationInitializationMark(){
+  let documents = getAllDocuments();
+  
+  return documents.every((document)=>{
+    document.body.removeAttribute('mea-initialized');
+  });
 }
 
 function isPageAnnotationVisible(){

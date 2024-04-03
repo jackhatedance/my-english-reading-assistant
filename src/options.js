@@ -9,13 +9,13 @@ import {deleteAllReadingHistory} from './activityService.js';
 localizeHtmlPage();
 
   // Saves options to chrome.storage
-  const saveOptionsUI = () => {
+  const saveOptionsUI = async () => {
     const splitter = /\r*\n/;
     let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
     let wordMarkRootMode = document.getElementById('rootMode').checked;
     let enableReport = document.getElementById('enableReport').checked;
     
-    save({
+    await save({
       knownWords: knownWordsArray,
       options: {
         rootAndAffix:{
@@ -24,6 +24,35 @@ localizeHtmlPage();
         report:{
           enabled: enableReport,
         }
+      }
+    });
+
+    //notify backgroud
+    chrome.runtime.sendMessage(
+      {
+        type: 'OPTIONS_CHANGED',
+        payload: {          
+        },
+      },
+      (response) => {
+        //console.log(response.message);
+      }
+    );
+
+    //notify all tabs
+    chrome.tabs.query({}, (tabs) => {
+      for(const tab of tabs){
+        chrome.tabs.sendMessage(
+          tab.id,
+          {
+            type: 'OPTIONS_CHANGED',
+            payload: {            
+            },
+          },
+          (response) => {          
+            
+          }
+        );
       }
     });
 
@@ -121,7 +150,6 @@ localizeHtmlPage();
     if(settings.options){
       let options = settings.options;
       await setOptions(options);
-      await refreshOptionsCache();
     }
   }
 

@@ -142,11 +142,25 @@
     },
 
 
+    "sidepanelWordActionShowDefinition":{
+        "message":"显示释义"
+    },
+    "sidepanelWordActionMarkAsKnown":{
+        "message":"我认识"
+    },
+    "sidepanelWordActionMarkAsUnknown":{
+        "message":"我不认识"
+    },
+    "sidepanelWordActionClearMark":{
+        "message":"我不确定"
+    },
+
+
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },
-    "reportReadingActivitiesHeaderTime":{
-        "message":"时间"
+    "reportReadingActivitiesHeaderEndTime":{
+        "message":"结束时间"
     },
     "reportReadingActivitiesHeaderSite":{
         "message":"网站"
