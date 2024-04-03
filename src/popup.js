@@ -37,8 +37,11 @@ localizeHtmlPage();
   };
  
 
-  function setupPage(pageInfo) {
+  function renderPage(pageInfo) {
     let options = getOptionsFromCache();
+
+    renderGlobalSection(options);
+    
 
     document.getElementById('test').addEventListener('click', (e) => {
       
@@ -50,25 +53,9 @@ localizeHtmlPage();
 
     //console.log('setup page:'+ JSON.stringify(pageInfo));
     if(!pageInfo){
-      return;
+      showNothingTodoSection();
+      return;//skip page section
     }
-
-    if(options.report.enabled){
-      document.getElementById('report').addEventListener('click', (e) => {
-        chrome.tabs.create({url: chrome.runtime.getURL('report.html')});
-      });
-    } else {
-      //hide
-      document.getElementById('report').style.visibility = 'hidden';
-    }
-
-    document.getElementById('help').addEventListener('click', (e) => {
-      chrome.tabs.create({url: chrome.runtime.getURL('guide.html')});
-    });
-
-    document.getElementById('options').addEventListener('click', (e) => {
-      chrome.runtime.openOptionsPage();
-    });
 
     document.getElementById('site').innerHTML = pageInfo.domain;
 
@@ -88,11 +75,10 @@ localizeHtmlPage();
     
     document.getElementById('enabled').checked = pageInfo.siteOptions.enabled;
     document.getElementById('enabled').addEventListener('change', (e) => {
-      
-      //console.log('enabled changed');
-      
+    
+    //console.log('enabled changed');
+    
       applyStyles();
-      
     });
 
     let annotationOptions = pageInfo.siteOptions.annotation;
@@ -133,6 +119,27 @@ localizeHtmlPage();
       let newOptions = buildOptions();
       setSiteOptionsAsDefault(newOptions);
       
+    });
+
+    showPageSection();
+  }
+
+  function renderGlobalSection(options){
+    if(options.report.enabled){
+      document.getElementById('report').addEventListener('click', (e) => {
+        chrome.tabs.create({url: chrome.runtime.getURL('report.html')});
+      });
+    } else {
+      //hide
+      document.getElementById('report').style.visibility = 'hidden';
+    }
+
+    document.getElementById('help').addEventListener('click', (e) => {
+      chrome.tabs.create({url: chrome.runtime.getURL('guide.html')});
+    });
+
+    document.getElementById('options').addEventListener('click', (e) => {
+      chrome.runtime.openOptionsPage();
     });
   }
 
@@ -258,12 +265,22 @@ localizeHtmlPage();
 
     getPageInfo((_pageInfo) => {
       pageInfo = _pageInfo;
-      setupPage(pageInfo);
+      
+      renderPage(pageInfo);
+        
+      
     });
 
     
   }
 
+  function showPageSection(){
+    document.getElementById('pageSection').style.display = 'block';
+  }
+
+  function showNothingTodoSection(){
+    document.getElementById('nothing-to-do').style.display = 'block';
+  }
   
 
   document.addEventListener('DOMContentLoaded', init);

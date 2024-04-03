@@ -294,7 +294,10 @@ async function getPageInfo() {
   let visible = isPageAnnotationVisible();
   let siteOptions = await getCurrentSiteOptions();
   let domain = document.location.hostname;
-  return {
+  if(!domain && document.location.protocol==='file:'){
+    domain = '[local]';
+  }
+  let pageInfo = {
     domain:domain,
     visible: visible,
     totalWordCount: totalWordCount,
@@ -303,6 +306,8 @@ async function getPageInfo() {
     unknownWordsRatio: unknownWordsRatio,
     siteOptions : siteOptions,
   };
+  //console.log('page info:'+JSON.stringify(pageInfo));
+  return pageInfo;
 }
 
 function getBaseWordFromElement(element){

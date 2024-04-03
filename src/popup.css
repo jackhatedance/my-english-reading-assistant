@@ -146,6 +146,10 @@ input:checked + .slider:before {
   }
 }
 
+#pageSection{
+  display: block;
+}
+
 #options-container {
   width:100%;
   text-align:right;
