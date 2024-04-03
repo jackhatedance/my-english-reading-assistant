@@ -59,8 +59,9 @@ localizeHtmlPage();
       }
       let lastActiveTimeFormatted = new Date(lastActiveTime).toLocaleString( );
 
-      let durationFormatted = new Date(duration * 1000).toISOString().substring(11, 19);
+      let durationFormatted = new Date(duration).toISOString().substring(11, 19);
       const liInnerHTML = `<td>${lastActiveTimeFormatted}</td>
+          <td>${lastActiveTimeFormatted}</td>
           <td>${site}</td>
           <td><a target="_blank" href='${url}'>${title}</a></td>
           <td>${totalWordCount}</td>
@@ -113,7 +114,7 @@ localizeHtmlPage();
       let startTimeFormatted = new Date(startTime).toLocaleString( );
       let lastTimeFormatted = new Date(lastTime).toLocaleString( );
 
-      let durationFormatted = new Date(duration * 1000).toISOString().substring(11, 19);
+      let durationFormatted = new Date(duration).toISOString().substring(11, 19);
       const liInnerHTML = `<td>${title}</td>
         <td>${startTimeFormatted}</td>
         <td>${lastTimeFormatted}</td>
@@ -154,7 +155,7 @@ localizeHtmlPage();
     
     array.sort(function(a, b){return a.lastActiveTime - b.lastActiveTime});
 
-    console.log('site summaries:'+JSON.stringify(array));
+    //console.log('site summaries:'+JSON.stringify(array));
     return array;
   }
 
@@ -167,7 +168,7 @@ localizeHtmlPage();
       let startTimeFormatted = new Date(startTime).toLocaleString( );
       let lastTimeFormatted = new Date(lastTime).toLocaleString( );
 
-      let durationFormatted = new Date(duration * 1000).toISOString().substring(11, 19);
+      let durationFormatted = new Date(duration).toISOString().substring(11, 19);
       const liInnerHTML = `<td>${site}</td>
         <td>${startTimeFormatted}</td>
         <td>${lastTimeFormatted}</td>
