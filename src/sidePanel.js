@@ -227,8 +227,8 @@ localizeHtmlPage();
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`mark word as unknown ${baseForm}`);
-        let countChanges = await markWordAsUnknown(baseForm);
-        sendMessageKnownWordsUpdated('unknown', countChanges);
+        let wordChanges = await markWordAsUnknown(baseForm);
+        sendMessageKnownWordsUpdated('unknown', wordChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -242,8 +242,8 @@ localizeHtmlPage();
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`mark word as known ${baseForm}`);
-        let countChanges = await markWordAsKnown(baseForm);
-        sendMessageKnownWordsUpdated('known', countChanges);
+        let wordChanges = await markWordAsKnown(baseForm);
+        sendMessageKnownWordsUpdated('known', wordChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -256,8 +256,8 @@ localizeHtmlPage();
       btn.addEventListener('click', async (e) => {
         let baseForm = e.currentTarget.getAttribute('word');
         //console.log(`remove word mark ${baseForm}`);
-        let countChanges = await removeWordMark(baseForm);
-        sendMessageKnownWordsUpdated('clear', countChanges);
+        let wordChanges = await removeWordMark(baseForm);
+        sendMessageKnownWordsUpdated('clear', wordChanges);
 
         let btn = e.currentTarget;
         let wordElement = e.target.closest('.list-item').querySelector('.word');
@@ -275,7 +275,7 @@ localizeHtmlPage();
   }
 
 
-  function sendMessageKnownWordsUpdated(type, countChanges){
+  function sendMessageKnownWordsUpdated(type, wordChanges){
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
       chrome.tabs.sendMessage(
@@ -298,7 +298,7 @@ localizeHtmlPage();
           type: 'MARK_WORD',
           payload: {
             contentTabId: tab.id,
-            changes: countChanges,
+            wordChanges: wordChanges,
           },
         },
         (response) => {

@@ -37,11 +37,11 @@ localizeHtmlPage();
   function renderReadingActivities(activities){
     let history = activities;
 
-    history.sort(function(a, b){return a.lastActiveTime - b.lastActiveTime});
+    history.sort(function(a, b){return a.endTime - b.endTime});
 
     let table = document.getElementById('history');
     for(let item of history.reverse()){
-      let {title, url, totalWordCount, site, wordChanges, duration, lastActiveTime, vocabularySize} = item;
+      let {startTime, title, url, totalWordCount, site, wordChanges, duration, endTime, vocabularySize} = item;
 
       if(!site){
         site='';
@@ -57,11 +57,12 @@ localizeHtmlPage();
       if(!vocabularySize){
         vocabularySize='';
       }
-      let lastActiveTimeFormatted = new Date(lastActiveTime).toLocaleString( );
+      let startTimeFormatted = new Date(startTime).toLocaleString( );
+      let endTimeFormatted = new Date(endTime).toLocaleString( );
 
       let durationFormatted = new Date(duration).toISOString().substring(11, 19);
-      const liInnerHTML = `<td>${lastActiveTimeFormatted}</td>
-          <td>${lastActiveTimeFormatted}</td>
+      const liInnerHTML = `<td>${startTimeFormatted}</td>
+          <td>${endTimeFormatted}</td>
           <td>${site}</td>
           <td><a target="_blank" href='${url}'>${title}</a></td>
           <td>${totalWordCount}</td>
@@ -85,7 +86,8 @@ localizeHtmlPage();
       if(!summary){
         summary={
           title: title,
-          startTime: activity.lastActiveTime,
+          startTime: activity.startTime,
+          endTime: 0,
           duration: 0,
           wordChanges: 0
         };
@@ -93,31 +95,31 @@ localizeHtmlPage();
         pageSummaryMap.set(title, summary);
       }
 
-      summary.lastTime = activity.lastActiveTime;
+      summary.endTime = Math.max(activity.endTime, summary.endTime);
       summary.duration = summary.duration + activity.duration;
       summary.wordChanges = summary.wordChanges + activity.wordChanges;
     }
 
     let array = Array.from(pageSummaryMap, ([name, value]) => ({ ... value}));
     
-    array.sort(function(a, b){return a.lastActiveTime - b.lastActiveTime;});
-
+    array.sort(function(a, b){return b.endTime - a.endTime;});
+    //console.log('page summaries:' + JSON.stringify(array));
     return array;
   }
 
   function renderPageSummaries(pageSummaries){
     let table = document.getElementById('pageSummaries');
     for(let item of pageSummaries){
-      let {title, wordChanges, duration, startTime, lastTime} = item;
+      let {title, wordChanges, duration, startTime, endTime} = item;
 
       
       let startTimeFormatted = new Date(startTime).toLocaleString( );
-      let lastTimeFormatted = new Date(lastTime).toLocaleString( );
+      let endTimeFormatted = new Date(endTime).toLocaleString( );
 
       let durationFormatted = new Date(duration).toISOString().substring(11, 19);
       const liInnerHTML = `<td>${title}</td>
         <td>${startTimeFormatted}</td>
-        <td>${lastTimeFormatted}</td>
+        <td>${endTimeFormatted}</td>
           <td>${durationFormatted}</td>
           <td>${wordChanges}</td>
         `;
@@ -138,7 +140,7 @@ localizeHtmlPage();
       if(!summary){
         summary={
           site: site,
-          startTime: activity.lastActiveTime,
+          startTime: activity.startTime,
           duration: 0,
           wordChanges: 0
         };
@@ -146,14 +148,14 @@ localizeHtmlPage();
         summaryMap.set(site, summary);
       }
 
-      summary.lastTime = activity.lastActiveTime;
+      summary.lastTime = activity.endTime;
       summary.duration = summary.duration + activity.duration;
       summary.wordChanges = summary.wordChanges + activity.wordChanges;
     }
 
     let array = Array.from(summaryMap, ([name, value]) => ({ ... value}));
     
-    array.sort(function(a, b){return a.lastActiveTime - b.lastActiveTime});
+    array.sort(function(a, b){return a.endTime - b.endTime});
 
     //console.log('site summaries:'+JSON.stringify(array));
     return array;
@@ -187,7 +189,7 @@ localizeHtmlPage();
     let vocabularyArray = [];
     for(let activity of activities){
       let vocabulary = {
-        x: activity.lastActiveTime,
+        x: activity.endTime,
         y: activity.vocabularySize,
       };
       vocabularyArray.push(vocabulary);

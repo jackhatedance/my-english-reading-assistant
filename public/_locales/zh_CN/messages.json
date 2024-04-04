@@ -159,6 +159,9 @@
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },
+    "reportReadingActivitiesHeaderStartTime":{
+        "message":"开始时间"
+    },
     "reportReadingActivitiesHeaderEndTime":{
         "message":"结束时间"
     },
@@ -185,10 +188,10 @@
         "message":"标题"
     },
     "reportPageSummariesHeaderStartReadTime":{
-        "message":"开始阅读时间"
+        "message":"开始时间"
     },
     "reportPageSummariesHeaderLastReadTime":{
-        "message":"最后阅读时间"
+        "message":"结束时间"
     },
     "reportPageSummariesHeaderDuration":{
         "message":"持续时间"
@@ -205,10 +208,10 @@
         "message":"名称"
     },
     "reportSiteSummariesHeaderStartReadTime":{
-        "message":"开始阅读时间"
+        "message":"开始时间"
     },
     "reportSiteSummariesHeaderLastReadTime":{
-        "message":"最后阅读时间"
+        "message":"结束时间"
     },
     "reportSiteSummariesHeaderDuration":{
         "message":"持续时间"

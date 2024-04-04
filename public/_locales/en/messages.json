@@ -157,6 +157,9 @@
     "reportReadingActivitiesTitle":{
         "message":"Reading Activities"
     },
+    "reportReadingActivitiesHeaderStartTime":{
+        "message":"Start Time"
+    },
     "reportReadingActivitiesHeaderEndTime":{
         "message":"End Time"
     },
@@ -183,10 +186,10 @@
         "message":"Title"
     },
     "reportPageSummariesHeaderStartReadTime":{
-        "message":"Start Read Time"
+        "message":"Start Time"
     },
     "reportPageSummariesHeaderLastReadTime":{
-        "message":"Last Read Time"
+        "message":"End Time"
     },
     "reportPageSummariesHeaderDuration":{
         "message":"Duration"
@@ -199,13 +202,13 @@
         "message":"Site Summaries"
     },
     "reportSiteSummariesHeaderName":{
-        "message":"Title"
+        "message":"Name"
     },
     "reportSiteSummariesHeaderStartReadTime":{
-        "message":"Start Read Time"
+        "message":"Start Time"
     },
     "reportSiteSummariesHeaderLastReadTime":{
-        "message":"Last Read Time"
+        "message":"End Time"
     },
     "reportSiteSummariesHeaderDuration":{
         "message":"Duration"

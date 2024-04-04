@@ -115,16 +115,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
 
-    console.log('page changed, type:' + request.type);
+    //console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
     let tabId =sender.tab.id;
 
+    let startTime = new Date().getTime();
     let title = request.payload.title;
     let url = request.payload.url;
     let site = request.payload.site;
     let totalWordCount = request.payload.totalWordCount;
-    let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: new Date(), changes:0, totalWordCount: totalWordCount};
-    saveActivities(tabId, newTabInfo);
+    let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
+    
+    //console.log('new tab info:'+ JSON.stringify(newTabInfo));
+    let oldTabInfo = gTabInfoMap.get(tabId);
+    
+    if(oldTabInfo && oldTabInfo.startTime){
+      saveReadingActivityAndClearStartTime(oldTabInfo);
+    }
+
+    gTabInfoMap.set(tabId, newTabInfo);
     
   } else if(request.type === 'OPTIONS_CHANGED'){
 
@@ -133,56 +142,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
-    console.log('page changed, type:' + request.type);
-    //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
+    //console.log('page changed, type:' + request.type);
+    console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
     let tabId =sender.tab.id;
 
     let oldTabInfo = gTabInfoMap.get(tabId);
     if(oldTabInfo){
-      finishReadingPage(oldTabInfo);
+      saveReadingActivityAndClearStartTime(oldTabInfo);
     }
-
-    //the new tabInfo will arrive in 'INIT_PAGE_ANNOTATIONS_FINISHED' event
-    gTabInfoMap.delete(tabId);
 
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
       tabId = request.payload.contentTabId;
-    } else{
+    } else {
       tabId =sender.tab.id;
     }
-    let changes = request.payload.changes;
+    let wordChanges = request.payload.wordChanges;
     let tabInfo = gTabInfoMap.get(tabId);
-    tabInfo.changes = tabInfo.changes + changes;
     
-    //(`mark word tabId:${tabId}, changes:${changes}`);
+    tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+    
+    console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
   }
 });
 
-
-function saveActivities(tabId, newTabInfo){
-  if(!tabId){
-    console.log('tabId is undefined');
-  }
-  //console.log('new tab info:'+ JSON.stringify(newTabInfo));
-  let oldTabInfo = gTabInfoMap.get(tabId);
-  if(!oldTabInfo){
-    //console.log(`open page ${newTabInfo.title}`);
-    gTabInfoMap.set(tabId, newTabInfo);
-  } else {
-    //check if url/title changed
-    if(oldTabInfo.url !== newTabInfo.url){
-      finishReadingPage(oldTabInfo);
-
-      //console.log(`open page ${newTabInfo.title}`);
-      gTabInfoMap.set(tabId, newTabInfo);
-    }else{
-      //do nothing
-    }
-
-  }
-}
 chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
   if(changeInfo.status==='complete'){
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
@@ -205,9 +189,10 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     }
     let tabInfo = value;
     if(tabId === key){
-      tabInfo.startTime = new Date();
+      //set start time
+      tabInfo.startTime = new Date().getTime();
     }else{
-      finishReadingPage(tabInfo);
+      saveReadingActivityAndClearStartTime(tabInfo);
     }
   });
 
@@ -217,33 +202,36 @@ chrome.tabs.onRemoved.addListener((tabId,removeInfo) => {
   //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
   let tabInfo = gTabInfoMap.get(tabId);
   if(tabInfo){
-    finishReadingPage(tabInfo);
+    saveReadingActivityAndClearStartTime(tabInfo);
   }
 });
 
-function finishReadingPage(tabInfo){
+function saveReadingActivityAndClearStartTime(tabInfo){
   let options = getOptionsFromCache();
-  console.log('get options from cache:'+JSON.stringify(options));
+  //console.log('get options from cache:'+JSON.stringify(options));
   if(!options.report.enabled){
     return;
   }
 
   if(tabInfo.startTime){
 
-    let endTime = new Date();
-    var timeDiff = (endTime.getTime() - tabInfo.startTime.getTime());
+    let endTime = new Date().getTime();
+    var duration = endTime - tabInfo.startTime;
     
-    tabInfo.startTime = null;
-    //console.log(`finish read page <<${tabInfo.title}>> in ${timeDiff} seconds, word changes:${tabInfo.changes}`);
+    //console.log(`finish read page <<${tabInfo.title}>> in ${timeDiff} seconds, word changes:${tabInfo.wordChanges}`);
     addActivityToStorage({
+      startTime: tabInfo.startTime,
+      endTime: endTime,
       site: tabInfo.site,
       url: tabInfo.url,
       sessionId: tabInfo.tabId,
-      duration: timeDiff,
+      duration: duration,
       title: tabInfo.title,
       totalWordCount: tabInfo.totalWordCount,
-      wordChanges:tabInfo.changes, 
+      wordChanges: tabInfo.wordChanges, 
     });
+
+    tabInfo.startTime = null;
   }
 }
 

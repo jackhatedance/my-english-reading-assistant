@@ -557,13 +557,13 @@ async function addEventListener(document){
   });
 }
 
-function sendMessageMarkWord(countChanges){
+function sendMessageMarkWord(wordChanges){
   //send to background
   chrome.runtime.sendMessage(
     {
       type: 'MARK_WORD',
       payload: {        
-        changes: countChanges,
+        wordChanges: wordChanges,
       },
     },
     (response) => {
