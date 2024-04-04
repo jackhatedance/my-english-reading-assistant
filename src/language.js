@@ -36,9 +36,6 @@ function searchWordWithDict(request, dicts){
 
     //no modification
     let word = input;
-    let roots =null;
-    let prefix=null;
-    let suffix=null;
     let definition = lookup(word, dicts);
 
     let transformResult;
@@ -72,25 +69,36 @@ function searchWordWithDict(request, dicts){
     }
 
     if(definition) {
-        if(input==='bowels'){
-            console.log('bowels');
-        }
+        
         //lemma
         if(request.allowLemma){
             let done = false;
 
-            let result = definition.match('([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词)|(复数)|(名词复数)|)'); 
+            let result = definition.match('([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
             
             //console.log('match result 1:'+result);   
             if(result != null){
                 word = result[1];
                 definition = lookup(word, dicts);
-
-                searchType='lemma';
+                
                 lemmaType = 'irregular';
-
                 done = true;
 
+            }
+
+            if(!done){
+                
+                let result = definition.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
+                if(result != null){
+                    word = result[1];
+                    let def = lookup(word, dicts);
+                    if(definition.includes(def)){
+                        definition = def;
+
+                        lemmaType = 'plural';
+                        done = true;
+                    }
+                }
             }
 
             if(!done){
@@ -101,13 +109,17 @@ function searchWordWithDict(request, dicts){
                     if(transformResult.word){
                         word = transformResult.word;
                         definition = transformResult.definition;
-    
-                        searchType='lemma';
-
+                        
+                        lemmaType = 'plural';
                         done = true;
                     }
                 }
             }
+
+            if(done){
+                searchType='lemma';
+            }
+        
         }
     }
 

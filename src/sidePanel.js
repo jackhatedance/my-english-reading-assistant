@@ -182,7 +182,7 @@ localizeHtmlPage();
         <div class='list-item'>
           <div class="word-and-actions">
             
-            <span class='word'>${wordStr}:</span>
+            <span class='word'>${wordStr}</span>
             
             <div class="actions">
               <button class='mea-show-definition' word="${word}" title='${showDefinitionTips}'>
