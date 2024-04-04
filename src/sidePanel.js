@@ -128,7 +128,10 @@ localizeHtmlPage();
         targetObjMap.set(target, targetObj);
       }
 
-      targetObj.from.push(from);
+      if(from){
+        targetObj.from.push(from);
+      }
+      
       
     }
     let array = Array.from(targetObjMap, ([name, value]) => ({target: name, from: value.from}));
@@ -154,11 +157,7 @@ localizeHtmlPage();
         fromStr = fromArray.join(',');
       }
 
-      let li = document.createElement("li");
-      //var text = document.createTextNode(word);
-      //li.appendChild(text);
-      ul.appendChild(li);
-
+      
       //query root word
       
       let definition = lookupShort(word);
@@ -166,6 +165,11 @@ localizeHtmlPage();
       if(!definition){
         continue;
       }
+
+      let li = document.createElement("li");
+      //var text = document.createTextNode(word);
+      //li.appendChild(text);
+      ul.appendChild(li);
 
       let wordStr = fromStr? `${word} (${fromStr})` : word;
       

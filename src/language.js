@@ -59,20 +59,6 @@ function searchWordWithDict(request, dicts){
         definition = lookup(word, dicts);
     }
 
-    //lemma
-    if(definition) {
-
-        let result = definition.match('([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词)|(复数)|(名词复数))'); 
-        
-        //console.log('match result 1:'+result);   
-        if(result != null && request.allowLemma){
-            word = result[1];
-            definition = lookup(word, dicts);
-
-            searchType='lemma';
-            lemmaType = 'irregular'
-        }
-    }
 
     if(!definition) {
         if(request.allowLemma){
@@ -84,6 +70,47 @@ function searchWordWithDict(request, dicts){
             searchType='lemma';
         }
     }
+
+    if(definition) {
+        if(input==='bowels'){
+            console.log('bowels');
+        }
+        //lemma
+        if(request.allowLemma){
+            let done = false;
+
+            let result = definition.match('([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词)|(复数)|(名词复数)|)'); 
+            
+            //console.log('match result 1:'+result);   
+            if(result != null){
+                word = result[1];
+                definition = lookup(word, dicts);
+
+                searchType='lemma';
+                lemmaType = 'irregular';
+
+                done = true;
+
+            }
+
+            if(!done){
+                if(definition.startsWith('pl\.')){
+                    transformResult = transformLemmatize(input, dicts);
+                    
+                    //found base form
+                    if(transformResult.word){
+                        word = transformResult.word;
+                        definition = transformResult.definition;
+    
+                        searchType='lemma';
+
+                        done = true;
+                    }
+                }
+            }
+        }
+    }
+
 
     //prefix, suffix, lemma
     if(!definition) {
@@ -157,6 +184,14 @@ function transformLemmatize(input, dicts){
     let word;
     let definition;
     
+    //possessive, such as Jack's -> Jack
+    if(!definition) {
+        word = getBaseFromPossessive(input);
+        if(word !== input){
+            definition = lookup(word, dicts);
+        }
+    }
+
     if(!definition) {
         word = singularize(input);
         if(word !== input){
@@ -286,6 +321,15 @@ function removeSuffix(word){
 function isSuffix(s){    
     //console.log('isSuffix:'+s);
     return getSuffixes().includes(s);
+}
+
+function getBaseFromPossessive(word){
+    if(word.endsWith("'s")){
+        return word.substring(0, word.length - 2);
+    }else if(word.endsWith("'")){
+        return word.substring(0, word.length - 1);
+    }
+    return word;
 }
 
 function singularize(word) {
