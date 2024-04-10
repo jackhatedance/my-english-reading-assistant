@@ -125,6 +125,14 @@
     "sidepanelNotAvailable":{
         "message":"not available"
     },
+    
+    "sidepanelTabNotes":{
+        "message":"Notes"
+    },
+    "sidepanelTabVocabulary":{
+        "message":"Vocabulary"
+    },
+    
     "sidepanelTitle":{
         "message":"Unknown words on page"
     },

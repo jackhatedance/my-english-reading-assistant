@@ -1,0 +1,45 @@
+<html>
+
+<head>
+    <title>Test Child Page</title>
+
+    
+</head>
+
+<body>
+    <style>
+        ::highlight(my-custom-highlight) {
+            background-color: peachpuff;
+        }
+
+        
+    </style>
+
+    <h1>Child Page</h1>
+    <p id="foo"><span>good</span><span>morning</span><span>jack</span><span>tom</span></p>    
+
+    <script>
+
+        const parentNode = document.getElementById("foo");
+
+        // Create a couple of ranges.
+        const range1 = new Range();
+        range1.setStart(parentNode, 1);
+        range1.setEnd(parentNode, 2);
+
+        const range2 = new Range();
+        range2.setStart(parentNode, 3);
+        range2.setEnd(parentNode, 4);
+
+        // Create a custom highlight for these ranges.
+        const highlight = new Highlight(range1, range2);
+
+        // Register the ranges in the HighlightRegistry.
+        CSS.highlights.set("my-custom-highlight", highlight);
+
+
+    </script>
+
+</body>
+
+</html>

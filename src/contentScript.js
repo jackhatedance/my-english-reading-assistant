@@ -5,6 +5,9 @@ import {loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark} from
 import {searchWord, isKnown, getWordParts} from './language.js';
 import {findSiteConfig} from './site-match.js';
 import {initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions} from './optionService.js';
+import { split } from "sentence-splitter";
+import { getNotes, getSentenceHash, search } from './noteService.js';
+
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -20,6 +23,14 @@ import {initializeOptionService, refreshOptionsCache, getSiteOptions, getDefault
 
 //used to check if title changed
 var gUrl;
+/**
+ * {id, }
+ */
+//var gSentences = [];
+var gSentenceNumber;
+var gTokenNumber;
+// <id, content>
+var gSentenceMap = new Map();
 
 async function getAnnotationOptions(){
   
@@ -128,6 +139,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibility(visible, source);
+  } else if (request.type === 'NOTES_UPDATED') {
+    //console.log(`${request.type}`);
+    let source = request.payload.source;
+    //hideAnnotation(request.payload.word);
+    let visible = isPageAnnotationVisible();
+    resetPageAnnotationVisibility(visible, source, 'note');
   } else if (request.type === 'GET_PAGE_INFO' ) {
     //console.log(`${request.type}`);
     
@@ -294,8 +311,8 @@ async function getPageInfo() {
   let visible = isPageAnnotationVisible();
   let siteOptions = await getCurrentSiteOptions();
   let domain = document.location.hostname;
-  if(!domain && document.location.protocol==='file:'){
-    domain = '[local]';
+  if(!domain){
+    domain = 'NULL';
   }
   let pageInfo = {
     domain:domain,
@@ -326,7 +343,7 @@ async function initPageAnnotations(resolve) {
   let siteConfig = findSiteConfig(document);
   
   if(!isDocumentAnnotationInitialized(document)){
-    let documentConfig = siteConfig.getDocumentConfig(document);
+    let documentConfig = siteConfig.getDocumentConfig(window, document);
   
     initDocumentAnnotations(document, false, documentConfig);
   }
@@ -357,8 +374,8 @@ async function sendMessageToBackground(siteConfig, type){
 
   let pageInfo = await getPageInfo();
   let site = document.location.hostname;
-  if(document.location.protocol ==='file:'){
-    site='[local]';
+  if(!site){
+    site='NULL';
   }
   let url = siteConfig.getUrl(document);
   chrome.runtime.sendMessage(
@@ -384,6 +401,8 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
 
     document.body.setAttribute('mea-initialized', true);
 
+    gSentenceNumber = 0;
+
     if(!findStyleSheet(document)){
       addStyle(document);   
     }
@@ -402,6 +421,8 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
       }
     }, 1000);
     
+    cleanElements(document);
+
     visitElement(document.body,(element)=>{
       //console.log(element.nodeName + element.nodeType);
       annotateChildTextContents(element, isIframe);
@@ -412,6 +433,68 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
     
   }
 
+}
+
+function cleanElements(document){
+
+  //replace punctuations
+  tranverseNode(document.body, (node) => {
+    if(node.nodeName==='#text'){
+      node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
+    }
+  });
+
+  //remove text content of some tags
+  visitElement(document.body,(element)=>{
+    const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
+    const TAGS_KEEP_CONTENT = ['EM', 'I'];
+    if(TAGS_CLEAR_CONTENT.includes(element.nodeName)){
+      element.setAttribute('mea-remove-tag', 'true');    
+      element.innerHTML = '';
+    } else if(TAGS_KEEP_CONTENT.includes(element.nodeName)){
+      if(isElementLeaf(element)){
+        element.setAttribute('mea-remove-tag', 'true');    
+      }
+    }
+
+  }); 
+
+  // element to TEXT NODE
+  visitElement(document.body,(element)=>{    
+    if(allChildrenElementNeedRemoveTag(element)){
+      element.innerHTML = element.textContent;        
+    }
+  });
+
+}
+
+function isElementLeaf(element){
+  
+  let childCount = element.childElementCount;
+  let text = element.textContent;
+  if(!text) {
+    text = '';
+  }
+  
+
+  return (childCount == 0);
+}
+
+function allChildrenElementNeedRemoveTag(element){
+  if(element.childElementCount===0){
+    return false;
+  }
+  
+  for(let childElement of element.children){
+    if(!needRemoveTag(childElement)){
+      return false;
+    }
+  }
+  return true;
+}
+
+function needRemoveTag(element){
+   return (element.getAttribute('mea-remove-tag')==='true');
 }
 
 function addStyle(document){
@@ -459,6 +542,42 @@ function hideToolbar(document) {
 }
 
 async function addEventListener(document){
+  document.addEventListener("mouseup", async () => {
+    let selectedText = document.getSelection().toString();
+
+    console.log('mouse up');
+    
+    let sentenceSelection = getSentenceSelectionFromNodeSelection(document.getSelection());
+    //console.log('sentence selection:'+JSON.stringify(sentenceSelection));
+
+    let isSelectionCollapsed = document.getSelection().isCollapsed;
+    let noteArray;
+    if(isSelectionCollapsed) {
+      noteArray = await search(sentenceSelection.start);
+      
+      for(let note of noteArray){
+        let selectedText = getSelectedTextOfNote(note);
+        note.selectedText = selectedText;
+      }
+    }
+    if(sentenceSelection){
+      chrome.runtime.sendMessage(
+        {
+          type: 'SELECTION_CHANGE',
+          payload: {
+            selectedText: selectedText,          
+            sentenceSelection: sentenceSelection,
+            notes: noteArray,
+          },
+        },
+        (response) => {
+          //console.log(response.message);
+        }
+      );
+    }     
+  
+  });
+
   document.querySelectorAll('.mea-highlight').forEach((element) => {
     element.addEventListener('click', async (e) => {
     
@@ -557,6 +676,150 @@ async function addEventListener(document){
   });
 }
 
+function getSelectedTextOfNote(note){
+  let buffer = '';
+
+  let sentenceText;
+  const {start, end} = note.selection;
+  if(start.sentenceId === end.sentenceId) {
+    sentenceText = gSentenceMap.get(start.sentenceId);
+    buffer = sentenceText.substring(start.offset, end.offset);
+
+  } else {
+
+    sentenceText = gSentenceMap.get(start.sentenceId);
+    let firstSentenceText = sentenceText.substring(start.offset);
+  
+    sentenceText = gSentenceMap.get(end.sentenceId);
+    let lastSentenceText = sentenceText.substring(0, end.offset);
+  
+    buffer = firstSentenceText + lastSentenceText;
+  
+  }
+
+  return buffer;
+}
+function getNodePositionFromSentencePosition(document, sentencePosition){
+  let sentenceId = sentencePosition.sentenceId;
+  let sentenceOffset = sentencePosition.offset;
+  let selector = `.mea-sentence[data-sentence-id='${sentenceId}']`;
+  let sentenceElement = document.querySelector(selector);
+  let sentenceBuffer = '';
+
+  let result = null;
+  if(sentenceElement){
+    console.log('find sentence element, sentence id:'+sentenceId);
+
+    let done = false;
+
+    tranverseNode(sentenceElement, (node) => {
+      if(done){
+        return;
+      }
+
+      if(node.nodeName === '#text'){
+        sentenceBuffer = sentenceBuffer +  node.textContent;
+        if(sentenceBuffer.length >= sentenceOffset){
+          
+          //calc offset
+          let nodeOffset = node.textContent.length - (sentenceBuffer.length - sentenceOffset);
+
+          result = {node, offset: nodeOffset};
+          
+          done = true;
+        }
+          
+      }
+    });
+  }
+  return result;
+}
+
+function getNodeSelectionFromSentenceSelection(document, sentenceSelection){
+  let anchorNodePosition = getNodePositionFromSentencePosition(document, sentenceSelection.start);
+  let focusNodePosition = getNodePositionFromSentencePosition(document, sentenceSelection.end);
+  console.log('sentenceSelection:'+JSON.stringify(sentenceSelection));
+  console.log('anchorNodePosition:'+JSON.stringify(anchorNodePosition));
+  console.log('focusNodePosition:'+JSON.stringify(focusNodePosition));
+  let result = null;
+  if(anchorNodePosition && focusNodePosition) {
+    result = {
+      anchorNode: anchorNodePosition.node,
+      anchorOffset: anchorNodePosition.offset,
+  
+      focusNode: focusNodePosition.node,
+      focusOffset: focusNodePosition.offset,
+    };
+  }
+  
+  return result;
+}
+
+function getSentencePositionFromNodePosition(node, offset){
+  let tokenElement = node.parentElement;
+  let offsetInToken = offset;
+  let sentenceId = tokenElement.getAttribute('data-sentence-id');
+  let sentenceNumber = parseInt(tokenElement.getAttribute('data-sentence-number'));
+  let tokenNumber = tokenElement.getAttribute('data-token-number');
+  
+  let sentenceElement = tokenElement.closest('.mea-sentence');
+  if(!sentenceElement){
+    return null;
+  }
+
+  let sentenceBuffer = '';
+  let offsetInSentence;
+  
+  let done = false;
+
+  tranverseNode(sentenceElement, (node2) => {
+    if(done){
+      return;
+    }
+
+    if(node2.nodeName === '#text'){
+      if(node2 === node){
+        offsetInSentence = sentenceBuffer.length + offsetInToken;
+        
+        done=true;
+      }
+      sentenceBuffer = sentenceBuffer +  node2.textContent;
+    }
+  });
+  let result = {
+    sentenceId: sentenceId,
+    offset: offsetInSentence,
+    sentenceNumber: sentenceNumber,
+  };
+  return result;
+}
+
+function getSentenceSelectionFromNodeSelection(nodeSelection){
+
+  let sentenceAnchorPosition = getSentencePositionFromNodePosition(nodeSelection.anchorNode, nodeSelection.anchorOffset);
+  let sentenceFocusPosition = getSentencePositionFromNodePosition(nodeSelection.focusNode, nodeSelection.focusOffset);
+  if(!sentenceAnchorPosition || !sentenceFocusPosition){
+    return null;
+  }
+
+  let sentenceStartPosition, sentenceEndPosition;
+  if(sentenceAnchorPosition.sentenceNumber < sentenceFocusPosition.sentenceNumber)
+  {
+    sentenceStartPosition = sentenceAnchorPosition;
+  } else if(sentenceAnchorPosition.sentenceNumber == sentenceFocusPosition.sentenceNumber)
+  {            
+    sentenceStartPosition = sentenceAnchorPosition.offset < sentenceFocusPosition.offset? sentenceAnchorPosition : sentenceFocusPosition;
+  } else{
+    sentenceStartPosition = sentenceFocusPosition;
+  }
+  sentenceEndPosition = (sentenceStartPosition === sentenceAnchorPosition) ? sentenceFocusPosition : sentenceAnchorPosition;
+
+  return {
+    start: sentenceStartPosition,
+    end: sentenceEndPosition
+  };
+}
+
 function sendMessageMarkWord(wordChanges){
   //send to background
   chrome.runtime.sendMessage(
@@ -584,15 +847,26 @@ function getAllDocuments(){
   return documents;
 }
 
+function getAllWindows(){
+  let siteConfig = findSiteConfig(document);
+
+  let windows = [window];
+  
+  for(const config of siteConfig.getIframeDocumentConfigs(document)) {
+    windows.push(config.window);    
+  }
+
+  return windows;
+}
+
 function canAnnotate(element){
   const textTags = [
     'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
     'P',
     'UL','OL','LI',
     'BLOCKQUOTE',
-    'EM',
-    'STRONG',
-    'I',
+    
+    
     'CODE',
     'PRE',
     'S',
@@ -620,6 +894,15 @@ function visitElement(element, visitor) {
   
   for(const child of children) {      
     visitElement(child, visitor);      
+  }
+}
+
+function tranverseNode(node, visitor){
+  let result = visitor(node);
+  
+  for(var i=0; i< node.childNodes.length;i++){
+    let childNode = node.childNodes[i];
+    tranverseNode(childNode, visitor);
   }
 }
 
@@ -675,10 +958,35 @@ function isInMeaElement(element){
 }
 
 function annotateTextContent(textContent){
-  let html = textContent; 
+  textContent = textContent.replaceAll(/[“”]/g,'"');
 
-  let result = html.replaceAll(/([a-zA-Z][a-zA-Z'\u2018\u2019&\-]+)/g, function (x) {
-    //console.log(x);
+  //console.log('split result:'+ JSON.stringify(split(textContent)));
+  //split sentences
+  let sentences = split(textContent).filter((s) => s.type=='Sentence').map((s) => s.raw);
+  //console.log('sentences:'+JSON.stringify(sentences));
+  let annotatedSentences = [];
+  
+  for(let sentence of sentences){
+    let annotatedSentence = annotateSentence(sentence, gSentenceNumber);
+    annotatedSentences.push(annotatedSentence);
+
+    gSentenceNumber ++;
+  }
+
+  return annotatedSentences.join(' ');
+}
+
+function annotateSentence(sentence, sentenceNumber) {
+  
+
+  let sentenceId = getSentenceHash(sentence);  
+
+  gSentenceMap.set(sentenceId, sentence);
+
+  gTokenNumber = 0;
+
+  let result = sentence.replaceAll(/([a-zA-Z][a-zA-Z'&]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g, function (x) {
+    //console.log(`"${x}"`);
     let searchResult = searchWord({
       query: x,
       allowLemma: true,
@@ -687,8 +995,9 @@ function annotateTextContent(textContent){
     //console.log(JSON.stringify(searchResult));
     //finally,
     if(searchResult){// find the correct form which has definition in dictionary
-      let annotatedWord = annotateWord(searchResult);
+      let annotatedWord = annotateWord(searchResult, sentenceId, sentenceNumber, gTokenNumber);
       //console.log(x+'-> '+ annotatedWord);
+      gTokenNumber++;
       return annotatedWord;
     } else if(x.includes('-')) {
       let subwords = x.split('-');
@@ -701,7 +1010,8 @@ function annotateTextContent(textContent){
           allowRemoveSuffixOrPrefix: false,      
         });
         if(searchResult){// find the correct form which has definition in dictionary
-          let annotatedSubword = annotateWord(searchResult);
+          let annotatedSubword = annotateWord(searchResult, sentenceId, sentenceNumber, gTokenNumber);
+          gTokenNumber++;
           annotatedSubwords.push(annotatedSubword);
         }
       }
@@ -709,14 +1019,21 @@ function annotateTextContent(textContent){
 
     } else {         
       //console.log('search failed');
-      return x;
+      let annotated = annotatedNonword(x, sentenceId, sentenceNumber, gTokenNumber);
+      gTokenNumber++;
+      return annotated;
+
+      //return `<span class="mea-container mea-no-word" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}">${x}</span>`;
     }
   });
 
-  return result;
+  
+  let annotatedSentence = `<span class="mea-container mea-sentence" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}">${result}</span>`;
+  //console.log('annotatedSentence:'+annotatedSentence);
+  return annotatedSentence;
 }
 
-function annotateWord(searchResult){
+function annotateWord(searchResult, sentenceId, sentenceNumber, tokenNumber){
   let query = searchResult.query;
   let baseWord = searchResult.word;
   let definition = searchResult.definition;
@@ -730,15 +1047,7 @@ function annotateWord(searchResult){
   if(searchResult.searchType ==='lemma' && searchResult.lemmaType ==='irregular'){
     definition = '原'+searchResult.word+':'+definition;
   }
-
-  //fix right click selection issue
-  if(isStartWithAlphabet(definition)){
-    //definition = ':'+definition;
-  }      
-  
-  //only support one-root
-  let root ='';
-  
+    
   let wordPartObjs = getWordParts(baseWord);
   let parts='';
   if(wordPartObjs){
@@ -748,14 +1057,20 @@ function annotateWord(searchResult){
     }
     parts = partArray.join(' ');
   }
-  let formatted =  format(query, definition, baseWord, parts);
-  //console.log('formatted:'+formatted);                 
+  let formatted =  format(query, definition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+  //console.log('formatted:'+formatted);
+                
   return formatted;
 }
 
-function isStartWithAlphabet(definition){
-  var english = /^[A-Za-z].*$/;
-  return english.test(definition);
+function annotatedNonword(text, sentenceId, sentenceNumber, tokenNumber){
+  let definition = '';
+  let baseWord = '';
+  let parts= '';
+
+  let result = format(text, definition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+  
+  return result;
 }
 
 function isPageAnnotationInitialized(){
@@ -801,13 +1116,14 @@ function isPageAnnotationVisible(){
   }
 }
 
-async function resetPageAnnotationVisibility(enabled, source) {
+async function resetPageAnnotationVisibility(enabled, source, types) {
   //let unknownWordSet = new Set();
+  if(!types){
+    types = ['word-definition', 'note'];
+  }
 
-  for(const doc of getAllDocuments()){
-    await resetDocumentAnnotationVisibility(doc, enabled, (word) => {
-      //unknownWordSet.add(word);
-    });
+  for(const window of getAllWindows()){
+    await resetDocumentAnnotationVisibility(window, enabled, types);
   }
 
   let pageInfo = await getPageInfo();
@@ -829,43 +1145,68 @@ async function resetPageAnnotationVisibility(enabled, source) {
  * 
  * reset all word's display attribute according to vocabulary
  */
-async function resetDocumentAnnotationVisibility(document, enabled, onUnknownWord){
+async function resetDocumentAnnotationVisibility(window, enabled, types){
+  let document = window.document;
   //set flag
   document.body.setAttribute('mea-visible', enabled);
 
-  knownWords = await loadKnownWords();
-
-
-
-  document.querySelectorAll('.mea-highlight').forEach((element) => { 
+  if(types.includes('word-definition')) {  
+    knownWords = await loadKnownWords();
     
-    let targetWord = getBaseWordFromElement(element);
-
-    if(enabled){
+    //show hide unknown word annotation
+    document.querySelectorAll('.mea-highlight').forEach((element) => { 
       
-      if(isKnown(targetWord, knownWords)){
-        element.classList.add("hide");
-      } else {
-        element.classList.remove("hide");
+      let targetWord = getBaseWordFromElement(element);
 
-        if(onUnknownWord){
-          onUnknownWord(targetWord);
+      if(enabled){
+        
+        if(isKnown(targetWord, knownWords)){
+          element.classList.add("hide");
+        } else {
+          element.classList.remove("hide");        
         }
+      } else {
+        element.classList.add("hide");
       }
-    } else {
-      element.classList.add("hide");
+    });
+  }
+
+
+  if(types.includes('note')) {  
+    let notes = await getNotes();
+
+    //console.log('notes:'+JSON.stringify(notes));
+
+    //show notes
+    window.CSS.highlights.clear();
+    const highlight = new Highlight();
+    console.log('show notes');
+    for(let note of notes){
+      let nodeSelection = getNodeSelectionFromSentenceSelection(document, note.selection);
+      
+      console.log('find node selection:'+JSON.stringify(nodeSelection));
+      if(nodeSelection) {
+        const range = new Range();
+        range.setStart(nodeSelection.anchorNode, nodeSelection.anchorOffset);
+        range.setEnd(nodeSelection.focusNode, nodeSelection.focusOffset);
+        
+        highlight.add(range);
+      }
     }
-  });			
+    if(highlight.size>0){
+      window.CSS.highlights.set("user-1-highlight", highlight);
+    }    
+  }
+
 }
 
-
-
-function format(word, annotation, baseWord, parts) {
+function format(word, annotation, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
   let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
   let escapedWord = word.replace(/&/g, "&amp;");
-  let s = `<span class="mea-container mea-highlight hide" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}">
-      ${escapedWord}
-    </span>`;
+  
+  let type = baseWord? 'mea-word': 'mea-nonword';
+
+  let s = `<span class="mea-container mea-highlight hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</span>`;
   return s;
 }
 

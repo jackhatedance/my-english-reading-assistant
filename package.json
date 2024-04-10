@@ -26,12 +26,16 @@
     "webpack-merge": "^5.10.0"
   },
   "dependencies": {
+    "bulletin-board-code": "^1.0.1",
     "chart.js": "^4.4.2",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^3.6.0",
     "html-loader": "^5.0.0",
+    "js-md5": "^0.8.3",
     "lancaster-stemmer": "^2.1.0",
     "markdown-loader": "^8.0.0",
+    "sceditor": "^3.2.0",
+    "sentence-splitter": "^5.0.0",
     "wink-lemmatizer": "^3.0.4"
   }
 }

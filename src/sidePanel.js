@@ -6,6 +6,11 @@ import { lookupShort } from './dictionary.js';
 import {localizeHtmlPage} from './locale.js';
 import {getWordParts, isKnown} from './language.js';
 import {initializeOptionService} from './optionService.js';
+import 'sceditor/minified/sceditor.min.js';
+import 'sceditor/minified/formats/bbcode.js';
+import 'sceditor/minified/themes/default.min.css';
+
+import {getNote, setNote, deleteNote} from './noteService.js';
 
 localizeHtmlPage();
 (function () {
@@ -21,6 +26,16 @@ localizeHtmlPage();
 
   var definitionVisible = false;
   
+  var gSelectedText;
+  var gSentenceSelection;
+
+
+  //view,edit
+  var gMode;
+
+  var gNote;
+  
+
 
   document.addEventListener('DOMContentLoaded', async () => {
     await initializeOptionService();
@@ -49,6 +64,7 @@ localizeHtmlPage();
           } else {
             renderPage({visible:false});
           }
+
           
         }
       );
@@ -186,17 +202,17 @@ localizeHtmlPage();
             
             <div class="actions">
               <button class='mea-show-definition' word="${word}" title='${showDefinitionTips}'>
-                <image src='icons/lookup.png' width="12"></image>
+                <image src='icons/lookup.png';' width="12"></image>
               </button>
               
               <button class='mea-mark-known' word="${word}" title="${markAsKnownTips}">
-                <image src='icons/tick.png' width="12"></image>
+                <image src='icons/tick.png';' width="12"></image>
               </button>
               <button class='mea-mark-unknown' word="${word}" title="${markAsUnknownTips}">
-                <image src='icons/question-mark.png' width="12"></image>
+                <image src='icons/question-mark.png';' width="12"></image>
               </button>
               <button class='mea-mark-clear' word="${word}" title="${clearMarkTips}">
-                <image src='icons/clear.png' width="12"></image>
+                <image src='icons/clear.png';' width="12"></image>
               </button>
             </div>
           </div>
@@ -314,7 +330,29 @@ localizeHtmlPage();
     
   }
 
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  function sendMessageToActiveTab(type){
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      chrome.tabs.sendMessage(
+        tab.id,
+        {
+          type: type,
+          payload: {            
+            source:'side-panel',
+          },
+        },
+        (response) => {
+          //do nothing
+        }
+      );
+ 
+    });
+  }
+
+  chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    
+    console.log(request.type);
+
     if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
 
       if(request.payload.source === 'side-panel'){
@@ -328,7 +366,15 @@ localizeHtmlPage();
       sendResponse({
         message:'ok'
       });
+    } else if (request.type === 'SELECTION_CHANGE') {
+      gSelectedText = request.payload.selectedText;
+      gSentenceSelection = request.payload.sentenceSelection;
+      
+      console.log('payload:'+JSON.stringify(request.payload));
+
+      refreshNoteViewer();
     }
+
   });
 
   chrome.tabs.onActivated.addListener(async (activeInfo) => {
@@ -356,12 +402,214 @@ localizeHtmlPage();
     setDefinitions();
   });
 
+  document.querySelectorAll('.tabs > li').forEach((e) => {
+    e.addEventListener('click', (e2) => {
+
+      document.querySelectorAll('.tabs > li').forEach((e) => {
+        e.classList.remove('active');
+      });
+
+      e2.currentTarget.classList.add('active');
+      
+      let contentTabId = e2.currentTarget.getAttribute('data-tab-id');
+      
+      
+      openPage(contentTabId, e2.currentTarget);
+    });
+  });
+  document.getElementById('defaultOpen').click();
+
+  function openPage(pageName,elmnt) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].style.backgroundColor = "";
+    }
+    document.getElementById(pageName).style.display = "block";
+    
+  }
+
+  setupNotesTab();
+
+  function setupNotesTab(){
+    var textarea = document.getElementById('note-editor');
+    sceditor.create(textarea, {
+      format: 'bbcode',
+      toolbarExclude:'emoticon,youtube,ltr,rtl,print',
+      emoticonsEnabled:false,
+      style: '',
+      autofocus: true,
+    });
+  }
+
   function setDefinitions(){
     let definitionElements = document.querySelectorAll('.definition');
     for(let def of definitionElements){
       def.style.display = definitionVisible ? null:'none';
     }
   }
+
+     
+  function setNoteViewerVisibility(show){
+    document.getElementById('view-note-container').style.display = show? null : 'none';
+  }
+
+  function setNoteViewValue(html){
+    let noteViewerElement = document.getElementById('note-view');
+    noteViewerElement.innerHTML = html;
+  }
+  
+  function setNoteEditorVisibility(show){
+    document.getElementById('edit-note-container').style.display = show? null: 'none';
+  }
+
+  function setHighlightText(text){
+    let highlighTextElement = document.getElementById('highlight-text');
+    highlighTextElement.innerHTML = text;
+  }
+
+  function getScEditor(){
+    let textarea = document.getElementById('note-editor');
+    return sceditor.instance(textarea);
+  }
+
+  function bbcodeToHtml(bbcodeContent){
+    return getScEditor().fromBBCode(bbcodeContent);
+  }
+
+  async function renderNoteTab(selectedText, sentenceSelection){
+    if(gMode === 'view') {
+      //show selected text anyway
+      setHighlightText(selectedText);
+  
+      if(sentenceSelection){
+        renderNoteViewer(gNote);
+        setNoteViewerVisibility(true);
+      } else {
+        //hide note viewer.
+        setNoteViewerVisibility(false);
+      }
+
+      setNoteEditorVisibility(false);
+    } else if(gMode === 'add') {
+      //hide viewer
+      setNoteViewerVisibility(false);
+
+      //show editor
+      getScEditor().val('');
+      setNoteEditorVisibility(true); 
+    } else if(gMode === 'edit') {
+      //hide viewer
+      setNoteViewerVisibility(false);
+
+      //show editor
+      getScEditor().val(gNote.content);
+      setNoteEditorVisibility(true); 
+
+    }   
+  }
+
+  function renderNoteViewer(note){
+    if(note){
+      //show note content
+      var noteHtml = bbcodeToHtml(note.content);
+      setNoteViewValue(noteHtml);
+
+      setAddButtonVisibility(false);
+      setEditButtonVisibility(true);
+      setDeleteButtonVisibility(true);
+
+      setNoteViewerVisibility(true);
+    } else {
+      //clear note content
+      setNoteViewValue('');
+
+      setAddButtonVisibility(true);
+      setEditButtonVisibility(false);
+      setDeleteButtonVisibility(false);
+
+      setNoteViewerVisibility(true);
+    }
+    
+  }
+
+  async function refreshNoteViewer(){
+    //console.log('refresh note viewer');
+    if(gMode === 'edit') {
+      //there is unsaved content, do nothing.
+    } else {
+      if(gSelectedText && gSentenceSelection){
+        gNote = await getNote(gSentenceSelection);
+      } else {
+        gNote = null;
+      }
+
+      gMode = 'view';
+      renderNoteTab(gSelectedText, gSentenceSelection);      
+    }
+  }
+
+  function setAddButtonVisibility(show){
+    let button = document.getElementById('addNoteAction');
+    button.style.display = show? null:'none';
+  }
+
+  function setEditButtonVisibility(show){
+    let button = document.getElementById('editNoteAction');
+    button.style.display = show? null:'none';
+  }
+
+  function setDeleteButtonVisibility(show){
+    let button = document.getElementById('deleteNoteAction');
+    button.style.display = show? null:'none';
+  }
+
+  document.getElementById('addNoteAction').addEventListener('click', async (e) => {
+    gMode = 'add';
+    renderNoteTab(gSelectedText, gSentenceSelection);
+  });
+
+  document.getElementById('editNoteAction').addEventListener('click', async (e) => {
+    gMode = 'edit';
+    renderNoteTab(gSelectedText, gSentenceSelection);
+  });
+
+
+  document.getElementById('deleteNoteAction').addEventListener('click', async (e) => {
+    console.log('delete note');
+    
+    await deleteNote(gSentenceSelection);
+     
+    gNote = null;
+
+    gMode = 'view';
+    renderNoteTab(gSelectedText, gSentenceSelection);
+
+    sendMessageToActiveTab('NOTES_UPDATED');
+  });
+
+  document.getElementById('saveNoteAction').addEventListener('click', async (e) => {
+    let noteBBCode = getScEditor().val();
+    let note = {selection: gSentenceSelection, content: noteBBCode};
+    await setNote(note);
+    
+    gNote = note;
+
+    gMode = 'view';
+    renderNoteTab(gSelectedText, gSentenceSelection);
+
+    sendMessageToActiveTab('NOTES_UPDATED');
+  });
+
+  document.getElementById('cancelNoteAction').addEventListener('click', async (e) => {
+    
+    gMode = 'view';
+    renderNoteTab(gSelectedText, gSentenceSelection);    
+  });
 
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(

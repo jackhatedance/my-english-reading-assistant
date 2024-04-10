@@ -29,11 +29,6 @@ function searchWordWithDict(request, dicts){
     let searchType = 'raw';
     let lemmaType = 'regular';
 
-
-    //pre-process
-    //replace u2018, u2109
-    input = input.replace(/[\u2018-\u2019]/g,'\'');
-
     //no modification
     let word = input;
     let definition = lookup(word, dicts);

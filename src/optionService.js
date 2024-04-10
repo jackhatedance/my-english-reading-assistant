@@ -42,7 +42,7 @@ function loadSiteOptionsFromStorage(siteDomain){
 }
 
 function saveSiteOptionsToStorage(siteDomain, options){
-    
+    //console.log('save site options, domain:'+siteDomain+',options:'+options);
     return new Promise(resolve => {
         chrome.storage.local.get(['sitesOptions'], (result) => {
             let sitesOptions = result.sitesOptions;
@@ -108,7 +108,7 @@ function setSiteOptions(siteDomain, options){
 
 function fixSiteDomain(domain){
     if(!domain){
-        return 'nosite';
+        return 'NULL';
     }
     return domain;
 }

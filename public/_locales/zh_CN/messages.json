@@ -125,6 +125,14 @@
     "sidepanelNotAvailable":{
         "message":"不可用"
     },
+
+    "sidepanelTabNotes":{
+        "message":"笔记"
+    },
+    "sidepanelTabVocabulary":{
+        "message":"词汇"
+    },
+
     "sidepanelTitle":{
         "message":"当前页面上的生词"
     },

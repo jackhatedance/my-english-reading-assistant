@@ -182,6 +182,7 @@ localizeHtmlPage();
 
     let siteDomain = pageInfo.domain;
 
+    //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

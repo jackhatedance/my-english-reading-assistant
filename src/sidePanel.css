@@ -1,31 +1,107 @@
-/* normalize css starts here */
-*,
-*::before,
-*::after {
+
+
+body{
+  background : #efefef;
+  font : .8em sans-serif;
+  margin: 0;
+}
+
+.tab-container{
+  background : #8ae1da;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  max-height: 35px;
 }
-/* normalize css ends here */
 
-html {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-    sans-serif;
+ul.tabs{
+  margin: 0;
+  list-style-type : none;
+  line-height : 35px;
+  max-height: 35px;
+  overflow: hidden;
+  display: inline-block;
+  padding-right: 20px
+}
+
+ul.tabs > li.active{
+  z-index: 2;
+  background: #efefef;
+}
+
+ul.tabs > li.active:before{
+  border-color : transparent #efefef transparent transparent;
+}
+
+
+ul.tabs > li.active:after{
+  border-color : transparent transparent transparent #efefef;
+}
+
+ul.tabs > li{
+  float : right;
+  margin : 5px -10px 0;
+  border-top-right-radius: 25px 170px;
+  border-top-left-radius: 20px 90px;
+  padding : 0 30px 0 25px;
+  height: 170px;
+  background: #ddd;
+  position : relative;
+  box-shadow: 0 10px 20px rgba(0,0,0,.5);
+  max-width : 200px;
+}
+
+ul.tabs > li > a{
+  display: inline-block;
+  max-width:100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
   color: #222;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-body {
-  height: 200px;
+ul.tabs > li:before, ul.tabs > li:after{
+  content : '';
+  background : transparent;
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  border-width: 10px;
+  top: 0px;
+  border-style : solid;
+  position : absolute;
 }
 
-.app {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: left;
-  padding: 20px;
-  margin: 10px;
+ul.tabs > li:before{
+  border-color : transparent #ddd transparent transparent;
+  -webkit-transform : rotate(48deg);
+  left: -23px;
+}
+
+ul.tabs > li:after{
+  border-color : transparent transparent transparent #ddd;
+  -webkit-transform : rotate(-48deg);
+  right: -17px;
+}
+
+/* Clear Fix took for HTML 5 Boilerlate*/
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+
+#notes-tab {
+
+}
+
+#vocabulary-tab {
+  text-align: center;
+
+}
+
+#sentence{
+  font-size: large;
 }
 
 .title {
@@ -72,9 +148,7 @@ code {
 
 .word-list {
   text-align: left;
-  width: 100%;
-
-  
+ 
   li:nth-child(odd) {
     background-color: #bed8d6;
   }

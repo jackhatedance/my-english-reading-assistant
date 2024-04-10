@@ -1,4 +1,18 @@
 
+.mea-sentence {
+  
+  &::before {
+    content: '[';
+  }
+  &::after {
+    content: ']';
+  }
+}
+
+.mea-nonword {
+  display:inline !important;
+}
+
 .mea-highlight {  
   position: relative;
   margin-top: 0px;
@@ -81,4 +95,9 @@
   width: 16px;
   height: 16px;
 
+}
+
+::highlight(user-1-highlight) {
+  background-color: rgb(221, 195, 149);
+  color: black;
 }

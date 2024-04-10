@@ -4,20 +4,57 @@
     <meta charset="UTF-8" />
     <title>__MSG_sidepanelPageTitle__</title>
     <link rel="stylesheet" href="sidePanel.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
     <h1 id="notAvailable" style="text-align: center; display:none;">__MSG_sidepanelNotAvailable__</h1>
     <div id="app" class="app" style="display:none;">
-       
-      <h1 id="title">__MSG_sidepanelTitle__</h1>
-      <h2>__MSG_sidepanelWordStatisticsLabel__<span id="wordStatistics"></span></h2>
-      <p>__MSG_sidepanelTitleDesc__</p>
-      
-      <div class="toolbar">
-        <button id="showAllDefinitions">__MSG_sidepanelShowDefinitions__</button>
-        <button id="hideAllDefinitions">__MSG_sidepanelHideDefinitions__</button>
+      <div class=tab-container>
+        <ul class="tabs clearfix" >
+          <li data-tab-id="vocabulary-tab">
+            <a href=# >__MSG_sidepanelTabVocabulary__</a> 
+          </li>
+          <li data-tab-id="notes-tab" class="active" id="defaultOpen" > 
+            <a href=# >__MSG_sidepanelTabNotes__</a> 
+          </li>          
+        </ul>
       </div>
-      <ol id="unknownWordList" class="word-list"></ol>
+
+      
+      <div id="vocabulary-tab" class="tabcontent">
+        
+        
+          <h1 id="title">__MSG_sidepanelTitle__</h1>
+          <h2>__MSG_sidepanelWordStatisticsLabel__<span id="wordStatistics"></span></h2>
+          <p>__MSG_sidepanelTitleDesc__</p>
+          
+          <div class="toolbar">
+            <button id="showAllDefinitions">__MSG_sidepanelShowDefinitions__</button>
+            <button id="hideAllDefinitions">__MSG_sidepanelHideDefinitions__</button>
+          </div>
+          <ol id="unknownWordList" class="word-list"></ol>
+        
+      </div>
+
+      <div id="notes-tab" class="tabcontent">
+        
+        <p id="highlight-text"></p>
+        <div id="view-note-container" style="display: none">
+          <p>Note:</p>
+          <div id="note-view"></div>
+          <div>
+            <button id="addNoteAction">Add</button>
+            <button id="editNoteAction">Edit</button>
+            <button id="deleteNoteAction">Delete</button>
+          </div>
+        </div>
+        <div id="edit-note-container" style="display:none">
+          <textarea id="note-editor"></textarea>
+          <div>
+            <button id="saveNoteAction">Save</button>
+            <button id="cancelNoteAction">Cancel</button>
+          </div>
+        </div>
     </div>
 
     <script src="sidePanel.js"></script>

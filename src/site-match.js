@@ -6,8 +6,9 @@ const siteConfigs = [
             return true;
         },
         //top document config
-        getDocumentConfig: function(document){
+        getDocumentConfig: function(window, document){
             let config = {
+                window: window,
                 document: document,
                 canProcess: true,
             };
@@ -15,17 +16,16 @@ const siteConfigs = [
         },
         //iframe document configs
         getIframeDocumentConfigs: function(document){
-            let iframes = document.querySelectorAll('iframe');
             let configs = [];
-            for(const iframe of iframes){
-                if(iframe && iframe.contentDocument) {
-                    let config = {
-                        document:iframe.contentDocument,
-                        canProcess: true
-                    };
-                    configs.push(config);
-                }
-            }
+            searchSubIframesRecursively(document, (iframe)=>{
+                let config = {
+                    document:iframe.contentDocument,
+                    window: iframe.contentWindow,
+                    canProcess: true
+                };
+                configs.push(config);
+            });
+
             return configs;
         },
         //timer to refresh page annotation peridonically
@@ -60,8 +60,9 @@ const siteConfigs = [
             });
             return found;
         },
-        getDocumentConfig: function(document){
+        getDocumentConfig: function(window, document){
             let config = {
+                window: window,
                 document: document,
                 canProcess: false,
             };
@@ -74,6 +75,7 @@ const siteConfigs = [
                 if(id && id.startsWith('epubjs')){
                     let config = {
                         document:iframe.contentDocument,
+                        window: iframe.contentWindow,
                         canProcess: true
                     };
                     configs.push(config);
@@ -87,12 +89,11 @@ const siteConfigs = [
             if(!topVisible){
                 return false;
             }
-
-            let iframes = document.querySelectorAll('iframe');
-            let configs = [];
-            for(const iframe of iframes){
-                if(iframe) {
-                    let iframeVisible = iframe?.contentDocument?.body?.getAttribute('mea-visible');
+            
+            let iframeConfigs = this.getIframeDocumentConfigs(topDocument);
+            for(const iframeConfig of iframeConfigs){
+                if(iframeConfig) {
+                    let iframeVisible = iframeConfig.document?.body?.getAttribute('mea-visible');
                     if(topVisible != iframeVisible){
                         return true;
                     }              
@@ -122,27 +123,25 @@ const siteConfigs = [
             });
             return false;
         },
-        getDocumentConfig: function(document){
+        getDocumentConfig: function(window, document){
             let config = {
+                window: window,
                 document: document,
                 canProcess: false,
             };
             return config;
         },
         getIframeDocumentConfigs: function(document){
-            let fviewerIframe = document.querySelector('iframe');
-            
-            let iframes = fviewerIframe.contentDocument.querySelectorAll('iframe');
             let configs = [];
-            for(const iframe of iframes){
-                if(iframe) {
-                    let config = {
-                        document:iframe.contentDocument,
-                        canProcess: true
-                    };
-                    configs.push(config);
-                }
-            }
+            searchSubIframesRecursively(document, (iframe)=>{
+                let config = {
+                    document:iframe.contentDocument,
+                    window: iframe.contentWindow,
+                    canProcess: true
+                };
+                configs.push(config);
+            });
+
             return configs;
         },
         needRefreshPageAnnotation(topDocument){

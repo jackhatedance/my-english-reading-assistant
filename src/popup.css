@@ -154,3 +154,13 @@ input:checked + .slider:before {
   width:100%;
   text-align:right;
 }
+
+.field {
+  text-align: left;
+  clear: both;
+
+  input {
+    float: right;
+    width: 4em;
+  }
+}
