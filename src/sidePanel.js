@@ -6,11 +6,12 @@ import { lookupShort } from './dictionary.js';
 import {localizeHtmlPage} from './locale.js';
 import {getWordParts, isKnown} from './language.js';
 import {initializeOptionService} from './optionService.js';
-import 'sceditor/minified/sceditor.min.js';
-import 'sceditor/minified/formats/bbcode.js';
-import 'sceditor/minified/themes/default.min.css';
+
 
 import {getNote, setNote, deleteNote} from './noteService.js';
+import {Note} from './components/note.js';
+import {Notes} from './components/notes.js';
+
 
 localizeHtmlPage();
 (function () {
@@ -26,15 +27,9 @@ localizeHtmlPage();
 
   var definitionVisible = false;
   
-  var gSelectedText;
-  var gSentenceSelection;
-
-
-  //view,edit
-  var gMode;
-
-  var gNote;
-  
+   
+  var gNoteComponent;
+  var gNotesComponent;
 
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -367,12 +362,19 @@ localizeHtmlPage();
         message:'ok'
       });
     } else if (request.type === 'SELECTION_CHANGE') {
-      gSelectedText = request.payload.selectedText;
-      gSentenceSelection = request.payload.sentenceSelection;
+      let selectedText = request.payload.selectedText;
+      let sentenceSelection = request.payload.sentenceSelection;
       
       console.log('payload:'+JSON.stringify(request.payload));
-
-      refreshNoteViewer();
+      
+      let note = await getNote(sentenceSelection);
+      if(!note){
+        gNoteComponent.initForNewNote(selectedText, sentenceSelection);        
+      } else {
+        gNoteComponent.initForExistingNote(selectedText, note);
+      }
+      
+      gNoteComponent.refreshNoteViewer();
     }
 
   });
@@ -433,18 +435,23 @@ localizeHtmlPage();
     
   }
 
-  setupNotesTab();
+  let service = {
+    getNote: (sentenceSelection) => getNote(sentenceSelection),
+    setNote: (note) => setNote(note),
+    deleteNote: (sentenceSelection) => deleteNote(sentenceSelection),
+    sendMessageToActiveTab: (type) => sendMessageToActiveTab(type),
+  };
 
-  function setupNotesTab(){
-    var textarea = document.getElementById('note-editor');
-    sceditor.create(textarea, {
-      format: 'bbcode',
-      toolbarExclude:'emoticon,youtube,ltr,rtl,print',
-      emoticonsEnabled:false,
-      style: '',
-      autofocus: true,
-    });
-  }
+  let notesElement = document.querySelector('.notes');
+  gNotesComponent = new Notes(notesElement, service);
+
+  let noteElement = document.createElement("div");
+  notesElement.appendChild(noteElement);
+
+  gNoteComponent = new Note(noteElement, service);
+
+  gNoteComponent.setupNotesTab();
+
 
   function setDefinitions(){
     let definitionElements = document.querySelectorAll('.definition');
@@ -452,165 +459,7 @@ localizeHtmlPage();
       def.style.display = definitionVisible ? null:'none';
     }
   }
-
-     
-  function setNoteViewerVisibility(show){
-    document.getElementById('view-note-container').style.display = show? null : 'none';
-  }
-
-  function setNoteViewValue(html){
-    let noteViewerElement = document.getElementById('note-view');
-    noteViewerElement.innerHTML = html;
-  }
   
-  function setNoteEditorVisibility(show){
-    document.getElementById('edit-note-container').style.display = show? null: 'none';
-  }
-
-  function setHighlightText(text){
-    let highlighTextElement = document.getElementById('highlight-text');
-    highlighTextElement.innerHTML = text;
-  }
-
-  function getScEditor(){
-    let textarea = document.getElementById('note-editor');
-    return sceditor.instance(textarea);
-  }
-
-  function bbcodeToHtml(bbcodeContent){
-    return getScEditor().fromBBCode(bbcodeContent);
-  }
-
-  async function renderNoteTab(selectedText, sentenceSelection){
-    if(gMode === 'view') {
-      //show selected text anyway
-      setHighlightText(selectedText);
-  
-      if(sentenceSelection){
-        renderNoteViewer(gNote);
-        setNoteViewerVisibility(true);
-      } else {
-        //hide note viewer.
-        setNoteViewerVisibility(false);
-      }
-
-      setNoteEditorVisibility(false);
-    } else if(gMode === 'add') {
-      //hide viewer
-      setNoteViewerVisibility(false);
-
-      //show editor
-      getScEditor().val('');
-      setNoteEditorVisibility(true); 
-    } else if(gMode === 'edit') {
-      //hide viewer
-      setNoteViewerVisibility(false);
-
-      //show editor
-      getScEditor().val(gNote.content);
-      setNoteEditorVisibility(true); 
-
-    }   
-  }
-
-  function renderNoteViewer(note){
-    if(note){
-      //show note content
-      var noteHtml = bbcodeToHtml(note.content);
-      setNoteViewValue(noteHtml);
-
-      setAddButtonVisibility(false);
-      setEditButtonVisibility(true);
-      setDeleteButtonVisibility(true);
-
-      setNoteViewerVisibility(true);
-    } else {
-      //clear note content
-      setNoteViewValue('');
-
-      setAddButtonVisibility(true);
-      setEditButtonVisibility(false);
-      setDeleteButtonVisibility(false);
-
-      setNoteViewerVisibility(true);
-    }
-    
-  }
-
-  async function refreshNoteViewer(){
-    //console.log('refresh note viewer');
-    if(gMode === 'edit') {
-      //there is unsaved content, do nothing.
-    } else {
-      if(gSelectedText && gSentenceSelection){
-        gNote = await getNote(gSentenceSelection);
-      } else {
-        gNote = null;
-      }
-
-      gMode = 'view';
-      renderNoteTab(gSelectedText, gSentenceSelection);      
-    }
-  }
-
-  function setAddButtonVisibility(show){
-    let button = document.getElementById('addNoteAction');
-    button.style.display = show? null:'none';
-  }
-
-  function setEditButtonVisibility(show){
-    let button = document.getElementById('editNoteAction');
-    button.style.display = show? null:'none';
-  }
-
-  function setDeleteButtonVisibility(show){
-    let button = document.getElementById('deleteNoteAction');
-    button.style.display = show? null:'none';
-  }
-
-  document.getElementById('addNoteAction').addEventListener('click', async (e) => {
-    gMode = 'add';
-    renderNoteTab(gSelectedText, gSentenceSelection);
-  });
-
-  document.getElementById('editNoteAction').addEventListener('click', async (e) => {
-    gMode = 'edit';
-    renderNoteTab(gSelectedText, gSentenceSelection);
-  });
-
-
-  document.getElementById('deleteNoteAction').addEventListener('click', async (e) => {
-    console.log('delete note');
-    
-    await deleteNote(gSentenceSelection);
-     
-    gNote = null;
-
-    gMode = 'view';
-    renderNoteTab(gSelectedText, gSentenceSelection);
-
-    sendMessageToActiveTab('NOTES_UPDATED');
-  });
-
-  document.getElementById('saveNoteAction').addEventListener('click', async (e) => {
-    let noteBBCode = getScEditor().val();
-    let note = {selection: gSentenceSelection, content: noteBBCode};
-    await setNote(note);
-    
-    gNote = note;
-
-    gMode = 'view';
-    renderNoteTab(gSelectedText, gSentenceSelection);
-
-    sendMessageToActiveTab('NOTES_UPDATED');
-  });
-
-  document.getElementById('cancelNoteAction').addEventListener('click', async (e) => {
-    
-    gMode = 'view';
-    renderNoteTab(gSelectedText, gSentenceSelection);    
-  });
-
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(
     {
