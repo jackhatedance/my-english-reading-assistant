@@ -34,7 +34,7 @@
     }
   ],
   "side_panel": {
-    "default_path": "sidepanel.html"
+    "default_path": "side-panel.html"
   },
   "web_accessible_resources": [
     {

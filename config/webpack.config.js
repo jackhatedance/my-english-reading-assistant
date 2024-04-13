@@ -13,7 +13,7 @@ const config = (env, argv) =>
       options: PATHS.src + '/options.js',
       contentScript: PATHS.src + '/contentScript.js',
       background: PATHS.src + '/background.js',
-      sidePanel: PATHS.src + '/sidePanel.js',
+      sidePanel: PATHS.src + '/side-panel.js',
       guide: PATHS.src + '/guide.js',
       report: PATHS.src + '/report.js',
     },

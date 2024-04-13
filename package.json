@@ -21,6 +21,9 @@
     "mocha": "^8.4.0",
     "mocha-loader": "^5.1.5",
     "prettier": "^2.8.8",
+    "vue": "^3.4.21",
+    "vue-loader": "^17.4.2",
+    "vue-template-compiler": "^2.7.16",
     "webpack": "^5.90.3",
     "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.10.0"
@@ -36,6 +39,7 @@
     "markdown-loader": "^8.0.0",
     "sceditor": "^3.2.0",
     "sentence-splitter": "^5.0.0",
-    "wink-lemmatizer": "^3.0.4"
+    "wink-lemmatizer": "^3.0.4",
+    "xbbcode-parser": "^0.2.2"
   }
 }

@@ -4,6 +4,7 @@
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { VueLoaderPlugin } from 'vue-loader';
 
 import PATHS from './paths.cjs';
 
@@ -61,7 +62,10 @@ const common = {
           },
         ],
       },
-      
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
     ],
   },
   plugins: [
@@ -78,6 +82,7 @@ const common = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
+    new VueLoaderPlugin(),
   ],
 };
 

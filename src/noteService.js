@@ -128,6 +128,9 @@ async function search(position){
     for(let note of noteArray) {
         if(contains(note.selection, position)){
             result.push(note);
+
+            let key = getNoteKey(note.selection);
+            note.key = key;
         }
     }
     return result;
