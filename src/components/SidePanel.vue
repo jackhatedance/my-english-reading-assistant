@@ -50,13 +50,18 @@ async function getPageInfo() {
         //console.log('get pageInfo response:' + JSON.stringify(response));
 
         if (response && response.pageInfo) {
-          page.value = response.pageInfo;
+          let pageInfo = response.pageInfo;
+          if (pageInfo.visible) {
+            page.value = response.pageInfo;
 
-          isShowUnavailable.value = false;
-          isShowTabs.value = true;
-          //renderPage(pageInfo);
+            isShowUnavailable.value = false;
+            isShowTabs.value = true;
+          } else {
+            isShowUnavailable.value = true;
+            isShowTabs.value = false;
+          }
+
         } else {
-          //renderPage({visible:false});
 
           isShowUnavailable.value = true;
           isShowTabs.value = false;
@@ -121,8 +126,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 });
 
 onBeforeUpdate(() => {
-    //console.log('before update, props.page:'+JSON.stringify(page.value));
-    //console.log('before update');
+  //console.log('before update, props.page:'+JSON.stringify(page.value));
+  //console.log('before update');
 
 });
 
