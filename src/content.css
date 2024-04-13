@@ -18,7 +18,9 @@
   margin-top: 0px;
   text-indent: 0px;
   display: inline-block;
+}
 
+.mea-highlight { 
   &.hide {
     &::after {
       visibility: hidden;

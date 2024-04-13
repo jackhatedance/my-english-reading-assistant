@@ -14,6 +14,13 @@ const props = defineProps({
     service: Object,
 });
 
+const sidepanelNoteLabel = chrome.i18n.getMessage('sidepanelNoteLabel');
+const sidepanelAddAction = chrome.i18n.getMessage('sidepanelAddAction');
+const sidepanelEditAction = chrome.i18n.getMessage('sidepanelEditAction');
+const sidepanelDeleteAction = chrome.i18n.getMessage('sidepanelDeleteAction');
+const sidepanelSaveAction = chrome.i18n.getMessage('sidepanelSaveAction');
+const sidepanelCancelAction = chrome.i18n.getMessage('sidepanelCancelAction');
+
 const rootElement = ref();
 
 
@@ -172,19 +179,19 @@ init();
     <div ref="rootElement" class="note">
         <h2 class="highlight-text">{{ props.note.selectedText }}</h2>
         <div class="view-note-container" v-show="mode === 'view'">
-            <p>Note:</p>
+            <p>{{ sidepanelNoteLabel }}</p>
             <div class="note-view" v-html="noteContentHtml"></div>
             <div>
-                <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">Add</button>
-                <button class="editNoteAction" v-show="props.note.persisted" @click="clickEdit">Edit</button>
-                <button class="deleteNoteAction" v-show="props.note.persisted" @click="clickDelete">Delete</button>
+                <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">{{ sidepanelAddAction }}</button>
+                <button class="editNoteAction" v-show="props.note.persisted" @click="clickEdit">{{ sidepanelEditAction }}</button>
+                <button class="deleteNoteAction" v-show="props.note.persisted" @click="clickDelete">{{ sidepanelDeleteAction }}</button>
             </div>
         </div>
         <div class="edit-note-container" v-show="mode === 'init' || mode === 'edit'">
             <textarea ref="textarea" class="note-editor"></textarea>
             <div>
-                <button class="saveNoteAction" @click="clickSave">Save</button>
-                <button class="cancelNoteAction" @click="clickCancel">Cancel</button>
+                <button class="saveNoteAction" @click="clickSave">{{ sidepanelSaveAction }}</button>
+                <button class="cancelNoteAction" @click="clickCancel">{{ sidepanelCancelAction }}</button>
             </div>
         </div>
     </div>

@@ -23,14 +23,17 @@
     "popupAlwaysShowDefinition":{
         "message":"总是在这个网站显示释义"
     },
-    "popupDefinitionAdjustment":{
-        "message":"释义调整"
+    "popupAnnotationAdjustment":{
+        "message":"注解调整"
     },
     "popupPositionLabel":{
         "message":"上下位置调整"
     },
     "popupFontSizeLabel":{
         "message":"字体尺寸"
+    },
+    "popupLineHeightLabel":{
+        "message":"行高"
     },
     "popupColorLabel":{
         "message":"颜色"
@@ -163,6 +166,24 @@
         "message":"我不确定"
     },
 
+    "sidepanelNoteLabel":{
+        "message":"笔记:"
+    },
+    "sidepanelAddAction":{
+        "message":"添加"
+    },
+    "sidepanelEditAction":{
+        "message":"编辑"
+    },
+    "sidepanelDeleteAction":{
+        "message":"删除"
+    },
+    "sidepanelSaveAction":{
+        "message":"保存"
+    },
+    "sidepanelCancelAction":{
+        "message":"取消"
+    },
 
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"

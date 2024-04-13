@@ -93,6 +93,11 @@ localizeHtmlPage();
       applyStyles();
     });
 
+    document.getElementById('lineHeight').value = annotationOptions.lineHeight;
+    document.getElementById('lineHeight').addEventListener('change', (e) => {      
+      applyStyles();
+    });
+
     document.getElementById('color').value = annotationOptions.color;
     document.getElementById('color').addEventListener('change', (e) => {
       
@@ -147,6 +152,7 @@ localizeHtmlPage();
     document.getElementById('annotationPosition').value = options.position;
 
     document.getElementById('fontSize').value = options.fontSize;
+    document.getElementById('lineHeight').value = options.lineHeight;
     
     document.getElementById('color').value = options.color;;
     document.getElementById('opacity').value = options.opacity;;
@@ -160,6 +166,8 @@ localizeHtmlPage();
 
     let fontSize =  document.getElementById('fontSize').value;
     
+    let lineHeight =  document.getElementById('lineHeight').value;
+    
     let color =  document.getElementById('color').value;
     let opacity =  document.getElementById('opacity').value;
 
@@ -168,6 +176,7 @@ localizeHtmlPage();
 
       annotation:{    
         fontSize: fontSize,
+        lineHeight: lineHeight,
         position: position,        
         opacity: opacity,
         color:color,
@@ -248,7 +257,7 @@ localizeHtmlPage();
         },
         (response) => {
           if(response){
-            //console.log('getPageInfo:'+JSON.stringify(response));
+            console.log('getPageInfo:'+JSON.stringify(response));
             resolve(response.pageInfo?response.pageInfo:undefined);
           }else {
             resolve(undefined);

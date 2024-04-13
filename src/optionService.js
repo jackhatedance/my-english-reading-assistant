@@ -12,6 +12,7 @@ async function getDefaultSiteOptions(){
             enabled: false,
             annotation: {
                 fontSize: 0.4,
+                lineHeight: 1.2,
                 position: 0.5,        
                 opacity: 0.5,
                 color: '#0000ff',
@@ -25,6 +26,23 @@ async function getDefaultSiteOptions(){
     return options;
     
 }
+
+/**
+ * make sure all new added fields are not undefined, and assigned with default value
+ * 
+ * @param {*} option1 
+ * @param {*} option2 
+ */
+function assignDefaultValues(options, defaultOptions) {
+    
+    options.annotation = Object.assign({}, defaultOptions.annotation, options.annotation);
+
+    let mergedOptions = Object.assign({}, defaultOptions, options);
+
+    return mergedOptions;
+
+}
+
 
 function loadSiteOptionsFromStorage(siteDomain){
     return new Promise(resolve => {
@@ -97,9 +115,15 @@ async function getSiteOptions(siteDomain){
     
     let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
     if(!options){
-        options = await getDefaultSiteOptions();
-    };
-    return options;
+        options ={};
+    }
+
+    let defaultOptions = await getDefaultSiteOptions();
+    
+    
+    let effectiveOptions = assignDefaultValues(options, defaultOptions);
+
+    return effectiveOptions;
 }
 
 function setSiteOptions(siteDomain, options){

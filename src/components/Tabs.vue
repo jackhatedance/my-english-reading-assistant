@@ -15,7 +15,7 @@ const props = defineProps({
 const sidepanelTabVocabulary = chrome.i18n.getMessage('sidepanelTabVocabulary');
 const sidepanelTabNotes = chrome.i18n.getMessage('sidepanelTabNotes');
 
-var activeTabId = ref('notes-tab');
+var activeTabId = ref('vocabulary-tab');
 
 console.log('Tabs notes:' + JSON.stringify(props.notes));
 
@@ -40,9 +40,11 @@ watch(() => props.page, (newValue, oldValue) => {
         
 
         <ul class="tabs clearfix">
-            <TabHeader tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
-            <TabHeader tabId="notes-tab" :name="sidepanelTabNotes" :isActive="activeTabId === 'notes-tab'" id="defaultOpen" @activeTab="onActiveTab">
+            
+            <TabHeader tabId="notes-tab" :name="sidepanelTabNotes" :isActive="activeTabId === 'notes-tab'" @activeTab="onActiveTab">
             </TabHeader>
+
+            <TabHeader tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
         </ul>
 
         <TabBody id="vocabulary-tab" v-show="activeTabId === 'vocabulary-tab'">

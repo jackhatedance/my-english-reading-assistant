@@ -152,7 +152,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getPageInfo().then((pageInfo) => {
       response.pageInfo = pageInfo;
       
-      //console.log('pageInfo response:'+ JSON.stringify(response));
+      console.log('pageInfo response:'+ JSON.stringify(response));
 
       sendResponse(response);
     });
@@ -220,7 +220,17 @@ function indexOfMeaAnnotation(styleSheet){
   }
   return -1;
 }
-function generateCssRule(options){
+function indexOfMeaHighlight(styleSheet){
+  for(let i =0; i< styleSheet.cssRules.length;i++){
+    let rule = styleSheet.cssRules[i];
+    if(rule.selectorText === '.mea-highlight'){
+      return i;
+    }
+  }
+  return -1;
+}
+
+function generateCssRuleOfAnnotation(options){
 
   let top = `${options.position * -1}em`;
   let fontSize = `${options.fontSize}em`;
@@ -243,6 +253,20 @@ function generateCssRule(options){
   return rule;
 }
 
+function generateCssRuleOfHighlight(options){
+
+  let lineHeight = `${options.lineHeight}em`;
+
+  let rule=`.mea-highlight {  
+    position: relative;
+    margin-top: 0px;
+    text-indent: 0px;
+    display: inline-block;
+    line-height: ${lineHeight} !important;
+  }`;
+  return rule;
+}
+
 function containsMeaStyle(document){
   let styleSheet = findStyleSheet(document);
   if(styleSheet){
@@ -258,13 +282,22 @@ function changeStyle(document, options){
   
   let styleSheet = findStyleSheet(document);
   if(styleSheet){
+    //annotation
     let index = indexOfMeaAnnotation(styleSheet);
     if(index >=0){
       styleSheet.deleteRule(index);
     }
-    let rule = generateCssRule(options);
+    let rule = generateCssRuleOfAnnotation(options);
     styleSheet.insertRule(rule,0);
     //console.log('changed style of a document');
+
+    //highlight, aka. text
+    index = indexOfMeaHighlight(styleSheet);
+    if(index >=0){
+      styleSheet.deleteRule(index);
+    }
+    rule = generateCssRuleOfHighlight(options);
+    styleSheet.insertRule(rule,0);
   }
 }
 
@@ -288,7 +321,7 @@ async function getPageInfo() {
   let unknownWordsCount=0;
   let knownWordsCount=0;
   for(let document of documents) {
-    let elements = document.querySelectorAll('.mea-highlight:not(.hide)');
+    let elements = document.querySelectorAll('.mea-highlight.mea-word:not(.hide)');
     
     for(var e of elements) {
       //let targetWord = getTargetWordFromElement(e);
@@ -843,6 +876,7 @@ function getAllDocuments(){
   for(const config of siteConfig.getIframeDocumentConfigs(document)) {
     documents.push(config.document);    
   }
+  console.log('get all documents.');
 
   return documents;
 }
@@ -985,7 +1019,7 @@ function annotateSentence(sentence, sentenceNumber) {
 
   gTokenNumber = 0;
 
-  let result = sentence.replaceAll(/([a-zA-Z][a-zA-Z'&]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g, function (x) {
+  let result = sentence.replaceAll(/([a-zA-Z][a-zA-Z'&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g, function (x) {
     //console.log(`"${x}"`);
     let searchResult = searchWord({
       query: x,
@@ -999,23 +1033,38 @@ function annotateSentence(sentence, sentenceNumber) {
       //console.log(x+'-> '+ annotatedWord);
       gTokenNumber++;
       return annotatedWord;
-    } else if(x.includes('-')) {
+    } else if(x.match(/\w+-\w+/)) {
       let subwords = x.split('-');
 
-      let annotatedSubwords = [];
+      let annotatedSubTokens = [];
+      let i=0;
       for(let subword of subwords){
+        //not first
+        if(i>0) {
+          let annotated = annotatedNonword('-', sentenceId, sentenceNumber, gTokenNumber);
+          annotatedSubTokens.push(annotated);
+          gTokenNumber++;
+        }
+
         searchResult = searchWord({
           query: subword,
           allowLemma: true,
           allowRemoveSuffixOrPrefix: false,      
         });
+
         if(searchResult){// find the correct form which has definition in dictionary
           let annotatedSubword = annotateWord(searchResult, sentenceId, sentenceNumber, gTokenNumber);
           gTokenNumber++;
-          annotatedSubwords.push(annotatedSubword);
+          annotatedSubTokens.push(annotatedSubword);
+        } else {
+          let annotated = annotatedNonword(subword, sentenceId, sentenceNumber, gTokenNumber);
+          annotatedSubTokens.push(annotated);
+          gTokenNumber++;
         }
+
+        i++;
       }
-      return annotatedSubwords.join('-');
+      return annotatedSubTokens.join('');
 
     } else {         
       //console.log('search failed');
