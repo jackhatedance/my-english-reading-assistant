@@ -162,6 +162,7 @@ code {
 
 .word-and-actions{
   clear:both;
+  line-height: 1.8em;
 }
 
 .actions {

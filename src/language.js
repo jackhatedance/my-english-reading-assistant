@@ -18,8 +18,43 @@ function searchWord(request){
     if(!result){
         result = searchWordWithDict(request, ['large']);
     }
+
+    if(!result){
+        let isCompounding = request.query.match(/\w+-\w+/);
+        if(isCompounding){
+            result = searchCompounding(request, ['large']);    
+        }        
+    }
+
     return result;
 }
+
+
+function searchCompounding(request, dicts){
+    let query = request.query;
+
+    let wordParts = query.split('-');
+  
+    let definitions = [];
+    
+    let requestOfSubword = {...request};
+    for(let subword of wordParts){
+        requestOfSubword.query = subword;
+        let searchResult = searchWordWithDict(requestOfSubword, dicts);
+  
+        let str = `${subword}:${searchResult.definition}`;
+        definitions.push(str);      
+    }
+  
+    let searchResult = {
+      query: query,
+      searchType: 'compounding',
+      lemmaType: null,
+      word: query,
+      definition: definitions.join(';'),
+    };
+    return searchResult;
+  }
 
 function searchWordWithDict(request, dicts){
 
@@ -416,6 +451,14 @@ function isKnown(baseWord, vocabulary){
 
 function getWordParts(baseWord){
     let parts = wordParts[baseWord];
+
+    if(!parts){
+        //compouding
+        if(baseWord.match(/\w+-\w+/)){
+            parts =  baseWord.split('-');
+        }        
+    }
+
     if(!parts){
         return null;
     }

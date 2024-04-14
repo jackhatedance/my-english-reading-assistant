@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
-import { lookupShort } from '../../dictionary.js';
+import {searchWord, isKnown } from '../../language.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 
 const props = defineProps({
@@ -18,13 +18,7 @@ const wordStr = computed(() => {
     if (fromArray) {
         fromStr = fromArray.join(',');
     }
-
-    //query root word
-    let definition = lookupShort(word);
-    if (!definition) {
-        definition = '';
-    }
-
+    
     let wordStr = fromStr ? `${word} (${fromStr})` : word;
 
     return wordStr;
@@ -35,7 +29,17 @@ const definition = computed(() => {
     let word = target;
 
     //query root word
-    let definition = lookupShort(word);
+    let searchResult = searchWord({
+      query: word,
+      allowLemma: true,
+      allowRemoveSuffixOrPrefix: false,      
+    });
+    
+    let definition = '';
+    if(searchResult){
+        definition = searchResult.definition;
+    }
+    
     if (!definition) {
         definition = '';
     }
@@ -60,7 +64,7 @@ function clickShowDefinition() {
     showDefinition.value = true;
 }
 
-const isKnown = ref(false);
+const isKnownRef = ref(false);
 
 async function clickMarkAsKnown() {
     let baseForm = props.word.target;
@@ -68,14 +72,14 @@ async function clickMarkAsKnown() {
     let wordChanges = await markWordAsKnown(baseForm);
     sendMessageKnownWordsUpdated('known', wordChanges);
 
-    isKnown.value = true;
+    isKnownRef.value = true;
 
 }
 async function clickMarkAsUnknown() {
     let baseForm = props.word.target;
     let wordChanges = await markWordAsUnknown(baseForm);
     sendMessageKnownWordsUpdated('unknown', wordChanges);
-    isKnown.value = false;
+    isKnownRef.value = false;
 }
 async function clickClearMark() {
     let baseForm = props.word.target;
@@ -85,9 +89,9 @@ async function clickClearMark() {
     let knownWords = await loadKnownWords();
 
     if (isKnown(baseForm, knownWords)) {
-        isKnown.value = true;
+        isKnownRef.value = true;
     } else {
-        isKnown.value = false;
+        isKnownRef.value = false;
     }
 
 }
@@ -133,7 +137,7 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
         <div class='list-item'>
             <div class="word-and-actions">
 
-                <span :class="{ word: true, known: isKnown }">{{ wordStr }}</span>
+                <span :class="{ word: true, known: isKnownRef }">{{ wordStr }}</span>
 
                 <div class="actions">
                     <button class='mea-show-definition' :word="props.word.target" :title='showDefinitionTips'
@@ -165,7 +169,32 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
 </template>
 
 <style>
+
+.list-item {
+  padding: 5px;
+  height: auto;
+  
+}
+
+.word-and-actions{
+  clear:both;
+  line-height: 1.8em;
+}
+
+.actions {
+  float:right;
+
+  button {
+    font-size: 5px;
+  }
+}
+.word {
+    font-weight: bold;
+}
 .word-and-actions .word.known {
     text-decoration: line-through;
+}
+.definition {
+    margin:0px;
 }
 </style>
