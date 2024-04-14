@@ -84,7 +84,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       return;
     }
 
-    renderPage(request.payload.pageInfo);
+    getPageInfo();
+    
     // Log message coming from the `request` parameter
     //console.log(request.payload.message);
     // Send a response message
