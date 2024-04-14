@@ -154,21 +154,3 @@ code {
   }
 }
 
-.list-item {
-  padding: 5px;
-  height: auto;
-  
-}
-
-.word-and-actions{
-  clear:both;
-  line-height: 1.8em;
-}
-
-.actions {
-  float:right;
-
-  button {
-    font-size: 5px;
-  }
-}
