@@ -6,7 +6,9 @@ import { searchWord, isKnown, getWordParts } from './language.js';
 import { findSiteConfig } from './site-match.js';
 import { initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions } from './optionService.js';
 import { split } from "sentence-splitter";
-import { getNotes, getSentenceHash, search } from './noteService.js';
+import { getNotes, searchNote } from './noteService.js';
+import { generateMiddleSetenceNumbers, containsSentenceInstancePosition, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceInstanceSelectionFromNodeSelection, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
+import { tranverseNode } from './dom.js';
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -595,30 +597,42 @@ async function addEventListener(document) {
   document.addEventListener("mouseup", async () => {
     let selectedText = document.getSelection().toString();
 
-    console.log('mouse up');
+   
 
-    let sentenceSelection = getSentenceSelectionFromNodeSelection(document.getSelection());
-
+    let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(document.getSelection());
+    let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => gSentenceNumberIdMap.get(sentenceNumber));
+    //console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
+    
     let isSelectionCollapsed = document.getSelection().isCollapsed;
-    let noteArray;
+    
+    let filteredNotes = [];
     if (isSelectionCollapsed) {
-      noteArray = await search(sentenceSelection.start);
+      let noteArray = await searchNote(sentenceHashSelection.start);
 
       for (let note of noteArray) {
+        let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(note.selection);
+        let isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
+        
+        if(!isContainsPosition){
+          continue;
+        }
+
         let selectedText = getSelectedTextOfNote(note);
         note.selectedText = selectedText;
+
+        filteredNotes.push(note);
       }
-      console.log('search notes:' + JSON.stringify(noteArray));
+      //console.log('search notes:' + JSON.stringify(filteredNotes));
 
     }
-    if (sentenceSelection) {
+    if (sentenceHashSelection) {
       chrome.runtime.sendMessage(
         {
           type: 'SELECTION_CHANGE',
           payload: {
             selectedText: selectedText,
-            sentenceSelection: sentenceSelection,
-            notes: noteArray,
+            sentenceSelection: sentenceHashSelection,
+            notes: filteredNotes,
           },
         },
         (response) => {
@@ -629,12 +643,21 @@ async function addEventListener(document) {
 
   });
 
-  document.querySelectorAll('.mea-word').forEach((element) => {
-    element.addEventListener('click', async (e) => {
+  document.addEventListener("click", async (event) => {
+    console.log('click on document');
+    let targetElement = event.target;
+    let highlightElement = targetElement.closest('.mea-word');
+    if(highlightElement){
+      handleClickWord(highlightElement);
+    }else{
+      hideToolbar(document);
+    }
 
-      let show = false;
+  });
 
-      let highlightElement = e.target.closest('.mea-word');
+  function handleClickWord(highlightElement){
+    let show = false;
+
       let targetWord = getBaseWordFromElement(highlightElement);
 
       //gSelection = selection.toString();
@@ -669,9 +692,8 @@ async function addEventListener(document) {
 
         toolbarElement.style.visibility = 'hidden';
       }
-    });
-  });
-
+  }
+  
   document.querySelectorAll('.mea-mark-unknown').forEach((element) => {
     element.addEventListener('click', async (e) => {
 
@@ -731,7 +753,7 @@ function getSelectedTextOfNote(note) {
   let buffer = '';
 
   let sentenceContent;
-  const { start, end } = note.selection;
+  const { start, middle, end } = note.selection;
   if (start.sentenceId === end.sentenceId) {
     sentenceContent = gSentenceMap.get(start.sentenceId);
     buffer = sentenceContent.substring(start.offset, end.offset);
@@ -741,25 +763,33 @@ function getSelectedTextOfNote(note) {
     sentenceContent = gSentenceMap.get(start.sentenceId);
     let firstSentenceText = sentenceContent.substring(start.offset);
 
+
+    let middleContents = [];
+    for(let m of middle) {
+      let content = gSentenceMap.get(m);
+      middleContents.push(content);
+    }
+
     sentenceContent = gSentenceMap.get(end.sentenceId);
     let lastSentenceText = sentenceContent.substring(0, end.offset);
 
-    buffer = firstSentenceText + lastSentenceText;
+    buffer = firstSentenceText + middleContents.join() + lastSentenceText;
 
   }
 
   return buffer;
 }
-function getNodePositionFromSentencePosition(document, sentencePosition, sentenceNumber) {
-  let sentenceId = sentencePosition.sentenceId;
-  let sentenceOffset = sentencePosition.offset;
+
+function getNodePositionFromSentenceInstancePosition(document, sentenceInstancePosition) {
+  let sentenceNumber = sentenceInstancePosition.sentenceNumber;
+  let sentenceOffset = sentenceInstancePosition.offset;
   let selector = `.mea-sentence[data-sentence-number='${sentenceNumber}']`;
   let sentenceElement = document.querySelector(selector);
   let sentenceBuffer = '';
 
   let result = null;
   if (sentenceElement) {
-    console.log('find sentence element, sentence id:' + sentenceId);
+    //console.log('find sentence element, sentence number:' + sentenceNumber);
 
     let done = false;
 
@@ -786,14 +816,14 @@ function getNodePositionFromSentencePosition(document, sentencePosition, sentenc
   return result;
 }
 
-function getNodeSelectionsFromSentenceSelection(document, sentenceSelection) {
-  let startSentenceNumbers = gSentenceIdNumbersMap.get(sentenceSelection.start.sentenceId);
+function getNodeSelectionsFromSentenceHashSelection(document, sentenceHashSelection) {
+  let startSentenceNumbers = gSentenceIdNumbersMap.get(sentenceHashSelection.start.sentenceId);
 
   let nodeSelections = [];
 
   if (startSentenceNumbers) {
     for (let startSentenceNumber of startSentenceNumbers) {
-      let nodeSelection = getNodeSelectionFromSentenceSelection(document, sentenceSelection, startSentenceNumber);
+      let nodeSelection = getNodeSelectionFromSentenceSelection(document, sentenceHashSelection, startSentenceNumber);
       if (nodeSelection) {
         nodeSelections.push(nodeSelection);
       }
@@ -802,7 +832,27 @@ function getNodeSelectionsFromSentenceSelection(document, sentenceSelection) {
   return nodeSelections;
 }
 
+function getSentenceInstanceSelectionsFromSentenceHashSelection(sentenceHashSelection) {
+  let startSentenceNumbers = gSentenceIdNumbersMap.get(sentenceHashSelection.start.sentenceId);
+
+  let sentenceInstanceSelections = [];
+
+  if (startSentenceNumbers) {
+    for (let startSentenceNumber of startSentenceNumbers) {
+      let sentenceInstanceSelection = getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber);
+      if (sentenceInstanceSelection) {
+        sentenceInstanceSelections.push(sentenceInstanceSelection);
+      }
+    }
+  }
+  return sentenceInstanceSelections;
+}
+
 function verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds) {
+  if(!expectedSentenceIds){
+    return false;
+  }
+
   for (let i = 0; i < sentenceOffset + 1; i++) {
     let sentenceNumber = startSentenceNumber + i;
     let actualSentenceId = gSentenceNumberIdMap.get(sentenceNumber);
@@ -814,58 +864,89 @@ function verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentence
   return true;
 }
 
-function getSentenceOffset(sentenceSelection) {
-  let sentenceOffset;
-  if (!sentenceSelection.endOffset) {
-    if (sentenceSelection.start.sentenceId === sentenceSelection.end.sentenceId) {
-      sentenceOffset = 0;
-    } else {
-      sentenceOffset = 1;
-    }
+function getNodeSelectionFromSentenceInstanceSelection(document, sentenceInstanceSelection) {
+
+  let anchorNodePosition = getNodePositionFromSentenceInstancePosition(document, sentenceInstanceSelection.start);
+  let focusNodePosition = getNodePositionFromSentenceInstancePosition(document, sentenceInstanceSelection.end);
+
+  let result = null;
+  if (anchorNodePosition && focusNodePosition) {
+    result = {
+      anchorNode: anchorNodePosition.node,
+      anchorOffset: anchorNodePosition.offset,
+
+      focusNode: focusNodePosition.node,
+      focusOffset: focusNodePosition.offset,
+    };
+    console.log('get node selection from sentence instance selection, success:' + JSON.stringify(result));
   } else {
-    sentenceOffset = sentenceSelection.endOffset;
+    console.log('get node selection from sentence instance selection, fail');
   }
-  return sentenceOffset;
+
+  return result;
 }
 
-function getSentenceIds(sentenceSelection) {
-  let sentenceIds = [sentenceSelection.start.sentenceId];
-
-  let sentenceOffset = getSentenceOffset(sentenceSelection);
-
-  if (sentenceSelection.middle) {
-    for (let sentenceId of sentenceSelection.middle) {
-      sentenceIds.push(sentenceId);
-    }
-  }
-
-  if (sentenceOffset > 0) {
-    sentenceIds.push(sentenceSelection.end.sentenceId);
-  }
-
-  //final check
-  if (sentenceIds.length !== (sentenceOffset + 1)) {
-    sentenceIds = null;//intend to return wrong result
-    console.log('invalid selection, sentenceIds and endOffset mismatch');
-  }
-  return sentenceIds;
-}
-
-function getNodeSelectionFromSentenceSelection(document, sentenceSelection, startSentenceNumber) {
-
-  let anchorNodePosition = getNodePositionFromSentencePosition(document, sentenceSelection.start, startSentenceNumber);
-  let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceSelection);
-  let focusNodePosition = getNodePositionFromSentencePosition(document, sentenceSelection.end, endSentenceNumber);
-
+function getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber) {
+  let startSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
+  
+  let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceHashSelection);
+  let endSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
+  
   //check sentence IDs
-  let expectedSentenceIds = getSentenceIds(sentenceSelection);
-  let sentenceOffset = getSentenceOffset(sentenceSelection);
+  let expectedSentenceIds = getSentenceIds(sentenceHashSelection);
+  let sentenceOffset = getSentenceOffset(sentenceHashSelection);
+
+  let middleSentenceNumbers = generateMiddleSetenceNumbers(startSentenceNumber, sentenceOffset);
+  
   let verifyResult = verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds);
 
   if (!verifyResult) {
     console.log('verify sentence IDs failed.');
   }
-  console.log('sentenceSelection:' + JSON.stringify(sentenceSelection));
+  console.log('startSentenceInstancePosition:' + JSON.stringify(startSentenceInstancePosition));
+  console.log('endSentenceInstancePosition:' + JSON.stringify(endSentenceInstancePosition));
+  
+  let result = null;
+  if (verifyResult) {
+    result = {
+      start: startSentenceInstancePosition,
+        middle: middleSentenceNumbers,
+        end: endSentenceInstancePosition,
+        endOffset: sentenceOffset,
+    };
+    
+  }
+
+  return result;
+}
+function getNodeSelectionFromSentenceSelection(document, sentenceHashSelection, startSentenceNumber) {
+  let sentenceInstanceSelection = getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber);
+  if(sentenceInstanceSelection){
+    let nodeSelection = getNodeSelectionFromSentenceInstanceSelection(document, sentenceInstanceSelection);
+    return nodeSelection;
+  }
+
+  return null;
+}
+
+function getNodeSelectionFromSentenceSelection_Old(document, sentenceHashSelection, startSentenceNumber) {
+
+  let startSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
+  let anchorNodePosition = getNodePositionFromSentenceInstancePosition(document, startSentenceInstancePosition);
+
+  let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceHashSelection);
+  let endSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
+  let focusNodePosition = getNodePositionFromSentenceInstancePosition(document, endSentenceInstancePosition);
+
+  //check sentence IDs
+  let expectedSentenceIds = getSentenceIds(sentenceHashSelection);
+  let sentenceOffset = getSentenceOffset(sentenceHashSelection);
+  let verifyResult = verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds);
+
+  if (!verifyResult) {
+    console.log('verify sentence IDs failed.');
+  }
+  console.log('sentenceSelection:' + JSON.stringify(sentenceHashSelection));
   console.log('anchorNodePosition:' + JSON.stringify(anchorNodePosition));
   console.log('focusNodePosition:' + JSON.stringify(focusNodePosition));
   let result = null;
@@ -877,103 +958,14 @@ function getNodeSelectionFromSentenceSelection(document, sentenceSelection, star
       focusNode: focusNodePosition.node,
       focusOffset: focusNodePosition.offset,
     };
-    console.log('getNodeSelectionFromSentenceSelection success:' + JSON.stringify(result));
+    console.log('get node selection from sentence selection, success:' + JSON.stringify(result));
   } else {
-    console.log('getNodeSelectionFromSentenceSelection fail');
+    console.log('get node selection from sentence selection, fail');
   }
 
-  return result;
 }
 
-function getSentencePositionFromNodePosition(node, offset) {
-  let tokenElement = node.parentElement;
-  let offsetInToken = offset;
 
-  
-  let sentenceElement = tokenElement.closest('.mea-sentence');
-
-  if (!sentenceElement) {
-    //cursor could be at the space between sentences. the space belongs to no sentence.
-    if (!tokenElement.classList.contains('mea-sentence')
-      &&
-      (node.nextElementSibling && node.nextElementSibling.classList.contains('mea-sentence'))
-      &&
-      (node.previousElementSibling && node.previousElementSibling?.classList.contains('mea-sentence'))
-    ) {
-      sentenceElement = node.nextElementSibling;
-    }
-  }
-
-  if (!sentenceElement) {
-    return null;
-  }
-
-  let sentenceId = sentenceElement.getAttribute('data-sentence-id');
-  let sentenceNumber = parseInt(sentenceElement.getAttribute('data-sentence-number'));
-
-
-  let sentenceBuffer = '';
-  let offsetInSentence = 0;
-
-  let done = false;
-
-  tranverseNode(sentenceElement, (node2) => {
-    if (done) {
-      return;
-    }
-
-    if (node2.nodeName === '#text') {
-      if (node2 === node) {
-        offsetInSentence = sentenceBuffer.length + offsetInToken;
-
-        done = true;
-      }
-      sentenceBuffer = sentenceBuffer + node2.textContent;
-    }
-  });
-  let result = {
-    sentenceId: sentenceId,
-    offset: offsetInSentence,
-    sentenceNumber: sentenceNumber,
-  };
-  return result;
-}
-
-function getSentenceSelectionFromNodeSelection(nodeSelection) {
-
-  let sentenceAnchorPosition = getSentencePositionFromNodePosition(nodeSelection.anchorNode, nodeSelection.anchorOffset);
-  let sentenceFocusPosition = getSentencePositionFromNodePosition(nodeSelection.focusNode, nodeSelection.focusOffset);
-  if (!sentenceAnchorPosition || !sentenceFocusPosition) {
-    return null;
-  }
-
-  let sentenceStartPosition, sentenceEndPosition;
-  if (sentenceAnchorPosition.sentenceNumber < sentenceFocusPosition.sentenceNumber) {
-    sentenceStartPosition = sentenceAnchorPosition;
-  } else if (sentenceAnchorPosition.sentenceNumber == sentenceFocusPosition.sentenceNumber) {
-    sentenceStartPosition = sentenceAnchorPosition.offset < sentenceFocusPosition.offset ? sentenceAnchorPosition : sentenceFocusPosition;
-  } else {
-    sentenceStartPosition = sentenceFocusPosition;
-  }
-  sentenceEndPosition = (sentenceStartPosition === sentenceAnchorPosition) ? sentenceFocusPosition : sentenceAnchorPosition;
-
-  let middle = [];
-  let sentenceOffset = sentenceEndPosition.sentenceNumber - sentenceStartPosition.sentenceNumber;
-  if (sentenceOffset > 1) {
-    for (let i = sentenceStartPosition.sentenceNumber + 1; i < sentenceEndPosition.sentenceNumber; i++) {
-      let sentenceId = gSentenceNumberIdMap.get(i);
-      middle.push(sentenceId);
-    }
-  }
-
-
-  return {
-    start: sentenceStartPosition,
-    middle: middle,
-    end: sentenceEndPosition,
-    endOffset: sentenceOffset,
-  };
-}
 
 function sendMessageMarkWord(wordChanges) {
   //send to background
@@ -1053,14 +1045,6 @@ function visitElement(element, visitor) {
   }
 }
 
-function tranverseNode(node, visitor) {
-  let result = visitor(node);
-
-  for (var i = 0; i < node.childNodes.length; i++) {
-    let childNode = node.childNodes[i];
-    tranverseNode(childNode, visitor);
-  }
-}
 
 function annotateChildTextContents(element, isIframe) {
   //console.log('element.nodeName:'+element.nodeName);
@@ -1135,7 +1119,7 @@ function annotateTextContent(textContent) {
 function annotateSentence(sentence, sentenceNumber) {
 
 
-  let sentenceId = getSentenceHash(sentence);
+  let sentenceId = getSentenceContentHash(sentence);
 
   addSentence(sentenceId, sentenceNumber, sentence);
 
@@ -1323,8 +1307,8 @@ async function resetDocumentAnnotationVisibility(window, enabled, types) {
     const highlight = new Highlight();
     console.log('show notes');
     for (let note of notes) {
-      //one sentence selection could mapp to multiple node selections
-      let nodeSelections = getNodeSelectionsFromSentenceSelection(document, note.selection);
+      //one sentence selection could map to multiple node selections
+      let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
       for (let nodeSelection of nodeSelections) {
         console.log('find node selection:' + JSON.stringify(nodeSelection));
         if (nodeSelection) {

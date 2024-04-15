@@ -1,5 +1,6 @@
 import { chunkedRead, chunkedWrite } from './chunk.js';
 import { md5 } from 'js-md5';
+import {} from './sentence.js'
 
 const KEY_NOTES = "notes";
 /**
@@ -19,6 +20,23 @@ async function getNotes() {
         notes = [];
     }
 
+    //fix old data
+    for(let note of notes){
+        //console.log('fix old note:'+JSON.stringify(note));
+        let selection = note.selection;
+        if(!selection.middle){
+            selection.middle = [];
+        }
+        if(!selection.endOffset){
+            if(selection.start.sentenceId === selection.end.sentenceId){
+                selection.endOffset = 0;
+            } else {
+                selection.endOffset = 1;
+            }            
+        }
+    }
+
+    console.log('get notes:'+JSON.stringify(notes));
     return notes;
 }
 
@@ -113,22 +131,16 @@ function noteMapToArray(map) {
     return noteArray;
 }
 
-function purifySentence(sentence) {
-    return sentence.replaceAll(/[^\w]+/g, '').toLowerCase();
-}
 
-function getSentenceHash(sentence) {
-    let pureSentence = purifySentence(sentence);
-    let sentenceId = md5(pureSentence);
-    return sentenceId;
-}
 
-async function search(position) {
+
+
+async function searchNote(sentenceHashPosition) {
     let noteArray = await getNotes();
 
     let result = [];
     for (let note of noteArray) {
-        if (contains(note.selection, position)) {
+        if (contains(note.selection, sentenceHashPosition)) {
             result.push(note);
 
             let key = getNoteKey(note.selection);
@@ -139,14 +151,19 @@ async function search(position) {
 }
 
 function contains(selection, position) {
-    let { start, middle, end } = selection;
+    let { start, middle, end, endOffset } = selection;
 
-    
-    if (!middle) {
-        middle = [];
-    }
 
-    if (
+    //single sentence
+    if(start.sentenceId === position.sentenceId 
+        && end.sentenceId === position.sentenceId
+        && endOffset === 0){
+        if(start.offset <= position.offset
+            && end.offset >= position.offset){
+                return true;
+            }
+    } else if (
+        //more than one sentences
         (start.sentenceId === position.sentenceId
             && start.offset <= position.offset)
         ||
@@ -156,9 +173,11 @@ function contains(selection, position) {
             && end.offset >= position.offset)
     ) {
         return true;
-    } else {
-        return false;
     }
+
+     
+    return false;
+    
 }
 
-export { getNotes, getNote, setNote, getNoteKey, deleteNote, getSentenceHash, search };
+export { getNotes, getNote, setNote, getNoteKey, deleteNote, searchNote };

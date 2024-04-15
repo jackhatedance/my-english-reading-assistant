@@ -97,7 +97,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     let sentenceSelection = request.payload.sentenceSelection;
     let noteArray = request.payload.notes;
 
-    //console.log('payload:' + JSON.stringify(request.payload));
+    console.log('payload:' + JSON.stringify(request.payload));
     if (!noteArray) {
       let note = {
         selectedText: selectedText,
