@@ -155,12 +155,11 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
     //console.log('Note before update, props.note:'+JSON.stringify(props.note));
-    console.log('Note before update');
-
+    
 });
 
 onUpdated(() => {
-    console.log('Note updated');
+    //console.log('Note updated');
     
 });
 

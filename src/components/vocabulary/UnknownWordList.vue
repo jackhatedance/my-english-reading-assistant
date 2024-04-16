@@ -71,7 +71,7 @@ async function updateItems(newItems){
 const items = ref();
 watch(()=>props.items, (newValue, oldValue) => {
     // React to prop changes
-    console.log('items changed:', newValue);
+    //console.log('items changed:', newValue);
     updateItems(newValue);
 });
 

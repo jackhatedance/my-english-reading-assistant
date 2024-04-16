@@ -211,9 +211,7 @@ function containsSentenceInstancePosition(sentenceInstanceSelection, sentenceIns
         result= true;
     }
 
-    console.log('contains sentence instance position:'+ JSON.stringify(sentenceInstanceSelection)
-    +'; sentence instance position:'+JSON.stringify(sentenceInstancePosition)
-    +'; result:'+result);
+    //console.log('contains sentence instance position:'+ JSON.stringify(sentenceInstanceSelection)    +'; sentence instance position:'+JSON.stringify(sentenceInstancePosition)    +'; result:'+result);
 
     return result;
     

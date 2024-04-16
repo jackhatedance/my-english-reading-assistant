@@ -36,7 +36,7 @@ async function getNotes() {
         }
     }
 
-    console.log('get notes:'+JSON.stringify(notes));
+    //console.log('get notes:'+JSON.stringify(notes));
     return notes;
 }
 
