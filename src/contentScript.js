@@ -503,15 +503,20 @@ function cleanElements(document) {
     if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
       element.setAttribute('mea-remove-tag', 'true');
       element.innerHTML = '';
+      //element.outerHTML = '';
     } else if (TAGS_KEEP_CONTENT.includes(element.nodeName)) {
       if (isElementLeaf(element)) {
         element.setAttribute('mea-remove-tag', 'true');
+
       }
     }
 
-  });
+    if (allChildrenElementNeedRemoveTag(element)) {
+      element.innerHTML = element.textContent;
+    }
+  }, false);
 
-  // element to TEXT NODE
+  // merge TEXT NODEs
   visitElement(document.body, (element) => {
     if (allChildrenElementNeedRemoveTag(element)) {
       element.innerHTML = element.textContent;
@@ -1037,8 +1042,10 @@ function canAnnotate(element) {
   return true;
 }
 
-function visitElement(element, visitor) {
-  visitor(element);
+function visitElement(element, visitor, parentFirst = true) {
+  if(parentFirst){
+    visitor(element);
+  }  
 
   let children = element.children;
   /*
@@ -1049,6 +1056,10 @@ function visitElement(element, visitor) {
 
   for (const child of children) {
     visitElement(child, visitor);
+  }
+
+  if(!parentFirst){
+    visitor(element);
   }
 }
 
