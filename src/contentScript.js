@@ -171,7 +171,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     getPageInfo().then((pageInfo) => {
       response.pageInfo = pageInfo;
 
-      console.log('pageInfo response:' + JSON.stringify(response));
+      //console.log('pageInfo response:' + JSON.stringify(response));
 
       sendResponse(response);
     });
@@ -422,7 +422,7 @@ async function initPageAnnotations(resolve) {
 }
 
 async function sendMessageToBackground(siteConfig, type) {
-  console.log('send message to background, type:' + type);
+  //console.log('send message to background, type:' + type);
 
   let pageInfo = await getPageInfo();
   let site = document.location.hostname;
@@ -605,8 +605,11 @@ async function addEventListener(document) {
     
     let isSelectionCollapsed = document.getSelection().isCollapsed;
     
+    let type = 'select-text';
+    
     let filteredNotes = [];
     if (isSelectionCollapsed) {
+      type = 'search-note';
       let noteArray = await searchNote(sentenceHashSelection.start);
 
       for (let note of noteArray) {
@@ -625,11 +628,14 @@ async function addEventListener(document) {
       //console.log('search notes:' + JSON.stringify(filteredNotes));
 
     }
+    
+
     if (sentenceHashSelection) {
       chrome.runtime.sendMessage(
         {
           type: 'SELECTION_CHANGE',
           payload: {
+            type: type,
             selectedText: selectedText,
             sentenceSelection: sentenceHashSelection,
             notes: filteredNotes,
@@ -901,10 +907,11 @@ function getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelec
   let verifyResult = verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds);
 
   if (!verifyResult) {
-    console.log('verify sentence IDs failed.');
+    //expected behavior
+    //console.log('verify sentence IDs failed.');
   }
-  console.log('startSentenceInstancePosition:' + JSON.stringify(startSentenceInstancePosition));
-  console.log('endSentenceInstancePosition:' + JSON.stringify(endSentenceInstancePosition));
+  //console.log('startSentenceInstancePosition:' + JSON.stringify(startSentenceInstancePosition));
+  //console.log('endSentenceInstancePosition:' + JSON.stringify(endSentenceInstancePosition));
   
   let result = null;
   if (verifyResult) {
@@ -990,7 +997,7 @@ function getAllDocuments() {
   for (const config of siteConfig.getIframeDocumentConfigs(document)) {
     documents.push(config.document);
   }
-  console.log('get all documents.');
+  //console.log('get all documents.');
 
   return documents;
 }
@@ -1305,12 +1312,12 @@ async function resetDocumentAnnotationVisibility(window, enabled, types) {
     //show notes
     window.CSS.highlights.clear();
     const highlight = new Highlight();
-    console.log('show notes');
+    //console.log('show notes');
     for (let note of notes) {
       //one sentence selection could map to multiple node selections
       let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
       for (let nodeSelection of nodeSelections) {
-        console.log('find node selection:' + JSON.stringify(nodeSelection));
+        //console.log('find node selection:' + JSON.stringify(nodeSelection));
         if (nodeSelection) {
           const range = new Range();
           range.setStart(nodeSelection.anchorNode, nodeSelection.anchorOffset);

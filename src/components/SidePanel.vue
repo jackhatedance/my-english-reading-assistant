@@ -93,12 +93,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       message: 'ok'
     });
   } else if (request.type === 'SELECTION_CHANGE') {
+    let type = request.payload.type;
     let selectedText = request.payload.selectedText;
     let sentenceSelection = request.payload.sentenceSelection;
     let noteArray = request.payload.notes;
 
     console.log('payload:' + JSON.stringify(request.payload));
-    if (!noteArray) {
+    if (type === 'select-text') {
       let note = {
         selectedText: selectedText,
         selection: sentenceSelection,
