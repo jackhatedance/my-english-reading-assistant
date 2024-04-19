@@ -142,19 +142,19 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
                 <div class="actions">
                     <button class='mea-show-definition' :word="props.word.target" :title='showDefinitionTips'
                         @click="clickShowDefinition">
-                        <img src='icons/lookup.png' width="12"></img>
+                        <img src='icons/lookup.png' width="12"/>
                     </button>
 
                     <button class='mea-mark-known' :word="props.word.target" :title="markAsKnownTips"
                         @click="clickMarkAsKnown">
-                        <img src='icons/tick.png' width="12"></img>
+                        <img src='icons/tick.png' width="12"/>
                     </button>
                     <button class='mea-mark-unknown' :word="props.word.target" :title="markAsUnknownTips"
                         @click="clickMarkAsUnknown">
-                        <img src='icons/question-mark.png' width="12"></img>
+                        <img src='icons/question-mark.png' width="12"/>
                     </button>
                     <button class='mea-mark-clear' :word="props.word.target" :title="clearMarkTips" @click="clickClearMark">
-                        <img src='icons/clear.png' width="12"></img>
+                        <img src='icons/clear.png' width="12"/>
                     </button>
                 </div>
             </div>
