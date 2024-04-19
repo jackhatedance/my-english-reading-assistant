@@ -70,40 +70,9 @@ function getSentenceInstancePositionFromNodePosition(node, offset) {
 }
 
 
-function getSentenceInstanceSelectionFromNodeSelection(nodeSelection) {
-
-    let anchorSentenceInstancePosition = getSentenceInstancePositionFromNodePosition(nodeSelection.anchorNode, nodeSelection.anchorOffset);
-    let focusSentenceInstancePosition = getSentenceInstancePositionFromNodePosition(nodeSelection.focusNode, nodeSelection.focusOffset);
-    if (!anchorSentenceInstancePosition || !focusSentenceInstancePosition) {
-        return null;
-    }
-
-    //find the start and end position.
-    let startSentenceInstancePosition, endSentenceInstancePosition;
-    if (anchorSentenceInstancePosition.sentenceNumber < focusSentenceInstancePosition.sentenceNumber) {
-        startSentenceInstancePosition = anchorSentenceInstancePosition;
-    } else if (anchorSentenceInstancePosition.sentenceNumber == focusSentenceInstancePosition.sentenceNumber) {
-        startSentenceInstancePosition = anchorSentenceInstancePosition.offset < focusSentenceInstancePosition.offset ? anchorSentenceInstancePosition : focusSentenceInstancePosition;
-    } else {
-        startSentenceInstancePosition = focusSentenceInstancePosition;
-    }
-    endSentenceInstancePosition = (startSentenceInstancePosition === anchorSentenceInstancePosition) ? focusSentenceInstancePosition : anchorSentenceInstancePosition;
-
-    let startSentenceNumber = startSentenceInstancePosition.sentenceNumber;
-    let endSentenceNumber = endSentenceInstancePosition.sentenceNumber;
-    let sentenceOffset = endSentenceNumber - startSentenceNumber;
-    let middleSentenceNumbers = generateMiddleSetenceNumbers(startSentenceNumber, sentenceOffset);
-
-    return {
-        start: startSentenceInstancePosition,
-        middle: middleSentenceNumbers,
-        end: endSentenceInstancePosition,
-        endOffset: sentenceOffset,
-    };
-}
 
 function getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, getSentenceIdByNumber){
-    
+    //console.log('get sentence hash selection from instance selection');
     let sentenceHashSelection = Object.assign({}, sentenceInstanceSelection);
 
     let start = Object.assign({}, sentenceInstanceSelection.start);
@@ -217,4 +186,4 @@ function containsSentenceInstancePosition(sentenceInstanceSelection, sentenceIns
     
 }
 
-export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, getSentenceInstanceSelectionFromNodeSelection, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition };
+export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition };

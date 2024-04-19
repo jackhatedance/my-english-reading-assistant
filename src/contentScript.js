@@ -7,8 +7,10 @@ import { findSiteConfig } from './site-match.js';
 import { initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions } from './optionService.js';
 import { split } from "sentence-splitter";
 import { getNotes, searchNote } from './noteService.js';
-import { generateMiddleSetenceNumbers, containsSentenceInstancePosition, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceInstanceSelectionFromNodeSelection, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { tranverseNode } from './dom.js';
+import { generateMiddleSetenceNumbers, containsSentenceInstancePosition, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
+import { tranverseElement, tranverseNode } from './dom.js';
+import { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
+import { annotateWord, annotateNonword } from './word.js';
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -28,28 +30,9 @@ var gUrl;
 /**
  * {id, }
  */
-//var gSentences = [];
-var gSentenceNumber;
-var gTokenNumber;
-// <id, content>
-var gSentenceMap = new Map();
-// <sentence number, ID>
-var gSentenceNumberIdMap = new Map();
-// <ID, number array>
-var gSentenceIdNumbersMap = new Map();
 
 
-function addSentence(sentenceId, sentenceNumber, content) {
-  gSentenceMap.set(sentenceId, content);
-  gSentenceNumberIdMap.set(sentenceNumber, sentenceId);
-
-  let numberArray = gSentenceIdNumbersMap.get(sentenceId);
-  if (!numberArray) {
-    numberArray = [];
-    gSentenceIdNumbersMap.set(sentenceId, numberArray);
-  }
-  numberArray.push(sentenceNumber);
-}
+var gArticle;
 
 async function getAnnotationOptions() {
 
@@ -135,7 +118,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (visible) {//master document
       if (request.payload.force) {
-        clearAllDocumentsAnnotationInitializationMark();
+        clearAllDocumentsPreprocessMark();
       }
 
       //init all documents
@@ -397,7 +380,7 @@ async function initPageAnnotations(resolve) {
   if (!isDocumentAnnotationInitialized(document)) {
     let documentConfig = siteConfig.getDocumentConfig(window, document);
 
-    initDocumentAnnotations(document, false, documentConfig);
+    preprocessDocument(document, false, documentConfig);
   }
 
   let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
@@ -406,8 +389,8 @@ async function initPageAnnotations(resolve) {
     let iframeDocument = iframeDocumentConfig.document;
     if (iframeDocument) {
       if (!isDocumentAnnotationInitialized(iframeDocument)) {
-        //console.log('start iframe initDocumentAnnotations');
-        initDocumentAnnotations(iframeDocument, true, iframeDocumentConfig);
+        //console.log('start iframe preprocess document');
+        preprocessDocument(iframeDocument, true, iframeDocumentConfig);
       }
     }
   }
@@ -446,19 +429,17 @@ async function sendMessageToBackground(siteConfig, type) {
   );
 }
 
-async function initDocumentAnnotations(document, isIframe, documentConfig) {
+async function preprocessDocument(document, isIframe, documentConfig) {
 
   if (documentConfig.canProcess) {
 
 
-    document.body.setAttribute('mea-initialized', true);
-
-    gSentenceNumber = 0;
+    document.body.setAttribute('mea-preprocessed', true);
 
     if (!findStyleSheet(document)) {
       addStyle(document);
     }
-    //console.log('initDocumentAnnotations');
+    //console.log('preprocess document');
 
     var x = 0;
     var intervalID = setInterval(async function () {
@@ -475,13 +456,20 @@ async function initDocumentAnnotations(document, isIframe, documentConfig) {
 
     cleanElements(document);
 
+    /*
     visitElement(document.body, (element) => {
       //console.log(element.nodeName + element.nodeType);
       annotateChildTextContents(element, isIframe);
     });
+    */
+    tokenizeTextNode(document);
 
     addToolbar(document);
     addEventListener(document);
+
+    gArticle = parseDocument(document);
+    
+    //console.log(JSON.stringify(gArticle));
 
   }
 
@@ -497,7 +485,7 @@ function cleanElements(document) {
   });
 
   //remove text content of some tags
-  visitElement(document.body, (element) => {
+  tranverseElement(document.body, (element) => {
     const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
     const TAGS_KEEP_CONTENT = ['EM', 'I', 'B', 'A'];
     if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
@@ -517,7 +505,7 @@ function cleanElements(document) {
   }, false);
 
   // merge TEXT NODEs
-  visitElement(document.body, (element) => {
+  tranverseElement(document.body, (element) => {
     if (allChildrenElementNeedRemoveTag(element)) {
       element.innerHTML = element.textContent;
     }
@@ -599,16 +587,73 @@ function hideToolbar(document) {
 }
 
 async function addEventListener(document) {
-  document.addEventListener("mouseup", async () => {
-    let selectedText = document.getSelection().toString();
+  document.addEventListener("mouseover", async (event) => {
+    let textNode = event.target;
 
-   
+    let parentElement = textNode.parentElement;
+    if(!parentElement){
+      //it is the top (html) element
+      return;
+    }
 
-    let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(document.getSelection());
-    let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => gSentenceNumberIdMap.get(sentenceNumber));
-    //console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
+    if (!isInMeaElement(parentElement)) {
+      return;
+    }
+    //console.log('mouse over:'+ textNode.textContent);
+
+    let textNodeInfo = gArticle.textNodeMap.get(textNode);
+    if(textNodeInfo){
+      console.log('text node info:'+ JSON.stringify(textNodeInfo));
+
+      //console.log('caret:'+gArticle.content.substring(caretIndex, caretIndex+10));
+      
+      let token = findTokenInArticle(gArticle, textNodeInfo.offset);
+  
+      if(token){
+        console.log('mouse over token:'+token.content);
+      }
+    }
+
+  });
+
+  document.addEventListener("mousemove", async (event) => {
+    /*
+    let x = event.clientX;
+    let y = event.clientY;
+    let caretRange = document.caretRangeFromPoint(x, y);
+    let text = caretRange.startContainer.textContent;
+    //console.log(`mouse over, element text:${text}, start offset:${caretRange.startOffset}`);
+
+    let textNode = caretRange.startContainer;
+    let textNodeInfo = gArticle.textNodeMap.get(textNode);
+    if(textNodeInfo){
+      console.log('text node info:'+ JSON.stringify(textNodeInfo));
+
+      let caretIndex = textNodeInfo.offset + caretRange.startOffset;
     
-    let isSelectionCollapsed = document.getSelection().isCollapsed;
+      //console.log('caret:'+gArticle.content.substring(caretIndex, caretIndex+10));
+      
+      let token = findTokenInArticle(gArticle, caretIndex);
+  
+      if(token){
+        console.log('mouse over token:'+token.content);
+      }
+    }
+*/
+  });
+
+  document.addEventListener("mouseup", async () => {
+
+    let nodeSelection = document.getSelection();
+    let selectedText = nodeSelection.toString();
+
+    let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(gArticle, nodeSelection);
+    console.log('mouse up, sentence instance selection:'+JSON.stringify(sentenceInstanceSelection));
+    
+    let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => gArticle.sentences[sentenceNumber].sentenceId);
+    console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
+    
+    let isSelectionCollapsed = nodeSelection.isCollapsed;
     
     let type = 'select-text';
     
@@ -618,14 +663,14 @@ async function addEventListener(document) {
       let noteArray = await searchNote(sentenceHashSelection.start);
 
       for (let note of noteArray) {
-        let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(note.selection);
+        let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(gArticle, note.selection);
         let isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
         
         if(!isContainsPosition){
           continue;
         }
 
-        let selectedText = getSelectedTextOfNote(note);
+        let selectedText = getSelectedTextOfNote(gArticle, note);
         note.selectedText = selectedText;
 
         filteredNotes.push(note);
@@ -760,225 +805,6 @@ async function addEventListener(document) {
   });
 }
 
-function getSelectedTextOfNote(note) {
-  let buffer = '';
-
-  let sentenceContent;
-  const { start, middle, end } = note.selection;
-  if (start.sentenceId === end.sentenceId) {
-    sentenceContent = gSentenceMap.get(start.sentenceId);
-    buffer = sentenceContent.substring(start.offset, end.offset);
-
-  } else {
-
-    sentenceContent = gSentenceMap.get(start.sentenceId);
-    let firstSentenceText = sentenceContent.substring(start.offset);
-
-
-    let middleContents = [];
-    for(let m of middle) {
-      let content = gSentenceMap.get(m);
-      middleContents.push(content);
-    }
-
-    sentenceContent = gSentenceMap.get(end.sentenceId);
-    let lastSentenceText = sentenceContent.substring(0, end.offset);
-
-    buffer = firstSentenceText + middleContents.join() + lastSentenceText;
-
-  }
-
-  return buffer;
-}
-
-function getNodePositionFromSentenceInstancePosition(document, sentenceInstancePosition) {
-  let sentenceNumber = sentenceInstancePosition.sentenceNumber;
-  let sentenceOffset = sentenceInstancePosition.offset;
-  let selector = `.mea-sentence[data-sentence-number='${sentenceNumber}']`;
-  let sentenceElement = document.querySelector(selector);
-  let sentenceBuffer = '';
-
-  let result = null;
-  if (sentenceElement) {
-    //console.log('find sentence element, sentence number:' + sentenceNumber);
-
-    let done = false;
-
-    tranverseNode(sentenceElement, (node) => {
-      if (done) {
-        return;
-      }
-
-      if (node.nodeName === '#text') {
-        sentenceBuffer = sentenceBuffer + node.textContent;
-        if (sentenceBuffer.length >= sentenceOffset) {
-
-          //calc offset
-          let nodeOffset = node.textContent.length - (sentenceBuffer.length - sentenceOffset);
-
-          result = { node, offset: nodeOffset };
-
-          done = true;
-        }
-
-      }
-    });
-  }
-  return result;
-}
-
-function getNodeSelectionsFromSentenceHashSelection(document, sentenceHashSelection) {
-  let startSentenceNumbers = gSentenceIdNumbersMap.get(sentenceHashSelection.start.sentenceId);
-
-  let nodeSelections = [];
-
-  if (startSentenceNumbers) {
-    for (let startSentenceNumber of startSentenceNumbers) {
-      let nodeSelection = getNodeSelectionFromSentenceSelection(document, sentenceHashSelection, startSentenceNumber);
-      if (nodeSelection) {
-        nodeSelections.push(nodeSelection);
-      }
-    }
-  }
-  return nodeSelections;
-}
-
-function getSentenceInstanceSelectionsFromSentenceHashSelection(sentenceHashSelection) {
-  let startSentenceNumbers = gSentenceIdNumbersMap.get(sentenceHashSelection.start.sentenceId);
-
-  let sentenceInstanceSelections = [];
-
-  if (startSentenceNumbers) {
-    for (let startSentenceNumber of startSentenceNumbers) {
-      let sentenceInstanceSelection = getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber);
-      if (sentenceInstanceSelection) {
-        sentenceInstanceSelections.push(sentenceInstanceSelection);
-      }
-    }
-  }
-  return sentenceInstanceSelections;
-}
-
-function verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds) {
-  if(!expectedSentenceIds){
-    return false;
-  }
-
-  for (let i = 0; i < sentenceOffset + 1; i++) {
-    let sentenceNumber = startSentenceNumber + i;
-    let actualSentenceId = gSentenceNumberIdMap.get(sentenceNumber);
-    let expectedSentenceId = expectedSentenceIds[i];
-    if (actualSentenceId !== expectedSentenceId) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function getNodeSelectionFromSentenceInstanceSelection(document, sentenceInstanceSelection) {
-
-  let anchorNodePosition = getNodePositionFromSentenceInstancePosition(document, sentenceInstanceSelection.start);
-  let focusNodePosition = getNodePositionFromSentenceInstancePosition(document, sentenceInstanceSelection.end);
-
-  let result = null;
-  if (anchorNodePosition && focusNodePosition) {
-    result = {
-      anchorNode: anchorNodePosition.node,
-      anchorOffset: anchorNodePosition.offset,
-
-      focusNode: focusNodePosition.node,
-      focusOffset: focusNodePosition.offset,
-    };
-    console.log('get node selection from sentence instance selection, success:' + JSON.stringify(result));
-  } else {
-    console.log('get node selection from sentence instance selection, fail');
-  }
-
-  return result;
-}
-
-function getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber) {
-  let startSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
-  
-  let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceHashSelection);
-  let endSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
-  
-  //check sentence IDs
-  let expectedSentenceIds = getSentenceIds(sentenceHashSelection);
-  let sentenceOffset = getSentenceOffset(sentenceHashSelection);
-
-  let middleSentenceNumbers = generateMiddleSetenceNumbers(startSentenceNumber, sentenceOffset);
-  
-  let verifyResult = verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds);
-
-  if (!verifyResult) {
-    //expected behavior
-    //console.log('verify sentence IDs failed.');
-  }
-  //console.log('startSentenceInstancePosition:' + JSON.stringify(startSentenceInstancePosition));
-  //console.log('endSentenceInstancePosition:' + JSON.stringify(endSentenceInstancePosition));
-  
-  let result = null;
-  if (verifyResult) {
-    result = {
-      start: startSentenceInstancePosition,
-        middle: middleSentenceNumbers,
-        end: endSentenceInstancePosition,
-        endOffset: sentenceOffset,
-    };
-    
-  }
-
-  return result;
-}
-function getNodeSelectionFromSentenceSelection(document, sentenceHashSelection, startSentenceNumber) {
-  let sentenceInstanceSelection = getSentenceInstanceSelectionFromSentenceHashSelection(sentenceHashSelection, startSentenceNumber);
-  if(sentenceInstanceSelection){
-    let nodeSelection = getNodeSelectionFromSentenceInstanceSelection(document, sentenceInstanceSelection);
-    return nodeSelection;
-  }
-
-  return null;
-}
-
-function getNodeSelectionFromSentenceSelection_Old(document, sentenceHashSelection, startSentenceNumber) {
-
-  let startSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
-  let anchorNodePosition = getNodePositionFromSentenceInstancePosition(document, startSentenceInstancePosition);
-
-  let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceHashSelection);
-  let endSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
-  let focusNodePosition = getNodePositionFromSentenceInstancePosition(document, endSentenceInstancePosition);
-
-  //check sentence IDs
-  let expectedSentenceIds = getSentenceIds(sentenceHashSelection);
-  let sentenceOffset = getSentenceOffset(sentenceHashSelection);
-  let verifyResult = verifySentenceIds(startSentenceNumber, sentenceOffset, expectedSentenceIds);
-
-  if (!verifyResult) {
-    console.log('verify sentence IDs failed.');
-  }
-  console.log('sentenceSelection:' + JSON.stringify(sentenceHashSelection));
-  console.log('anchorNodePosition:' + JSON.stringify(anchorNodePosition));
-  console.log('focusNodePosition:' + JSON.stringify(focusNodePosition));
-  let result = null;
-  if (verifyResult && anchorNodePosition && focusNodePosition) {
-    result = {
-      anchorNode: anchorNodePosition.node,
-      anchorOffset: anchorNodePosition.offset,
-
-      focusNode: focusNodePosition.node,
-      focusOffset: focusNodePosition.offset,
-    };
-    console.log('get node selection from sentence selection, success:' + JSON.stringify(result));
-  } else {
-    console.log('get node selection from sentence selection, fail');
-  }
-
-}
-
-
-
 function sendMessageMarkWord(wordChanges) {
   //send to background
   chrome.runtime.sendMessage(
@@ -1000,7 +826,9 @@ function getAllDocuments() {
   let documents = [document];
 
   for (const config of siteConfig.getIframeDocumentConfigs(document)) {
-    documents.push(config.document);
+    if(config.document){
+      documents.push(config.document);
+    }    
   }
   //console.log('get all documents.');
 
@@ -1019,201 +847,17 @@ function getAllWindows() {
   return windows;
 }
 
-function canAnnotate(element) {
-  const textTags = [
-    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-    'P',
-    'UL', 'OL', 'LI',
-    'BLOCKQUOTE',
-
-
-    'CODE',
-    'PRE',
-    'S',
-    'SPAN',
-    'DIV'
-  ];
-
-  if (!textTags.includes(element.nodeName)) {
-    return false;
-  }
-
-
-  return true;
-}
-
-function visitElement(element, visitor, parentFirst = true) {
-  if(parentFirst){
-    visitor(element);
-  }  
-
-  let children = element.children;
-  /*
-  if(element.nodeName=='IFRAME'){
-    children = element.contentWindow.document.body.children;
-  }
-*/
-
-  for (const child of children) {
-    visitElement(child, visitor);
-  }
-
-  if(!parentFirst){
-    visitor(element);
-  }
-}
-
-
-function annotateChildTextContents(element, isIframe) {
-  //console.log('element.nodeName:'+element.nodeName);
-  //console.log('element Id:'+element.getAttribute('id'));
-
-  if (!canAnnotate(element)) {
-    //console.log('containsIframeThatNeedBeProtected');
-    return;
-  }
-
-  /*
-  if(containsMeaClass(element)){
-      return;
-  }
-  */
-
-  if (isInMeaElement(element)) {
-    return;
-  }
-
-  let html = element.innerHTML;
-  for (var i = 0; i < element.childNodes.length; i++) {
-    let childNode = element.childNodes[i];
-    if (childNode.nodeName === '#text') {
-      let textContent = childNode.textContent;
-      let annotatedTextContent = annotateTextContent(textContent);
-      let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
-        .replace(/&/g, "&amp;");
-
-      //console.log('innerHTML:'+html);
-      //console.log('nodeName:'+childNode.nodeName);
-      //console.log('textContent:'+textContent);
-      //console.log('unescapedTextContent:'+unescapedTextContent);
-      //console.log('annotatedTextContent:'+annotatedTextContent);
-
-      html = html.replaceAll(unescapedTextContent, annotatedTextContent);
-      //console.log('annotated innerHTML:'+html);
-    }
-  }
-
-  element.innerHTML = html;
-}
-
 function isInMeaElement(element) {
+  if (!element) {
+    console.log('null element');
+    return false;
+}
   let meaContainer = element.closest('.mea-container');
   if (meaContainer) {
     return true;
   } else {
     return false;
   }
-}
-
-function annotateTextContent(textContent) {
-  textContent = textContent.replaceAll(/[“”]/g, '"');
-
-  //console.log('split result:'+ JSON.stringify(split(textContent)));
-  //split sentences
-  let sentences = split(textContent).filter((s) => s.type == 'Sentence').map((s) => s.raw);
-  //console.log('sentences:'+JSON.stringify(sentences));
-  let annotatedSentences = [];
-
-  for (let sentence of sentences) {
-    let annotatedSentence = annotateSentence(sentence, gSentenceNumber);
-    annotatedSentences.push(annotatedSentence);
-
-    gSentenceNumber++;
-  }
-
-  return annotatedSentences.join(' ');
-}
-
-function annotateSentence(sentence, sentenceNumber) {
-
-
-  let sentenceId = getSentenceContentHash(sentence);
-
-  addSentence(sentenceId, sentenceNumber, sentence);
-
-  gTokenNumber = 0;
-
-  let result = sentence.replaceAll(/([a-zA-Z][a-zA-Z'&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g, function (x) {
-    //console.log(`"${x}"`);
-    let searchResult = searchWord({
-      query: x,
-      allowLemma: true,
-      allowRemoveSuffixOrPrefix: false,
-    });
-    //console.log(JSON.stringify(searchResult));
-    //finally,
-    if (searchResult) {// find the correct form which has definition in dictionary
-      let annotatedWord = annotateWord(searchResult, sentenceId, sentenceNumber, gTokenNumber);
-      //console.log(x+'-> '+ annotatedWord);
-      gTokenNumber++;
-      return annotatedWord;
-    } else {
-      //console.log('search failed');
-      let annotated = annotatedNonword(x, sentenceId, sentenceNumber, gTokenNumber);
-      gTokenNumber++;
-      return annotated;
-
-      //return `<span class="mea-container mea-no-word" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}">${x}</span>`;
-    }
-  });
-
-
-  let annotatedSentence = `<span class="mea-container mea-sentence" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}">${result}</span>`;
-  //console.log('annotatedSentence:'+annotatedSentence);
-  return annotatedSentence;
-}
-
-function annotateWord(searchResult, sentenceId, sentenceNumber, tokenNumber) {
-  let query = searchResult.query;
-  let baseWord = searchResult.word;
-  let definition = searchResult.definition;
-
-  if (searchResult.searchType === 'stem') {
-    definition = '根' + searchResult.word + ':' + definition;
-  }
-  if (searchResult.searchType === 'removeSuffixOrPrefix') {
-    definition = '源' + searchResult.word + ':' + definition;
-  }
-  if (searchResult.searchType === 'lemma' && searchResult.lemmaType === 'irregular') {
-    definition = '原' + searchResult.word + ':' + definition;
-  }
-  if (searchResult.searchType === 'compounding') {
-    definition = '复' + searchResult.word + ':' + definition;
-  }
-
-  let wordPartObjs = getWordParts(baseWord);
-  let parts = '';
-  if (wordPartObjs) {
-    let partArray = [];
-    for (let partObj of wordPartObjs) {
-      partArray.push(partObj.word);
-    }
-    parts = partArray.join(' ');
-  }
-  let formatted = format(query, definition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
-  //console.log('formatted:'+formatted);
-
-  return formatted;
-}
-
-function annotatedNonword(text, sentenceId, sentenceNumber, tokenNumber) {
-  let definition = '';
-  let baseWord = '';
-  let parts = '';
-
-  let result = format(text, definition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
-
-  return result;
 }
 
 function isPageAnnotationInitialized() {
@@ -1233,7 +877,7 @@ function isDocumentAnnotationInitialized(document) {
     console.log('body is null');
   }
 
-  let meaInitialized = document.body.getAttribute('mea-initialized');
+  let meaInitialized = document.body.getAttribute('mea-preprocessed');
   if (meaInitialized) {
     return true;
   }
@@ -1242,11 +886,11 @@ function isDocumentAnnotationInitialized(document) {
   }
 }
 
-function clearAllDocumentsAnnotationInitializationMark() {
+function clearAllDocumentsPreprocessMark() {
   let documents = getAllDocuments();
 
   return documents.every((document) => {
-    document.body.removeAttribute('mea-initialized');
+    document.body.removeAttribute('mea-preprocessed');
   });
 }
 
@@ -1320,13 +964,14 @@ async function resetDocumentAnnotationVisibility(window, enabled, types) {
 
     //console.log('notes:'+JSON.stringify(notes));
 
-    //show notes
+    //console.log('show notes');
     window.CSS.highlights.clear();
     const highlight = new Highlight();
-    //console.log('show notes');
+    
     for (let note of notes) {
       //one sentence selection could map to multiple node selections
-      let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
+      //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
+      let nodeSelections = getNodeSelectionsFromSentenceHashSelection(gArticle, note.selection);
       for (let nodeSelection of nodeSelections) {
         //console.log('find node selection:' + JSON.stringify(nodeSelection));
         if (nodeSelection) {
@@ -1345,14 +990,6 @@ async function resetDocumentAnnotationVisibility(window, enabled, types) {
 
 }
 
-function format(word, annotation, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
-  let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
-  let escapedWord = word.replace(/&/g, "&amp;");
 
-  let type = baseWord ? 'mea-word' : 'mea-nonword';
-
-  let s = `<span class="mea-container mea-highlight hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</span>`;
-  return s;
-}
 
 

@@ -14,7 +14,7 @@ function searchWord(request){
     let requestOfSmall = {...request};
     requestOfSmall.allowRemoveSuffixOrPrefix = false;
     
-    let result = searchWordWithDict(requestOfSmall, ['small']);
+    let result = searchWordWithDict(requestOfSmall, ['small', 'affix']);
     if(!result){
         result = searchWordWithDict(request, ['large']);
     }
@@ -42,8 +42,10 @@ function searchCompounding(request, dicts){
         requestOfSubword.query = subword;
         let searchResult = searchWordWithDict(requestOfSubword, dicts);
   
-        let str = `${subword}:${searchResult.definition}`;
-        definitions.push(str);      
+        if(searchResult) {
+            let str = `${subword}:${searchResult.definition}`;
+            definitions.push(str);      
+        }        
     }
   
     let searchResult = {
@@ -430,7 +432,13 @@ function isKnown(baseWord, vocabulary){
     let rootAndAffixEnabled = options.rootAndAffix.enabled;
     if(rootAndAffixEnabled){
         let parts = getWordParts(baseWord);
+        //console.log('get word parts:'+ baseWord);
         if(parts){
+            if(parts.includes(baseWord)){
+                console.log('infinite revursive:'+ baseWord);
+                return false;
+            }
+
             let foundUnknownPart = false;
             for(let part of parts){
                 let b = isKnown(part.dictEntry, vocabulary);
@@ -471,13 +479,13 @@ function getWordParts(baseWord){
     }
     
     let first = objArray[0];
-    if(first && isPrefix(first.word)){
+    if(first && isPrefix(first.word) && parts.length>1 ){
         first.type='prefix';
         first.dictEntry = first.word +'-';
     }
 
     let last = objArray[objArray.length-1];
-    if(last && isSuffix(last.word)){
+    if(last && isSuffix(last.word) && parts.length>1){
         last.type='suffix';
         last.dictEntry = '-' + last.word;
     }

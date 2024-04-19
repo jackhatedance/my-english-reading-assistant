@@ -18,12 +18,21 @@ const siteConfigs = [
         getIframeDocumentConfigs: function(document){
             let configs = [];
             searchSubIframesRecursively(document, (iframe)=>{
-                let config = {
-                    document:iframe.contentDocument,
-                    window: iframe.contentWindow,
-                    canProcess: true
-                };
-                configs.push(config);
+                
+                try {
+                    //try access window
+                    let doc = iframe.contentWindow.document;
+                  
+                    let config = {
+                        document:iframe.contentDocument,
+                        window: iframe.contentWindow,
+                        canProcess: true
+                    };
+                    configs.push(config);
+                } catch (error) {
+                    //console.log('iframe not accessible');
+                    //console.error(error);                    
+                }
             });
 
             return configs;
