@@ -53,10 +53,10 @@ function clickHideDefinition(event){
 </script>
 
 <template>
-    <div v-if="page">
-        <h1 id="title">{{ sidepanelTitle }}</h1>
-        <h2>{{ sidepanelWordStatisticsLabel }}<span id="wordStatistics">{{ props.page.unknownWordsCount }}/{{
-            props.page.totalWordCount }} ({{ percentage }}%)</span></h2>
+    <div v-if="page" class="vocabulary-list">
+        <h3 id="title" class="vocabulary-title">{{ sidepanelTitle }}</h3>
+        <h4>{{ sidepanelWordStatisticsLabel }}<span id="wordStatistics">{{ props.page.unknownWordsCount }}/{{
+            props.page.totalWordCount }} ({{ percentage }}%)</span></h4>
         <p>{{ sidepanelTitleDesc }}</p>
 
         <div class="toolbar">
@@ -66,3 +66,11 @@ function clickHideDefinition(event){
         <UnknownWordList :items="page.unknownWords" :showDefinition="showDefinition" :reset="reset"></UnknownWordList>
     </div>
 </template>
+
+<style>
+.vocabulary-list {
+    
+}
+
+
+</style>

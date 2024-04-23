@@ -1,13 +1,17 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
+import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 import {searchWord, isKnown } from '../../language.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
+import { AppModes } from '../types.js';
 
 const props = defineProps({
     word: Object,
     showDefinition: Boolean,
     reset: Boolean,
 });
+
+const getActiveTabId = inject('getActiveTabId');
+const sendMessageToContentPage = inject('sendMessageToContentPage');
 
 
 const wordStr = computed(() => {
@@ -97,39 +101,43 @@ async function clickClearMark() {
 }
 
 function sendMessageKnownWordsUpdated(type, wordChanges) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tab = tabs[0];
-        chrome.tabs.sendMessage(
-            tab.id,
-            {
-                type: 'KNOWN_WORDS_UPDATED',
-                payload: {
-                    source: 'side-panel',
+    let sender = null;
+    let sendResponse = (response) => {};
+    sendMessageToContentPage({
+        type: 'KNOWN_WORDS_UPDATED',
+        payload: {
+            source: 'side-panel',
+        },
+    },
+    sender, 
+    sendResponse);
+
+    //send to background
+    getActiveTabId().then(
+        (tabId) => {
+            chrome.runtime.sendMessage(
+                {
+                    type: 'MARK_WORD',
+                    payload: {
+                        contentTabId: tabId,
+                        wordChanges: wordChanges,
+                    },
                 },
-            },
-            (response) => {
-
-                //renderUnknownWordList(response.words);
-            }
-        );
-
-        //send to background
-        chrome.runtime.sendMessage(
-            {
-                type: 'MARK_WORD',
-                payload: {
-                    contentTabId: tab.id,
-                    wordChanges: wordChanges,
-                },
-            },
-            (response) => {
-                //console.log(response.message);
-            }
-        );
-    });
-
-
+                (response) => {
+                    //console.log(response.message);
+                }
+            );
+        }
+    );
+    
 }
+
+
+let lookupImgUrl = chrome.runtime.getURL("icons/lookup.png");
+let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
+let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
+let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
+
 </script>
 
 <template>
@@ -142,19 +150,19 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
                 <div class="actions">
                     <button class='mea-show-definition' :word="props.word.target" :title='showDefinitionTips'
                         @click="clickShowDefinition">
-                        <img src='icons/lookup.png' width="12"/>
+                        <img :src='lookupImgUrl' width="12"/>
                     </button>
 
                     <button class='mea-mark-known' :word="props.word.target" :title="markAsKnownTips"
                         @click="clickMarkAsKnown">
-                        <img src='icons/tick.png' width="12"/>
+                        <img :src='tickImgUrl' width="12"/>
                     </button>
                     <button class='mea-mark-unknown' :word="props.word.target" :title="markAsUnknownTips"
                         @click="clickMarkAsUnknown">
-                        <img src='icons/question-mark.png' width="12"/>
+                        <img :src='questionMarkImgUrl' width="12"/>
                     </button>
                     <button class='mea-mark-clear' :word="props.word.target" :title="clearMarkTips" @click="clickClearMark">
-                        <img src='icons/clear.png' width="12"/>
+                        <img :src='clearImgUrl' width="12"/>
                     </button>
                 </div>
             </div>

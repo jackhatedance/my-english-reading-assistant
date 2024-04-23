@@ -18,8 +18,11 @@ const siteConfigs = [
         getIframeDocumentConfigs: function(document){
             let configs = [];
             searchSubIframesRecursively(document, (iframe)=>{
-                
+                if(iframe.id==='mea-vueapp'){
+                    return;
+                }
                 try {
+                    
                     //try access window
                     let doc = iframe.contentWindow.document;
                   

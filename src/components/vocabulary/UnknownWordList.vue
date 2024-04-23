@@ -2,8 +2,8 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
 
 import UnknownWordItem from './UnknownWordItem.vue';
-import {loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark} from '../../vocabularyStore.js';
-import {getWordParts, isKnown} from '../../language.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
+import { getWordParts, isKnown } from '../../language.js';
 
 const props = defineProps({
     items: Array,
@@ -62,14 +62,14 @@ async function buildTargetWords(words) {
     return array;
 }
 
-async function updateItems(newItems){
+async function updateItems(newItems) {
     let targetWords = await buildTargetWords(newItems);
-    items.value = targetWords; 
+    items.value = targetWords;
 }
 
 
 const items = ref();
-watch(()=>props.items, (newValue, oldValue) => {
+watch(() => props.items, (newValue, oldValue) => {
     // React to prop changes
     //console.log('items changed:', newValue);
     updateItems(newValue);
@@ -86,13 +86,30 @@ onMounted(() => {
 
 onUpdated(() => {
     //console.log('updated');
-    
+
 });
 
 </script>
 
 <template>
-    <ol id="unknownWordList" class="word-list">
-        <UnknownWordItem v-for="item of items" :word="item" :showDefinition="props.showDefinition" :reset="props.reset"></UnknownWordItem>
-    </ol>
+    <div class="mea-unknown-word-list">
+        <ol id="unknownWordList">
+            <UnknownWordItem v-for="item of items" :word="item" :key="item.target" :showDefinition="props.showDefinition" :reset="props.reset">
+            </UnknownWordItem>
+        </ol>
+    </div>
 </template>
+
+<style>
+.mea-unknown-word-list {
+    height: 380px;
+    overflow: auto;
+    overscroll-behavior-y: contain;
+
+    text-align: left;
+
+    li:nth-child(odd) {
+        background-color: #bed8d6;
+    }
+}
+</style>

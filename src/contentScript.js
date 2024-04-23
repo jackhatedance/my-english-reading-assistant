@@ -2,15 +2,16 @@
 
 import './content.css';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
-import { searchWord, isKnown, getWordParts } from './language.js';
+import { isKnown, } from './language.js';
 import { findSiteConfig } from './site-match.js';
 import { initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions } from './optionService.js';
-import { split } from "sentence-splitter";
 import { getNotes, searchNote } from './noteService.js';
-import { generateMiddleSetenceNumbers, containsSentenceInstancePosition, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
+import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
 import { tranverseElement, tranverseNode } from './dom.js';
 import { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
-import { annotateWord, annotateNonword } from './word.js';
+
+import './side-panel-component.css';
+import { addVueApp, addVueAppEventListener, sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -83,8 +84,7 @@ chrome.runtime.sendMessage(
   }
 );
 
-// Listen for message
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+function messageListener(request, sender, sendResponse) {
   //console.log(`Current request type is ${request.type}`);
   let response = {};
   if (request.type === 'COUNT') {
@@ -148,13 +148,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibility(visible, source, 'note');
   } else if (request.type === 'GET_PAGE_INFO') {
-    //console.log(`${request.type}`);
+    console.log(`${request.type}`);
 
     //let pageInfo = await getPageInfo();
     getPageInfo().then((pageInfo) => {
       response.pageInfo = pageInfo;
 
-      //console.log('pageInfo response:' + JSON.stringify(response));
+      console.log('pageInfo response:' + JSON.stringify(response));
 
       sendResponse(response);
     });
@@ -177,7 +177,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   sendResponse(response);
   return;
-});
+}
+// Listen for message
+chrome.runtime.onMessage.addListener(messageListener);
+
 
 
 setInterval(monitorTimer, 500);
@@ -214,12 +217,20 @@ function findStyleSheet(document) {
   return null;
 }
 function indexOfMeaAnnotation(styleSheet) {
-  for (let i = 0; i < styleSheet.cssRules.length; i++) {
-    let rule = styleSheet.cssRules[i];
-    if (rule.selectorText === '.mea-highlight::after') {
-      return i;
+  try {
+    for (let i = 0; i < styleSheet.cssRules.length; i++) {
+      let rule = styleSheet.cssRules[i];
+      if (rule.selectorText === '.mea-highlight::after') {
+        return i;
+      }
     }
+
+
   }
+  catch(error){
+    console.log(error);
+  }
+  
   return -1;
 }
 function indexOfMeaHighlight(styleSheet) {
@@ -323,7 +334,7 @@ async function getPageInfo() {
   let unknownWordsCount = 0;
   let knownWordsCount = 0;
   for (let document of documents) {
-    let elements = document.querySelectorAll('.mea-word:not(.hide)');
+    let elements = document.querySelectorAll('.mea-word:not(.mea-hide)');
 
     for (var e of elements) {
       //let targetWord = getTargetWordFromElement(e);
@@ -333,7 +344,7 @@ async function getPageInfo() {
       unknownWordsCount++;
     }
 
-    elements = document.querySelectorAll('.mea-word.hide');
+    elements = document.querySelectorAll('.mea-word.mea-hide');
     for (var e of elements) {
       knownWordsCount++;
     }
@@ -431,14 +442,23 @@ async function sendMessageToBackground(siteConfig, type) {
 
 async function preprocessDocument(document, isIframe, documentConfig) {
 
+  
+
+
+  document.body.setAttribute('mea-preprocessed', true);
+
+  if (!findStyleSheet(document)) {
+    addStyle(document);
+  }
+
+  if(!isIframe){
+    addVueApp();
+    addVueAppEventListener();
+  }
+
   if (documentConfig.canProcess) {
 
-
-    document.body.setAttribute('mea-preprocessed', true);
-
-    if (!findStyleSheet(document)) {
-      addStyle(document);
-    }
+    
     //console.log('preprocess document');
 
     var x = 0;
@@ -487,7 +507,7 @@ function cleanElements(document) {
   //remove text content of some tags
   tranverseElement(document.body, (element) => {
     const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
-    const TAGS_KEEP_CONTENT = ['EM', 'I', 'B', 'A'];
+    const TAGS_KEEP_CONTENT = ['EM', 'I', 'B',];
     if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
       element.setAttribute('mea-remove-tag', 'true');
       element.innerHTML = '';
@@ -561,6 +581,7 @@ function addToolbar(document) {
   let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
   let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
   let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
+  let notesImgUrl = chrome.runtime.getURL("icons/notes.png");
 
   var elemDiv = document.createElement('div');
   elemDiv.innerHTML = `
@@ -572,14 +593,16 @@ function addToolbar(document) {
     </button>  
     <button class='mea-mark-clear mea-toolbar-button'>
       <img class='mea-icon' src='${clearImgUrl}'></img>
+    </button>
+    <button class='mea-notes mea-toolbar-button'>
+      <img class='mea-icon' src='${notesImgUrl}'></img>
     </button>  
     `;
 
-  elemDiv.classList.add('mea-container');
+  elemDiv.classList.add('mea-element');
   elemDiv.classList.add('mea-toolbar');
   elemDiv.style.visibility = 'hidden';
   document.body.appendChild(elemDiv);
-
 }
 
 function hideToolbar(document) {
@@ -642,7 +665,11 @@ async function addEventListener(document) {
 */
   });
 
-  document.addEventListener("mouseup", async () => {
+  document.addEventListener("mouseup", async (event) => {
+    let dialog = event.target.closest('.mea-dialog');
+    if(dialog){
+      return;
+    }
 
     let nodeSelection = document.getSelection();
     let selectedText = nodeSelection.toString();
@@ -681,20 +708,20 @@ async function addEventListener(document) {
     
 
     if (sentenceHashSelection) {
-      chrome.runtime.sendMessage(
-        {
-          type: 'SELECTION_CHANGE',
-          payload: {
-            type: type,
-            selectedText: selectedText,
-            sentenceSelection: sentenceHashSelection,
-            notes: filteredNotes,
-          },
+      let request = {
+        type: 'SELECTION_CHANGE',
+        payload: {
+          type: type,
+          selectedText: selectedText,
+          sentenceSelection: sentenceHashSelection,
+          notes: filteredNotes,
         },
-        (response) => {
-          //console.log(response.message);
-        }
-      );
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      sendMessageToApp(request, sender, sendResponse);
     }
 
   });
@@ -803,6 +830,38 @@ async function addEventListener(document) {
       }
     });
   });
+
+  document.querySelectorAll('.mea-notes').forEach((element) => {
+    element.addEventListener('click', async (e) => {
+      getPageInfo().then((pageInfo) => {
+        let request ={
+          type:'UPDATE_PAGE_INFO',
+          payload:{
+            pageInfo
+          },
+        };
+        
+        let sender = null;
+        let sendResponse = (response) => {};
+        sendMessageToApp(request, sender, sendResponse); 
+      });
+      
+      let topDocument = window.top.document;
+      let dialog = topDocument.querySelector('#mea-vue-container');
+
+      /*
+      let elementLeft = element.getBoundingClientRect().left;
+      let clientWidth = topDocument.body.clientWidth;
+      let pageNumber = Math.floor(elementLeft / clientWidth);
+
+
+      let left = window.scrollX + clientWidth * pageNumber + (clientWidth - 400) / 2;
+      dialog.style.left = left + 'px';
+      */
+      dialog.showModal();
+      
+    });
+  });
 }
 
 function sendMessageMarkWord(wordChanges) {
@@ -852,8 +911,8 @@ function isInMeaElement(element) {
     console.log('null element');
     return false;
 }
-  let meaContainer = element.closest('.mea-container');
-  if (meaContainer) {
+  let meaElement = element.closest('.mea-element');
+  if (meaElement) {
     return true;
   } else {
     return false;
@@ -915,18 +974,28 @@ async function resetPageAnnotationVisibility(enabled, source, types) {
 
   let pageInfo = await getPageInfo();
   //send message to side panel
-  chrome.runtime.sendMessage(
-    {
+  let request = {
       type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
       payload: {
         pageInfo: pageInfo,
         source: source,
       },
-    },
-    (response) => {
-      //console.log(response.message);
-    }
+    };
+  let sender = null;
+  let sendResponse = (response) => {
+    //console.log(response.message);
+  };
+  sendMessageToApp(request, sender, sendResponse);
+}
+
+function sendMessageToApp(request, sender, sendResponse){
+  //send message to standalone
+  chrome.runtime.sendMessage(
+    request,
+    sendResponse,
   );
+
+  sendMessageToEmbeddedApp(request, sender, sendResponse);
 }
 /**
  * 
@@ -948,12 +1017,12 @@ async function resetDocumentAnnotationVisibility(window, enabled, types) {
       if (enabled) {
 
         if (isKnown(targetWord, knownWords)) {
-          element.classList.add("hide");
+          element.classList.add("mea-hide");
         } else {
-          element.classList.remove("hide");
+          element.classList.remove("mea-hide");
         }
       } else {
-        element.classList.add("hide");
+        element.classList.add("mea-hide");
       }
     });
   }

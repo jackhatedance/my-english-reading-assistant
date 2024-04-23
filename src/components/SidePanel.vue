@@ -1,12 +1,22 @@
 <script setup>
-import { ref, onBeforeUpdate } from 'vue';
+import { ref, onMounted, onBeforeUpdate, provide } from 'vue';
 import Unavailable from './Unavailable.vue';
 import Tabs from './Tabs.vue';
 
-import { initializeOptionService } from '../optionService.js';
+
 import { getNote } from '../noteService.js';
 
+const props = defineProps({
+  // embedded (content page), standalone (side page)
+  appMode: String,
+  setSendMessageToApp: Function,
+  sendMessageToContentPage: Function,
+  getActiveTabId: Function,
+});
 
+provide('appMode', props.appMode);
+provide('sendMessageToContentPage', props.sendMessageToContentPage);
+provide('getActiveTabId', props.getActiveTabId);
 
 const isShowUnavailable = ref(false);
 const isShowTabs = ref(false);
@@ -15,70 +25,60 @@ const notes = ref([]);
 const page = ref();
 
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await initializeOptionService();
-  getPageInfo();
-
-
-});
-
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  const tab = await chrome.tabs.get(activeInfo.tabId);
-  if (tab.active) {
-    getPageInfo();
-  }
-});
-
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (tab.active) {
-    getPageInfo();
-  }
-});
 
 async function getPageInfo() {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs[0];
-    chrome.tabs.sendMessage(
-      tab.id,
-      {
+  let sender = null;
+  console.log('get pageInfo');
+  props.sendMessageToContentPage({
         type: 'GET_PAGE_INFO',
         payload: {
         },
       },
+      sender,
       (response) => {
 
-        //console.log('get pageInfo response:' + JSON.stringify(response));
+        console.log('get pageInfo response:' + JSON.stringify(response));
 
-        if (response && response.pageInfo) {
-          let pageInfo = response.pageInfo;
-          if (pageInfo.visible) {
-            page.value = response.pageInfo;
+        updatePageInfo(response.pageInfo);
 
-            isShowUnavailable.value = false;
-            isShowTabs.value = true;
-          } else {
-            isShowUnavailable.value = true;
-            isShowTabs.value = false;
-          }
-
-        } else {
-
-          isShowUnavailable.value = true;
-          isShowTabs.value = false;
-        }
-
-
-      }
-    );
-  });
+      });
+  
 }
 
+function updatePageInfo(pageInfo) {
+  let response = {
+    pageInfo
+  };
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  if (response && response.pageInfo) {
+    let pageInfo = response.pageInfo;
+    if (pageInfo.visible) {
+      page.value = response.pageInfo;
+
+      isShowUnavailable.value = false;
+      isShowTabs.value = true;
+    } else {
+      isShowUnavailable.value = true;
+      isShowTabs.value = false;
+    }
+
+  } else {
+
+    isShowUnavailable.value = true;
+    isShowTabs.value = false;
+  }
+
+}
+
+async function messageListener(request, sender, sendResponse) {
 
   console.log(request.type);
 
-  if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
+  if (request.type === 'LOAD') {
+    getPageInfo();
+  } else if (request.type === 'UPDATE_PAGE_INFO') {
+    updatePageInfo(request.payload.pageInfo);
+  } else if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
 
     if (request.payload.source === 'side-panel') {
       return;
@@ -125,6 +125,12 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
   }
 
+}
+
+chrome.runtime.onMessage.addListener(messageListener);
+
+onMounted(()=>{
+  props.setSendMessageToApp(messageListener);
 });
 
 onBeforeUpdate(() => {

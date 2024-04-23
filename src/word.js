@@ -51,7 +51,7 @@ function format(word, annotation, baseWord, parts, sentenceId, sentenceNumber, t
 
     let type = baseWord ? 'mea-word' : 'mea-nonword';
 
-    let s = `<span class="mea-container mea-highlight hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</span>`;
+    let s = `<span class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</span>`;
     return s;
 }
 

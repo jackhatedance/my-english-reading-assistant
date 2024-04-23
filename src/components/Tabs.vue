@@ -47,11 +47,11 @@ watch(() => props.page, (newValue, oldValue) => {
             <TabHeader tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
         </ul>
 
-        <TabBody id="vocabulary-tab" v-show="activeTabId === 'vocabulary-tab'">
+        <TabBody id="vocabulary-tab" v-show="activeTabId === 'vocabulary-tab'" :isActive="activeTabId === 'vocabulary-tab'">
             
             <VocabularyTabContent :page="page"></VocabularyTabContent>
         </TabBody>
-        <TabBody id="notes-tab" v-show="activeTabId === 'notes-tab'">
+        <TabBody id="notes-tab" v-show="activeTabId === 'notes-tab'" :isActive="activeTabId === 'notes-tab'">
             
             <NotesTabContent :notes="props.notes"></NotesTabContent>
         </TabBody>

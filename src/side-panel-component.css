@@ -1,16 +1,8 @@
 
-
-body{
-  background : #efefef;
-  font : .8em sans-serif;
-  margin: 0;
-}
-
 .tab-container{
-  background : #8ae1da;
   margin: 0;
   padding: 0;
-  max-height: 35px;
+  
 }
 
 ul.tabs{
@@ -91,6 +83,10 @@ ul.tabs > li:after{
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
 
+.tabbody.active{
+  background: #efefef;
+}
+
 #notes-tab {
 
 }
@@ -146,11 +142,4 @@ code {
   }
 }
 
-.word-list {
-  text-align: left;
- 
-  li:nth-child(odd) {
-    background-color: #bed8d6;
-  }
-}
 

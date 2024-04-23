@@ -21,13 +21,13 @@
 }
 
 .mea-highlight { 
-  &.hide {
+  &.mea-hide {
     &::after {
       visibility: hidden;
     }
   }
 
-  &:hover, &.hide:hover {
+  &:hover, &.mea-hide:hover {
     &::after{
       background-color: white;
       border: solid 1px;
@@ -40,7 +40,7 @@
   }
 
   &:not([data-parts='']) {
-    &:hover, &.hide:hover {
+    &:hover, &.mea-hide:hover {
       &::after{
         content: attr(data-footnote) ' [' attr(data-parts) ']';
       }
@@ -103,3 +103,30 @@
   background-color: rgb(221, 195, 149);
   color: black;
 }
+#mea-vue-container * {
+  all: revert;
+}
+#mea-vue-container {
+ 
+  height:calc(100% - (70px + 70px));
+
+  .mea-dialog-header button {
+    float:right;
+  }
+  
+
+  #mea-vueapp {
+    height: 95%;
+  }
+
+  #vue {
+    width: 400px;
+    
+  }
+}
+
+  
+
+  
+
+

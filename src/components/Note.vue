@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
+import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 
 import { getNote, setNote, deleteNote } from '../noteService.js';
 
@@ -13,6 +13,8 @@ const props = defineProps({
     note: Object,
     service: Object,
 });
+
+const sendMessageToContentPage = inject('sendMessageToContentPage');
 
 const sidepanelNoteLabel = chrome.i18n.getMessage('sidepanelNoteLabel');
 const sidepanelAddAction = chrome.i18n.getMessage('sidepanelAddAction');
@@ -78,22 +80,16 @@ async function clickCancel() {
 }
 
 function sendMessageToActiveTab(type) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tab = tabs[0];
-        chrome.tabs.sendMessage(
-            tab.id,
-            {
-                type: type,
-                payload: {
-                    source: 'side-panel',
-                },
-            },
-            (response) => {
-                //do nothing
-            }
-        );
-
-    });
+    let sender = null;
+    let sendResponse = (response)=>{};
+    sendMessageToContentPage({
+        type: type,
+        payload: {
+            source: 'side-panel',
+        },
+    },
+    sender,
+    sendResponse);
 }
 
 function getScEditor() {
@@ -197,6 +193,9 @@ init();
 </template>
 
 <style>
+.note {
+    overflow: auto;
+}
 
 .xbbcode-size-1 {font-size:x-small !important;}
 .xbbcode-size-2 {font-size:small !important;}

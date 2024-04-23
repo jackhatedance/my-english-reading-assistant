@@ -58,7 +58,7 @@ function tokenizeTextNode(document) {
             }
             let tokensHtml = tokenHtmls.join('');
             let span = document.createElement('span');
-            let spanHtml = `<span class="mea-container">${tokensHtml}</span>`;
+            let spanHtml = `<span class="mea-element mea-text-node">${tokensHtml}</span>`;
 
             /** TODO?
              let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
@@ -283,21 +283,12 @@ function isInMeaElement(element) {
         console.log('null element');
         return false;
     }
-    let meaContainer = element.closest('.mea-container');
-    if (meaContainer) {
+    let meaElement = element.closest('.mea-element');
+    if (meaElement) {
         return true;
     } else {
         return false;
     }
-}
-
-function findSentence(article, offset) {
-    for (let sentence of article.sentences) {
-        if (sentence.offset <= offset && offset < (sentence.offset + sentence.length)) {
-            return sentence;
-        }
-    }
-    return null;
 }
 
 function findTokenInSentence(sentence, offset) {
@@ -317,7 +308,7 @@ function findTokenInSentence(sentence, offset) {
 }
 
 function findTokenInArticle(article, offset) {
-    let sentence = findSentence(article, offset);
+    let sentence = findSentenceInfo(article, offset);
     if (sentence) {
         return findTokenInSentence(sentence, offset);
     }
@@ -534,6 +525,7 @@ function getSentenceInstanceSelectionFromArticleSelection(article, articleSelect
 
     return sentenceInstanceSelection;
 }
+
 function getSentenceInstancePositionFromArticlePosition(article, articleOffset) {
     let sentenceInfo = findSentenceInfo(article, articleOffset);
     let sentenceOffset = articleOffset - sentenceInfo.offset;
@@ -543,6 +535,7 @@ function getSentenceInstancePositionFromArticlePosition(article, articleOffset) 
     };
     return sentenceInstancePosition;
 }
+
 function findSentenceInfo(article, articleOffset) {
     for (let sentenceInfo of article.sentences) {
         if (sentenceInfo.offset <= articleOffset && articleOffset < (sentenceInfo.offset + sentenceInfo.length)) {

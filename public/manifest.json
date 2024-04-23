@@ -33,12 +33,9 @@
       "css": []
     }
   ],
-  "side_panel": {
-    "default_path": "side-panel.html"
-  },
   "web_accessible_resources": [
     {
-      "resources": [ "contentScript.css", "svg/*", "icons/*" ],
+      "resources": [ "contentScript.css", "svg/*", "icons/*", "images/*", "*.html" ],
       "matches": [ "<all_urls>" ]
     }
     
