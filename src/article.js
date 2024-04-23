@@ -3,7 +3,7 @@
 import { split } from "sentence-splitter";
 import { tranverseElement, tranverseNode } from './dom.js';
 import { annotateWord, annotateNonword } from './word.js';
-import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition } from './sentence.js';
+import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceSegmentOffsets, getSegmentOffset } from './sentence.js';
 import { searchWord } from './language.js';
 import { isTextTag } from './html.js';
 
@@ -105,6 +105,8 @@ function parseDocument(document) {
         sentenceMap: new Map(),
         //<ID, number array>
         sentenceIdNumbersMap: new Map(),
+        //segment offset, first sentence number of the segment
+        segmentOffsetSentenceMap: new Map(),
 
         paragraphs: [],
 
@@ -226,7 +228,7 @@ function addParagraph(article, paragraphInfo){
 }
 
 function addSentence(article, paragraph, sentenceInfo){
-    let { sentences, sentenceMap, sentenceIdNumbersMap } = article;
+    let { sentences, sentenceMap, sentenceIdNumbersMap, segmentOffsetSentenceMap } = article;
 
     sentences.push(sentenceInfo);
 
@@ -235,6 +237,14 @@ function addSentence(article, paragraph, sentenceInfo){
 
     sentenceMap.set(sentenceId, content);
     //sentenceNumberIdMap.set(sentenceNumber, sentenceId);
+
+    let segmentOffsets = getSentenceSegmentOffsets(sentenceInfo);
+    for(let segmentOffset of segmentOffsets){
+        let sentenceNumber = segmentOffsetSentenceMap.get(segmentOffset);
+        if(!sentenceNumber){
+            segmentOffsetSentenceMap.set(segmentOffset, sentenceInfo.sentenceNumber);
+        }
+    }
 
     let numberArray = sentenceIdNumbersMap.get(sentenceId);
     if (!numberArray) {
@@ -537,7 +547,11 @@ function getSentenceInstancePositionFromArticlePosition(article, articleOffset) 
 }
 
 function findSentenceInfo(article, articleOffset) {
-    for (let sentenceInfo of article.sentences) {
+    let segmentOffset = getSegmentOffset(articleOffset);
+    let startSentenceNumberOfSegment = article.segmentOffsetSentenceMap.get(segmentOffset);
+    console.log(`find sentence info, articleOffset: ${articleOffset}, startSentenceNumberOfSegment: ${startSentenceNumberOfSegment}`);
+    for(let i=startSentenceNumberOfSegment; i< article.sentences.length; i++) {
+        let sentenceInfo = article.sentences[i];
         if (sentenceInfo.offset <= articleOffset && articleOffset < (sentenceInfo.offset + sentenceInfo.length)) {
             return sentenceInfo;
         }

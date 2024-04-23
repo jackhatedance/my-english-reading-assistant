@@ -37,7 +37,7 @@ async function getPageInfo() {
       sender,
       (response) => {
 
-        console.log('get pageInfo response:' + JSON.stringify(response));
+        //console.log('get pageInfo response:' + JSON.stringify(response));
 
         updatePageInfo(response.pageInfo);
 

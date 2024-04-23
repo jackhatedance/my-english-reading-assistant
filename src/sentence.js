@@ -186,4 +186,19 @@ function containsSentenceInstancePosition(sentenceInstanceSelection, sentenceIns
     
 }
 
-export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition };
+function getSentenceSegmentOffsets(sentenceInfo){
+    let start = getSegmentOffset(sentenceInfo.offset);
+    let end = getSegmentOffset(sentenceInfo.offset + sentenceInfo.length);
+    let segmentOffsets = [];
+    for(let i=start;i<end+1;i++){
+        segmentOffsets.push(i);
+    }
+    return segmentOffsets;
+}
+
+function getSegmentOffset(articleOffset, segmentLength = 1000){
+    let segmentOffset = Math.floor(articleOffset / segmentLength);
+    return segmentOffset;
+}
+
+export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition, getSentenceSegmentOffsets, getSegmentOffset };
