@@ -3,9 +3,9 @@
 import {lookup} from './dictionary.js';
 import {existWordRecord} from './vocabularyStore.js';
 import {map as wordParts} from './word-parts.js';
-import {getOptionsFromCache} from './optionService.js';
+import {getOptionsFromCache} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
-import {dict as dictAffix} from './dict-affix.js';
+import {dict as dictAffix} from './dicts/dict-affix.js';
 
 var gPrefixes, gSuffixes;
 

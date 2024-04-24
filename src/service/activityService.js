@@ -1,6 +1,6 @@
 'use strict';
 
-import {loadKnownWords, calculateKnownWordsCount} from './vocabularyStore.js';
+import {loadKnownWords, calculateKnownWordsCount} from '../vocabularyStore.js';
 
 
 function loadActivitiesFromStorage(){

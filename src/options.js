@@ -2,9 +2,9 @@
 
 import './options.css';
 import {loadKnownWords, loadAndMergeWordLists, saveKnownWords, calculateKnownWordsCount} from './vocabularyStore.js';
-import {getOptions, setOptions} from './optionService.js';
+import {getOptions, setOptions} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
-import {deleteAllReadingHistory} from './activityService.js';
+import {deleteAllReadingHistory} from './service/activityService.js';
 
 localizeHtmlPage();
 

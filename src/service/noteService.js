@@ -1,6 +1,6 @@
-import { chunkedRead, chunkedWrite } from './chunk.js';
+import { chunkedRead, chunkedWrite } from '../chunk.js';
 import { md5 } from 'js-md5';
-import {} from './sentence.js'
+import {} from '../sentence.js'
 
 const KEY_NOTES = "notes";
 /**

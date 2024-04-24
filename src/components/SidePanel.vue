@@ -4,7 +4,7 @@ import Unavailable from './Unavailable.vue';
 import Tabs from './Tabs.vue';
 
 
-import { getNote } from '../noteService.js';
+import { getNote } from '../service/noteService.js';
 
 const props = defineProps({
   // embedded (content page), standalone (side page)

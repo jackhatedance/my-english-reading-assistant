@@ -1,6 +1,6 @@
 'use strict';
 
-import { getSiteOptions,  } from './optionService.js';
+import { getSiteOptions,  } from './service/optionService.js';
 import { getAllDocuments } from './document.js';
 
 /**

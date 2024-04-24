@@ -2,8 +2,8 @@
 
 import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
-import {initializeOptionService, getOptionsFromCache, refreshOptionsCache} from './optionService.js';
-import {addActivityToStorage} from './activityService.js';
+import {initializeOptionService, getOptionsFromCache, refreshOptionsCache} from './service/optionService.js';
+import {addActivityToStorage} from './service/activityService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,

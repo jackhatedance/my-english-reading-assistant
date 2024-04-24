@@ -1,10 +1,10 @@
 'use strict';
 
 import './popup.css';
-import {setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './optionService.js';
+import {setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
-import {initializeOptionService, getOptionsFromCache} from './optionService.js';
-
+import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
+ 
 localizeHtmlPage();
 
 (function () {

@@ -1,9 +1,9 @@
 'use strict';
 
 import './report.css';
-import {initializeOptionService} from './optionService.js';
+import {initializeOptionService} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
-import {loadActivitiesFromStorage} from './activityService.js';
+import {loadActivitiesFromStorage} from './service/activityService.js';
 import {Chart, registerables} from 'chart.js';
 import 'chartjs-adapter-date-fns';
 

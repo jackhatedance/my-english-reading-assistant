@@ -3,7 +3,7 @@ import './side-panel-component.css';
 import { createApp } from 'vue';
 import SidePanel from './components/SidePanel.vue'
 import { AppModes } from './components/types.js';
-import { initializeOptionService } from './optionService.js';
+import { initializeOptionService } from './service/optionService.js';
 
 import {localizeHtmlPage} from './locale.js';
 localizeHtmlPage();

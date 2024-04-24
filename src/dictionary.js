@@ -1,6 +1,6 @@
-import {dict as dictLarge} from './dict.js'
-import {dict as dictSmall} from './dict-small.js'
-import {dict as dictAffix} from './dict-affix.js'
+import {dict as dictLarge} from './dicts/dict-large.js'
+import {dict as dictSmall} from './dicts/dict-small.js'
+import {dict as dictAffix} from './dicts/dict-affix.js'
 
 function lookup(word, dicts) {
     //console.log(dict);

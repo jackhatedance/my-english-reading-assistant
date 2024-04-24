@@ -1,6 +1,6 @@
 'use strict';
 
-import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from './vocabularyStore.js';
+import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from '../vocabularyStore.js';
 
 var gOptions;
 

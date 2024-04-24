@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 
-import { getNote, setNote, deleteNote } from '../noteService.js';
+import { getNote, setNote, deleteNote } from '../service/noteService.js';
 
 import 'sceditor/minified/sceditor.min.js';
 import 'sceditor/minified/formats/bbcode.js';
