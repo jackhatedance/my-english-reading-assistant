@@ -18,9 +18,10 @@ const siteConfigs = [
         getIframeDocumentConfigs: function(document){
             let configs = [];
             searchSubIframesRecursively(document, (iframe)=>{
-                if(iframe.id==='mea-vueapp'){
+                if(isMeaIframe(iframe)){
                     return;
                 }
+                
                 try {
                     
                     //try access window
@@ -29,7 +30,7 @@ const siteConfigs = [
                     let config = {
                         document:iframe.contentDocument,
                         window: iframe.contentWindow,
-                        canProcess: true
+                        canProcess: false
                     };
                     configs.push(config);
                 } catch (error) {
@@ -83,6 +84,10 @@ const siteConfigs = [
         getIframeDocumentConfigs: function(document){
             let configs = [];
             searchSubIframesRecursively(document, (iframe)=>{
+                if(isMeaIframe(iframe)){
+                    return;
+                }
+
                 let id = iframe.id;
                 if(id && id.startsWith('epubjs')){
                     let config = {
@@ -94,6 +99,10 @@ const siteConfigs = [
                 }
             });
 
+            //only support the first iframe
+            if(configs.length>1){
+                configs = [configs[0]];
+            }
             return configs;
         },
         needRefreshPageAnnotation(topDocument){
@@ -122,68 +131,7 @@ const siteConfigs = [
             }
             return url;
         }
-    },
-    {
-        name:'fviewer',
-        match: function(document){
-            let iframes = document.querySelectorAll('iframe');
-            let isFrmview = Array.from(iframes).some((iframe)=>{
-                let id = iframe.id;
-                if(id){
-                return id.startsWith('convertfrmview');
-                }
-            });
-            return false;
-        },
-        getDocumentConfig: function(window, document){
-            let config = {
-                window: window,
-                document: document,
-                canProcess: false,
-            };
-            return config;
-        },
-        getIframeDocumentConfigs: function(document){
-            let configs = [];
-            searchSubIframesRecursively(document, (iframe)=>{
-                let config = {
-                    document:iframe.contentDocument,
-                    window: iframe.contentWindow,
-                    canProcess: true
-                };
-                configs.push(config);
-            });
-
-            return configs;
-        },
-        needRefreshPageAnnotation(topDocument){
-            let topVisible = topDocument.body.getAttribute('mea-visible');
-            if(!topVisible){
-                return false;
-            }
-
-            let iframes = document.querySelectorAll('iframe');
-            let configs = [];
-            for(const iframe of iframes){
-                if(iframe) {
-                    let iframeVisible = iframe?.contentDocument?.body?.getAttribute('mea-visible');
-                    if(topVisible != iframeVisible){
-                        return true;
-                    }              
-                }
-            }
-            return false;
-        },
-        getUrl(topDocument){
-            let url = topDocument.location.href;
-
-            let iframeDocuments = this.getIframeDocumentConfigs(topDocument);
-            if(iframeDocuments.length > 0){
-                url = iframeDocuments[0].document.baseURI;
-            }
-            return url;
-        }
-    },
+    },   
 
 ];
 
@@ -212,5 +160,9 @@ function findSiteConfig(document){
     }
     //console.log('find site config:'+result.name);
     return result;
+}
+
+function isMeaIframe(iframe){
+    return (iframe.id==='mea-vueapp');    
 }
 export {findSiteConfig};
