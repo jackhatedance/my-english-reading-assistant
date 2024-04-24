@@ -86,10 +86,10 @@ function isPageAnnotationInitialized() {
 
 
 async function initPageAnnotations(addDocumentEventListener) {
-    //console.log('initPageAnnotations');
+    console.log('initPageAnnotations');
     await initializeOptionService();
 
-    let article = null;
+    let documentArticleMap = new Map();
     /*
     knownWords = await loadKnownWords();
     if (!knownWords) {
@@ -102,7 +102,8 @@ async function initPageAnnotations(addDocumentEventListener) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteConfig.getDocumentConfig(window, document);
 
-        article = await preprocessDocument(document, false, documentConfig, addDocumentEventListener);
+        let article = await preprocessDocument(document, false, documentConfig, addDocumentEventListener);
+        documentArticleMap.set(document, article);
     }
 
     let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
@@ -112,7 +113,9 @@ async function initPageAnnotations(addDocumentEventListener) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addDocumentEventListener);
+                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addDocumentEventListener);
+                
+                documentArticleMap.set(iframeDocument, article);
             }
         }
     }
@@ -123,7 +126,7 @@ async function initPageAnnotations(addDocumentEventListener) {
     sendMessageToBackground(siteConfig, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo);
 
 
-    return article;
+    return documentArticleMap;
 }
 
 
@@ -139,19 +142,25 @@ function getAllWindows() {
     return windows;
 }
 
-async function resetPageAnnotationVisibility(article, enabled, source, types) {
+async function resetPageAnnotationVisibility(documentArticleMap, enabled, source, types) {
     //let unknownWordSet = new Set();
     if (!types) {
       types = ['word-definition', 'note'];
     }
   
-    for (const window of getAllWindows()) {
-      await resetDocumentAnnotationVisibility(article, window, enabled, types);
+    let windows = getAllWindows();
+    for (const window of windows) {
+        let document = window.document;
+        let article = documentArticleMap.get(document);
+        if(article){
+            await resetDocumentAnnotationVisibility(article, window, enabled, types);
+        }
+        
     }    
 }
 
 async function preprocessDocument(document, isIframe, documentConfig, addDocumentEventListener) {
-
+    console.log('preprocess document');
     document.body.setAttribute('mea-preprocessed', true);
 
     if (!findStyleSheet(document)) {
@@ -200,9 +209,21 @@ async function preprocessDocument(document, isIframe, documentConfig, addDocumen
 
         //console.log(JSON.stringify(gArticle));
 
+    } else {
+        //empty article
+        article = parseDocument(document, true);
     }
     return article;
 
 }
 
-export { getPageInfo, initPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, isPageAnnotationInitialized };
+
+function clearPagePreprocessMark() {
+    let documents = getAllDocuments();
+  
+    return documents.every((document) => {
+      document.body.removeAttribute('mea-preprocessed');
+    });
+}
+
+export { getPageInfo, initPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark };

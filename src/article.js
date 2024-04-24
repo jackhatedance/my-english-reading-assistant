@@ -96,7 +96,7 @@ function splitSentence(sentence) {
  * 
  * @param {*} document 
  */
-function parseDocument(document) {
+function parseDocument(document, skip = false) {
     
     let article = {
         currentSentenceNumber: 0,
@@ -125,11 +125,14 @@ function parseDocument(document) {
 
     });
       */
-    parseArticleContent(article, document.body.textContent);
-    parseArticleTextNodes(article, document.body);
 
-    article.contentLength = document.body.textContent.length;
-    article.document = document;
+    if(!skip) {    
+        parseArticleContent(article, document.body.textContent);
+        parseArticleTextNodes(article, document.body);
+
+        article.contentLength = document.body.textContent.length;
+        article.document = document;
+    }
 
     return article;
 }

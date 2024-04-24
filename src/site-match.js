@@ -99,10 +99,7 @@ const siteConfigs = [
                 }
             });
 
-            //only support the first iframe
-            if(configs.length>1){
-                configs = [configs[0]];
-            }
+            
             return configs;
         },
         needRefreshPageAnnotation(topDocument){
