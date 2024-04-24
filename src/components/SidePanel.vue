@@ -30,16 +30,19 @@ async function getPageInfo() {
   let sender = null;
   console.log('get pageInfo');
   props.sendMessageToContentPage({
-        type: 'GET_PAGE_INFO',
+        type: 'GET_PAGE_INFO_AS_MESSAGE',
         payload: {
+          src: 'side_panel',
         },
       },
       sender,
       (response) => {
 
         //console.log('get pageInfo response:' + JSON.stringify(response));
-
-        updatePageInfo(response.pageInfo);
+        if(response && response.pageInfo){
+          //updatePageInfo(response.pageInfo);  
+        }
+        
 
       });
   
@@ -90,7 +93,7 @@ async function messageListener(request, sender, sendResponse) {
     //console.log(request.payload.message);
     // Send a response message
     sendResponse({
-      message: 'ok'
+      
     });
   } else if (request.type === 'SELECTION_CHANGE') {
     let type = request.payload.type;

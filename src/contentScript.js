@@ -4,14 +4,18 @@ import './content.css';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { findSiteConfig } from './site-match.js';
-import { initializeOptionService, refreshOptionsCache, getSiteOptions, getDefaultSiteOptions } from './optionService.js';
+import { initializeOptionService, refreshOptionsCache, getDefaultSiteOptions } from './optionService.js';
 import { getNotes, searchNote } from './noteService.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { tranverseElement, tranverseNode } from './dom.js';
 import { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
-
 import './side-panel-component.css';
 import { addVueApp, addVueAppEventListener, sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
+import { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized } from './document.js';
+import { addToolbar, hideToolbar } from './toolbar.js';
+import { findStyleSheet, changeStyle } from './style.js';
+import { sendMessageMarkWord } from './message.js';
+import { getAllDocuments } from './document.js'
+import { getPageInfo, isPageAnnotationVisible, getCurrentSiteOptions } from './page.js'
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -44,12 +48,6 @@ async function getAnnotationOptions() {
   return options.annotation;
 }
 
-async function getCurrentSiteOptions() {
-  let siteDomain = document.location.hostname;
-  let options = await getSiteOptions(siteDomain);
-
-  return options;
-}
 
 window.addEventListener("load", myMain, false);
 function myMain() {
@@ -70,19 +68,6 @@ function myMain() {
 
 
 }
-
-// Communicate with background file by sending a message
-chrome.runtime.sendMessage(
-  {
-    type: 'GREETINGS',
-    payload: {
-      message: 'Hello, my name is Con. I am from ContentScript.',
-    },
-  },
-  (response) => {
-    //console.log(response.message);
-  }
-);
 
 function messageListener(request, sender, sendResponse) {
   //console.log(`Current request type is ${request.type}`);
@@ -150,15 +135,41 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'GET_PAGE_INFO') {
     console.log(`${request.type}`);
 
-    //let pageInfo = await getPageInfo();
-    getPageInfo().then((pageInfo) => {
-      response.pageInfo = pageInfo;
+    
+      //let pageInfo = await getPageInfo();
+      getPageInfo().then((pageInfo) => {
+        response.pageInfo = pageInfo;
 
-      console.log('pageInfo response:' + JSON.stringify(response));
+        console.log('pageInfo response:' + JSON.stringify(response));
+        
+        sendResponse(response);
+         
+      });
+      return true;
+    
+  } else if (request.type === 'GET_PAGE_INFO_AS_MESSAGE') {
+    console.log(`${request.type}`);
 
-      sendResponse(response);
-    });
-    return true;
+    
+      //let pageInfo = await getPageInfo();
+      getPageInfo().then((pageInfo) => {
+        response.pageInfo = pageInfo;
+
+        console.log('pageInfo response:' + JSON.stringify(response));
+        
+        if(request.payload.src === 'side_panel'){
+          let request2 = {
+            type:'UPDATE_PAGE_INFO',
+            payload:{
+              pageInfo
+            }
+          };
+          sendMessageToApp(request2, null, ()=>{});
+        }
+       
+      });
+      return true;
+    
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
   }
@@ -208,111 +219,9 @@ function monitorTimer() {
 
 var knownWords;
 
-function findStyleSheet(document) {
-  for (let sheet of document.styleSheets) {
-    if (sheet.title === 'mea-style') {
-      return sheet;
-    }
-  }
-  return null;
-}
-function indexOfMeaAnnotation(styleSheet) {
-  try {
-    for (let i = 0; i < styleSheet.cssRules.length; i++) {
-      let rule = styleSheet.cssRules[i];
-      if (rule.selectorText === '.mea-highlight::after') {
-        return i;
-      }
-    }
 
 
-  }
-  catch(error){
-    console.log(error);
-  }
-  
-  return -1;
-}
-function indexOfMeaHighlight(styleSheet) {
-  for (let i = 0; i < styleSheet.cssRules.length; i++) {
-    let rule = styleSheet.cssRules[i];
-    if (rule.selectorText === '.mea-highlight') {
-      return i;
-    }
-  }
-  return -1;
-}
 
-function generateCssRuleOfAnnotation(options) {
-
-  let top = `${options.position * -1}em`;
-  let fontSize = `${options.fontSize}em`;
-  let opacity = `${options.opacity}`;
-  let color = `${options.color}`;
-
-  let rule = `.mea-highlight::after {
-    content: attr(data-footnote);
-    position: absolute;
-    width:max-content;
-    line-height: normal;
-    text-indent: 0px;
-    white-space: nowrap;
-    left: 0;
-    top: ${top};
-    font-size: ${fontSize} !important;
-    color: ${color};
-    opacity: ${opacity};
-  }`;
-  return rule;
-}
-
-function generateCssRuleOfHighlight(options) {
-
-  let lineHeight = `${options.lineHeight}em`;
-
-  let rule = `.mea-highlight {  
-    position: relative;
-    margin-top: 0px;
-    text-indent: 0px;
-    display: inline-block;
-    line-height: ${lineHeight} !important;
-  }`;
-  return rule;
-}
-
-function containsMeaStyle(document) {
-  let styleSheet = findStyleSheet(document);
-  if (styleSheet) {
-    let index = indexOfMeaAnnotation(styleSheet);
-    if (index >= 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function changeStyle(document, options) {
-
-  let styleSheet = findStyleSheet(document);
-  if (styleSheet) {
-    //annotation
-    let index = indexOfMeaAnnotation(styleSheet);
-    if (index >= 0) {
-      styleSheet.deleteRule(index);
-    }
-    let rule = generateCssRuleOfAnnotation(options);
-    styleSheet.insertRule(rule, 0);
-    //console.log('changed style of a document');
-
-    //highlight, aka. text
-    index = indexOfMeaHighlight(styleSheet);
-    if (index >= 0) {
-      styleSheet.deleteRule(index);
-    }
-    rule = generateCssRuleOfHighlight(options);
-    styleSheet.insertRule(rule, 0);
-  }
-}
 
 function changeStyleForAllDocuments(options) {
   let documents = getAllDocuments();
@@ -321,57 +230,6 @@ function changeStyleForAllDocuments(options) {
   }
 }
 
-/**
- * 
- * @returns unknownWords, unknownWordsRatio, annotationOptions
- */
-async function getPageInfo() {
-
-
-  let documents = getAllDocuments();
-  let unknownWordMap = new Map();
-
-  let unknownWordsCount = 0;
-  let knownWordsCount = 0;
-  for (let document of documents) {
-    let elements = document.querySelectorAll('.mea-word:not(.mea-hide)');
-
-    for (var e of elements) {
-      //let targetWord = getTargetWordFromElement(e);
-      let base = e.getAttribute('data-base-word');
-
-      unknownWordMap.set(base, { base, });
-      unknownWordsCount++;
-    }
-
-    elements = document.querySelectorAll('.mea-word.mea-hide');
-    for (var e of elements) {
-      knownWordsCount++;
-    }
-  }
-
-  let unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
-
-  let totalWordCount = unknownWordsCount + knownWordsCount;
-  let unknownWordsRatio = unknownWordsCount / totalWordCount;
-  let visible = isPageAnnotationVisible();
-  let siteOptions = await getCurrentSiteOptions();
-  let domain = document.location.hostname;
-  if (!domain) {
-    domain = 'NULL';
-  }
-  let pageInfo = {
-    domain: domain,
-    visible: visible,
-    totalWordCount: totalWordCount,
-    unknownWordsCount: unknownWordsCount,
-    unknownWords: unknownWords,
-    unknownWordsRatio: unknownWordsRatio,
-    siteOptions: siteOptions,
-  };
-  //console.log('page info:'+JSON.stringify(pageInfo));
-  return pageInfo;
-}
 
 function getBaseWordFromElement(element) {
   return element.getAttribute('data-base-word');
@@ -493,120 +351,6 @@ async function preprocessDocument(document, isIframe, documentConfig) {
 
   }
 
-}
-
-function cleanElements(document) {
-
-  //replace punctuations
-  tranverseNode(document.body, (node) => {
-    if (node.nodeName === '#text') {
-      node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
-    }
-  });
-
-  //remove text content of some tags
-  tranverseElement(document.body, (element) => {
-    const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
-    const TAGS_KEEP_CONTENT = ['EM', 'I', 'B',];
-    if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
-      element.setAttribute('mea-remove-tag', 'true');
-      element.innerHTML = '';
-      //element.outerHTML = '';
-    } else if (TAGS_KEEP_CONTENT.includes(element.nodeName)) {
-      if (isElementLeaf(element)) {
-        element.setAttribute('mea-remove-tag', 'true');
-
-      }
-    }
-
-    if (allChildrenElementNeedRemoveTag(element)) {
-      element.innerHTML = element.textContent;
-    }
-  }, false);
-
-  // merge TEXT NODEs
-  tranverseElement(document.body, (element) => {
-    if (allChildrenElementNeedRemoveTag(element)) {
-      element.innerHTML = element.textContent;
-    }
-  });
-
-}
-
-function isElementLeaf(element) {
-
-  let childCount = element.childElementCount;
-  let text = element.textContent;
-  if (!text) {
-    text = '';
-  }
-
-
-  return (childCount == 0);
-}
-
-function allChildrenElementNeedRemoveTag(element) {
-  if (element.childElementCount === 0) {
-    return false;
-  }
-
-  for (let childElement of element.children) {
-    if (!needRemoveTag(childElement)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function needRemoveTag(element) {
-  return (element.getAttribute('mea-remove-tag') === 'true');
-}
-
-function addStyle(document) {
-  var link = document.createElement("link");
-  link.href = chrome.runtime.getURL("contentScript.css");
-  link.type = "text/css";
-  link.rel = "stylesheet";
-  link.title = "mea-style";
-  document.getElementsByTagName("head")[0].appendChild(link);
-  //console.log('add style');
-}
-
-function addToolbar(document) {
-  //check if existed
-  if (document.querySelector('.mea-toolbar')) {
-    return;
-  }
-
-  let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
-  let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
-  let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
-  let notesImgUrl = chrome.runtime.getURL("icons/notes.png");
-
-  var elemDiv = document.createElement('div');
-  elemDiv.innerHTML = `
-    <button class='mea-mark-unknown mea-toolbar-button'>
-      <img class='mea-icon' src='${questionMarkImgUrl}'></img>
-    </button>
-    <button class='mea-mark-known mea-toolbar-button'>
-      <img class='mea-icon' src='${tickImgUrl}'></img>
-    </button>  
-    <button class='mea-mark-clear mea-toolbar-button'>
-      <img class='mea-icon' src='${clearImgUrl}'></img>
-    </button>
-    <button class='mea-notes mea-toolbar-button'>
-      <img class='mea-icon' src='${notesImgUrl}'></img>
-    </button>  
-    `;
-
-  elemDiv.classList.add('mea-element');
-  elemDiv.classList.add('mea-toolbar');
-  elemDiv.style.visibility = 'hidden';
-  document.body.appendChild(elemDiv);
-}
-
-function hideToolbar(document) {
-  document.querySelector('.mea-toolbar').style.visibility = 'hidden';
 }
 
 async function addEventListener(document) {
@@ -864,35 +608,6 @@ async function addEventListener(document) {
   });
 }
 
-function sendMessageMarkWord(wordChanges) {
-  //send to background
-  chrome.runtime.sendMessage(
-    {
-      type: 'MARK_WORD',
-      payload: {
-        wordChanges: wordChanges,
-      },
-    },
-    (response) => {
-      //console.log(response.message);
-    }
-  );
-}
-
-function getAllDocuments() {
-  let siteConfig = findSiteConfig(document);
-
-  let documents = [document];
-
-  for (const config of siteConfig.getIframeDocumentConfigs(document)) {
-    if(config.document){
-      documents.push(config.document);
-    }    
-  }
-  //console.log('get all documents.');
-
-  return documents;
-}
 
 function getAllWindows() {
   let siteConfig = findSiteConfig(document);
@@ -923,27 +638,7 @@ function isPageAnnotationInitialized() {
   return isDocumentAnnotationInitialized(document)
 }
 
-function isAllDocumentsAnnotationInitialized() {
-  let documents = getAllDocuments();
 
-  return documents.every((document) => {
-    return isDocumentAnnotationInitialized(document);
-  });
-}
-
-function isDocumentAnnotationInitialized(document) {
-  if (!document.body) {
-    console.log('body is null');
-  }
-
-  let meaInitialized = document.body.getAttribute('mea-preprocessed');
-  if (meaInitialized) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
 
 function clearAllDocumentsPreprocessMark() {
   let documents = getAllDocuments();
@@ -953,14 +648,6 @@ function clearAllDocumentsPreprocessMark() {
   });
 }
 
-function isPageAnnotationVisible() {
-  let result = document.body.getAttribute('mea-visible');
-  if (result === 'true') {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 async function resetPageAnnotationVisibility(enabled, source, types) {
   //let unknownWordSet = new Set();
