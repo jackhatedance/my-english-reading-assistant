@@ -16,5 +16,29 @@ function sendMessageMarkWord(wordChanges) {
     );
 }
 
+async function sendMessageToBackground(siteConfig, type, getPageInfo) {
+    //console.log('send message to background, type:' + type);
 
-export { sendMessageMarkWord };
+    let pageInfo = await getPageInfo();
+    let site = document.location.hostname;
+    if (!site) {
+        site = 'NULL';
+    }
+    let url = siteConfig.getUrl(document);
+    chrome.runtime.sendMessage(
+        {
+            type: type,
+            payload: {
+                title: document.title,
+                url: url,
+                site: site,
+                totalWordCount: pageInfo.totalWordCount,
+            },
+        },
+        (response) => {
+            //console.log(response.message);
+        }
+    );
+}
+
+export { sendMessageMarkWord, sendMessageToBackground };

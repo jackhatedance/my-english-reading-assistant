@@ -1,21 +1,19 @@
 'use strict';
 
 import './content.css';
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
-import { isKnown, } from './language.js';
-import { findSiteConfig } from './site-match.js';
-import { initializeOptionService, refreshOptionsCache, getDefaultSiteOptions } from './service/optionService.js';
-import { getNotes, searchNote } from './service/noteService.js';
-import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
 import './side-panel-component.css';
-import { addVueApp, addVueAppEventListener, sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
-import { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized } from './document.js';
-import { addToolbar, hideToolbar } from './toolbar.js';
-import { findStyleSheet, changeStyle } from './style.js';
-import { sendMessageMarkWord } from './message.js';
-import { getAllDocuments } from './document.js'
-import { getPageInfo, isPageAnnotationVisible, getCurrentSiteOptions } from './page.js'
+import { markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
+import { findSiteConfig } from './site-match.js';
+import { refreshOptionsCache, } from './service/optionService.js';
+import { searchNote } from './service/noteService.js';
+import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
+import { findTokenInArticle, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
+import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
+import { isAllDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments } from './document.js';
+import { hideToolbar } from './toolbar.js';
+import { sendMessageMarkWord, sendMessageToBackground } from './message.js';
+import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized } from './page.js'
+import {getBaseWordFromElement} from './word.js';
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -39,16 +37,6 @@ var gUrl;
 
 var gArticle;
 
-async function getAnnotationOptions() {
-
-  let options = await getCurrentSiteOptions();
-  if (!options) {
-    options = await getDefaultSiteOptions();
-  }
-  return options.annotation;
-}
-
-
 window.addEventListener("load", myMain, false);
 function myMain() {
   //console.log('page on load');
@@ -58,8 +46,9 @@ function myMain() {
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(() => {
-          resetPageAnnotationVisibility(true);
+        initPageAnnotations(addDocumentEventListener).then((article) => {
+          gArticle = article;
+          resetPageAnnotationVisibilityAndNotify(true);
         });
       }
     });
@@ -86,15 +75,16 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized()) {
-        initPageAnnotations(() => {
-          resetPageAnnotationVisibility(request.payload.enabled);
+        initPageAnnotations(addDocumentEventListener).then((article) => {
+          gArticle = article;
+          resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
       } else {
-        resetPageAnnotationVisibility(request.payload.enabled);
+        resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
       }
 
     } else {
-      resetPageAnnotationVisibility(false);
+      resetPageAnnotationVisibilityAndNotify(false);
     }
 
   } else if (request.type === 'REFRESH_PAGE') {
@@ -107,8 +97,10 @@ function messageListener(request, sender, sendResponse) {
       }
 
       //init all documents
-      initPageAnnotations(() => {
-        resetPageAnnotationVisibility(visible);
+      initPageAnnotations(addDocumentEventListener).then(
+        (article) => {
+          gArticle = article;
+        resetPageAnnotationVisibilityAndNotify(visible);
       });
     }
 
@@ -117,7 +109,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload.word) {
       //hideAnnotation(request.payload.word);
       let visible = isPageAnnotationVisible();
-      resetPageAnnotationVisibility(visible);
+      resetPageAnnotationVisibilityAndNotify(visible);
     }
 
   } else if (request.type === 'KNOWN_WORDS_UPDATED') {
@@ -125,13 +117,13 @@ function messageListener(request, sender, sendResponse) {
     let source = request.payload.source;
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibility(visible, source);
+    resetPageAnnotationVisibilityAndNotify(visible, source);
   } else if (request.type === 'NOTES_UPDATED') {
     //console.log(`${request.type}`);
     let source = request.payload.source;
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibility(visible, source, 'note');
+    resetPageAnnotationVisibilityAndNotify(visible, source, 'note');
   } else if (request.type === 'GET_PAGE_INFO') {
     console.log(`${request.type}`);
 
@@ -178,8 +170,8 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`change style`);
     if (request.payload) {
       //annotationOptions = request.payload;
-      getAnnotationOptions().then(options => {
-        changeStyleForAllDocuments(options);
+      getCurrentSiteOptions().then(options => {
+        changeStyleForAllDocuments(options.annotation);
       });
     }
 
@@ -201,15 +193,16 @@ function monitorTimer() {
 
   if (siteConfig.needRefreshPageAnnotation(document)) {
     //console.log('needRefreshPageAnnotation');
-    initPageAnnotations(() => {
-      resetPageAnnotationVisibility(true);
+    initPageAnnotations(addDocumentEventListener).then( (article) => {
+      gArticle = article;
+      resetPageAnnotationVisibilityAndNotify(true);
     });
   }
 
   let url = siteConfig.getUrl(document);
   //console.log('gUrl:'+gUrl +',\nurl:'+url);
   if (gUrl && gUrl !== url) {
-    sendMessageToBackground(siteConfig, 'PAGE_URL_CHANGED');
+    sendMessageToBackground(siteConfig, 'PAGE_URL_CHANGED', getPageInfo);
   }
 
   //update gloabl variable
@@ -217,143 +210,7 @@ function monitorTimer() {
 
 }
 
-var knownWords;
-
-
-
-
-
-function changeStyleForAllDocuments(options) {
-  let documents = getAllDocuments();
-  for (let document of documents) {
-    changeStyle(document, options);
-  }
-}
-
-
-function getBaseWordFromElement(element) {
-  return element.getAttribute('data-base-word');
-}
-
-async function initPageAnnotations(resolve) {
-  //console.log('initPageAnnotations');
-  await initializeOptionService();
-
-  knownWords = await loadKnownWords();
-  if (!knownWords) {
-    knownWords = [];
-  }
-
-  let siteConfig = findSiteConfig(document);
-
-  if (!isDocumentAnnotationInitialized(document)) {
-    let documentConfig = siteConfig.getDocumentConfig(window, document);
-
-    preprocessDocument(document, false, documentConfig);
-  }
-
-  let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
-  //console.log('start iframe annotattion');
-  for (var iframeDocumentConfig of iframeDocumentConfigs) {
-    let iframeDocument = iframeDocumentConfig.document;
-    if (iframeDocument) {
-      if (!isDocumentAnnotationInitialized(iframeDocument)) {
-        //console.log('start iframe preprocess document');
-        preprocessDocument(iframeDocument, true, iframeDocumentConfig);
-      }
-    }
-  }
-
-
-  //send message to background
-  //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
-  sendMessageToBackground(siteConfig, 'INIT_PAGE_ANNOTATIONS_FINISHED');
-
-
-  resolve();
-}
-
-async function sendMessageToBackground(siteConfig, type) {
-  //console.log('send message to background, type:' + type);
-
-  let pageInfo = await getPageInfo();
-  let site = document.location.hostname;
-  if (!site) {
-    site = 'NULL';
-  }
-  let url = siteConfig.getUrl(document);
-  chrome.runtime.sendMessage(
-    {
-      type: type,
-      payload: {
-        title: document.title,
-        url: url,
-        site: site,
-        totalWordCount: pageInfo.totalWordCount,
-      },
-    },
-    (response) => {
-      //console.log(response.message);
-    }
-  );
-}
-
-async function preprocessDocument(document, isIframe, documentConfig) {
-
-  
-
-
-  document.body.setAttribute('mea-preprocessed', true);
-
-  if (!findStyleSheet(document)) {
-    addStyle(document);
-  }
-
-  if(!isIframe){
-    addVueApp();
-    addVueAppEventListener();
-  }
-
-  if (documentConfig.canProcess) {
-
-    
-    //console.log('preprocess document');
-
-    var x = 0;
-    var intervalID = setInterval(async function () {
-
-      if (containsMeaStyle(document)) {
-        changeStyle(document, await getAnnotationOptions());
-        window.clearInterval(intervalID);
-      };
-
-      if (++x === 30) {
-        window.clearInterval(intervalID);
-      }
-    }, 1000);
-
-    cleanElements(document);
-
-    /*
-    visitElement(document.body, (element) => {
-      //console.log(element.nodeName + element.nodeType);
-      annotateChildTextContents(element, isIframe);
-    });
-    */
-    tokenizeTextNode(document);
-
-    addToolbar(document);
-    addEventListener(document);
-
-    gArticle = parseDocument(document);
-    
-    //console.log(JSON.stringify(gArticle));
-
-  }
-
-}
-
-async function addEventListener(document) {
+async function addDocumentEventListener(document) {
   document.addEventListener("mouseover", async (event) => {
     let textNode = event.target;
 
@@ -406,7 +263,7 @@ async function addEventListener(document) {
         console.log('mouse over token:'+token.content);
       }
     }
-*/
+    */
   });
 
   document.addEventListener("mouseup", async (event) => {
@@ -533,7 +390,7 @@ async function addEventListener(document) {
         sendMessageMarkWord(wordChanges);
 
         let visible = isPageAnnotationVisible();
-        resetPageAnnotationVisibility(visible);
+        resetPageAnnotationVisibilityAndNotify(visible);
         hideToolbar(document);
 
       }
@@ -552,7 +409,7 @@ async function addEventListener(document) {
         sendMessageMarkWord(wordChanges);
 
         let visible = isPageAnnotationVisible();
-        resetPageAnnotationVisibility(visible);
+        resetPageAnnotationVisibilityAndNotify(visible);
         hideToolbar(document);
       }
     });
@@ -569,7 +426,7 @@ async function addEventListener(document) {
         sendMessageMarkWord(wordChanges);
 
         let visible = isPageAnnotationVisible();
-        resetPageAnnotationVisibility(visible);
+        resetPageAnnotationVisibilityAndNotify(visible);
         hideToolbar(document);
       }
     });
@@ -609,23 +466,12 @@ async function addEventListener(document) {
 }
 
 
-function getAllWindows() {
-  let siteConfig = findSiteConfig(document);
-
-  let windows = [window];
-
-  for (const config of siteConfig.getIframeDocumentConfigs(document)) {
-    windows.push(config.window);
-  }
-
-  return windows;
-}
-
 function isInMeaElement(element) {
   if (!element) {
     console.log('null element');
     return false;
-}
+  }
+  
   let meaElement = element.closest('.mea-element');
   if (meaElement) {
     return true;
@@ -633,12 +479,6 @@ function isInMeaElement(element) {
     return false;
   }
 }
-
-function isPageAnnotationInitialized() {
-  return isDocumentAnnotationInitialized(document)
-}
-
-
 
 function clearAllDocumentsPreprocessMark() {
   let documents = getAllDocuments();
@@ -649,31 +489,6 @@ function clearAllDocumentsPreprocessMark() {
 }
 
 
-async function resetPageAnnotationVisibility(enabled, source, types) {
-  //let unknownWordSet = new Set();
-  if (!types) {
-    types = ['word-definition', 'note'];
-  }
-
-  for (const window of getAllWindows()) {
-    await resetDocumentAnnotationVisibility(window, enabled, types);
-  }
-
-  let pageInfo = await getPageInfo();
-  //send message to side panel
-  let request = {
-      type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
-      payload: {
-        pageInfo: pageInfo,
-        source: source,
-      },
-    };
-  let sender = null;
-  let sendResponse = (response) => {
-    //console.log(response.message);
-  };
-  sendMessageToApp(request, sender, sendResponse);
-}
 
 function sendMessageToApp(request, sender, sendResponse){
   //send message to standalone
@@ -684,68 +499,25 @@ function sendMessageToApp(request, sender, sendResponse){
 
   sendMessageToEmbeddedApp(request, sender, sendResponse);
 }
-/**
- * 
- * reset all word's display attribute according to vocabulary
- */
-async function resetDocumentAnnotationVisibility(window, enabled, types) {
-  let document = window.document;
-  //set flag
-  document.body.setAttribute('mea-visible', enabled);
 
-  if (types.includes('word-definition')) {
-    knownWords = await loadKnownWords();
+async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
+  await resetPageAnnotationVisibility(gArticle, enabled, source, types);
 
-    //show hide unknown word annotation
-    document.querySelectorAll('.mea-word').forEach((element) => {
-
-      let targetWord = getBaseWordFromElement(element);
-
-      if (enabled) {
-
-        if (isKnown(targetWord, knownWords)) {
-          element.classList.add("mea-hide");
-        } else {
-          element.classList.remove("mea-hide");
-        }
-      } else {
-        element.classList.add("mea-hide");
-      }
-    });
-  }
-
-
-  if (types.includes('note')) {
-    let notes = await getNotes();
-
-    //console.log('notes:'+JSON.stringify(notes));
-
-    //console.log('show notes');
-    window.CSS.highlights.clear();
-    const highlight = new Highlight();
-    
-    for (let note of notes) {
-      //one sentence selection could map to multiple node selections
-      //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
-      let nodeSelections = getNodeSelectionsFromSentenceHashSelection(gArticle, note.selection);
-      for (let nodeSelection of nodeSelections) {
-        //console.log('find node selection:' + JSON.stringify(nodeSelection));
-        if (nodeSelection) {
-          const range = new Range();
-          range.setStart(nodeSelection.anchorNode, nodeSelection.anchorOffset);
-          range.setEnd(nodeSelection.focusNode, nodeSelection.focusOffset);
-
-          highlight.add(range);
-        }
-      }
-    }
-    if (highlight.size > 0) {
-      window.CSS.highlights.set("user-1-highlight", highlight);
-    }
-  }
-
+  let pageInfo = await getPageInfo();
+    //send message to side panel
+    let request = {
+        type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
+        payload: {
+          pageInfo: pageInfo,
+          source: source,
+        },
+      };
+    let sender = null;
+    let sendResponse = (response) => {
+      //console.log(response.message);
+    };
+    sendMessageToApp(request, sender, sendResponse);
 }
-
 
 
 

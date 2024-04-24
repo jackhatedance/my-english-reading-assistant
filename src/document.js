@@ -4,6 +4,13 @@
 import { findSiteConfig } from './site-match.js';
 import { tranverseElement, tranverseNode } from './dom.js';
 import { findStyleSheet, indexOfMeaAnnotation } from './style.js';
+import { loadKnownWords, } from './vocabularyStore.js';
+import { isKnown, } from './language.js';
+import {getBaseWordFromElement} from './word.js';
+import { getNodeSelectionsFromSentenceHashSelection } from './article.js';
+import { getNotes } from './service/noteService.js';
+
+var knownWords;
 
 function isElementLeaf(element) {
 
@@ -137,4 +144,75 @@ function getAllDocuments() {
     return documents;
   }
 
-export { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, getAllDocuments };
+  function changeStyleForAllDocuments(options) {
+    let documents = getAllDocuments();
+    for (let document of documents) {
+      changeStyle(document, options);
+    }
+  }
+
+
+/**
+ * 
+ * reset all word's display attribute according to vocabulary
+ */
+async function resetDocumentAnnotationVisibility(article, window, enabled, types) {
+    let document = window.document;
+    //set flag
+    document.body.setAttribute('mea-visible', enabled);
+  
+    if (types.includes('word-definition')) {
+      //global var
+      knownWords = await loadKnownWords();
+  
+      //show hide unknown word annotation
+      document.querySelectorAll('.mea-word').forEach((element) => {
+  
+        let targetWord = getBaseWordFromElement(element);
+  
+        if (enabled) {
+  
+          if (isKnown(targetWord, knownWords)) {
+            element.classList.add("mea-hide");
+          } else {
+            element.classList.remove("mea-hide");
+          }
+        } else {
+          element.classList.add("mea-hide");
+        }
+      });
+    }
+  
+  
+    if (types.includes('note')) {
+      let notes = await getNotes();
+  
+      //console.log('notes:'+JSON.stringify(notes));
+  
+      //console.log('show notes');
+      window.CSS.highlights.clear();
+      const highlight = new Highlight();
+      
+      for (let note of notes) {
+        //one sentence selection could map to multiple node selections
+        //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
+        let nodeSelections = getNodeSelectionsFromSentenceHashSelection(article, note.selection);
+        for (let nodeSelection of nodeSelections) {
+          //console.log('find node selection:' + JSON.stringify(nodeSelection));
+          if (nodeSelection) {
+            const range = new Range();
+            range.setStart(nodeSelection.anchorNode, nodeSelection.anchorOffset);
+            range.setEnd(nodeSelection.focusNode, nodeSelection.focusOffset);
+  
+            highlight.add(range);
+          }
+        }
+      }
+      if (highlight.size > 0) {
+        window.CSS.highlights.set("user-1-highlight", highlight);
+      }
+    }
+  
+  }
+
+export { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility };

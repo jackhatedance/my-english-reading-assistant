@@ -55,4 +55,9 @@ function format(word, annotation, baseWord, parts, sentenceId, sentenceNumber, t
     return s;
 }
 
-export { annotateWord, annotateNonword };
+
+function getBaseWordFromElement(element) {
+    return element.getAttribute('data-base-word');
+}
+
+export { annotateWord, annotateNonword, getBaseWordFromElement };
