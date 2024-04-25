@@ -28,6 +28,7 @@ const siteConfigs = [
                     let doc = iframe.contentWindow.document;
                   
                     let config = {
+                        iframe: iframe,
                         document:iframe.contentDocument,
                         window: iframe.contentWindow,
                         canProcess: false
@@ -91,6 +92,7 @@ const siteConfigs = [
                 let id = iframe.id;
                 if(id && id.startsWith('epubjs')){
                     let config = {
+                        iframe: iframe,
                         document:iframe.contentDocument,
                         window: iframe.contentWindow,
                         canProcess: true

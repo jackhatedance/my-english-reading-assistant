@@ -36,8 +36,9 @@ function addToolbar(document) {
     document.body.appendChild(elemDiv);
 }
 
-function hideToolbar(document) {
-    document.querySelector('.mea-toolbar').style.visibility = 'hidden';
+function showToolbar(show) {
+  let value = show? 'visible':'hidden';
+  document.querySelector('.mea-toolbar').style.visibility = value;
 }
 
-export { addToolbar, hideToolbar };
+export { addToolbar, showToolbar };

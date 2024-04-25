@@ -85,7 +85,7 @@ function isPageAnnotationInitialized() {
 }
 
 
-async function initPageAnnotations(addDocumentEventListener) {
+async function initPageAnnotations(addEventListeners) {
     console.log('initPageAnnotations');
     await initializeOptionService();
 
@@ -102,7 +102,7 @@ async function initPageAnnotations(addDocumentEventListener) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteConfig.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, documentConfig, addDocumentEventListener);
+        let article = await preprocessDocument(document, false, documentConfig, addEventListeners);
         documentArticleMap.set(document, article);
     }
 
@@ -113,7 +113,7 @@ async function initPageAnnotations(addDocumentEventListener) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addDocumentEventListener);
+                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addEventListeners);
                 
                 documentArticleMap.set(iframeDocument, article);
             }
@@ -159,8 +159,11 @@ async function resetPageAnnotationVisibility(documentArticleMap, enabled, source
     }    
 }
 
-async function preprocessDocument(document, isIframe, documentConfig, addDocumentEventListener) {
+async function preprocessDocument(document, isIframe, documentConfig, addEventListeners) {
     console.log('preprocess document');
+    let { addDocumentEventListener, addToolbarEventListener } = addEventListeners;
+    let { window } = documentConfig;
+
     document.body.setAttribute('mea-preprocessed', true);
 
     if (!findStyleSheet(document)) {
@@ -202,9 +205,15 @@ async function preprocessDocument(document, isIframe, documentConfig, addDocumen
         */
         tokenizeTextNode(document);
 
+        addDocumentEventListener(document, documentConfig);
+    }
+    
+    if (!isIframe) {
         addToolbar(document);
-        addDocumentEventListener(document);
+        addToolbarEventListener(document, documentConfig);
+    }
 
+    if (documentConfig.canProcess) {
         article = parseDocument(document);
 
         //console.log(JSON.stringify(gArticle));

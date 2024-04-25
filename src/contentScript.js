@@ -8,7 +8,7 @@ import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
 
-import { hideToolbar } from './toolbar.js';
+import { showToolbar } from './toolbar.js';
 import { sendMessageMarkWord, sendMessageToBackground } from './message.js';
 
 import {getBaseWordFromElement} from './word.js';
@@ -37,7 +37,8 @@ function myMain() {
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+        let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
+        initPageAnnotations(addEventListeners).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -66,7 +67,8 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized()) {
-        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+        let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
+        initPageAnnotations(addEventListeners).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -88,7 +90,8 @@ function messageListener(request, sender, sendResponse) {
       }
 
       //init all documents
-      initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+      let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
+      initPageAnnotations(addEventListeners).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -183,7 +186,8 @@ function monitorTimer() {
 
   if (siteConfig.needRefreshPageAnnotation(document)) {
     //console.log('needRefreshPageAnnotation');
-    initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+    let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
+    initPageAnnotations(addEventListeners).then((documentArticleMap) => {
       gDocumentArticleMap = documentArticleMap;
       resetPageAnnotationVisibilityAndNotify(true);
     });
@@ -200,7 +204,7 @@ function monitorTimer() {
 
 }
 
-async function addDocumentEventListener(document) {
+async function addDocumentEventListener(document, documentConfig) {
   document.addEventListener("mouseover", async (event) => {
     let textNode = event.target;
 
@@ -259,10 +263,12 @@ async function addDocumentEventListener(document) {
   });
 
   document.addEventListener("mouseup", async (event) => {
+    /*
     let dialog = event.target.closest('.mea-dialog');
     if(dialog){
       return;
     }
+    */
 
     let nodeSelection = document.getSelection();
     let selectedText = nodeSelection.toString();
@@ -318,6 +324,7 @@ async function addDocumentEventListener(document) {
         let sendResponse = (response) => {
           //console.log(response.message);
         };
+        //console.log('selection change:'+JSON.stringify(request));
         sendMessageToApp(request, sender, sendResponse);
       }
     }
@@ -328,12 +335,15 @@ async function addDocumentEventListener(document) {
     let targetElement = event.target;
     let highlightElement = targetElement.closest('.mea-word');
     if(highlightElement){
-      handleClickWord(document, highlightElement);
+      handleClickWord(document, highlightElement, documentConfig);
     }else{
-      hideToolbar(document);
+      showToolbar(false);
     }
 
   });  
+}
+  
+async function addToolbarEventListener(document, documentConfig) {
   
   document.querySelectorAll('.mea-mark-unknown').forEach((element) => {
     element.addEventListener('click', async (e) => {
@@ -360,7 +370,8 @@ async function addDocumentEventListener(document) {
   });
 }
 
-function handleClickWord(document, highlightElement){
+function handleClickWord(theDocument, highlightElement, documentConfig){
+  
   let show = false;
 
     let targetWord = getBaseWordFromElement(highlightElement);
@@ -373,17 +384,20 @@ function handleClickWord(document, highlightElement){
 
       if (toolbarElement) {
 
-        toolbarElement.style.top = window.scrollY + highlightElement.getBoundingClientRect().top - toolbarElement.offsetHeight + 'px';
+        let iframeLeft=0;
+        let iframeTop=0;
+        if(documentConfig.iframe){
+          let rect = documentConfig.iframe.getBoundingClientRect();
+          iframeLeft = rect.left;
+          iframeTop = rect.top;
+        }
 
-        let offsetLeft = highlightElement.getBoundingClientRect().left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
-
-        let left = window.scrollX + offsetLeft;
-
+        let highlighElementRect = highlightElement.getBoundingClientRect();
+        let left = window.scrollX + iframeLeft + highlighElementRect.left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
+        let top = window.scrollY + iframeTop + highlighElementRect.top - toolbarElement.offsetHeight;
+        
         toolbarElement.style.left = left + 'px';
-
-
-
-        toolbarElement.style.visibility = 'visible';
+        toolbarElement.style.top = top + 'px';
 
         toolbarElement.setAttribute('data-target-word', targetWord);
 
@@ -391,12 +405,8 @@ function handleClickWord(document, highlightElement){
       }
     }
 
-
-    if (!show) {
-      let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
-
-      toolbarElement.style.visibility = 'hidden';
-    }
+    showToolbar(show);
+    
 }
 
 async function handleToolbarMarkUnknownAction(event){
@@ -411,7 +421,7 @@ async function handleToolbarMarkUnknownAction(event){
 
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibilityAndNotify(visible);
-    hideToolbar(document);
+    showToolbar(false);
 
   }
 }
@@ -428,7 +438,7 @@ async function handleToolbarMarkKnownAction(event){
 
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibilityAndNotify(visible);
-    hideToolbar(document);
+    showToolbar(false);
   }
 }
 
@@ -442,7 +452,7 @@ async function handleToolbarClearAction(event){
 
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibilityAndNotify(visible);
-    hideToolbar(document);
+    showToolbar(false);
   }
 }
 
