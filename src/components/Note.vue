@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
+import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 
 import { getNote, setNote, deleteNote } from '../service/noteService.js';
 
@@ -122,6 +122,10 @@ function bbcodeToHtml(bbcodeContent) {
     }   
 }
 
+watch(() => props.note, (newValue) => {
+    mode.value = 'view';
+});
+
 onMounted(() => {
     console.log('Note mounted');
 
@@ -176,17 +180,29 @@ init();
         <div class="view-note-container" v-show="mode === 'view'">
             <p>{{ sidepanelNoteLabel }}</p>
             <div class="note-view" v-html="noteContentHtml"></div>
-            <div>
-                <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">{{ sidepanelAddAction }}</button>
-                <button class="editNoteAction" v-show="props.note.persisted" @click="clickEdit">{{ sidepanelEditAction }}</button>
-                <button class="deleteNoteAction" v-show="props.note.persisted" @click="clickDelete">{{ sidepanelDeleteAction }}</button>
+            <div class="note-actions">
+                <div class="note-action">
+                    <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">{{ sidepanelAddAction }}</button>
+                </div>
+                <div class="note-action">
+                    <button class="editNoteAction" v-show="props.note.persisted" @click="clickEdit">{{ sidepanelEditAction }}</button>
+                </div>
+                <div class="note-action">
+                    <button class="deleteNoteAction" v-show="props.note.persisted" @click="clickDelete">{{ sidepanelDeleteAction }}</button>
+                </div>
+                
             </div>
         </div>
         <div class="edit-note-container" v-show="mode === 'init' || mode === 'edit'">
             <textarea ref="textarea" class="note-editor"></textarea>
-            <div>
-                <button class="saveNoteAction" @click="clickSave">{{ sidepanelSaveAction }}</button>
-                <button class="cancelNoteAction" @click="clickCancel">{{ sidepanelCancelAction }}</button>
+            <div class="note-actions">
+                <div class="note-action">
+                    <button @click="clickSave">{{ sidepanelSaveAction }}</button>
+                </div>
+                <div class="note-action">
+                    <button @click="clickCancel">{{ sidepanelCancelAction }}</button>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -195,6 +211,13 @@ init();
 <style>
 .note {
     overflow: auto;
+    border: solid black 1px;
+}
+.note-actions {
+    display: flex;
+}
+.note-action {
+    margin: 2px;
 }
 
 .xbbcode-size-1 {font-size:x-small !important;}

@@ -2,21 +2,19 @@
 
 import './content.css';
 import './side-panel-component.css';
-import { markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
+import { loadKnownWords } from './vocabularyStore.js';
+import { isKnown, } from './language.js';
 import { findSiteConfig } from './site-match.js';
 import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
-
-import { showToolbar } from './toolbar.js';
-import { sendMessageMarkWord, sendMessageToBackground } from './message.js';
-
+import { sendMessageToBackground } from './message.js';
 import {getBaseWordFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { findTokenInArticle, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
+import { getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
 import { isAllDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
 import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
-
+import { MenuItems } from './menu.js';
 
 
 //used to check if title changed
@@ -37,8 +35,7 @@ function myMain() {
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
-        initPageAnnotations(addEventListeners).then((documentArticleMap) => {
+        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -67,8 +64,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized()) {
-        let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
-        initPageAnnotations(addEventListeners).then((documentArticleMap) => {
+        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -90,8 +86,7 @@ function messageListener(request, sender, sendResponse) {
       }
 
       //init all documents
-      let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
-      initPageAnnotations(addEventListeners).then((documentArticleMap) => {
+      initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -107,10 +102,12 @@ function messageListener(request, sender, sendResponse) {
 
   } else if (request.type === 'KNOWN_WORDS_UPDATED') {
     //console.log(`${request.type}`);
-    let source = request.payload.source;
+    
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible, source);
+    //resetPageAnnotationVisibilityAndNotify(visible, source);
+    resetPageAnnotationVisibility(gDocumentArticleMap, visible, null);
+
   } else if (request.type === 'NOTES_UPDATED') {
     //console.log(`${request.type}`);
     let source = request.payload.source;
@@ -157,6 +154,8 @@ function messageListener(request, sender, sendResponse) {
     
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
+  } else if (request.type === 'CLOSE_DIALOG') {
+    closeDialog();
   }
 
   if (request.type === 'CHANGE_STYLE') {
@@ -186,8 +185,7 @@ function monitorTimer() {
 
   if (siteConfig.needRefreshPageAnnotation(document)) {
     //console.log('needRefreshPageAnnotation');
-    let addEventListeners = { addDocumentEventListener, addToolbarEventListener};
-    initPageAnnotations(addEventListeners).then((documentArticleMap) => {
+    initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
       gDocumentArticleMap = documentArticleMap;
       resetPageAnnotationVisibilityAndNotify(true);
     });
@@ -205,70 +203,15 @@ function monitorTimer() {
 }
 
 async function addDocumentEventListener(document, documentConfig) {
-  document.addEventListener("mouseover", async (event) => {
-    let textNode = event.target;
-
-    let parentElement = textNode.parentElement;
-    if(!parentElement){
-      //it is the top (html) element
-      return;
-    }
-
-    if (!isInMeaElement(parentElement)) {
-      return;
-    }
-    //console.log('mouse over:'+ textNode.textContent);
-    let article = gDocumentArticleMap.get(document);
-    if(article){
-
-      let textNodeInfo = article.textNodeMap.get(textNode);
-      if(textNodeInfo){
-        console.log('text node info:'+ JSON.stringify(textNodeInfo));
-
-        //console.log('caret:'+article.content.substring(caretIndex, caretIndex+10));
-        
-        let token = findTokenInArticle(article, textNodeInfo.offset);
-    
-        if(token){
-          console.log('mouse over token:'+token.content);
-        }
-      }
-    }
-  });
-
-  document.addEventListener("mousemove", async (event) => {
-    /*
-    let x = event.clientX;
-    let y = event.clientY;
-    let caretRange = document.caretRangeFromPoint(x, y);
-    let text = caretRange.startContainer.textContent;
-    //console.log(`mouse over, element text:${text}, start offset:${caretRange.startOffset}`);
-
-    let textNode = caretRange.startContainer;
-    let textNodeInfo = gArticle.textNodeMap.get(textNode);
-    if(textNodeInfo){
-      console.log('text node info:'+ JSON.stringify(textNodeInfo));
-
-      let caretIndex = textNodeInfo.offset + caretRange.startOffset;
-    
-      //console.log('caret:'+gArticle.content.substring(caretIndex, caretIndex+10));
-      
-      let token = findTokenInArticle(gArticle, caretIndex);
   
-      if(token){
-        console.log('mouse over token:'+token.content);
-      }
-    }
-    */
-  });
-
   document.addEventListener("mouseup", async (event) => {
-    /*
+    
+    //mouse up event on dialog itself, ignore
     let dialog = event.target.closest('.mea-dialog');
     if(dialog){
       return;
     }
-    */
+    
 
     let nodeSelection = document.getSelection();
     let selectedText = nodeSelection.toString();
@@ -285,11 +228,32 @@ async function addDocumentEventListener(document, documentConfig) {
       
       let isSelectionCollapsed = nodeSelection.isCollapsed;
       
-      let type = 'select-text';
+      let type;
+      let menuItems = [];
+      let word;
       
       let filteredNotes = [];
       if (isSelectionCollapsed) {
+        //1. mark the word
+        let targetElement = event.target;
+        let highlightElement = targetElement.closest('.mea-word');
+        if(highlightElement){//find word
+          word = getBaseWordFromElement(highlightElement);
+
+          let knownWords = await loadKnownWords();
+          if(isKnown(word, knownWords)){
+            menuItems.push(MenuItems.MarkAsUnknown);
+          } else {
+            menuItems.push(MenuItems.MarkAsKnown);
+          }
+          menuItems.push(MenuItems.ClearMark);   
+          menuItems.push(MenuItems.Vocabulary);
+        }
+
+        //2. search note of the position
         type = 'search-note';
+        
+
         let noteArray = await searchNote(sentenceHashSelection.start);
 
         for (let note of noteArray) {
@@ -306,7 +270,12 @@ async function addDocumentEventListener(document, documentConfig) {
           filteredNotes.push(note);
         }
         //console.log('search notes:' + JSON.stringify(filteredNotes));
-
+        if(filteredNotes.length>0){
+          menuItems.push(MenuItems.ViewNote);
+        }
+      } else {
+        type = 'select-text';
+        menuItems.push(MenuItems.AddNote);
       }
       
 
@@ -314,7 +283,8 @@ async function addDocumentEventListener(document, documentConfig) {
         let request = {
           type: 'SELECTION_CHANGE',
           payload: {
-            type: type,
+            word: word,
+            type: type,            
             selectedText: selectedText,
             sentenceSelection: sentenceHashSelection,
             notes: filteredNotes,
@@ -326,181 +296,42 @@ async function addDocumentEventListener(document, documentConfig) {
         };
         //console.log('selection change:'+JSON.stringify(request));
         sendMessageToApp(request, sender, sendResponse);
-      }
-    }
-  });
 
-  document.addEventListener("click", async (event) => {
-    console.log('click on document');
-    let targetElement = event.target;
-    let highlightElement = targetElement.closest('.mea-word');
-    if(highlightElement){
-      handleClickWord(document, highlightElement, documentConfig);
-    }else{
-      showToolbar(false);
-    }
-
-  });  
-}
-  
-async function addToolbarEventListener(document, documentConfig) {
-  
-  document.querySelectorAll('.mea-mark-unknown').forEach((element) => {
-    element.addEventListener('click', async (e) => {
-      handleToolbarMarkUnknownAction(e);
-    });
-  });
-
-  document.querySelectorAll('.mea-mark-known').forEach((element) => {
-    element.addEventListener('click', async (e) => {
-      handleToolbarMarkKnownAction(e);
-    });
-  });
-
-  document.querySelectorAll('.mea-mark-clear').forEach((element) => {
-    element.addEventListener('click', async (e) => {
-      handleToolbarClearAction(e);
-    });
-  });
-
-  document.querySelectorAll('.mea-notes').forEach((element) => {
-    element.addEventListener('click', async (e) => {
-      handleToolbarNoteAction(e);      
-    });
-  });
-}
-
-function handleClickWord(theDocument, highlightElement, documentConfig){
-  
-  let show = false;
-
-    let targetWord = getBaseWordFromElement(highlightElement);
-
-    //gSelection = selection.toString();
-    if (targetWord) {
-      show = true;
-
-      let toolbarElement = document.getElementsByClassName('mea-toolbar')[0];
-
-      if (toolbarElement) {
-
-        let iframeLeft=0;
-        let iframeTop=0;
-        if(documentConfig.iframe){
-          let rect = documentConfig.iframe.getBoundingClientRect();
-          iframeLeft = rect.left;
-          iframeTop = rect.top;
+        if(menuItems.length>0){
+          showDialog(menuItems);
         }
-
-        let highlighElementRect = highlightElement.getBoundingClientRect();
-        let left = window.scrollX + iframeLeft + highlighElementRect.left + (highlightElement.offsetWidth * 0.5) - toolbarElement.offsetWidth * 0.5;
-        let top = window.scrollY + iframeTop + highlighElementRect.top - toolbarElement.offsetHeight;
         
-        toolbarElement.style.left = left + 'px';
-        toolbarElement.style.top = top + 'px';
-
-        toolbarElement.setAttribute('data-target-word', targetWord);
-
-        //console.log('tooltip style:'+ toobarElement.style.cssText);
       }
     }
-
-    showToolbar(show);
-    
-}
-
-async function handleToolbarMarkUnknownAction(event){
-
-  let targetWord = event.target.closest('.mea-toolbar').getAttribute('data-target-word');
-
-  if (targetWord) {
-
-
-    let wordChanges = await markWordAsUnknown(targetWord);
-    sendMessageMarkWord(wordChanges);
-
-    let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible);
-    showToolbar(false);
-
-  }
-}
-
-async function handleToolbarMarkKnownAction(event){
-
-  let targetWord = event.target.closest('.mea-toolbar').getAttribute('data-target-word');
-
-  if (targetWord) {
-
-
-    let wordChanges = await markWordAsKnown(targetWord);
-    sendMessageMarkWord(wordChanges);
-
-    let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible);
-    showToolbar(false);
-  }
-}
-
-async function handleToolbarClearAction(event){
-
-  let targetWord = event.target.closest('.mea-toolbar').getAttribute('data-target-word');
-
-  if (targetWord) {
-    let wordChanges = await removeWordMark(targetWord);
-    sendMessageMarkWord(wordChanges);
-
-    let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible);
-    showToolbar(false);
-  }
-}
-
-async function handleToolbarNoteAction(event){
-  getPageInfo().then((pageInfo) => {
-    let request ={
-      type:'UPDATE_PAGE_INFO',
-      payload:{
-        pageInfo
-      },
-    };
-    
-    let sender = null;
-    let sendResponse = (response) => {};
-    sendMessageToApp(request, sender, sendResponse); 
   });
+
+}
   
+function closeDialog(){
   let topDocument = window.top.document;
   let dialog = topDocument.querySelector('#mea-vue-container');
-
-  /*
-  let elementLeft = element.getBoundingClientRect().left;
-  let clientWidth = topDocument.body.clientWidth;
-  let pageNumber = Math.floor(elementLeft / clientWidth);
-
-
-  let left = window.scrollX + clientWidth * pageNumber + (clientWidth - 400) / 2;
-  dialog.style.left = left + 'px';
-  */
-  dialog.showModal();
-}
-
-function isInMeaElement(element) {
-  if (!element) {
-    console.log('null element');
-    return false;
-  }
   
-  let meaElement = element.closest('.mea-element');
-  if (meaElement) {
-    return true;
-  } else {
-    return false;
-  }
+  dialog.close();
 }
 
+function showDialog(menuItems = []){
 
+  let request = {
+    type: 'ACTIVE_TAB',
+    payload: {
+      activeTabId: 'actions-tab',
+      menuItems: menuItems,        
+    },
+  };
+  let sender = null;
+  let sendResponse = (response) => { };
+  sendMessageToApp(request, sender, sendResponse);
 
+  let topDocument = window.top.document;
+  let dialog = topDocument.querySelector('#mea-vue-container');
+  
+  dialog.showModal();  
+}
 
 function sendMessageToApp(request, sender, sendResponse){
   //send message to standalone
@@ -513,7 +344,7 @@ function sendMessageToApp(request, sender, sendResponse){
 }
 
 async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
-  await resetPageAnnotationVisibility(gDocumentArticleMap, enabled, source, types);
+  await resetPageAnnotationVisibility(gDocumentArticleMap, enabled, types);
 
   let pageInfo = await getPageInfo();
     //send message to side panel

@@ -85,7 +85,7 @@ function isPageAnnotationInitialized() {
 }
 
 
-async function initPageAnnotations(addEventListeners) {
+async function initPageAnnotations(addDocumentEventListener) {
     console.log('initPageAnnotations');
     await initializeOptionService();
 
@@ -102,7 +102,7 @@ async function initPageAnnotations(addEventListeners) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteConfig.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, documentConfig, addEventListeners);
+        let article = await preprocessDocument(document, false, documentConfig, addDocumentEventListener);
         documentArticleMap.set(document, article);
     }
 
@@ -113,7 +113,7 @@ async function initPageAnnotations(addEventListeners) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addEventListeners);
+                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addDocumentEventListener);
                 
                 documentArticleMap.set(iframeDocument, article);
             }
@@ -142,7 +142,7 @@ function getAllWindows() {
     return windows;
 }
 
-async function resetPageAnnotationVisibility(documentArticleMap, enabled, source, types) {
+async function resetPageAnnotationVisibility(documentArticleMap, enabled, types) {
     //let unknownWordSet = new Set();
     if (!types) {
       types = ['word-definition', 'note'];
@@ -159,9 +159,8 @@ async function resetPageAnnotationVisibility(documentArticleMap, enabled, source
     }    
 }
 
-async function preprocessDocument(document, isIframe, documentConfig, addEventListeners) {
+async function preprocessDocument(document, isIframe, documentConfig, addDocumentEventListener) {
     console.log('preprocess document');
-    let { addDocumentEventListener, addToolbarEventListener } = addEventListeners;
     let { window } = documentConfig;
 
     document.body.setAttribute('mea-preprocessed', true);
@@ -172,7 +171,7 @@ async function preprocessDocument(document, isIframe, documentConfig, addEventLi
 
     if (!isIframe) {
         addVueApp();
-        addVueAppEventListener();
+        
     }
 
     let article = null;
@@ -208,11 +207,6 @@ async function preprocessDocument(document, isIframe, documentConfig, addEventLi
         addDocumentEventListener(document, documentConfig);
     }
     
-    if (!isIframe) {
-        addToolbar(document);
-        addToolbarEventListener(document, documentConfig);
-    }
-
     if (documentConfig.canProcess) {
         article = parseDocument(document);
 

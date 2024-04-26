@@ -135,7 +135,12 @@
     "sidepanelTabVocabulary":{
         "message":"Vocabulary"
     },
-    
+    "sidepanelTabActions":{
+        "message":"Actions"
+    },
+    "sidepanelTabMenu":{
+        "message":"Menu"
+    },
     "sidepanelTitle":{
         "message":"Unknown words"
     },

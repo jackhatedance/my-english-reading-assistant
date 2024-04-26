@@ -13,10 +13,7 @@ function addVueApp() {
 
     let sidePanelUrl = chrome.runtime.getURL("side-panel.html");
     let innerHTML =
-        `<div class="mea-dialog-header">
-            <button class="mea-close-dialog-button">X</button>
-        </div>
-        <iframe id="mea-vueapp" src="${sidePanelUrl}"></iframe>`;
+        `<iframe id="mea-vueapp" src="${sidePanelUrl}"></iframe>`;
     dialog.innerHTML = innerHTML;
   
     async function getActiveTabId(resolve){
@@ -44,16 +41,4 @@ function sendMessageToEmbeddedApp(request, sender, resolve){
     window.postMessage(request);
 }
 
-
-
-async function addVueAppEventListener() {
-    document.querySelectorAll('.mea-close-dialog-button').forEach((element) => {
-        element.addEventListener('click', async (e) => {
-        document.querySelector('#mea-vue-container').close();
-        });
-    });
-    
-}
-
-
-export { addVueApp, addVueAppEventListener, sendMessageToEmbeddedApp };
+export { addVueApp, sendMessageToEmbeddedApp };

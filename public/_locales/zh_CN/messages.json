@@ -135,7 +135,12 @@
     "sidepanelTabVocabulary":{
         "message":"词汇"
     },
-
+    "sidepanelTabActions":{
+        "message":"操作"
+    },
+    "sidepanelTabMenu":{
+        "message":"菜单"
+    },
     "sidepanelTitle":{
         "message":"生词"
     },

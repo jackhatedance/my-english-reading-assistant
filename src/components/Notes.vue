@@ -14,7 +14,10 @@ init();
 </script>
 
 <template>
-    <div class="notes">
-        <Note v-for="item of props.items" :note="item"></Note>
+    <div>
+        <h2>Notes:</h2>
+        <div class="notes">
+            <Note v-for="item of props.items" :note="item"></Note>
+        </div>
     </div>
 </template>

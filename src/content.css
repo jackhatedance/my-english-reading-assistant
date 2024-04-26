@@ -107,14 +107,9 @@
   all: revert;
 }
 #mea-vue-container {
- 
-  height:calc(100% - (70px + 70px));
-
-  .mea-dialog-header button {
-    float:right;
-  }
   
-
+  height:calc(100% - (70px + 70px));
+  padding: 0px;
   #mea-vueapp {
     height: 95%;
   }
