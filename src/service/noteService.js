@@ -40,6 +40,10 @@ async function getNotes() {
     return notes;
 }
 
+async function setNotes(noteArray){
+    await write(noteArray);
+}
+
 async function getNoteMap() {
     let array = await getNotes();
     //console.log('get notes:'+ JSON.stringify(array));
@@ -180,4 +184,4 @@ function contains(selection, position) {
     
 }
 
-export { getNotes, getNote, setNote, getNoteKey, deleteNote, searchNote };
+export { getNotes, setNotes, getNote, setNote, getNoteKey, deleteNote, searchNote };

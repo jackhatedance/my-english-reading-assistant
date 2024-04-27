@@ -92,6 +92,21 @@
         "message":"Export"
     },
 
+    "optionsImportNotesLabelDesc":{
+        "message":"read notes from file"
+    },
+    "optionsImportNotesAction":{
+        "message":"Import Notes"
+    },
+
+
+    "optionsExportNotesLabelDesc":{
+        "message":"backup notes to file"
+    },
+    "optionsExportNotesAction":{
+        "message":"Export Notes"
+    },
+
     "optionsRootAndAffixLabel":{
         "message":"Root and Affix"
     },

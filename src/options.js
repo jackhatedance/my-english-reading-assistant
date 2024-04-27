@@ -5,6 +5,7 @@ import {loadKnownWords, loadAndMergeWordLists, saveKnownWords, calculateKnownWor
 import {getOptions, setOptions} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
 import {deleteAllReadingHistory} from './service/activityService.js';
+import { getNotes, setNotes } from './service/noteService.js';
 
 localizeHtmlPage();
 
@@ -12,11 +13,13 @@ localizeHtmlPage();
   const saveOptionsUI = async () => {
     const splitter = /\r*\n/;
     let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
+    let notesArray = JSON.parse(document.getElementById('notes').value);
     let wordMarkRootMode = document.getElementById('rootMode').checked;
     let enableReport = document.getElementById('enableReport').checked;
     
     await save({
       knownWords: knownWordsArray,
+      notes: notesArray,
       options: {
         rootAndAffix:{
           enabled:wordMarkRootMode,
@@ -66,12 +69,14 @@ localizeHtmlPage();
   // stored in chrome.storage.
   const restoreOptions = async () => {
     let knownWordsResult = await loadKnownWords();
+    let notes = await getNotes();
     let knownWords = knownWordsResult;
     if(!knownWords){
       knownWords= [];
     }    
 
     updateVocabulary(knownWords);
+    updateNotes(notes);
     
 
     //word mark
@@ -102,7 +107,14 @@ localizeHtmlPage();
   function backupVocabulary() {
     
     let vocabulary = document.getElementById('knownWords').value;
-    saveTextAsFile(vocabulary);
+    saveTextAsFile(vocabulary, 'vocabulary');
+
+  };
+  
+  function backupNotes() {
+    
+    let notes = document.getElementById('notes').value;
+    saveTextAsFile(notes, 'notes');
 
   };
 
@@ -124,12 +136,34 @@ localizeHtmlPage();
 
   };
 
+  function loadNotesFromFile() {
+    
+    var file = document.getElementById("notesFile").files[0];
+    if(!file){
+        alert('pick notes file first.');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e){
+      //console.log(e.target.result);
+      let array = e.target.result.split(/\r*\n/);
+      updateNotes(array);
+    }
+    reader.readAsText(file);
+
+  };
+
   function updateVocabulary(wordArray){
     document.getElementById('knownWords').value = wordArray.join('\n');
 
     const knownCount = calculateKnownWordsCount(wordArray);   
     
     document.getElementById('count').innerHTML = knownCount;
+  }
+
+  function updateNotes(wordArray){
+    document.getElementById('notes').value = JSON.stringify(wordArray);
   }
 
   function updateWordMark(rootMode){
@@ -145,6 +179,12 @@ localizeHtmlPage();
       let uw = settings.knownWords;
       await saveKnownWords(uw);
       settings.knownWords = null;
+    }
+
+    if(settings.notes){
+      let notes = settings.notes;
+      await setNotes(notes);
+      settings.notes = null;
     }
 
     if(settings.options){
@@ -168,12 +208,12 @@ localizeHtmlPage();
   }
  
 
-  function saveTextAsFile(text) {
+  function saveTextAsFile(text, name) {
     var textToWrite = text;
     var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
 
     let yyyymmdd = formatDate(new Date());
-    var fileNameToSaveAs = `my-vocabulary-${yyyymmdd}.txt`; //filename.extension
+    var fileNameToSaveAs = `my-${name}-${yyyymmdd}.txt`; //filename.extension
   
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
@@ -196,6 +236,8 @@ localizeHtmlPage();
   document.addEventListener('DOMContentLoaded', restoreOptions);
   document.getElementById('backupVocabulary').addEventListener('click', backupVocabulary);
   document.getElementById('resetVocabulary').addEventListener('click', resetVocabulary);
+  document.getElementById('backupNotes').addEventListener('click', backupNotes);
   document.getElementById('save').addEventListener('click', saveOptionsUI);
   document.getElementById('loadFromFile').addEventListener('click', loadFromFile);
+  document.getElementById('loadNotesFromFile').addEventListener('click', loadNotesFromFile);
   document.getElementById('deleteReadingHistory').addEventListener('click', deleteReadingHistoryUI);

@@ -92,6 +92,21 @@
         "message":"导出"
     },
 
+    "optionsImportNotesLabelDesc":{
+        "message":"从文件读取笔记"
+    },
+    "optionsImportNotesAction":{
+        "message":"导入笔记"
+    },
+
+
+    "optionsExportNotesLabelDesc":{
+        "message":"备份笔记到文件"
+    },
+    "optionsExportNotesAction":{
+        "message":"导出笔记"
+    },
+
     "optionsRootAndAffixLabel":{
         "message":"词根与词缀"
     },
