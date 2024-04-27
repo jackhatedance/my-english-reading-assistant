@@ -189,6 +189,23 @@
         "message":"Cancel"
     },
 
+    "sidepanelActionsTabWordLabelWord":{
+        "message":"Word:"
+    },
+    "sidepanelActionsTabWordMarkAsUnknownAction":{
+        "message":"Unknown"
+    },
+    "sidepanelActionsTabWordMarkAsKnownAction":{
+        "message":"Known"
+    },
+    "sidepanelActionsTabWordClearMarkAction":{
+        "message":"Not Sure"
+    },
+
+    "sidepanelActionsTabNotesLabelNotes":{
+        "message":"Notes:"
+    },
+
     "reportReadingActivitiesTitle":{
         "message":"Reading Activities"
     },

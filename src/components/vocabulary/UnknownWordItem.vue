@@ -2,7 +2,7 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 import {searchWord, isKnown } from '../../language.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
-import { AppModes } from '../types.js';
+import { sendMessageMarkWordToBackground } from '../../message.js';
 
 const props = defineProps({
     word: Object,
@@ -112,23 +112,7 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
     sender, 
     sendResponse);
 
-    //send to background
-    getActiveTabId().then(
-        (tabId) => {
-            chrome.runtime.sendMessage(
-                {
-                    type: 'MARK_WORD',
-                    payload: {
-                        contentTabId: tabId,
-                        wordChanges: wordChanges,
-                    },
-                },
-                (response) => {
-                    //console.log(response.message);
-                }
-            );
-        }
-    );
+    sendMessageMarkWordToBackground(wordChanges);
     
 }
 

@@ -190,6 +190,23 @@
         "message":"取消"
     },
 
+    "sidepanelActionsTabNotesLabelNotes":{
+        "message":"笔记:"
+    },
+
+    "sidepanelActionsTabWordLabelWord":{
+        "message":"单词:"
+    },
+    "sidepanelActionsTabWordMarkAsUnknownAction":{
+        "message":"不认识"
+    },
+    "sidepanelActionsTabWordMarkAsKnownAction":{
+        "message":"认识"
+    },
+    "sidepanelActionsTabWordClearMarkAction":{
+        "message":"不确定"
+    },
+
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },

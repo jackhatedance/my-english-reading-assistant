@@ -2,7 +2,7 @@
 'use strict';
 
 import { md5 } from 'js-md5';
-import { tranverseNode } from './dom.js';
+import { traverseNode } from './dom.js';
 
 function purifySentence(sentence) {
     return sentence.replaceAll(/[^\w]+/g, '').toLowerCase();
@@ -47,7 +47,7 @@ function getSentenceInstancePositionFromNodePosition(node, offset) {
 
     let done = false;
 
-    tranverseNode(sentenceElement, (node2) => {
+    traverseNode(sentenceElement, (node2) => {
         if (done) {
             return;
         }

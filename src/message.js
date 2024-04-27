@@ -1,7 +1,7 @@
 'use strict';
 
 
-function sendMessageMarkWord(wordChanges) {
+function sendMessageMarkWordToBackground(wordChanges) {
     //send to background
     chrome.runtime.sendMessage(
         {
@@ -41,4 +41,4 @@ async function sendMessageToBackground(siteConfig, type, getPageInfo) {
     );
 }
 
-export { sendMessageMarkWord, sendMessageToBackground };
+export { sendMessageMarkWordToBackground, sendMessageToBackground };

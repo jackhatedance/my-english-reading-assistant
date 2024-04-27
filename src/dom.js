@@ -1,19 +1,19 @@
 'use strict';
 
 
-function tranverseNode(node, visitor) {
+function traverseNode(node, visitor) {
     let result = visitor(node);
 
     if(node.childNodes){
        for (var i = 0; i < node.childNodes.length; i++) {
             let childNode = node.childNodes[i];
-            tranverseNode(childNode, visitor);
+            traverseNode(childNode, visitor);
         }
     }
 }
 
 
-function tranverseElement(element, visitor, parentFirst = true) {
+function traverseElement(element, visitor, parentFirst = true) {
     if(parentFirst){
       let result = visitor(element);
       if(result === 'stop'){
@@ -24,7 +24,7 @@ function tranverseElement(element, visitor, parentFirst = true) {
     let children = element.children;
     
     for (const child of children) {
-        tranverseElement(child, visitor, parentFirst);
+        traverseElement(child, visitor, parentFirst);
     }
   
     if(!parentFirst){
@@ -35,4 +35,4 @@ function tranverseElement(element, visitor, parentFirst = true) {
     }
   }
 
-export {tranverseElement, tranverseNode};
+export {traverseElement, traverseNode};

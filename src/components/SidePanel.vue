@@ -6,7 +6,7 @@ import Tabs from './Tabs.vue';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { getNote } from '../service/noteService.js';
 
-import { sendMessageMarkWord, sendMessageToBackground } from '../message.js';
+
 import { isPageAnnotationVisible } from '../page.js';
 
 const props = defineProps({

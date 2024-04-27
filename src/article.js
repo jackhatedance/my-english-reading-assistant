@@ -1,7 +1,7 @@
 'use strict';
 
 import { split } from "sentence-splitter";
-import { tranverseElement, tranverseNode } from './dom.js';
+import { traverseElement, traverseNode } from './dom.js';
 import { annotateWord, annotateNonword } from './word.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceSegmentOffsets, getSegmentOffset } from './sentence.js';
 import { searchWord } from './language.js';
@@ -14,7 +14,7 @@ import { isTextTag } from './html.js';
  */
 function tokenizeTextNode(document) {
 
-    tranverseNode(document.body, (node) => {
+    traverseNode(document.body, (node) => {
         //avoid re-enter
         if (isInMeaElement(node.parentElement)) {
             return;
@@ -116,7 +116,7 @@ function parseDocument(document, skip = false) {
 
     //parse paragraph and sentence
     /*
-    tranverseElement(document.body, (element) => {
+    traverseElement(document.body, (element) => {
         if(isParagraphElement(element)){
             parseParagraph(article, element);
 
@@ -196,7 +196,7 @@ function parseParagraphContent(article, paragraphInfo, content){
 
 function parseArticleTextNodes(article, element){
     let offset = 0;
-    tranverseNode(element, (node) => {
+    traverseNode(element, (node) => {
         if (node.nodeName === '#text') {
             let length = node.textContent.length;
 
@@ -472,7 +472,7 @@ function getNodePositionFromSentenceInstancePosition(document, sentenceInstanceP
 
         let done = false;
 
-        tranverseNode(sentenceElement, (node) => {
+        traverseNode(sentenceElement, (node) => {
             if (done) {
                 return;
             }

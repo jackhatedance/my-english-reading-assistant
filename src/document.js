@@ -2,7 +2,7 @@
 'use strict';
 
 import { findSiteConfig } from './site-match.js';
-import { tranverseElement, tranverseNode } from './dom.js';
+import { traverseElement, traverseNode } from './dom.js';
 import { findStyleSheet, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
@@ -44,14 +44,14 @@ function allChildrenElementNeedRemoveTag(element) {
 function cleanElements(document) {
 
     //replace punctuations
-    tranverseNode(document.body, (node) => {
+    traverseNode(document.body, (node) => {
         if (node.nodeName === '#text') {
             node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
         }
     });
 
     //remove text content of some tags
-    tranverseElement(document.body, (element) => {
+    traverseElement(document.body, (element) => {
         const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
         const TAGS_KEEP_CONTENT = ['EM', 'I', 'B',];
         if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
@@ -71,7 +71,7 @@ function cleanElements(document) {
     }, false);
 
     // merge TEXT NODEs
-    tranverseElement(document.body, (element) => {
+    traverseElement(document.body, (element) => {
         if (allChildrenElementNeedRemoveTag(element)) {
             element.innerHTML = element.textContent;
         }
