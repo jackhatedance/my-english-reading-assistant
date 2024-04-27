@@ -65,11 +65,15 @@ localizeHtmlPage();
     deleteAllReadingHistory();
   }
   
+  function clearNotes(){
+    updateNotes([]);
+  }
+
   // Restores select box and checkbox state using the preferences
   // stored in chrome.storage.
   const restoreOptions = async () => {
     let knownWordsResult = await loadKnownWords();
-    let notes = await getNotes();
+    let notes  = await getNotes();
     let knownWords = knownWordsResult;
     if(!knownWords){
       knownWords= [];
@@ -147,7 +151,7 @@ localizeHtmlPage();
     var reader = new FileReader();
     reader.onload = function(e){
       //console.log(e.target.result);
-      let array = e.target.result.split(/\r*\n/);
+      let array = JSON.parse(e.target.result);
       updateNotes(array);
     }
     reader.readAsText(file);
@@ -164,6 +168,7 @@ localizeHtmlPage();
 
   function updateNotes(wordArray){
     document.getElementById('notes').value = JSON.stringify(wordArray);
+    document.getElementById('noteCount').innerHTML = wordArray.length;
   }
 
   function updateWordMark(rootMode){
@@ -240,4 +245,5 @@ localizeHtmlPage();
   document.getElementById('save').addEventListener('click', saveOptionsUI);
   document.getElementById('loadFromFile').addEventListener('click', loadFromFile);
   document.getElementById('loadNotesFromFile').addEventListener('click', loadNotesFromFile);
+  document.getElementById('clearNotes').addEventListener('click', clearNotes);
   document.getElementById('deleteReadingHistory').addEventListener('click', deleteReadingHistoryUI);

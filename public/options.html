@@ -74,10 +74,23 @@
 
       <div class="section">
         <div class="label">
+          <h3>__MSG_optionsEditNotesLabel__</h3>
+          <p>__MSG_optionsEditNotesLabelDesc__</p>
+        </div>
+        <div class="input">
+          <textarea id="notes" name="notes" rows="10" maxlength="500000" ></textarea>
+          <p>__MSG_optionsEditNotesTotal__<span id="noteCount"></span></p>
+        </div>
+        <div class="action">
+          <button id="clearNotes" class="button">__MSG_optionsClearNotesAction__</button>  
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="label">
           __MSG_optionsImportNotesLabelDesc__
         </div>
         <div class="input">
-          <textarea id="notes" name="notes" rows="10" maxlength="500000" style="display: none;"></textarea>
           <input type="file" id="notesFile">
         </div>
         <div class="action">
@@ -95,7 +108,6 @@
           <button id="backupNotes" class="button">__MSG_optionsExportNotesAction__</button>
         </div>
       </div>
-
 
       <div class="section">
         <div class="label">

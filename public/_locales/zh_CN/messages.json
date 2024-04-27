@@ -107,6 +107,19 @@
         "message":"导出笔记"
     },
 
+    "optionsEditNotesLabel":{
+        "message":"笔记"
+    },
+    "optionsEditNotesLabelDesc":{
+        "message":"复制粘贴是允许的"
+    },
+    "optionsEditNotesTotal":{
+        "message":"总数:"
+    },
+    "optionsClearNotesAction":{
+        "message":"清除笔记"
+    },
+
     "optionsRootAndAffixLabel":{
         "message":"词根与词缀"
     },

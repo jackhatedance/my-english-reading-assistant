@@ -11,6 +11,8 @@ annotation adjustment
 
 # options
 vocabulary initialization
+import export vocabulary
+import export notes
 
 # content page
 mark single word
@@ -26,11 +28,20 @@ mark single word
         app.flowoss.com
 
 # side panel
+## vocabulary
 show definition for all
 hide definition for all
 show defnition for word
 known
 unknown
+clear
+
+## actions
+### mark word
+
+### notes
+add note
+view/edit note
 
 # i18n
 english
@@ -39,12 +50,19 @@ chinese
 # OS
 mac
 windows
+Android
 
 # browser
 chrome
 edge
 360
+kiwi
 
 # network
 GFW
 internet
+
+# site
+app.flowoss.com
+quora.com
+wikipedia.org

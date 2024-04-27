@@ -107,6 +107,19 @@
         "message":"Export Notes"
     },
 
+    "optionsEditNotesLabel":{
+        "message":"Notes"
+    },
+    "optionsEditNotesLabelDesc":{
+        "message":"Copy & Paste is allowed"
+    },
+    "optionsEditNotesTotal":{
+        "message":"total:"
+    },
+    "optionsClearNotesAction":{
+        "message":"Clear Notes"
+    },
+
     "optionsRootAndAffixLabel":{
         "message":"Root and Affix"
     },
