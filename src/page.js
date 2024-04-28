@@ -86,7 +86,7 @@ function isPageAnnotationInitialized() {
 
 
 async function initPageAnnotations(addDocumentEventListener) {
-    console.log('initPageAnnotations');
+    //console.log('initPageAnnotations');
     await initializeOptionService();
 
     let documentArticleMap = new Map();
@@ -160,7 +160,7 @@ async function resetPageAnnotationVisibility(documentArticleMap, enabled, types)
 }
 
 async function preprocessDocument(document, isIframe, documentConfig, addDocumentEventListener) {
-    console.log('preprocess document');
+    //console.log('preprocess document');
     let { window } = documentConfig;
 
     document.body.setAttribute('mea-preprocessed', true);

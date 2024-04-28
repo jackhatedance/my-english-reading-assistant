@@ -17,7 +17,7 @@ let setSendMessageToApp = (sendMessageToApp)=>{
 function sendMessageToContentPage(message, sender, resolve){
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const tab = tabs[0];
-        console.log('send message to content page:'+ JSON.stringify(message));
+        //console.log('send message to content page:'+ JSON.stringify(message));
         chrome.tabs.sendMessage(
           tab.id,
           message,

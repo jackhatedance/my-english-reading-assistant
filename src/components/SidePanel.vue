@@ -36,7 +36,7 @@ const menuItems = ref([]);
 
 async function getPageInfo() {
   let sender = null;
-  console.log('get pageInfo');
+  //console.log('get pageInfo');
   props.sendMessageToContentPage({
     type: 'GET_PAGE_INFO_AS_MESSAGE',
     payload: {
@@ -83,7 +83,7 @@ function updatePageInfo(pageInfo) {
 
 async function messageListener(request, sender, sendResponse) {
 
-  console.log(request.type);
+  //console.log(request.type);
 
   if (request.type === 'LOAD') {
     getPageInfo();
@@ -149,7 +149,7 @@ chrome.runtime.onMessage.addListener(messageListener);
 
 
 async function onMarkWord(type) {
-  console.log(`mark word:${type}`);
+  //console.log(`mark word:${type}`);
 
   let targetWord = word.value;
   if (targetWord) {

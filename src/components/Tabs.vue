@@ -29,10 +29,10 @@ const sidepanelTabNotes = chrome.i18n.getMessage('sidepanelTabNotes');
 
 
 
-console.log('Tabs notes:' + JSON.stringify(props.notes));
+//console.log('Tabs notes:' + JSON.stringify(props.notes));
 
 async function onActiveTab(tabId) {
-    console.log('on active tab:' + tabId);
+    //console.log('on active tab:' + tabId);
     activeTabId.value = tabId;
 }
 

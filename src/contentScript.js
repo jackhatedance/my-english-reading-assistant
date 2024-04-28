@@ -48,7 +48,7 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  console.log(`Current request type is ${request.type}`);
+  //console.log(`Current request type is ${request.type}`);
   let response = {};
   if (request.type === 'COUNT') {
     //console.log(`Current count is ${request.payload.count}`);
@@ -115,6 +115,8 @@ function messageListener(request, sender, sendResponse) {
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibilityAndNotify(visible, source, 'note');
   } else if (request.type === 'GET_PAGE_INFO') {
+    //it is from popup page
+
     console.log(`${request.type}`);
 
     
@@ -122,7 +124,7 @@ function messageListener(request, sender, sendResponse) {
       getPageInfo().then((pageInfo) => {
         response.pageInfo = pageInfo;
 
-        console.log('pageInfo response:' + JSON.stringify(response));
+        //console.log('pageInfo response:' + JSON.stringify(response));
         
         sendResponse(response);
          
@@ -130,14 +132,14 @@ function messageListener(request, sender, sendResponse) {
       return true;
     
   } else if (request.type === 'GET_PAGE_INFO_AS_MESSAGE') {
-    console.log(`${request.type}`);
+    //console.log(`${request.type}`);
 
     
       //let pageInfo = await getPageInfo();
       getPageInfo().then((pageInfo) => {
         response.pageInfo = pageInfo;
 
-        console.log('pageInfo response:' + JSON.stringify(response));
+        //console.log('pageInfo response:' + JSON.stringify(response));
         
         if(request.payload.src === 'side_panel'){
           let request2 = {
@@ -150,7 +152,7 @@ function messageListener(request, sender, sendResponse) {
         }
        
       });
-      return true;
+      
     
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
@@ -222,10 +224,10 @@ async function addDocumentEventListener(document, documentConfig) {
 
       
       let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection);
-      console.log('mouse up, sentence instance selection:'+JSON.stringify(sentenceInstanceSelection));
+      //console.log('mouse up, sentence instance selection:'+JSON.stringify(sentenceInstanceSelection));
       
       let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => article.sentences[sentenceNumber].sentenceId);
-      console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
+      //console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
       
       let isSelectionCollapsed = nodeSelection.isCollapsed;
       

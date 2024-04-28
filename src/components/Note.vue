@@ -127,7 +127,7 @@ watch(() => props.note, (newValue) => {
 });
 
 onMounted(() => {
-    console.log('Note mounted');
+    //console.log('Note mounted');
 
     //initialize sceditor
     sceditor.create(textarea.value, {
@@ -141,7 +141,7 @@ onMounted(() => {
     mode.value = 'view';
 
     if (!sceditorInitialized) {
-        console.log('sceditorInitialized = true');
+        //console.log('sceditorInitialized = true');
         sceditorInitialized = true;
 
         //trigger re-computing

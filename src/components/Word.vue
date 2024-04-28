@@ -26,7 +26,7 @@ const definition = computed(() => {
 
 
 onMounted(() => {
-    console.log('Note mounted');
+    
 
 });
 

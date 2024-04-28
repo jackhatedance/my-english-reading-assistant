@@ -79,8 +79,7 @@ watch(() => props.items, (newValue, oldValue) => {
 
 
 onMounted(() => {
-    console.log('mounted');
-
+    
     updateItems(props.items);
 });
 

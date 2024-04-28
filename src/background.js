@@ -154,7 +154,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
     
-    console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
+    //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
   }
 
   sendResponse({
