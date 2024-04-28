@@ -22,13 +22,19 @@ function tokenizeTextNode(document) {
         
 
         if (node.nodeName === '#text') {
-
-            if (!isTextElement(node.parentElement)) {
-                console.log('not text element:'+ node.parentElement.nodeName);
+            let textContent = node.textContent;
+            
+            if(textContent.trim().length===0){
                 return;
             }
+            /*
+            if (!isTextElement(node.parentElement)) {
+                console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
+                return;
+            }
+            */
 
-            let tokens = splitSentence(node.textContent);
+            let tokens = splitSentence(textContent);
 
             let tokenHtmls = [];
             for (let token of tokens) {
@@ -330,7 +336,7 @@ function findTokenInArticle(article, offset) {
 
 function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelection) {
 
-    console.log('get node selections from sentence hash selection');
+    //console.log('get node selections from sentence hash selection');
     /*steps:
     1. start sentenceId > start sentence numbers
     2. sentence instance selections
@@ -552,7 +558,7 @@ function getSentenceInstancePositionFromArticlePosition(article, articleOffset) 
 function findSentenceInfo(article, articleOffset) {
     let segmentOffset = getSegmentOffset(articleOffset);
     let startSentenceNumberOfSegment = article.segmentOffsetSentenceMap.get(segmentOffset);
-    console.log(`find sentence info, articleOffset: ${articleOffset}, startSentenceNumberOfSegment: ${startSentenceNumberOfSegment}`);
+    //console.log(`find sentence info, articleOffset: ${articleOffset}, startSentenceNumberOfSegment: ${startSentenceNumberOfSegment}`);
     for(let i=startSentenceNumberOfSegment; i< article.sentences.length; i++) {
         let sentenceInfo = article.sentences[i];
         if (sentenceInfo.offset <= articleOffset && articleOffset < (sentenceInfo.offset + sentenceInfo.length)) {
@@ -584,7 +590,7 @@ function getArticleSelectionFromNodeSelection(article, nodeSelection) {
         start,
         end
     };
-    console.log('get article selection:'+JSON.stringify(articleSelection));
+    //console.log('get article selection:'+JSON.stringify(articleSelection));
     return articleSelection;
 }
 
