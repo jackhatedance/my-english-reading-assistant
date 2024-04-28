@@ -107,11 +107,13 @@
   all: revert;
 }
 #mea-vue-container {
-  
-  height:calc(100% - (70px + 70px));
+  width: fit-content;
+  height: fit-content;
   padding: 0px;
-  #mea-vueapp {
-    height: 95%;
+  #mea-vueapp-iframe {
+    width: 300px;
+    height: 596px;
+    border: none;
   }
 
   #vue {

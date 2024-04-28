@@ -1,4 +1,5 @@
 <script setup>
+import { onUpdated, inject, nextTick } from 'vue';
 import TabHeader from './TabHeader.vue';
 import TabBody from './TabBody.vue';
 import VocabularyTabContent from './VocabularyTabContent.vue';
@@ -18,6 +19,9 @@ const props = defineProps({
     changeToggle: Boolean,
     menuItems: Array,
 });
+
+const sendMessageToContentPage = inject('sendMessageToContentPage');
+
 const sidepanelTabActions = chrome.i18n.getMessage('sidepanelTabActions');
 const sidepanelTabMenu = chrome.i18n.getMessage('sidepanelTabMenu');
 const sidepanelTabVocabulary = chrome.i18n.getMessage('sidepanelTabVocabulary');
@@ -27,7 +31,7 @@ const sidepanelTabNotes = chrome.i18n.getMessage('sidepanelTabNotes');
 
 console.log('Tabs notes:' + JSON.stringify(props.notes));
 
-function onActiveTab(tabId) {
+async function onActiveTab(tabId) {
     console.log('on active tab:' + tabId);
     activeTabId.value = tabId;
 }
@@ -54,6 +58,9 @@ watch(() => props.changeToggle, (newValue, oldValue) => {
     activeTabId.value = props.activeTabId; // Update the value in the ref if needed
 });
 
+onUpdated(() => {
+  
+});
 
 </script>
 

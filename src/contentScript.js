@@ -7,7 +7,7 @@ import { isKnown, } from './language.js';
 import { findSiteConfig } from './site-match.js';
 import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
-import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
+import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
 import {getBaseWordFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
@@ -48,7 +48,7 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  //console.log(`Current request type is ${request.type}`);
+  console.log(`Current request type is ${request.type}`);
   let response = {};
   if (request.type === 'COUNT') {
     //console.log(`Current count is ${request.payload.count}`);
@@ -156,9 +156,10 @@ function messageListener(request, sender, sendResponse) {
     refreshOptionsCache();
   } else if (request.type === 'CLOSE_DIALOG') {
     closeDialog();
-  }
-
-  if (request.type === 'CHANGE_STYLE') {
+  } else if (request.type === 'RESIZE_IFRAME') {
+    let {width, height} = request.payload;
+    resizeVueApp(width, height);
+  } else if (request.type === 'CHANGE_STYLE') {
     //console.log(`change style`);
     if (request.payload) {
       //annotationOptions = request.payload;

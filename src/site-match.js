@@ -162,6 +162,6 @@ function findSiteConfig(document){
 }
 
 function isMeaIframe(iframe){
-    return (iframe.id==='mea-vueapp');    
+    return (iframe.id==='mea-vueapp-iframe');    
 }
 export {findSiteConfig};

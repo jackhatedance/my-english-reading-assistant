@@ -13,7 +13,7 @@ function addVueApp() {
 
     let sidePanelUrl = chrome.runtime.getURL("side-panel.html");
     let innerHTML =
-        `<iframe id="mea-vueapp" src="${sidePanelUrl}"></iframe>`;
+        `<iframe id="mea-vueapp-iframe" src="${sidePanelUrl}" ></iframe>`;
     dialog.innerHTML = innerHTML;
   
     async function getActiveTabId(resolve){
@@ -41,4 +41,10 @@ function sendMessageToEmbeddedApp(request, sender, resolve){
     window.postMessage(request);
 }
 
-export { addVueApp, sendMessageToEmbeddedApp };
+function resizeVueApp(width, height){
+  let iframe = document.getElementById('mea-vueapp-iframe');
+  iframe.style.width = width +'px';
+  iframe.style.height = height +'px';
+}
+
+export { addVueApp, sendMessageToEmbeddedApp, resizeVueApp };
