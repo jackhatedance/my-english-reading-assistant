@@ -102,18 +102,9 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'GREETINGS') {
-    const message = `Hi ${
-      sender.tab ? 'Con' : 'Pop'
-    }, my name is Bac. I am from Background. It's great to hear from you.`;
-
-    // Log message coming from the `request` parameter
-    //console.log(request.payload.message);
-    // Send a response message
-    sendResponse({
-      message,
-    });
-  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
+  let message = 'ok';
+  
+  if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
 
     //console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
@@ -165,6 +156,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
   }
+
+  sendResponse({
+    message,
+  });
 });
 
 chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
