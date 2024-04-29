@@ -48,11 +48,9 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  //console.log(`Current request type is ${request.type}`);
+  //console.log(`request type: ${request.type}`);
   let response = {};
-  if (request.type === 'COUNT') {
-    //console.log(`Current count is ${request.payload.count}`);
-  } else if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
+  if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
     //console.log(`Current page annotation is initialized: ${initialized}`);
     response = { initialized: initialized };
@@ -338,11 +336,13 @@ function showDialog(menuItems = []){
 
 function sendMessageToApp(request, sender, sendResponse){
   //send message to standalone
+  /*
   chrome.runtime.sendMessage(
     request,
     sendResponse,
   );
-
+  */
+  
   sendMessageToEmbeddedApp(request, sender, sendResponse);
 }
 

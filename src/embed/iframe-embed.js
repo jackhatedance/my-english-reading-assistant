@@ -38,7 +38,11 @@ function addVueApp() {
   }
 
 function sendMessageToEmbeddedApp(request, sender, resolve){
-    window.postMessage(request);
+  //console.log('send message to iframe');
+    let iframe = document.getElementById('mea-vueapp-iframe');
+
+    let url = chrome.runtime.getURL('');
+    iframe.contentWindow.postMessage(request, url);
 }
 
 function resizeVueApp(width, height){

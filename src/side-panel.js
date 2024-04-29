@@ -9,26 +9,28 @@ import {localizeHtmlPage} from './locale.js';
 localizeHtmlPage();
 
 var gSendMessageToApp;
+var gTabId;
+var gInitialized = false;
 
 let setSendMessageToApp = (sendMessageToApp)=>{
     gSendMessageToApp = sendMessageToApp;        
 };
 
 function sendMessageToContentPage(message, sender, resolve){
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tab = tabs[0];
-        //console.log('send message to content page:'+ JSON.stringify(message));
+
+    //console.log('send message to content page:'+ JSON.stringify(message));
+    if(gInitialized){
         chrome.tabs.sendMessage(
-          tab.id,
-          message,
-          resolve,
+            gTabId,
+            message,
+            resolve,
         );
-    });
+    }        
 }
 
 async function getActiveTabId(resolve){
-    let tab = await chrome.tabs.query({ active: true, currentWindow: true });
-    return tab.id;
+    let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tabs[0].id;
 }
 
 let props = {
@@ -42,25 +44,20 @@ createApp(SidePanel, props).mount('#app');
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    //console.log('DOMContentLoaded');
+    gTabId = await getActiveTabId();
+
     await initializeOptionService();
+
+    gInitialized = true;
+
     load();
 
 });
 
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-    const tab = await chrome.tabs.get(activeInfo.tabId);
-    if (tab.active) {
-        load();
-    }
-});
-
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    if (tab.active) {
-        load();
-    }
-});
 
 function load(){
+    //console.log('load');
     let request = {
         type:'LOAD',
         payload: {
@@ -71,6 +68,7 @@ function load(){
 }
 
 window.addEventListener('message', event => {
+    //console.log('recieve message:'+ JSON.stringify(event.data));
     // IMPORTANT: check the origin of the data!
     /* TODO
     if (event.origin === 'https://your-first-site.example') {
@@ -78,4 +76,4 @@ window.addEventListener('message', event => {
     } 
     */
     gSendMessageToApp(event.data, null, (response)=>{});
-});
+}, false);
