@@ -37,6 +37,8 @@ const TEXT_TAGS =[
     'SUP', 
     'TD', 
     'U',
+    'BODY',
+    'UL',
 ];
 
 function isTextTag(tag){

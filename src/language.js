@@ -20,7 +20,7 @@ function searchWord(request){
     }
 
     if(!result){
-        let isCompounding = request.query.match(/\w+-\w+/);
+        let isCompounding = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
         if(isCompounding){
             result = searchCompounding(request, ['large']);    
         }        

@@ -24,15 +24,12 @@ function tokenizeTextNode(document) {
         if (node.nodeName === '#text') {
             let textContent = node.textContent;
             
-            if(textContent.trim().length===0){
-                return;
-            }
-            /*
+            //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
                 console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
                 return;
             }
-            */
+            
 
             let tokens = splitSentence(textContent);
 
