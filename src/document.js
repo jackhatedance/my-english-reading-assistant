@@ -3,7 +3,7 @@
 
 import { findSiteConfig } from './site-match.js';
 import { traverseElement, traverseNode } from './dom.js';
-import { findStyleSheet, indexOfMeaAnnotation } from './style.js';
+import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import {getBaseWordFromElement} from './word.js';

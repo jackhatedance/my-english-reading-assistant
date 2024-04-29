@@ -134,7 +134,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
-    console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
+    //console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
     let tabId =sender.tab.id;
 
     let oldTabInfo = gTabInfoMap.get(tabId);
