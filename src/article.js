@@ -31,7 +31,7 @@ function tokenizeTextNode(document) {
             }
             
 
-            let tokens = splitSentence(textContent);
+            let tokens = splitText(textContent);
 
             let tokenHtmls = [];
             for (let token of tokens) {
@@ -73,7 +73,7 @@ function tokenizeTextNode(document) {
     });
 }
 
-function splitSentence(sentence) {
+function splitText(sentence) {
     let parts = [];
 
     const regexp = /([a-zA-Z][a-zA-Z'&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g;
@@ -168,7 +168,7 @@ function parseParagraphContent(article, paragraphInfo, content){
     for (let sentence of sentences) {
      
         
-        let tokens = splitSentence(sentence.raw);
+        let tokens = splitText(sentence.raw);
         
         let begin = sentence.range[0];
         let end = sentence.range[1];
