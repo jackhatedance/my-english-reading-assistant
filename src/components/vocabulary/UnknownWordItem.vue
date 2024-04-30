@@ -106,7 +106,7 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
-            source: 'side-panel',
+            source: 'unknown-word-list',
         },
     },
     sender, 

@@ -102,9 +102,11 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`${request.type}`);
     
     //hideAnnotation(request.payload.word);
+    let source = request.payload.source;
     let visible = isPageAnnotationVisible();
-    //resetPageAnnotationVisibilityAndNotify(visible, source);
-    resetPageAnnotationVisibility(gDocumentArticleMap, visible, null);
+    resetPageAnnotationVisibilityAndNotify(visible, source);
+    
+    //resetPageAnnotationVisibility(gDocumentArticleMap, visible, null);
 
   } else if (request.type === 'NOTES_UPDATED') {
     //console.log(`${request.type}`);

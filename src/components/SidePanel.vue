@@ -91,7 +91,7 @@ async function messageListener(request, sender, sendResponse) {
     updatePageInfo(request.payload.pageInfo);
   } else if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
 
-    if (request.payload.source === 'side-panel') {
+    if (request.payload.source === 'unknown-word-list') {
       return;
     }
 
