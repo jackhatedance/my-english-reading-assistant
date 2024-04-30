@@ -175,9 +175,10 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 .actions {
   float:right;
-
+    
   button {
     font-size: 5px;
+    margin-right: 2px;
   }
 }
 .word {

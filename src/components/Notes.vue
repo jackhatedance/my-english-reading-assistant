@@ -18,7 +18,7 @@ init();
 
 <template>
     <div>
-        <h2>{{ sidepanelActionsTabNotesLabelNotes }}</h2>
+        <h4>{{ sidepanelActionsTabNotesLabelNotes }}</h4>
         <div class="notes">
             <Note v-for="item of props.items" :note="item"></Note>
         </div>

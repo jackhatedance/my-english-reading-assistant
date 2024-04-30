@@ -17,7 +17,9 @@ const sidepanelActionsTabWordMarkAsUnknownAction = chrome.i18n.getMessage('sidep
 const sidepanelActionsTabWordMarkAsKnownAction = chrome.i18n.getMessage('sidepanelActionsTabWordMarkAsKnownAction');
 const sidepanelActionsTabWordClearMarkAction = chrome.i18n.getMessage('sidepanelActionsTabWordClearMarkAction');
 
-
+let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
+let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
+let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
     let def = lookupShort(props.word);
@@ -84,29 +86,37 @@ async function onClearMark() {
 
 <template>
     <div class="word-container">
-        <h2>{{ sidepanelActionsTabWordLabelWord }}</h2>
-        <div class="definition">
-            <h1>{{ props.word }}</h1>
+        <div class="word-definition">
+            <h2>{{ props.word }}</h2>
             <p>{{ definition }}</p>
         </div>
         <div class="word-mark-actions">
-            <div class="word-mark-action"><button @click="onMarkAsUnknown">{{ sidepanelActionsTabWordMarkAsUnknownAction }}</button></div>
-            <div class="word-mark-action"><button @click="onMarkAsKnown">{{ sidepanelActionsTabWordMarkAsKnownAction }}</button></div>
-            <div class="word-mark-action"><button @click="onClearMark">{{ sidepanelActionsTabWordClearMarkAction }}</button></div>
+            <div class="word-mark-action"><button @click="onMarkAsKnown">
+                <img :src='tickImgUrl' />
+            </button></div>
+            <div class="word-mark-action"><button @click="onMarkAsUnknown">
+                <img :src='questionMarkImgUrl' />
+            </button></div>
+            <div class="word-mark-action"><button @click="onClearMark">
+                <img :src='clearImgUrl' />
+            </button></div>
         </div>
     </div>
 </template>
 
 <style>
-.word-container {
+.word-definition {
     border: solid black 1px;
 }
 
 .word-mark-actions {
     display: flex;
+    img {
+        width: 20px;
+    }
 }
 
 .word-mark-action {
-    margin: 2px;
+    margin: 4px;
 }
 </style>

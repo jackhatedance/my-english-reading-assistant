@@ -16,7 +16,6 @@ const props = defineProps({
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
-const sidepanelNoteLabel = chrome.i18n.getMessage('sidepanelNoteLabel');
 const sidepanelAddAction = chrome.i18n.getMessage('sidepanelAddAction');
 const sidepanelEditAction = chrome.i18n.getMessage('sidepanelEditAction');
 const sidepanelDeleteAction = chrome.i18n.getMessage('sidepanelDeleteAction');
@@ -176,10 +175,13 @@ init();
 
 <template>
     <div ref="rootElement" class="note">
-        <h2 class="highlight-text">{{ props.note.selectedText }}</h2>
+        <p class="highlight-text">{{ props.note.selectedText }}</p>
+
         <div class="view-note-container" v-show="mode === 'view'">
-            <p>{{ sidepanelNoteLabel }}</p>
-            <div class="note-view" v-html="noteContentHtml"></div>
+            <div class="note-content">                
+                <div class="note-view" v-html="noteContentHtml"></div>
+            </div>
+            
             <div class="note-actions">
                 <div class="note-action">
                     <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">{{ sidepanelAddAction }}</button>
@@ -211,13 +213,27 @@ init();
 <style>
 .note {
     overflow: auto;
-    border: solid black 1px;
+    
+    .highlight-text {
+        &::before{
+            content: '"';
+        }
+        &::after{
+            content: '"';
+        }
+    }
+}
+.note-content {
+    border: solid grey 1px;
 }
 .note-actions {
     display: flex;
+    
+    margin-top: 10px;
 }
 .note-action {
     margin: 2px;
+    
 }
 
 .xbbcode-size-1 {font-size:x-small !important;}

@@ -224,5 +224,7 @@ function onClickCloseButton() {
 <style>
 .header {
   float: right;
+  border-radius: 10px;
+  padding: 10px
 }
 </style>
