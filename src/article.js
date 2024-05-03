@@ -26,7 +26,11 @@ function tokenizeTextNode(document) {
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
-                console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
+                const tagsNotLog = ['SCRIPT', 'NOSCRIPT', 'BUTTON', 'g', 'svg'];
+                if(!tagsNotLog.includes(node.parentElement.nodeName)){
+                    console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
+                }
+                
                 return;
             }
             

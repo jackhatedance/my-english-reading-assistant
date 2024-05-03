@@ -18,7 +18,7 @@ let setSendMessageToApp = (sendMessageToApp)=>{
 
 function sendMessageToContentPage(message, sender, resolve){
 
-    //console.log('send message to content page:'+ JSON.stringify(message));
+    //console.log('send message to content page, tabId:'+ gTabId + ', message:' + JSON.stringify(message));
     if(gInitialized){
         chrome.tabs.sendMessage(
             gTabId,
@@ -68,7 +68,7 @@ function load(){
 }
 
 window.addEventListener('message', event => {
-    //console.log('recieve message:'+ JSON.stringify(event.data));
+    //console.log('iframe window recieve message:'+ JSON.stringify(event.data));
     // IMPORTANT: check the origin of the data!
     /* TODO
     if (event.origin === 'https://your-first-site.example') {

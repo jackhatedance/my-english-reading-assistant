@@ -19,12 +19,11 @@ import { MenuItems } from './menu.js';
 
 //used to check if title changed
 var gUrl;
-/**
- * {id, }
- */
-
 
 var gDocumentArticleMap;
+
+var gDomChanges=0;
+var gDomChangesMonitored=0;
 
 window.addEventListener("load", myMain, false);
 function myMain() {
@@ -170,6 +169,8 @@ function messageListener(request, sender, sendResponse) {
       });
     }
 
+  } else {
+    console.log('not handled');
   }
 
 
@@ -181,7 +182,7 @@ chrome.runtime.onMessage.addListener(messageListener);
 
 
 
-setInterval(monitorTimer, 500);
+setInterval(monitorTimer, 2000);
 
 function monitorTimer() {
   let siteConfig = findSiteConfig(document);
@@ -192,6 +193,24 @@ function monitorTimer() {
       gDocumentArticleMap = documentArticleMap;
       resetPageAnnotationVisibilityAndNotify(true);
     });
+  }
+
+  if (gDomChanges > 0) {
+    if(gDomChanges === gDomChangesMonitored){
+      console.log('DOM changed, auto refresh page annotation');
+      
+      //reset
+      gDomChanges =0;
+
+      clearPagePreprocessMark();
+      
+      initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+        gDocumentArticleMap = documentArticleMap;
+        resetPageAnnotationVisibilityAndNotify(true);
+      });  
+    } else {
+      gDomChangesMonitored = gDomChanges;
+    } 
   }
 
   let url = siteConfig.getUrl(document);
@@ -308,6 +327,24 @@ async function addDocumentEventListener(document, documentConfig) {
     }
   });
 
+  //DOM mutation changes
+  const targetNode = document.body;
+  const config = { attributes: false, childList: true, subtree: true };
+  const callback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+      if (mutation.type === "childList") {
+        //console.log("A child node has been added or removed.");
+        gDomChanges ++;
+      } else if (mutation.type === "attributes") {
+        //console.log(`The ${mutation.attributeName} attribute was modified.`);
+      }
+    }
+  };
+  const observer = new MutationObserver(callback);
+
+  observer.observe(targetNode, config);
+
+  //observer.disconnect();
 }
   
 function closeDialog(){
