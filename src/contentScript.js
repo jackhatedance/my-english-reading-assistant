@@ -47,7 +47,7 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  //console.log(`request type: ${request.type}`);
+  console.log(`request type: ${request.type}`);
   let response = {};
   if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
@@ -169,8 +169,6 @@ function messageListener(request, sender, sendResponse) {
       });
     }
 
-  } else {
-    console.log('not handled');
   }
 
 
@@ -355,11 +353,10 @@ function closeDialog(){
 }
 
 function showDialog(menuItems = []){
-
   let request = {
-    type: 'ACTIVE_TAB',
-    payload: {
-      activeTabId: 'actions-tab',
+    type: 'ACTIVE_APP_TAB',
+    payload: {      
+      activeAppTabId: 'actions-tab',
       menuItems: menuItems,        
     },
   };

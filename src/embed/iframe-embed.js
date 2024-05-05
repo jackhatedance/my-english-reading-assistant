@@ -15,30 +15,11 @@ function addVueApp() {
     let innerHTML =
         `<iframe id="mea-vueapp-iframe" src="${sidePanelUrl}" ></iframe>`;
     dialog.innerHTML = innerHTML;
-  
-    async function getActiveTabId(resolve){
-        return null;
-    }
-    
-    let setSendMessageToApp = (sendMessageToApp)=>{
-      if(sendMessageToApp){
-        gSendMessageToEmbeddedApp = sendMessageToApp;
-      }
-      
-    };
-    /*
-    let props = {
-      appMode: AppModes.Embedded,
-      setSendMessageToApp: setSendMessageToApp,
-      sendMessageToContentPage: messageListener,
-      getActiveTabId: getActiveTabId,
-    };
-    */
     
   }
 
 function sendMessageToEmbeddedApp(request, sender, resolve){
-  //console.log('send message to iframe');
+  console.log('send message to iframe:'+JSON.stringify(request));
     let iframe = document.getElementById('mea-vueapp-iframe');
 
     let url = chrome.runtime.getURL('');

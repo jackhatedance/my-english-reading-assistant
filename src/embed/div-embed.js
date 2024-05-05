@@ -18,9 +18,6 @@ function addVueApp() {
 
   dialog.innerHTML = innerHTML;
 
-  async function getActiveTabId(resolve) {
-    return null;
-  }
 
   let setSendMessageToApp = (sendMessageToApp) => {
     if (sendMessageToApp) {
@@ -32,7 +29,6 @@ function addVueApp() {
     appMode: AppModes.Embedded,
     setSendMessageToApp: setSendMessageToApp,
     sendMessageToContentPage: messageListener,
-    getActiveTabId: getActiveTabId,
   };
 
   createApp(SidePanel, props).mount(document.querySelector('#vue'));

@@ -102,13 +102,16 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  let tabId =sender.tab.id;
+
   let message = 'ok';
-  
-  if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
+  if(request.type === 'WHO_AM_I') {
+    message = tabId;
+  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
 
     //console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
-    let tabId =sender.tab.id;
+    
 
     let startTime = new Date().getTime();
     let title = request.payload.title;
@@ -151,8 +154,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     let wordChanges = request.payload.wordChanges;
     let tabInfo = gTabInfoMap.get(tabId);
-    
-    tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+
+    if(tabInfo){
+      tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+    }else{
+      console.error(`tabInfo not found of tab id: ${tabId}`);
+    }
     
     //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
   }

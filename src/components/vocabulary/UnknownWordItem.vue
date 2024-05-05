@@ -10,7 +10,6 @@ const props = defineProps({
     reset: Boolean,
 });
 
-const getActiveTabId = inject('getActiveTabId');
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
 

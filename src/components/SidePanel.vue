@@ -14,12 +14,10 @@ const props = defineProps({
   appMode: String,
   setSendMessageToApp: Function,
   sendMessageToContentPage: Function,
-  getActiveTabId: Function,
 });
 
 provide('appMode', props.appMode);
 provide('sendMessageToContentPage', props.sendMessageToContentPage);
-provide('getActiveTabId', props.getActiveTabId);
 
 const isShowUnavailable = ref(false);
 const isShowTabs = ref(false);
@@ -83,7 +81,7 @@ function updatePageInfo(pageInfo) {
 
 async function messageListener(request, sender, sendResponse) {
 
-  //console.log('recieve message:'+request.type);
+  console.log('recieve message:'+request.type);
 
   if (request.type === 'LOAD') {
     getPageInfo();
@@ -135,8 +133,8 @@ async function messageListener(request, sender, sendResponse) {
     //console.log('SELECTION_CHANGE, update notes:' + JSON.stringify(notes.value));
 
 
-  } else if (request.type === 'ACTIVE_TAB') {
-    activeTabId.value = request.payload.activeTabId;
+  } else if (request.type === 'ACTIVE_APP_TAB') {
+    activeTabId.value = request.payload.activeAppTabId;
     menuItems.value = request.payload.menuItems;
 
     changeToggle.value = !(changeToggle.value);
@@ -144,7 +142,7 @@ async function messageListener(request, sender, sendResponse) {
 
 }
 
-chrome.runtime.onMessage.addListener(messageListener);
+//chrome.runtime.onMessage.addListener(messageListener);
 
 
 
