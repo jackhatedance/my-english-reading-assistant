@@ -2,7 +2,7 @@
 
 import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
-import {initializeOptionService, getOptionsFromCache, refreshOptionsCache} from './service/optionService.js';
+import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
@@ -30,7 +30,6 @@ function sendMsg(type, baseForm){
 }
 
 chrome.runtime.onInstalled.addListener(async function () {
-  await initializeOptionService();
   
   let toggle = chrome.contextMenus.create({
     title: 'Known <-> Unknown: %s',
@@ -71,7 +70,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
     if(searchResult){
       let baseForm = searchResult.word;
       
-      let options = getOptionsFromCache();
+      let options = await getOptionsFrom();
       let rootMode = options.rootAndAffix.enabled;
 
       let targetWord = baseForm;
@@ -129,11 +128,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     gTabInfoMap.set(tabId, newTabInfo);
     
-  } else if(request.type === 'OPTIONS_CHANGED'){
-
-    console.log('options changed, reload options to cache');
-    refreshOptionsCache();
-
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
@@ -208,8 +202,8 @@ chrome.tabs.onRemoved.addListener((tabId,removeInfo) => {
   }
 });
 
-function saveReadingActivityAndClearStartTime(tabInfo){
-  let options = getOptionsFromCache();
+async function saveReadingActivityAndClearStartTime(tabInfo){
+  let options = await getOptions();
   //console.log('get options from cache:'+JSON.stringify(options));
   if(!options.report.enabled){
     return;

@@ -172,6 +172,9 @@ async function refreshOptionsCache(){
 }
 
 function getOptionsFromCache(){
+    if(!gOptions){
+        console.error('gOptions cache is null');
+    }
     return gOptions;
 } 
   
