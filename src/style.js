@@ -68,8 +68,8 @@ function generateCssRuleOfHighlight(options) {
     let rule = `.mea-highlight {  
       position: relative;
       margin-top: 0px;
-      text-indent: 0px;
-      display: inline-block;
+      text-indent1: 0px;
+      display1: inline-block;
       line-height: ${lineHeight} !important;
     }`;
     return rule;
