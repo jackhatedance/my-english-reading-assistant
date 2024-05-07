@@ -4,12 +4,12 @@ import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
+import { getTabInfoMap, setTabInfoMap, getTabInfo, setTabInfo, removeTabInfo} from './service/tabInfoService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
 
-const gTabInfoMap = new Map();
 
 function sendMsg(type, baseForm){
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -100,7 +100,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   let tabId =sender.tab.id;
 
   let message = 'ok';
@@ -120,13 +120,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
     
     //console.log('new tab info:'+ JSON.stringify(newTabInfo));
-    let oldTabInfo = gTabInfoMap.get(tabId);
+    let oldTabInfo = await getTabInfo(tabId);
     
     if(oldTabInfo && oldTabInfo.startTime){
-      saveReadingActivityAndClearStartTime(oldTabInfo);
+      await saveReadingActivityAndClearStartTime(oldTabInfo);
     }
 
-    gTabInfoMap.set(tabId, newTabInfo);
+    await setTabInfo(tabId, newTabInfo);
     
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
@@ -134,9 +134,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
     let tabId =sender.tab.id;
 
-    let oldTabInfo = gTabInfoMap.get(tabId);
+    let oldTabInfo = await getTabInfo(tabId);
     if(oldTabInfo){
-      saveReadingActivityAndClearStartTime(oldTabInfo);
+      await saveReadingActivityAndClearStartTime(oldTabInfo);
+      await setTabInfo(oldTabInfo);
     }
 
   } else if(request.type === 'MARK_WORD'){
@@ -147,7 +148,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       tabId =sender.tab.id;
     }
     let wordChanges = request.payload.wordChanges;
-    let tabInfo = gTabInfoMap.get(tabId);
+    let tabInfo = await getTabInfo(tabId);
 
     if(tabInfo){
       tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
@@ -163,10 +164,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
 });
 
-chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
   if(changeInfo.status==='complete'){
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
-    let tabInfo = gTabInfoMap.get(tabId);
+    let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
       console.log(`on updated page: ${tabInfo.title}`);
       //saveActivities(tabId, tabInfo);
@@ -175,32 +176,39 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo, tab) => {
   
 });
 
-chrome.tabs.onActivated.addListener((activeInfo) => {
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
   //console.log('activeInfo:'+JSON.stringify(activeInfo));
 
   let tabId = activeInfo.tabId;
-  gTabInfoMap.forEach((value, key, map) => {
-    if(!value){
-      console.log('tabInfo is null, key:'+key);
-    }
-    let tabInfo = value;
-    if(tabId === key){
-      //set start time
-      tabInfo.startTime = new Date().getTime();
-    }else{
-      saveReadingActivityAndClearStartTime(tabInfo);
-    }
-  });
-
-});
-
-chrome.tabs.onRemoved.addListener((tabId,removeInfo) => {
-  //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
-  let tabInfo = gTabInfoMap.get(tabId);
-  if(tabInfo){
-    saveReadingActivityAndClearStartTime(tabInfo);
+  let tabInfoMap = await getTabInfoMap();
+  for (let key of tabInfoMap.keys()) {
+      let tabInfo = tabInfoMap.get(key);
+      
+      if(!tabInfo){
+        console.log('tabInfo is null, key:'+key);
+      }
+      
+      if(tabId === key){
+        //set start time
+        tabInfo.startTime = new Date().getTime();
+      }else{
+        await saveReadingActivityAndClearStartTime(tabInfo);
+      }
   }
+  
+  await setTabInfoMap(tabInfoMap);
+
 });
+
+chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
+  //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
+  let tabInfo = await getTabInfo(tabId);
+  if(tabInfo){
+    await saveReadingActivityAndClearStartTime(tabInfo);
+  }
+  removeTabInfo(tabId);
+});
+
 
 async function saveReadingActivityAndClearStartTime(tabInfo){
   let options = await getOptions();
@@ -214,7 +222,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
     let endTime = new Date().getTime();
     var duration = endTime - tabInfo.startTime;
     
-    //console.log(`finish read page <<${tabInfo.title}>> in ${timeDiff} seconds, word changes:${tabInfo.wordChanges}`);
+    console.log(`finish read page <<${tabInfo.title}>> in ${duration} seconds, word changes:${tabInfo.wordChanges}`);
     addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,
