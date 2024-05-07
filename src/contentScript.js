@@ -195,7 +195,7 @@ function monitorTimer() {
 
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
-      console.log('DOM changed, auto refresh page annotation');
+      //console.log('DOM changed, auto refresh page annotation');
       
       //reset
       gDomChanges =0;
@@ -231,7 +231,12 @@ async function addDocumentEventListener(document, documentConfig) {
     if(dialog){
       return;
     }
-    
+
+    //wont show dialog on a link
+    let aLink = event.target.closest('a');
+    if(aLink){
+      return;
+    }
 
     let nodeSelection = document.getSelection();
     let selectedText = nodeSelection.toString();
