@@ -7,7 +7,7 @@ import { initializeOptionService, } from './service/optionService.js';
 import { findSiteConfig } from './site-match.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
-import { addVueApp, addVueAppEventListener, } from './embed/iframe-embed.js';
+import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
 import { addToolbar } from './toolbar.js';
 
 /**
@@ -170,8 +170,9 @@ async function preprocessDocument(document, isIframe, documentConfig, addDocumen
     }
 
     if (!isIframe) {
-        addVueApp();
-        
+        if(!containsVueApp()){
+            addVueApp();
+        }        
     }
 
     let article = null;

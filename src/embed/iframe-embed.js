@@ -2,7 +2,18 @@
 
 import { AppModes } from '../components/types.js';
 
+function containsVueApp(){
+  var dialog = document.getElementById('mea-vue-container');
+  if(dialog){
+    return true;
+  } else {
+    return false;
+  }
+
+}
+
 function addVueApp() {
+
   var dialog = document.createElement('dialog');
   dialog.id = "mea-vue-container";
   dialog.classList.add('mea-element');
@@ -32,4 +43,4 @@ function resizeVueApp(width, height) {
   iframe.style.height = height + 'px';
 }
 
-export { addVueApp, sendMessageToEmbeddedApp, resizeVueApp };
+export { containsVueApp, addVueApp, sendMessageToEmbeddedApp, resizeVueApp };
