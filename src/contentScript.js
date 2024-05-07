@@ -47,7 +47,7 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  console.log(`request type: ${request.type}`);
+  //console.log(`request type: ${request.type}`);
   let response = {};
   if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
