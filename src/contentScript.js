@@ -242,7 +242,7 @@ async function addDocumentEventListener(document, documentConfig) {
     let selectedText = nodeSelection.toString();
 
     let article = gDocumentArticleMap.get(document);
-    if(article){
+    if(article && nodeSelection.type !== 'None'){
 
       
       let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection);
