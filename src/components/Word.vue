@@ -46,6 +46,7 @@ async function onMarkAsUnknown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsUnknown(targetWord);
 
+    //console.log('send known words updated to content page');
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {

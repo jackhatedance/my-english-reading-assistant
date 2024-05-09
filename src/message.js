@@ -3,6 +3,7 @@
 
 function sendMessageMarkWordToBackground(wordChanges) {
     //send to background
+    //console.log('send mark word message to runtime(background)');
     chrome.runtime.sendMessage(
         {
             type: 'MARK_WORD',
@@ -11,7 +12,7 @@ function sendMessageMarkWordToBackground(wordChanges) {
             },
         },
         (response) => {
-            //console.log(response.message);
+            //console.log('recieve message:'+ response);
         }
     );
 }

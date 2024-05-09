@@ -100,7 +100,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 
 });
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   let tabId =sender.tab.id;
 
   let message = 'ok';
@@ -119,27 +119,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     let totalWordCount = request.payload.totalWordCount;
     let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
     
-    //console.log('new tab info:'+ JSON.stringify(newTabInfo));
-    let oldTabInfo = await getTabInfo(tabId);
-    
-    if(oldTabInfo && oldTabInfo.startTime){
-      await saveReadingActivityAndClearStartTime(oldTabInfo);
-    }
-
-    await setTabInfo(tabId, newTabInfo);
-    
+    onInitPageFinished(tabId, newTabInfo);
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
     //console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
-    let tabId =sender.tab.id;
-
-    let oldTabInfo = await getTabInfo(tabId);
-    if(oldTabInfo){
-      await saveReadingActivityAndClearStartTime(oldTabInfo);
-      await setTabInfo(oldTabInfo);
-    }
-
+    
+    onUrlChanged(tabId);
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
@@ -148,21 +134,47 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       tabId =sender.tab.id;
     }
     let wordChanges = request.payload.wordChanges;
-    let tabInfo = await getTabInfo(tabId);
-
-    if(tabInfo){
-      tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
-    }else{
-      console.error(`tabInfo not found of tab id: ${tabId}`);
-    }
     
-    //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
+    onMarkWord(tabId, wordChanges);
   }
 
   sendResponse({
     message,
   });
 });
+
+async function onInitPageFinished(tabId, newTabInfo){
+
+    //console.log('new tab info:'+ JSON.stringify(newTabInfo));
+    let oldTabInfo = await getTabInfo(tabId);
+    
+    if(oldTabInfo && oldTabInfo.startTime){
+      await saveReadingActivityAndClearStartTime(oldTabInfo);
+    }
+
+    await setTabInfo(tabId, newTabInfo);
+}
+
+async function onUrlChanged(tabId){
+
+  let oldTabInfo = await getTabInfo(tabId);
+  if(oldTabInfo){
+    await saveReadingActivityAndClearStartTime(oldTabInfo);
+    await setTabInfo(oldTabInfo);
+  }
+}
+
+async function onMarkWord(tabId, wordChanges){
+  let tabInfo = await getTabInfo(tabId);
+
+  if(tabInfo){
+    tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+  }else{
+    console.error(`tabInfo not found of tab id: ${tabId}`);
+  }
+  
+  //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
+}
 
 chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
   if(changeInfo.status==='complete'){
