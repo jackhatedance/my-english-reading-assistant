@@ -1,6 +1,7 @@
 'use strict';
 
 import { getWordParts } from './language.js';
+import {  TOKEN_TAG } from './html.js';
 
 function annotateWord(searchResult, sentenceId, sentenceNumber, tokenNumber) {
     let query = searchResult.query;
@@ -51,7 +52,7 @@ function format(word, annotation, baseWord, parts, sentenceId, sentenceNumber, t
 
     let type = baseWord ? 'mea-word' : 'mea-nonword';
 
-    let s = `<span class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</span>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${annotation}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</${TOKEN_TAG}>`;
     return s;
 }
 

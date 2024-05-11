@@ -6,6 +6,7 @@ import { annotateWord, annotateNonword } from './word.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceSegmentOffsets, getSegmentOffset } from './sentence.js';
 import { searchWord } from './language.js';
 import { isTextTag } from './html.js';
+import { TEXT_TAG } from './html.js';
 
 /**
  * split text node to words, wrapped by span.
@@ -65,7 +66,7 @@ function tokenizeTextNode(document) {
             }
             let tokensHtml = tokenHtmls.join('');
             let span = document.createElement('span');
-            let spanHtml = `<span class="mea-element mea-text-node">${tokensHtml}</span>`;
+            let spanHtml = `<${TEXT_TAG} class="mea-element mea-text-node">${tokensHtml}</${TEXT_TAG}>`;
 
             /** TODO?
              let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
