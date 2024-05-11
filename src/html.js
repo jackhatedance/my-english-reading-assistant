@@ -1,5 +1,8 @@
 'use strict';
 
+const TOKEN_TAG = 'mea-token';
+const TEXT_TAG = 'mea-text';
+
 const INLINE_TAGS = [
     'A', 'ABBR', 'ACRONYM', 'B', 'BDO', 'BIG', 
     'BR', 'BUTTON', 'CITE', 'CODE', 'DFN', 'EM', 
@@ -45,4 +48,5 @@ function isTextTag(tag){
     return TEXT_TAGS.includes(tag);
 }
 
-export { isInlineTag, isTextTag };
+
+export { TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag };
