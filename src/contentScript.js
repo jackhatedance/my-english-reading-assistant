@@ -4,7 +4,7 @@ import './content.css';
 import './side-panel-component.css';
 import { loadKnownWords } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
-import { findSiteConfig } from './site-match.js';
+import { findSiteConfig } from './site-match/site-match.js';
 import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';

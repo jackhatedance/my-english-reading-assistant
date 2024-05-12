@@ -1,7 +1,7 @@
 
 'use strict';
 
-import { findSiteConfig } from './site-match.js';
+import { findSiteConfig } from './site-match/site-match.js';
 import { traverseElement, traverseNode } from './dom.js';
 import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';

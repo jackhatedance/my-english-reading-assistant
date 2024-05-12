@@ -1,3 +1,6 @@
+import { searchSubIframesRecursively, isMeaIframe } from './utils.js';
+import { findSiteConfigByDomain } from './domain-site-config.js';
+
 const siteConfigs = [
     {
         name:'default',
@@ -214,34 +217,24 @@ const siteConfigs = [
 
 ];
 
-function searchSubIframesRecursively(document, visitor){
-    let iframes = document.querySelectorAll('iframe');
-    for(const iframe of iframes){
-        if(iframe) {
-            visitor(iframe);
-
-            let iframeDocument = iframe.contentDocument;
-            if(iframeDocument){
-                searchSubIframesRecursively(iframeDocument, visitor);
-            }
-        }        
-    }
-}
 function findSiteConfig(document){
-    let result = siteConfigs[0];
-    //descend order
-    for(let i=siteConfigs.length;i--;i>0){
-        let siteConfig = siteConfigs[i];
-        if(siteConfig.match(document)){
-            result = siteConfig;
-            break;
+    let domain = document.location.host;
+    let result = findSiteConfigByDomain(domain);
+
+    if(!result) {
+       result = siteConfigs[0];
+        //descend order
+        for(let i=siteConfigs.length;i--;i>0){
+            let siteConfig = siteConfigs[i];
+            if(siteConfig.match(document)){
+                result = siteConfig;
+                break;
+            }
         }
     }
-    //console.log('find site config:'+result.name);
+    console.log('find site config:'+result.name);
     return result;
 }
 
-function isMeaIframe(iframe){
-    return (iframe.id==='mea-vueapp-iframe');    
-}
+
 export {findSiteConfig};

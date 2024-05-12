@@ -4,7 +4,7 @@ import { getSiteOptions, } from './service/optionService.js';
 import { tokenizeTextNode, parseDocument, } from './article.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, } from './service/optionService.js';
-import { findSiteConfig } from './site-match.js';
+import { findSiteConfig } from './site-match/site-match.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
 import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
