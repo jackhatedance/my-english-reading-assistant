@@ -130,7 +130,87 @@ const siteConfigs = [
             }
             return url;
         }
-    },   
+    }, 
+    {
+        name:'youdao',
+        match: function(document){
+            let found =false;
+
+            const sites = ['note.youdao.com'];
+            for(let site of sites){
+                let hostname = document.location.hostname;
+                if(site===hostname){
+                    return true;
+                }
+            }
+
+            searchSubIframesRecursively(document, (iframe)=>{
+                let id = iframe.id;
+                if(id){
+                    if(id.startsWith('content-body')){
+                        found = true;
+                    }
+                }
+            });
+            return found;
+        },
+        getDocumentConfig: function(window, document){
+            let config = {
+                window: window,
+                document: document,
+                canProcess: false,
+            };
+            return config;
+        },
+        getIframeDocumentConfigs: function(document){
+            let configs = [];
+            searchSubIframesRecursively(document, (iframe)=>{
+                if(isMeaIframe(iframe)){
+                    return;
+                }
+
+                let id = iframe.id;
+                if(id && id.startsWith('content-body')){
+                    let config = {
+                        iframe: iframe,
+                        document:iframe.contentDocument,
+                        window: iframe.contentWindow,
+                        canProcess: true
+                    };
+                    configs.push(config);
+                }
+            });
+
+            
+            return configs;
+        },
+        needRefreshPageAnnotation(topDocument){
+            let topVisible = topDocument.body.getAttribute('mea-visible');
+            if(!topVisible){
+                return false;
+            }
+            
+            let iframeConfigs = this.getIframeDocumentConfigs(topDocument);
+            for(const iframeConfig of iframeConfigs){
+                if(iframeConfig) {
+                    let iframeVisible = iframeConfig.document?.body?.getAttribute('mea-visible');
+                    if(topVisible != iframeVisible){
+                        return true;
+                    }              
+                }
+            }
+            return false;
+        },
+        getUrl(topDocument){
+            let url = topDocument.location.href;
+
+            let iframeDocuments = this.getIframeDocumentConfigs(topDocument);
+            if(iframeDocuments.length > 0){
+                url = iframeDocuments[0].document.baseURI;
+            }
+            return url;
+        }
+    },     
 
 ];
 
