@@ -4,7 +4,7 @@ import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
-import { getTabInfoMap, setTabInfoMap, getTabInfo, setTabInfo, removeTabInfo} from './service/tabInfoService.js';
+import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} from './service/tabInfoService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -152,7 +152,7 @@ async function onInitPageFinished(tabId, newTabInfo){
       await saveReadingActivityAndClearStartTime(oldTabInfo);
     }
 
-    await setTabInfo(tabId, newTabInfo);
+    await saveTabInfo(tabId, newTabInfo);
 }
 
 async function onUrlChanged(tabId){
@@ -160,7 +160,7 @@ async function onUrlChanged(tabId){
   let oldTabInfo = await getTabInfo(tabId);
   if(oldTabInfo){
     await saveReadingActivityAndClearStartTime(oldTabInfo);
-    await setTabInfo(oldTabInfo);
+    await saveTabInfo(tabId, oldTabInfo);
   }
 }
 
@@ -169,6 +169,7 @@ async function onMarkWord(tabId, wordChanges){
 
   if(tabInfo){
     tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+    saveTabInfo(tabId, tabInfo);
   }else{
     console.error(`tabInfo not found of tab id: ${tabId}`);
   }
@@ -208,7 +209,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       }
   }
   
-  await setTabInfoMap(tabInfoMap);
+  await saveTabInfoMap(tabInfoMap);
 
 });
 

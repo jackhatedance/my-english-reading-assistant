@@ -15,7 +15,7 @@ function getTabInfoArray(){
     });
 }
 
-async function setTabInfoArray(tabInfos){
+async function saveTabInfoArray(tabInfos){
     //console.log('save sitesOptions:'+JSON.stringify(sitesOptions));
     let object = {tabInfos: tabInfos};     
     await  chrome.storage.local.set(object);
@@ -27,9 +27,9 @@ async function getTabInfoMap(){
     return tabInfoMap;
 }
 
-async function setTabInfoMap(tabInfoMap){
+async function saveTabInfoMap(tabInfoMap){
     let tabInfoArray = mapToArray(tabInfoMap);
-    await setTabInfoArray(tabInfoArray);
+    await saveTabInfoArray(tabInfoArray);
 }
 
 async function getTabInfo(tabId){
@@ -37,14 +37,14 @@ async function getTabInfo(tabId){
     return map.get(tabId);
 }
 
-async function setTabInfo(tabId, tabInfo){
+async function saveTabInfo(tabId, tabInfo){
     //console.log('save site options, domain:'+siteDomain+',options:'+options);
     let tabInfoMap  = await getTabInfoMap();
     
     tabInfoMap.set(tabId, tabInfo);
     
     let tabInfoArray = mapToArray(tabInfoMap);
-    await setTabInfoArray(tabInfoArray);    
+    await saveTabInfoArray(tabInfoArray);    
 }
 
 async function removeTabInfo(tabId){
@@ -54,7 +54,7 @@ async function removeTabInfo(tabId){
     tabInfoMap.delete(tabId);
     
     let tabInfoArray = mapToArray(tabInfoMap);
-    await setTabInfoArray(tabInfoArray);    
+    await saveTabInfoArray(tabInfoArray);    
 }
 
 
@@ -80,4 +80,4 @@ function mapToArray(map) {
     return array;
 }
 
-export { getTabInfoMap, setTabInfoMap, getTabInfo, setTabInfo, removeTabInfo };
+export { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo };
