@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
+import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, defineEmits } from 'vue';
 import {searchWord, isKnown } from '../../language.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../../message.js';
@@ -8,7 +8,10 @@ const props = defineProps({
     word: Object,
     showDefinition: Boolean,
     reset: Boolean,
+    isKnown: Boolean,
 });
+
+const emit = defineEmits(['markWord']);
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
@@ -67,7 +70,6 @@ function clickShowDefinition() {
     showDefinition.value = true;
 }
 
-const isKnownRef = ref(false);
 
 async function clickMarkAsKnown() {
     let baseForm = props.word.target;
@@ -75,27 +77,19 @@ async function clickMarkAsKnown() {
     let wordChanges = await markWordAsKnown(baseForm);
     sendMessageKnownWordsUpdated('known', wordChanges);
 
-    isKnownRef.value = true;
-
+    
 }
 async function clickMarkAsUnknown() {
     let baseForm = props.word.target;
     let wordChanges = await markWordAsUnknown(baseForm);
     sendMessageKnownWordsUpdated('unknown', wordChanges);
-    isKnownRef.value = false;
 }
 async function clickClearMark() {
     let baseForm = props.word.target;
     let wordChanges = await removeWordMark(baseForm);
     sendMessageKnownWordsUpdated('clear', wordChanges);
 
-    let knownWords = await loadKnownWords();
-
-    if (isKnown(baseForm, knownWords)) {
-        isKnownRef.value = true;
-    } else {
-        isKnownRef.value = false;
-    }
+     
 
 }
 
@@ -113,6 +107,7 @@ function sendMessageKnownWordsUpdated(type, wordChanges) {
 
     sendMessageMarkWordToBackground(wordChanges);
     
+    emit('markWord');
 }
 
 
@@ -128,7 +123,7 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
         <div class='list-item'>
             <div class="word-and-actions">
 
-                <span :class="{ word: true, known: isKnownRef }">{{ wordStr }}</span>
+                <span :class="{ word: true, known: props.isKnown }">{{ wordStr }}</span>
 
                 <div class="actions">
                     <button class='mea-show-definition' :word="props.word.target" :title='showDefinitionTips'

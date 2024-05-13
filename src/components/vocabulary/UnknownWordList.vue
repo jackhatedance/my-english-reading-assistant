@@ -21,9 +21,6 @@ async function buildTargetWords(words) {
         let { base } = wordObj;
         let target = base;
 
-        //itself
-        expandedWords.push({ target: base });
-
         //parts
         let parts = getWordParts(base);
         let from = base;
@@ -39,6 +36,9 @@ async function buildTargetWords(words) {
                 }
             }
         }
+
+        //itself
+        expandedWords.push({ target: base });
     }
 
 
@@ -69,6 +69,18 @@ async function updateItems(newItems) {
     items.value = targetWords;
 }
 
+async function updateItemKnownStatus(items, knownWords) {
+    for(let item of items){
+        let known = isKnown(item.target, knownWords);
+        item.isKnown = known;
+    }        
+}
+
+async function onMarkWord() {
+    //console.log('on mark word');
+    let knownWords = await loadKnownWords();
+    updateItemKnownStatus(items.value, knownWords);
+}
 
 const items = ref();
 watch(() => props.items, (newValue, oldValue) => {
@@ -95,7 +107,9 @@ onUpdated(() => {
 <template>
     <div class="mea-unknown-word-list">
         <ol id="unknownWordList">
-            <UnknownWordItem v-for="item of items" :word="item" :key="item.target" :showDefinition="props.showDefinition" :reset="props.reset">
+            <UnknownWordItem v-for="item of items" :word="item" 
+                :key="item.target" :showDefinition="props.showDefinition" 
+                :reset="props.reset" @mark-word="onMarkWord" :isKnown="item.isKnown">
             </UnknownWordItem>
         </ol>
     </div>
