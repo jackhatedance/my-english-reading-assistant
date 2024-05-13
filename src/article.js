@@ -65,15 +65,16 @@ function tokenizeTextNode(document) {
                 tokenHtmls.push(tokenHtml);
             }
             let tokensHtml = tokenHtmls.join('');
-            let span = document.createElement('span');
-            let spanHtml = `<${TEXT_TAG} class="mea-element mea-text-node">${tokensHtml}</${TEXT_TAG}>`;
-
+            let textTag = document.createElement(TEXT_TAG);
+            textTag.classList.add('mea-element');
+            textTag.classList.add('mea-text-node');
+            
             /** TODO?
              let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
                 .replace(/&/g, "&amp;");
              */
-            span.innerHTML = spanHtml;
-            node.parentNode.replaceChild(span, node);
+            textTag.innerHTML = tokensHtml;
+            node.parentNode.replaceChild(textTag, node);
         }
     });
 }
