@@ -23,6 +23,7 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
     let def = lookupShort(props.word);
+    def = def.replaceAll(';', '\n');
     return def;
 });
 
@@ -89,7 +90,7 @@ async function onClearMark() {
     <div class="word-container">
         <div class="word-definition">
             <h2>{{ props.word }}</h2>
-            <p>{{ definition }}</p>
+            <p class="word-definition-content">{{ definition }}</p>
         </div>
         <div class="word-mark-actions">
             <div class="word-mark-action"><button @click="onMarkAsKnown">
@@ -108,6 +109,10 @@ async function onClearMark() {
 <style>
 .word-definition {
     border: solid black 1px;
+
+    .word-definition-content {
+        white-space: pre-line;
+    }
 }
 
 .word-mark-actions {
