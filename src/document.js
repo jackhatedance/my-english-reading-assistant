@@ -146,8 +146,9 @@ function getAllDocuments() {
 
   function changeStyleForAllDocuments(options) {
     let documents = getAllDocuments();
+    let siteConfig = findSiteConfig(document);
     for (let document of documents) {
-      changeStyle(document, options);
+      changeStyle(document, options, siteConfig);
     }
   }
 

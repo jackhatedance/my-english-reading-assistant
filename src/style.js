@@ -77,8 +77,7 @@ function generateCssRuleOfHighlight(options) {
     return rule;
 }
 
-function changeStyle(document, options) {
-    let siteConfig = findSiteConfig(document);
+function changeStyle(document, options, siteConfig) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
         //annotation

@@ -102,7 +102,7 @@ async function initPageAnnotations(addDocumentEventListener) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteConfig.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, documentConfig, addDocumentEventListener);
+        let article = await preprocessDocument(document, false, siteConfig, documentConfig, addDocumentEventListener);
         documentArticleMap.set(document, article);
     }
 
@@ -113,7 +113,7 @@ async function initPageAnnotations(addDocumentEventListener) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, iframeDocumentConfig, addDocumentEventListener);
+                let article = await preprocessDocument(iframeDocument, true, siteConfig, iframeDocumentConfig, addDocumentEventListener);
                 
                 documentArticleMap.set(iframeDocument, article);
             }
@@ -159,7 +159,7 @@ async function resetPageAnnotationVisibility(documentArticleMap, enabled, types)
     }    
 }
 
-async function preprocessDocument(document, isIframe, documentConfig, addDocumentEventListener) {
+async function preprocessDocument(document, isIframe, siteConfig, documentConfig, addDocumentEventListener) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -186,7 +186,7 @@ async function preprocessDocument(document, isIframe, documentConfig, addDocumen
 
             if (containsMeaStyle(document)) {
                 let currentSiteOption = await getCurrentSiteOptions();
-                changeStyle(document, currentSiteOption.annotation);
+                changeStyle(document, currentSiteOption.annotation, siteConfig);
                 window.clearInterval(intervalID);
             };
 
