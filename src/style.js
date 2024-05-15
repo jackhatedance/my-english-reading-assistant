@@ -1,6 +1,6 @@
 'use strict';
 
-import { findSiteConfig} from './site-match/site-match.js';
+
 
 function findStyleSheet(document) {
     for (let sheet of document.styleSheets) {
@@ -77,7 +77,7 @@ function generateCssRuleOfHighlight(options) {
     return rule;
 }
 
-function changeStyle(document, options, siteConfig) {
+function changeStyle(document, options, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
         //annotation
@@ -95,8 +95,8 @@ function changeStyle(document, options, siteConfig) {
             styleSheet.deleteRule(index);
         }
 
-        if(siteConfig.generateCssRuleOfHighlight){
-            rule = siteConfig.generateCssRuleOfHighlight(options);
+        if(siteProfile.generateCssRuleOfHighlight){
+            rule = siteProfile.generateCssRuleOfHighlight(options);
         }else{
             rule = generateCssRuleOfHighlight(options);
         }

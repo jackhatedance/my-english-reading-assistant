@@ -4,7 +4,7 @@ import { getSiteOptions, } from './service/optionService.js';
 import { tokenizeTextNode, parseDocument, } from './article.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, } from './service/optionService.js';
-import { findSiteConfig } from './site-match/site-match.js';
+import { findSiteProfile } from './site-profile/site-profiles.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
 import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
@@ -97,23 +97,23 @@ async function initPageAnnotations(addDocumentEventListener) {
     }
     */
 
-    let siteConfig = findSiteConfig(document);
+    let siteProfile = findSiteProfile(document);
 
     if (!isDocumentAnnotationInitialized(document)) {
-        let documentConfig = siteConfig.getDocumentConfig(window, document);
+        let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, siteConfig, documentConfig, addDocumentEventListener);
+        let article = await preprocessDocument(document, false, siteProfile, documentConfig, addDocumentEventListener);
         documentArticleMap.set(document, article);
     }
 
-    let iframeDocumentConfigs = siteConfig.getIframeDocumentConfigs(document);
+    let iframeDocumentConfigs = siteProfile.getIframeDocumentConfigs(document);
     //console.log('start iframe annotattion');
     for (var iframeDocumentConfig of iframeDocumentConfigs) {
         let iframeDocument = iframeDocumentConfig.document;
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, siteConfig, iframeDocumentConfig, addDocumentEventListener);
+                let article = await preprocessDocument(iframeDocument, true, siteProfile, iframeDocumentConfig, addDocumentEventListener);
                 
                 documentArticleMap.set(iframeDocument, article);
             }
@@ -123,7 +123,7 @@ async function initPageAnnotations(addDocumentEventListener) {
 
     //send message to background
     //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
-    sendMessageToBackground(siteConfig, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo);
+    sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo);
 
 
     return documentArticleMap;
@@ -131,11 +131,11 @@ async function initPageAnnotations(addDocumentEventListener) {
 
 
 function getAllWindows() {
-    let siteConfig = findSiteConfig(document);
+    let siteProfile = findSiteProfile(document);
   
     let windows = [window];
   
-    for (const config of siteConfig.getIframeDocumentConfigs(document)) {
+    for (const config of siteProfile.getIframeDocumentConfigs(document)) {
       windows.push(config.window);
     }
   
@@ -159,7 +159,7 @@ async function resetPageAnnotationVisibility(documentArticleMap, enabled, types)
     }    
 }
 
-async function preprocessDocument(document, isIframe, siteConfig, documentConfig, addDocumentEventListener) {
+async function preprocessDocument(document, isIframe, siteProfile, documentConfig, addDocumentEventListener) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -186,7 +186,7 @@ async function preprocessDocument(document, isIframe, siteConfig, documentConfig
 
             if (containsMeaStyle(document)) {
                 let currentSiteOption = await getCurrentSiteOptions();
-                changeStyle(document, currentSiteOption.annotation, siteConfig);
+                changeStyle(document, currentSiteOption.annotation, siteProfile);
                 window.clearInterval(intervalID);
             };
 

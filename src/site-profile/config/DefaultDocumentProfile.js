@@ -1,18 +1,18 @@
 import { searchSubIframesRecursively, isMeaIframe } from '../utils.js';
 
-const domainSiteConfig = {
-    domain : '[default-template]',   
+class DefaultDocumentConfig {
     //top document config
-    getDocumentConfig: function(window, document){
+    getDocumentConfig(window, document) {
         let config = {
             window: window,
             document: document,
             canProcess: true,
         };
         return config;
-    },
+    }
+
     //iframe document configs
-    getIframeDocumentConfigs: function(document){
+    getIframeDocumentConfigs(document){
         let configs = [];
         searchSubIframesRecursively(document, (iframe)=>{
             if(isMeaIframe(iframe)){
@@ -38,15 +38,15 @@ const domainSiteConfig = {
         });
 
         return configs;
-    },
+    }
     //timer to refresh page annotation peridonically
     needRefreshPageAnnotation(topDocument){
         return false;
-    },
+    }
     //the url to identify the real page (could be in in iframe)
     getUrl(topDocument){
         return topDocument.location.href;
     }
-};
+}
 
-export { domainSiteConfig };
+export {DefaultDocumentConfig};

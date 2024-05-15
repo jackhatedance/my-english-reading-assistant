@@ -17,7 +17,7 @@ function sendMessageMarkWordToBackground(wordChanges) {
     );
 }
 
-async function sendMessageToBackground(siteConfig, type, getPageInfo) {
+async function sendMessageToBackground(siteProfile, type, getPageInfo) {
     //console.log('send message to background, type:' + type);
 
     let pageInfo = await getPageInfo();
@@ -25,7 +25,7 @@ async function sendMessageToBackground(siteConfig, type, getPageInfo) {
     if (!site) {
         site = 'NULL';
     }
-    let url = siteConfig.getUrl(document);
+    let url = siteProfile.getUrl(document);
     chrome.runtime.sendMessage(
         {
             type: type,

@@ -4,7 +4,7 @@ import './content.css';
 import './side-panel-component.css';
 import { loadKnownWords } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
-import { findSiteConfig } from './site-match/site-match.js';
+import { findSiteProfile } from './site-profile/site-profiles.js';
 import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
@@ -183,9 +183,9 @@ chrome.runtime.onMessage.addListener(messageListener);
 setInterval(monitorTimer, 2000);
 
 function monitorTimer() {
-  let siteConfig = findSiteConfig(document);
+  let siteProfile = findSiteProfile(document);
 
-  if (siteConfig.needRefreshPageAnnotation(document)) {
+  if (siteProfile.needRefreshPageAnnotation(document)) {
     //console.log('needRefreshPageAnnotation');
     initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
       gDocumentArticleMap = documentArticleMap;
@@ -211,10 +211,10 @@ function monitorTimer() {
     } 
   }
 
-  let url = siteConfig.getUrl(document);
+  let url = siteProfile.getUrl(document);
   //console.log('gUrl:'+gUrl +',\nurl:'+url);
   if (gUrl && gUrl !== url) {
-    sendMessageToBackground(siteConfig, 'PAGE_URL_CHANGED', getPageInfo);
+    sendMessageToBackground(siteProfile, 'PAGE_URL_CHANGED', getPageInfo);
   }
 
   //update gloabl variable
