@@ -41,10 +41,14 @@ localizeHtmlPage();
 
     let table = document.getElementById('history');
     for(let item of history.reverse()){
-      let {startTime, title, url, totalWordCount, site, wordChanges, duration, endTime, vocabularySize} = item;
+      let {startTime, title, url, isbn, totalWordCount, site, wordChanges, duration, endTime, vocabularySize} = item;
 
       if(!site){
         site='';
+      }
+      
+      if(!isbn){
+        isbn='';
       }
 
       if(!totalWordCount){
@@ -65,6 +69,7 @@ localizeHtmlPage();
           <td>${endTimeFormatted}</td>
           <td>${site}</td>
           <td><a target="_blank" href='${url}'>${title}</a></td>
+          <td>${isbn}</td>
           <td>${totalWordCount}</td>
           <td>${durationFormatted}</td>
           <td>${vocabularySize}(${wordChanges})</td>
@@ -81,11 +86,13 @@ localizeHtmlPage();
     let pageSummaryMap = new Map();
     for(let activity of activities){
       let title = activity.title;
+      let isbn = activity.isbn;
       let summary = pageSummaryMap.get(title);
       
       if(!summary){
         summary={
           title: title,
+          isbn: isbn,
           startTime: activity.startTime,
           endTime: 0,
           duration: 0,
@@ -110,14 +117,18 @@ localizeHtmlPage();
   function renderPageSummaries(pageSummaries){
     let table = document.getElementById('pageSummaries');
     for(let item of pageSummaries){
-      let {title, wordChanges, duration, startTime, endTime} = item;
+      let {title, isbn, wordChanges, duration, startTime, endTime} = item;
 
+      if(!isbn){
+        isbn = '';
+      }
       
       let startTimeFormatted = new Date(startTime).toLocaleString( );
       let endTimeFormatted = new Date(endTime).toLocaleString( );
 
       let durationFormatted = new Date(duration).toISOString().substring(11, 19);
       const liInnerHTML = `<td>${title}</td>
+        <td>${isbn}</td>
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
           <td>${durationFormatted}</td>

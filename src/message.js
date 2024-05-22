@@ -1,5 +1,5 @@
 'use strict';
-
+import { getBook } from './service/bookService.js';
 
 function sendMessageMarkWordToBackground(wordChanges) {
     //send to background
@@ -26,12 +26,24 @@ async function sendMessageToBackground(siteProfile, type, getPageInfo) {
         site = 'NULL';
     }
     let url = siteProfile.getUrl(document);
+    
+    let title = document.title;
+    let isbn = pageInfo.isbn;
+
+    if(isbn){
+        let book = await getBook(isbn);
+        if(book){
+            title = book.title;
+        }        
+    }
+
     chrome.runtime.sendMessage(
         {
             type: type,
             payload: {
-                title: document.title,
+                title: title,
                 url: url,
+                isbn: isbn,
                 site: site,
                 totalWordCount: pageInfo.totalWordCount,
             },

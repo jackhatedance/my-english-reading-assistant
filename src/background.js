@@ -115,9 +115,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let startTime = new Date().getTime();
     let title = request.payload.title;
     let url = request.payload.url;
+    let isbn = request.payload.isbn;
     let site = request.payload.site;
     let totalWordCount = request.payload.totalWordCount;
-    let newTabInfo = {tabId: tabId, title: title, url:url, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
+    let newTabInfo = {tabId: tabId, title: title, url:url, isbn: isbn, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
     
     onInitPageFinished(tabId, newTabInfo);
   } else if(request.type === 'PAGE_URL_CHANGED'){
@@ -241,6 +242,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
       endTime: endTime,
       site: tabInfo.site,
       url: tabInfo.url,
+      isbn: tabInfo.isbn,
       sessionId: tabInfo.tabId,
       duration: duration,
       title: tabInfo.title,

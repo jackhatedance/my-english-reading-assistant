@@ -169,6 +169,9 @@
     "sidepanelTabMenu":{
         "message":"菜单"
     },
+    "sidepanelTabBook":{
+        "message":"书"
+    },
     "sidepanelTitle":{
         "message":"生词"
     },
@@ -232,6 +235,28 @@
         "message":"不确定"
     },
 
+    "sidepanelBookTabUrlLabel":{
+        "message":"网址"
+    },
+    "sidepanelBookTabIsBookLabel":{
+        "message":"是书"
+    },
+    "sidepanelBookTabIsbnLabel":{
+        "message":"书号"
+    },
+    "sidepanelBookTabTitleLabel":{
+        "message":"标题"
+    },
+    "sidepanelBookTabUrlPatternLabel":{
+        "message":"网址模式 (支持通配符: ?, * 和 **)"
+    },
+    "sidepanelBookTabQueryIsbnAction":{
+        "message":"查询"
+    },
+    "sidepanelBookTabSaveAction":{
+        "message":"保存"
+    },
+
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },
@@ -246,6 +271,9 @@
     },
     "reportReadingActivitiesHeaderTitle":{
         "message":"标题"
+    },
+    "reportReadingActivitiesHeaderIsbn":{
+        "message":"书号"
     },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"词数"
@@ -262,6 +290,9 @@
     },
     "reportPageSummariesHeaderTitle":{
         "message":"标题"
+    },
+    "reportPageSummariesHeaderIsbn":{
+        "message":"书号"
     },
     "reportPageSummariesHeaderStartReadTime":{
         "message":"开始时间"

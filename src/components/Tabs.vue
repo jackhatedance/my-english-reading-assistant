@@ -1,11 +1,12 @@
 <script setup>
-import { onUpdated, inject, nextTick } from 'vue';
+import { onUpdated, inject, nextTick, computed } from 'vue';
 import TabHeader from './TabHeader.vue';
 import TabBody from './TabBody.vue';
 import VocabularyTabContent from './VocabularyTabContent.vue';
 import NotesTabContent from './NotesTabContent.vue';
 import MenuTabContent from './MenuTabContent.vue';
 import ActionsTabContent from './ActionsTabContent.vue';
+import BookTabContent from './BookTabContent.vue';
 
 import { ref, watch } from "vue";
 
@@ -26,10 +27,17 @@ const sidepanelTabActions = chrome.i18n.getMessage('sidepanelTabActions');
 const sidepanelTabMenu = chrome.i18n.getMessage('sidepanelTabMenu');
 const sidepanelTabVocabulary = chrome.i18n.getMessage('sidepanelTabVocabulary');
 const sidepanelTabNotes = chrome.i18n.getMessage('sidepanelTabNotes');
-
+const sidepanelTabBook = chrome.i18n.getMessage('sidepanelTabBook');
 
 
 //console.log('Tabs notes:' + JSON.stringify(props.notes));
+
+const pageUrl = computed(() => {
+    if(props.page) {
+      return props.page.url;
+    }
+    return '';
+});
 
 async function onActiveTab(tabId) {
     //console.log('on active tab:' + tabId);
@@ -73,7 +81,7 @@ onUpdated(() => {
             <TabHeader v-if="false" tabId="menu-tab" :name="sidepanelTabMenu" :isActive="activeTabId === 'menu-tab'" @activeTab="onActiveTab" ></TabHeader>
             <TabHeader v-if="false" tabId="notes-tab" :name="sidepanelTabNotes" :isActive="activeTabId === 'notes-tab'" @activeTab="onActiveTab" >
             </TabHeader>
-
+            <TabHeader tabId="book-tab" :name="sidepanelTabBook" :isActive="activeTabId === 'book-tab'" @activeTab="onActiveTab"></TabHeader>
             <TabHeader tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
 
             <TabHeader tabId="actions-tab" :name="sidepanelTabActions" :isActive="activeTabId === 'actions-tab'" @activeTab="onActiveTab"></TabHeader>
@@ -81,6 +89,9 @@ onUpdated(() => {
         <TabBody id="menu-tab" v-show="activeTabId === 'menu-tab'" :isActive="activeTabId === 'menu-tab'">
 
             <MenuTabContent :menuItems="props.menuItems" @markWord="onMarkWord" @vocabulary="onVocabulary" @note="onNote"></MenuTabContent>
+        </TabBody>
+        <TabBody id="book-tab" v-show="activeTabId === 'book-tab'" :isActive="activeTabId === 'book-tab'">
+            <BookTabContent :url="pageUrl"></BookTabContent>
         </TabBody>
         <TabBody id="vocabulary-tab" v-show="activeTabId === 'vocabulary-tab'" :isActive="activeTabId === 'vocabulary-tab'">
             

@@ -169,6 +169,9 @@
     "sidepanelTabMenu":{
         "message":"Menu"
     },
+    "sidepanelTabBook":{
+        "message":"Book"
+    },
     "sidepanelTitle":{
         "message":"Unknown words"
     },
@@ -214,6 +217,10 @@
         "message":"Cancel"
     },
 
+    "sidepanelActionsTabNotesLabelNotes":{
+        "message":"Notes:"
+    },
+
     "sidepanelActionsTabWordLabelWord":{
         "message":"Word:"
     },
@@ -226,9 +233,27 @@
     "sidepanelActionsTabWordClearMarkAction":{
         "message":"Not Sure"
     },
-
-    "sidepanelActionsTabNotesLabelNotes":{
-        "message":"Notes:"
+    
+    "sidepanelBookTabUrlLabel":{
+        "message":"URL"
+    },
+    "sidepanelBookTabIsBookLabel":{
+        "message":"Is Book"
+    },
+    "sidepanelBookTabIsbnLabel":{
+        "message":"ISBN"
+    },
+    "sidepanelBookTabTitleLabel":{
+        "message":"Title"
+    },
+    "sidepanelBookTabUrlPatternLabel":{
+        "message":"URL Pattern (support wildcard character: ?, * and **)"
+    },
+    "sidepanelBookTabQueryIsbnAction":{
+        "message":"Query"
+    },
+    "sidepanelBookTabSaveAction":{
+        "message":"Save"
     },
 
     "reportReadingActivitiesTitle":{
@@ -246,6 +271,9 @@
     "reportReadingActivitiesHeaderTitle":{
         "message":"Title"
     },
+    "reportReadingActivitiesHeaderIsbn":{
+        "message":"ISBN"
+    },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"Words"
     },
@@ -261,6 +289,9 @@
     },
     "reportPageSummariesHeaderTitle":{
         "message":"Title"
+    },
+    "reportPageSummariesHeaderIsbn":{
+        "message":"ISBN"
     },
     "reportPageSummariesHeaderStartReadTime":{
         "message":"Start Time"

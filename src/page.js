@@ -8,14 +8,14 @@ import { findSiteProfile } from './site-profile/site-profiles.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
 import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
-import { addToolbar } from './toolbar.js';
+import { getIsbn } from './service/pageService.js';
 
 /**
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
  */
 async function getPageInfo() {
-
+    let siteProfile = findSiteProfile(document);
 
     let documents = getAllDocuments();
     let unknownWordMap = new Map();
@@ -49,7 +49,13 @@ async function getPageInfo() {
     if (!domain) {
         domain = 'NULL';
     }
+    let url = siteProfile.getUrl(document);
+
+    let isbn = await getIsbn(url);
+
     let pageInfo = {
+        url: url,
+        isbn: isbn,
         domain: domain,
         visible: visible,
         totalWordCount: totalWordCount,

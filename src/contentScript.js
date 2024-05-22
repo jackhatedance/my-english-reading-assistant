@@ -235,7 +235,10 @@ async function addDocumentEventListener(document, documentConfig) {
     //wont show dialog on a link
     let aLink = event.target.closest('a');
     if(aLink){
-      return;
+      let href = aLink.getAttribute('href');
+      if(href) {
+        return;
+      }      
     }
 
     let nodeSelection = document.getSelection();
