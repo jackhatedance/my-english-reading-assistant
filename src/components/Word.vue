@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue
 import { MenuItems } from '../menu.js';
 import { lookupShort } from '../dictionary.js';
 import { markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
-import { sendMessageMarkWordToBackground, sendMessageToBackground } from '../message.js'; import { isKnown } from '../language.js'
+import { sendMessageMarkWordToBackground } from '../message.js'; import { isKnown } from '../language.js'
 
 const props = defineProps({
     word: String,

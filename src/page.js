@@ -14,7 +14,7 @@ import { getIsbn } from './service/pageService.js';
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
  */
-async function getPageInfo() {
+async function getPageInfo(documentArticleMap) {
     let siteProfile = findSiteProfile(document);
 
     let documents = getAllDocuments();
@@ -22,6 +22,7 @@ async function getPageInfo() {
 
     let unknownWordsCount = 0;
     let knownWordsCount = 0;
+    let isbnsInContent = [];
     for (let document of documents) {
         let elements = document.querySelectorAll('.mea-word:not(.mea-hide)');
 
@@ -36,6 +37,13 @@ async function getPageInfo() {
         elements = document.querySelectorAll('.mea-word.mea-hide');
         for (var e of elements) {
             knownWordsCount++;
+        }
+
+        if(documentArticleMap) {
+            let article = documentArticleMap.get(document);
+            if(article && article.isbns){
+                isbnsInContent.push(article.isbns);
+            }
         }
     }
 
@@ -52,9 +60,11 @@ async function getPageInfo() {
     let url = siteProfile.getUrl(document);
 
     let isbn = await getIsbn(url);
+    let title = document.title;
 
     let pageInfo = {
         url: url,
+        title: title,
         isbn: isbn,
         domain: domain,
         visible: visible,
@@ -63,6 +73,7 @@ async function getPageInfo() {
         unknownWords: unknownWords,
         unknownWordsRatio: unknownWordsRatio,
         siteOptions: siteOptions,
+        isbnsInContent: isbnsInContent,
     };
     //console.log('page info:'+JSON.stringify(pageInfo));
     return pageInfo;
@@ -129,7 +140,7 @@ async function initPageAnnotations(addDocumentEventListener) {
 
     //send message to background
     //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
-    sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo);
+    sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo, documentArticleMap);
 
 
     return documentArticleMap;

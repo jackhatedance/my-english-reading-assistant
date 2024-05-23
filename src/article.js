@@ -121,6 +121,9 @@ function parseDocument(document, skip = false) {
 
         textNodes: [],
         textNodeMap: new Map(),
+
+        //found in content
+        isbns: [],
     };
 
     //parse paragraph and sentence
@@ -166,7 +169,36 @@ function parseArticleContent(article, articleContent){
     }
 }
 
+
+function extractIsbn(content) {
+    let isbns = [];
+
+    if(content.includes('ISBN')){
+        console.log('ISBN:'+content);
+    }
+
+    const regexp = /ISBN[^\d]+([\d-]+)/g;
+    const str = content;
+    const matches = str.matchAll(regexp);
+
+    for (const match of matches) {
+        
+        isbns.push(match[1]);
+    }
+
+    return isbns;
+}
+
 function parseParagraphContent(article, paragraphInfo, content){
+    //search isbn
+    let isbns = extractIsbn(content);
+    if(isbns){
+        for(let i of isbns){
+            article.isbns.push(i);
+        }
+    }
+    
+
     //console.log('content:'+content);
     let paragraphStartOffsetOfArticle = paragraphInfo.offset;
     let sentences = split(content);

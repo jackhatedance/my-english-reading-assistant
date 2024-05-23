@@ -91,7 +91,7 @@ onUpdated(() => {
             <MenuTabContent :menuItems="props.menuItems" @markWord="onMarkWord" @vocabulary="onVocabulary" @note="onNote"></MenuTabContent>
         </TabBody>
         <TabBody id="book-tab" v-show="activeTabId === 'book-tab'" :isActive="activeTabId === 'book-tab'">
-            <BookTabContent :url="pageUrl"></BookTabContent>
+            <BookTabContent :url="pageUrl" :page="page"></BookTabContent>
         </TabBody>
         <TabBody id="vocabulary-tab" v-show="activeTabId === 'vocabulary-tab'" :isActive="activeTabId === 'vocabulary-tab'">
             

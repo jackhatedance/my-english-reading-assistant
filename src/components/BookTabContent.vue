@@ -10,7 +10,7 @@ const props = defineProps({
     isbn: String,
     title: String,
     urlPattern: String,
-
+    page: Object,
 });
 
 const sidepanelBookTabUrlLabel = chrome.i18n.getMessage('sidepanelBookTabUrlLabel');
@@ -19,7 +19,10 @@ const sidepanelBookTabIsbnLabel = chrome.i18n.getMessage('sidepanelBookTabIsbnLa
 const sidepanelBookTabTitleLabel = chrome.i18n.getMessage('sidepanelBookTabTitleLabel');
 const sidepanelBookTabUrlPatternLabel = chrome.i18n.getMessage('sidepanelBookTabUrlPatternLabel');
 const sidepanelBookTabQueryIsbnAction = chrome.i18n.getMessage('sidepanelBookTabQueryIsbnAction');
+const sidepanelBookTabDetectAction = chrome.i18n.getMessage('sidepanelBookTabDetectAction');
 const sidepanelBookTabSaveAction = chrome.i18n.getMessage('sidepanelBookTabSaveAction');
+const sidepanelBookTabDeleteAction = chrome.i18n.getMessage('sidepanelBookTabDeleteAction');
+const sidepanelBookTabResetAction = chrome.i18n.getMessage('sidepanelBookTabResetAction');
 
 const pageDao = new PageDao();
 const bookDao = new BookDao();
@@ -113,9 +116,43 @@ function clickSave() {
     bookDao.set(book);
 }
 
+function clickDelete() {
+    console.log('click save');
+    let page = {
+        url: props.url,
+        isBook: isBook.value,
+        isbn: isbn.value,
+    };
+
+    let book = {
+        isbn: isbn.value,
+        title: title.value,
+        urlPattern: urlPattern.value,
+    }
+
+    pageDao.delete(props.url);
+    bookDao.delete(isbn.value);
+
+    update(props.url);
+}
+
 async function clickQuery() {
     let book = await bookDao.get(isbn.value);
     updateBookUI(book);
+}
+
+async function clickDetect() {
+    console.log('page:'+ JSON.stringify(props.page));
+    isbn.value = props.page.isbnsInContent.join(',');
+    title.value = props.page.title;
+    urlPattern.value = props.url;
+
+    changeIsbn();
+}
+
+
+async function clickReset() {
+    update(props.url);
 }
 
 function changeIsbn(){
@@ -156,7 +193,7 @@ init();
         
             <label>{{ sidepanelBookTabTitleLabel }}</label>
             <div class="input">
-                <input class="title" v-model="title">
+                <textarea class="title" v-model="title"></textarea>
             </div>
         
 
@@ -168,7 +205,10 @@ init();
         
 
         <div class="line">
+            <button class="button" @click="clickDetect">{{ sidepanelBookTabDetectAction }}</button>
             <button class="button" @click="clickSave">{{ sidepanelBookTabSaveAction }}</button>
+            <button class="button" @click="clickDelete">{{ sidepanelBookTabDeleteAction }}</button>
+            <button class="button" @click="clickReset">{{ sidepanelBookTabResetAction }}</button>
         </div>
     </div>
 
@@ -195,10 +235,10 @@ init();
         overflow-wrap: anywhere;
     }
     .isbn {
-        width: 70%;
+        width: 60%;
     }
     .query-isbn {
-        width: 25%;
+        width: 50px;
     }
     
     .title {
@@ -214,6 +254,10 @@ init();
     .line {
         grid-column: 1 / span 2;
         text-align: center;
+    }
+
+    button {
+        margin: 5px;
     }
 }
 </style>

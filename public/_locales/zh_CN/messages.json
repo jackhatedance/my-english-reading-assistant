@@ -253,8 +253,17 @@
     "sidepanelBookTabQueryIsbnAction":{
         "message":"查询"
     },
+    "sidepanelBookTabDetectAction":{
+        "message":"检测"
+    },
     "sidepanelBookTabSaveAction":{
         "message":"保存"
+    },
+    "sidepanelBookTabDeleteAction":{
+        "message":"删除"
+    },
+    "sidepanelBookTabResetAction":{
+        "message":"重置"
     },
 
     "reportReadingActivitiesTitle":{

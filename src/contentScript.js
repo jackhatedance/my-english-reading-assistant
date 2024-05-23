@@ -120,7 +120,7 @@ function messageListener(request, sender, sendResponse) {
 
     
       //let pageInfo = await getPageInfo();
-      getPageInfo().then((pageInfo) => {
+      getPageInfo(gDocumentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -135,7 +135,7 @@ function messageListener(request, sender, sendResponse) {
 
     
       //let pageInfo = await getPageInfo();
-      getPageInfo().then((pageInfo) => {
+      getPageInfo(gDocumentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -214,7 +214,7 @@ function monitorTimer() {
   let url = siteProfile.getUrl(document);
   //console.log('gUrl:'+gUrl +',\nurl:'+url);
   if (gUrl && gUrl !== url) {
-    sendMessageToBackground(siteProfile, 'PAGE_URL_CHANGED', getPageInfo);
+    sendMessageToBackground(siteProfile, 'PAGE_URL_CHANGED', getPageInfo, gDocumentArticleMap);
   }
 
   //update gloabl variable
@@ -393,7 +393,7 @@ function sendMessageToApp(request, sender, sendResponse){
 async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
   await resetPageAnnotationVisibility(gDocumentArticleMap, enabled, types);
 
-  let pageInfo = await getPageInfo();
+  let pageInfo = await getPageInfo(gDocumentArticleMap);
     //send message to side panel
     let request = {
         type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',

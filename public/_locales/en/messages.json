@@ -252,8 +252,17 @@
     "sidepanelBookTabQueryIsbnAction":{
         "message":"Query"
     },
+    "sidepanelBookTabDetectAction":{
+        "message":"Detect"
+    },
     "sidepanelBookTabSaveAction":{
         "message":"Save"
+    },
+    "sidepanelBookTabDeleteAction":{
+        "message":"Delete"
+    },
+    "sidepanelBookTabResetAction":{
+        "message":"Reset"
     },
 
     "reportReadingActivitiesTitle":{

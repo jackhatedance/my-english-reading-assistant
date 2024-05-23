@@ -57,7 +57,7 @@ class BaseDao {
         let map = await this.getAllAsMap();
         map.delete(key);
     
-        let objectArray = this.mapToArray(objectMap);
+        let objectArray = this.mapToArray(map);
         
         await this.write(objectArray);
     }
