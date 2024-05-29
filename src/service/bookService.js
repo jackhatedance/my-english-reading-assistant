@@ -15,7 +15,7 @@ async function searchBookByUrl(url) {
     let bookArray = await bookDao.getAll();
     let result;
 
-    console.log('search book by url:' + url);
+    //console.log('search book by url:' + url);
 
     for(let book of bookArray){
         let pattern = book.urlPattern;
@@ -25,7 +25,7 @@ async function searchBookByUrl(url) {
             if(match){
                 result = book;
 
-                console.log('found:'+JSON.stringify(book));
+                //console.log('found:'+JSON.stringify(book));
 
                 break;
             }

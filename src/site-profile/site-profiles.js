@@ -6,6 +6,7 @@ import { EpubjsSiteProfile } from './by-category/EpubjsSiteProfile.js';
 import { Matcher } from './matcher/Matcher.js';
 import { DefaultSiteProfile } from './DefaultSiteProfile.js';
 import { DefaultDocumentConfig } from './config/DefaultDocumentProfile.js';
+import { searchSubIframesRecursively } from './utils.js';
 
 let name = 'default';
 let matcher = new Matcher('default');
@@ -38,5 +39,54 @@ function findSiteProfile(document) {
     return searchResult;
 }
 
+function getSiteInfo(){
+    let url = document.location.href;
+    let iframes = getIframes();
+    return {
+        url,
+        iframes,
+    };
+}
 
-export { findSiteProfile };
+function compareSiteInfo(info1, info2){
+    
+    if((!info1 && info2) || (info1 && !info2)){
+        return false;
+    }
+
+    if(info1.url !== info2.url){
+        return false;
+    }
+    let sameIframes = compareIframes(info1.iframes, info2.iframes);
+    return sameIframes;
+}
+
+function getIframes() {
+    let iframes = [];
+    searchSubIframesRecursively(document, (iframe)=>{
+        iframes.push(iframe);
+    });
+    return iframes;
+}
+  
+function compareIframes(oldIframes, newIframes){
+    
+    let changed = false;
+    
+    if(oldIframes.length !== newIframes.length){
+        changed = true;
+    } else {
+        for(let i= 0; i< newIframes.length;i++){
+            let oldIframe = oldIframes[i];
+            let newIframe = newIframes[i];
+            if(oldIframe !== newIframe){
+                changed = true;
+                break;
+            }
+        }
+    }
+
+    return !changed;
+}
+
+export { findSiteProfile, getSiteInfo, compareSiteInfo };

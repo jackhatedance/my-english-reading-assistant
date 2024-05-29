@@ -19,7 +19,7 @@ class BaseDao {
 
     async getAll() {
         let objects = await this.read();
-        console.log('get objects:' + JSON.stringify(objects));
+        //console.log('get objects:' + JSON.stringify(objects));
 
         if (!Array.isArray(objects)) {
             objects = [];
@@ -34,7 +34,7 @@ class BaseDao {
     }
 
     async setAll(objectArray){
-        console.log('get objects:' + JSON.stringify(objectArray));
+        //console.log('get objects:' + JSON.stringify(objectArray));
         await this.write(objectArray);
     }
 

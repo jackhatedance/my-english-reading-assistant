@@ -4,7 +4,7 @@ import './content.css';
 import './side-panel-component.css';
 import { loadKnownWords } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
-import { findSiteProfile } from './site-profile/site-profiles.js';
+import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
 import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
@@ -20,6 +20,10 @@ import { MenuItems } from './menu.js';
 //used to check if title changed
 var gUrl;
 
+//if site info changed, need to re-search site profile 
+var gSiteInfo;
+var gSiteProfile;
+
 var gDocumentArticleMap;
 
 var gDomChanges=0;
@@ -31,10 +35,13 @@ function myMain() {
   var jsInitChecktimer = setTimeout(checkForJS_Finish, 100);
 
   function checkForJS_Finish() {
+    if(!gSiteProfile){
+      gSiteProfile = findSiteProfile(document);
+    }    
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -60,8 +67,8 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'ENABLED') {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
-      if (!isAllDocumentsAnnotationInitialized()) {
-        initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+      if (!isAllDocumentsAnnotationInitialized(gSiteProfile)) {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -79,11 +86,11 @@ function messageListener(request, sender, sendResponse) {
 
     if (visible) {//master document
       if (request.payload.force) {
-        clearPagePreprocessMark();
+        clearPagePreprocessMark(gSiteProfile);
       }
 
       //init all documents
-      initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+      initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -119,8 +126,7 @@ function messageListener(request, sender, sendResponse) {
     console.log(`${request.type}`);
 
     
-      //let pageInfo = await getPageInfo();
-      getPageInfo(gDocumentArticleMap).then((pageInfo) => {
+      getPageInfo(gSiteProfile, gDocumentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -134,8 +140,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`${request.type}`);
 
     
-      //let pageInfo = await getPageInfo();
-      getPageInfo(gDocumentArticleMap).then((pageInfo) => {
+      getPageInfo(gSiteProfile, gDocumentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -165,7 +170,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload) {
       //annotationOptions = request.payload;
       getCurrentSiteOptions().then(options => {
-        changeStyleForAllDocuments(options.annotation);
+        changeStyleForAllDocuments(gSiteProfile, options.annotation);
       });
     }
 
@@ -183,11 +188,16 @@ chrome.runtime.onMessage.addListener(messageListener);
 setInterval(monitorTimer, 2000);
 
 function monitorTimer() {
-  let siteProfile = findSiteProfile(document);
 
-  if (siteProfile.needRefreshPageAnnotation(document)) {
+  let siteInfoSame = checkSiteInfoChanges();
+  if(!gSiteProfile || !siteInfoSame){
+    gSiteProfile = findSiteProfile(document);
+  }
+ 
+
+  if (gSiteProfile.needRefreshPageAnnotation(document)) {
     //console.log('needRefreshPageAnnotation');
-    initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+    initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
       gDocumentArticleMap = documentArticleMap;
       resetPageAnnotationVisibilityAndNotify(true);
     });
@@ -200,9 +210,9 @@ function monitorTimer() {
       //reset
       gDomChanges =0;
 
-      clearPagePreprocessMark();
+      clearPagePreprocessMark(gSiteProfile);
       
-      initPageAnnotations(addDocumentEventListener).then((documentArticleMap) => {
+      initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(true);
       });  
@@ -211,15 +221,25 @@ function monitorTimer() {
     } 
   }
 
-  let url = siteProfile.getUrl(document);
+  let url = gSiteProfile.getUrl(document);
   //console.log('gUrl:'+gUrl +',\nurl:'+url);
   if (gUrl && gUrl !== url) {
-    sendMessageToBackground(siteProfile, 'PAGE_URL_CHANGED', getPageInfo, gDocumentArticleMap);
+    sendMessageToBackground(gSiteProfile, 'PAGE_URL_CHANGED', getPageInfo, gDocumentArticleMap);
   }
 
   //update gloabl variable
   gUrl = url;
 
+}
+
+function checkSiteInfoChanges(){
+  let siteInfo = getSiteInfo();
+  let same = compareSiteInfo(gSiteInfo, siteInfo);
+  if(!same){
+    gSiteInfo = siteInfo;
+  }
+    
+  return same;
 }
 
 async function addDocumentEventListener(document, documentConfig) {
@@ -391,9 +411,9 @@ function sendMessageToApp(request, sender, sendResponse){
 }
 
 async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
-  await resetPageAnnotationVisibility(gDocumentArticleMap, enabled, types);
+  await resetPageAnnotationVisibility(gSiteProfile, gDocumentArticleMap, enabled, types);
 
-  let pageInfo = await getPageInfo(gDocumentArticleMap);
+  let pageInfo = await getPageInfo(gSiteProfile, gDocumentArticleMap);
     //send message to side panel
     let request = {
         type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',

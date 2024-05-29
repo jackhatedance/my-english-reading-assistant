@@ -10,7 +10,7 @@ class UrlMatcher extends Matcher {
     
     match(document) {
         let url = document?.location?.href;
-        console.log(`try url:${url} matching ${this.url}`);
+        //console.log(`try url:${url} matching ${this.url}`);
         return url && url.startsWith(this.url);
     }
 

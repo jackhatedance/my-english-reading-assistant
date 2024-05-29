@@ -1,7 +1,6 @@
 
 'use strict';
 
-import { findSiteProfile } from './site-profile/site-profiles.js';
 import { traverseElement, traverseNode } from './dom.js';
 import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
@@ -121,17 +120,16 @@ function isDocumentAnnotationInitialized(document) {
     }
 }
 
-function isAllDocumentsAnnotationInitialized() {
-    let documents = getAllDocuments();
+function isAllDocumentsAnnotationInitialized(siteProfile) {
+    let documents = getAllDocuments(siteProfile);
 
     return documents.every((document) => {
         return isDocumentAnnotationInitialized(document);
     });
 }
 
-function getAllDocuments() {
-    let siteProfile = findSiteProfile(document);
-  
+function getAllDocuments(siteProfile) {
+      
     let documents = [document];
   
     for (const config of siteProfile.getIframeDocumentConfigs(document)) {
@@ -144,9 +142,9 @@ function getAllDocuments() {
     return documents;
   }
 
-  function changeStyleForAllDocuments(options) {
-    let documents = getAllDocuments();
-    let siteProfile = findSiteProfile(document);
+  function changeStyleForAllDocuments(siteProfile, options) {
+    let documents = getAllDocuments(siteProfile);
+    
     for (let document of documents) {
       changeStyle(document, options, siteProfile);
     }

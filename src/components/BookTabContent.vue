@@ -53,7 +53,7 @@ onMounted(()=>{
 });
 
 watch(() => props.url, (newValue) => {
-    console.log('url changed:'+ newValue);
+    //console.log('url changed:'+ newValue);
     update(newValue);
 });
 

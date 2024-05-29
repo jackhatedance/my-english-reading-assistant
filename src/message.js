@@ -20,7 +20,7 @@ function sendMessageMarkWordToBackground(wordChanges) {
 async function sendMessageToBackground(siteProfile, type, getPageInfo, documentArticleMap) {
     //console.log('send message to background, type:' + type);
 
-    let pageInfo = await getPageInfo(documentArticleMap);
+    let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
     let site = document.location.hostname;
     if (!site) {
         site = 'NULL';

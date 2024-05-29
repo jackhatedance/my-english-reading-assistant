@@ -14,10 +14,9 @@ import { getIsbn } from './service/pageService.js';
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
  */
-async function getPageInfo(documentArticleMap) {
-    let siteProfile = findSiteProfile(document);
-
-    let documents = getAllDocuments();
+async function getPageInfo(siteProfile, documentArticleMap) {
+    
+    let documents = getAllDocuments(siteProfile);
     let unknownWordMap = new Map();
 
     let unknownWordsCount = 0;
@@ -102,7 +101,7 @@ function isPageAnnotationInitialized() {
 }
 
 
-async function initPageAnnotations(addDocumentEventListener) {
+async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     //console.log('initPageAnnotations');
     await initializeOptionService();
 
@@ -113,8 +112,6 @@ async function initPageAnnotations(addDocumentEventListener) {
         knownWords = [];
     }
     */
-
-    let siteProfile = findSiteProfile(document);
 
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
@@ -147,9 +144,8 @@ async function initPageAnnotations(addDocumentEventListener) {
 }
 
 
-function getAllWindows() {
-    let siteProfile = findSiteProfile(document);
-  
+function getAllWindows(siteProfile) {
+    
     let windows = [window];
   
     for (const config of siteProfile.getIframeDocumentConfigs(document)) {
@@ -159,13 +155,13 @@ function getAllWindows() {
     return windows;
 }
 
-async function resetPageAnnotationVisibility(documentArticleMap, enabled, types) {
+async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, enabled, types) {
     //let unknownWordSet = new Set();
     if (!types) {
       types = ['word-definition', 'note'];
     }
   
-    let windows = getAllWindows();
+    let windows = getAllWindows(siteProfile);
     for (const window of windows) {
         let document = window.document;
         let article = documentArticleMap.get(document);
@@ -239,8 +235,8 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 }
 
 
-function clearPagePreprocessMark() {
-    let documents = getAllDocuments();
+function clearPagePreprocessMark(siteProfile) {
+    let documents = getAllDocuments(siteProfile);
   
     return documents.every((document) => {
       document.body.removeAttribute('mea-preprocessed');
