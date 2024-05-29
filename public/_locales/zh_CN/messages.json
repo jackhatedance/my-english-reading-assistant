@@ -248,7 +248,7 @@
         "message":"标题"
     },
     "sidepanelBookTabUrlPatternLabel":{
-        "message":"网址模式 (支持通配符: ?, * 和 **)"
+        "message":"网址规则 (支持通配符: ?, * 和 **)"
     },
     "sidepanelBookTabQueryIsbnAction":{
         "message":"查询"

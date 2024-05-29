@@ -23,6 +23,9 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
     let def = lookupShort(props.word);
+    if(!def){
+        def = '';
+    }
     def = def.replaceAll(';', '\n');
     return def;
 });

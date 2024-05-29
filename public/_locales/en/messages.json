@@ -247,7 +247,7 @@
         "message":"Title"
     },
     "sidepanelBookTabUrlPatternLabel":{
-        "message":"URL Pattern (support wildcard character: ?, * and **)"
+        "message":"URL Rule (support wildcard: ?, * and **)"
     },
     "sidepanelBookTabQueryIsbnAction":{
         "message":"Query"
