@@ -11,11 +11,9 @@ const props = defineProps({
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
-const sidepanelActionsTabWordLabelWord = chrome.i18n.getMessage('sidepanelActionsTabWordLabelWord');
-
-const sidepanelActionsTabWordMarkAsUnknownAction = chrome.i18n.getMessage('sidepanelActionsTabWordMarkAsUnknownAction');
-const sidepanelActionsTabWordMarkAsKnownAction = chrome.i18n.getMessage('sidepanelActionsTabWordMarkAsKnownAction');
-const sidepanelActionsTabWordClearMarkAction = chrome.i18n.getMessage('sidepanelActionsTabWordClearMarkAction');
+const markAsKnownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsKnown');
+const markAsUnknownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsUnknown');
+const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 
 let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
@@ -96,13 +94,13 @@ async function onClearMark() {
             <p class="word-definition-content">{{ definition }}</p>
         </div>
         <div class="word-mark-actions">
-            <div class="word-mark-action"><button @click="onMarkAsKnown">
+            <div class="word-mark-action"><button @click="onMarkAsKnown" :title='markAsKnownTips'>
                 <img :src='tickImgUrl' />
             </button></div>
-            <div class="word-mark-action"><button @click="onMarkAsUnknown">
+            <div class="word-mark-action"><button @click="onMarkAsUnknown" :title='markAsUnknownTips'>
                 <img :src='questionMarkImgUrl' />
             </button></div>
-            <div class="word-mark-action"><button @click="onClearMark">
+            <div class="word-mark-action"><button @click="onClearMark" :title='clearMarkTips'>
                 <img :src='clearImgUrl' />
             </button></div>
         </div>
