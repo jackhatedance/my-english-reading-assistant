@@ -5,6 +5,11 @@ import {dict as dictAffix} from './dicts/dict-affix.js'
 function lookup(word, dicts) {
     //console.log(dict);
 
+    //replace single quotation
+    if(word){
+        word = word.replaceAll(/[’]/g, "'");
+    }    
+
     //try small dict first, hits 90%
     let def;
 

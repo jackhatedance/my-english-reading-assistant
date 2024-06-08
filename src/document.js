@@ -45,7 +45,7 @@ function cleanElements(document) {
     //replace punctuations
     traverseNode(document.body, (node) => {
         if (node.nodeName === '#text') {
-            node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
+            //node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
         }
     });
 

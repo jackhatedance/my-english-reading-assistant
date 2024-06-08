@@ -82,7 +82,7 @@ function tokenizeTextNode(document) {
 function splitText(sentence) {
     let parts = [];
 
-    const regexp = /([a-zA-Z][a-zA-Z'&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g;
+    const regexp = /([a-zA-Z][a-zA-Z'’&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g;
     const str = sentence;
     const matches = str.matchAll(regexp);
 

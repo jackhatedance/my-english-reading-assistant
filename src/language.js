@@ -66,7 +66,9 @@ function searchWordWithDict(request, dicts){
     let searchType = 'raw';
     let lemmaType = 'regular';
 
-    //no modification
+    //replace single quotation mark
+    input = input.replaceAll(/[’]/g, "'");
+
     let word = input;
     let definition = lookup(word, dicts);
 
