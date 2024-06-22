@@ -70,6 +70,18 @@ function clickShowDefinition() {
     showDefinition.value = true;
 }
 
+async function clickMarkToggle() {
+    let { target } = props.word;
+    let knownWords = await loadKnownWords();
+    let known = isKnown(target, knownWords);
+    if(known){
+        await clickMarkAsUnknown();
+    } else {
+        await clickMarkAsKnown();
+    }
+    
+    //console.log('mark toggle');
+}
 
 async function clickMarkAsKnown() {
     let baseForm = props.word.target;
@@ -131,14 +143,10 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
                         <img :src='lookupImgUrl' width="12"/>
                     </button>
 
-                    <button class='mea-mark-known' :word="props.word.target" :title="markAsKnownTips"
-                        @click="clickMarkAsKnown">
+                    <button :class="{ unknown: !props.isKnown }" :word="props.word.target" :title="markAsKnownTips"
+                        @click="clickMarkToggle">
                         <img :src='tickImgUrl' width="12"/>
-                    </button>
-                    <button class='mea-mark-unknown' :word="props.word.target" :title="markAsUnknownTips"
-                        @click="clickMarkAsUnknown">
-                        <img :src='questionMarkImgUrl' width="12"/>
-                    </button>
+                    </button>                    
                     <button class='mea-mark-clear' :word="props.word.target" :title="clearMarkTips" @click="clickClearMark">
                         <img :src='clearImgUrl' width="12"/>
                     </button>
@@ -180,6 +188,11 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 }
 .word-and-actions .word.known {
     text-decoration: line-through;
+}
+.word-and-actions .unknown {
+    img {
+        filter: grayscale(100%);
+    }
 }
 .definition {
     margin:0px;

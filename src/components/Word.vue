@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
-import { MenuItems } from '../menu.js';
+import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { lookupShort } from '../dictionary.js';
-import { markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
-import { sendMessageMarkWordToBackground } from '../message.js'; import { isKnown } from '../language.js'
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
+import { sendMessageMarkWordToBackground } from '../message.js'; 
+import { isKnown } from '../language.js'
 
 const props = defineProps({
     word: String,
@@ -11,12 +11,10 @@ const props = defineProps({
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
-const markAsKnownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsKnown');
-const markAsUnknownTips = chrome.i18n.getMessage('sidepanelWordActionMarkAsUnknown');
+const markToggleTips = chrome.i18n.getMessage('sidepanelWordActionMarkToggle');
 const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 
 let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
-let questionMarkImgUrl = chrome.runtime.getURL("icons/question-mark.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
@@ -28,9 +26,19 @@ const definition = computed(() => {
     return def;
 });
 
+const knownRef = new ref(false);
+watch(() => props.word, (newValue) => {
+    updateKnown();
+});
+
+async function updateKnown() {
+    let knownWords = await loadKnownWords();
+    let known = isKnown(props.word, knownWords);
+    knownRef.value = known;
+}
 
 onMounted(() => {
-    
+    updateKnown();
 
 });
 
@@ -43,6 +51,18 @@ onUpdated(() => {
     //console.log('Note updated');
 
 });
+
+async function onMarkToggle() {
+    let knownWords = await loadKnownWords();
+    let known = isKnown(props.word, knownWords);
+    if(known){
+        await onMarkAsUnknown();
+    } else {
+        await onMarkAsKnown();
+    }
+    updateKnown();
+    //console.log('mark toggle');
+}
 
 async function onMarkAsUnknown() {
     let targetWord = props.word;
@@ -75,7 +95,7 @@ async function onMarkAsKnown() {
 async function onClearMark() {
     let targetWord = props.word;
     let wordChanges = await removeWordMark(targetWord);
-
+    updateKnown();
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
@@ -94,11 +114,8 @@ async function onClearMark() {
             <p class="word-definition-content">{{ definition }}</p>
         </div>
         <div class="word-mark-actions">
-            <div class="word-mark-action"><button @click="onMarkAsKnown" :title='markAsKnownTips'>
+            <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
                 <img :src='tickImgUrl' />
-            </button></div>
-            <div class="word-mark-action"><button @click="onMarkAsUnknown" :title='markAsUnknownTips'>
-                <img :src='questionMarkImgUrl' />
             </button></div>
             <div class="word-mark-action"><button @click="onClearMark" :title='clearMarkTips'>
                 <img :src='clearImgUrl' />
@@ -120,6 +137,13 @@ async function onClearMark() {
     display: flex;
     img {
         width: 20px;
+    }
+
+}
+
+.word-mark-actions .unknown {
+    img {
+        filter: grayscale(100%);
     }
 }
 

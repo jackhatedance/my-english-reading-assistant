@@ -198,6 +198,9 @@
     "sidepanelWordActionMarkAsUnknown":{
         "message":"我不认识"
     },
+    "sidepanelWordActionMarkToggle":{
+        "message":"标记单词"
+    },
     "sidepanelWordActionClearMark":{
         "message":"我不确定"
     },

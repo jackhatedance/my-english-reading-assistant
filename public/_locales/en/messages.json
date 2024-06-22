@@ -197,6 +197,9 @@
     "sidepanelWordActionMarkAsUnknown":{
         "message":"I don't know it"
     },
+    "sidepanelWordActionMarkToggle":{
+        "message":"Mark Word"
+    },
     "sidepanelWordActionClearMark":{
         "message":"I am not sure"
     },
