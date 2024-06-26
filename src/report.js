@@ -102,6 +102,7 @@ localizeHtmlPage();
         pageSummaryMap.set(title, summary);
       }
 
+      summary.startTime = Math.min(activity.startTime, summary.startTime);
       summary.endTime = Math.max(activity.endTime, summary.endTime);
       summary.duration = summary.duration + activity.duration;
       summary.wordChanges = summary.wordChanges + activity.wordChanges;
