@@ -3,8 +3,8 @@
 import { getWordParts } from './language.js';
 import {  TOKEN_TAG } from './html.js';
 
-function annotateWord(searchResult, sentenceId, sentenceNumber, tokenNumber) {
-    let query = searchResult.query;
+function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber) {
+    let query = token;
     let baseWord = searchResult.word;
     let definition = searchResult.definition;
 

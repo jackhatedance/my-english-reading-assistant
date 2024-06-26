@@ -10,7 +10,7 @@ import {dict as dictAffix} from './dicts/dict-affix.js';
 var gPrefixes, gSuffixes;
 
 function searchWord(request){
-
+    
     let requestOfSmall = {...request};
     requestOfSmall.allowRemoveSuffixOrPrefix = false;
     
@@ -21,7 +21,7 @@ function searchWord(request){
 
     if(!result){
         let isCompounding = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
-        if(isCompounding){
+        if(isCompounding && request.allowCompounding){
             result = searchCompounding(request, ['large']);    
         }        
     }
@@ -65,7 +65,7 @@ function searchWordWithDict(request, dicts){
     let input = request.query;
     let searchType = 'raw';
     let lemmaType = 'regular';
-
+    //console.log('input:'+input);
     //replace single quotation mark
     input = input.replaceAll(/[’]/g, "'");
 

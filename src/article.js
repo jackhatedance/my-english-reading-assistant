@@ -27,8 +27,8 @@ function tokenizeTextNode(document) {
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
-                const tagsNotLog = ['SCRIPT', 'NOSCRIPT', 'BUTTON', 'g', 'svg'];
-                if(!tagsNotLog.includes(node.parentElement.nodeName)){
+                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG'];
+                if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
                     console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
                 }
                 
@@ -41,15 +41,41 @@ function tokenizeTextNode(document) {
             let tokenHtmls = [];
             for (let token of tokens) {
                 let tokenHtml;
+                
+                let query = token.content; 
+                //console.log('before trim punctuation:'+query);
+                query = trimPunctuations(query);
+                //console.log('after trim punctuation:'+query);
+                
+                let isEndWithDot = endsWithDot(query);
+
+                if(isEndWithDot){
+                    //remove dot
+                    query = query.slice(0, -1);                    
+                }
+
                 let searchResult = searchWord({
-                    query: token.content,
+                    query: query,
                     allowLemma: true,
                     allowRemoveSuffixOrPrefix: false,
                 });
+
+                if(!searchResult && isEndWithDot){
+                    //restore dot, could be abbreviation
+                    query = query + '.';
+
+                    searchResult = searchWord({
+                        query: query,
+                        allowLemma: true,
+                        allowRemoveSuffixOrPrefix: false,
+                    });
+                }
+
+
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(searchResult, '', '', 0);
+                    let annotatedWord = annotateWord(token.content, searchResult, '', '', 0);
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
                     tokenHtml = annotatedWord;
@@ -80,22 +106,78 @@ function tokenizeTextNode(document) {
 }
 
 function splitText(sentence) {
+    //split by space.
+    const regexp = /([^\s]+)|([\s]+)/g;
+    let parts = _splitText(sentence, regexp, 0);
+    let parts2 = [];
+    for(const part of parts){
+        let content = part.content;
+        if(isCompoundingWord(content)){
+            let searchResult = searchWord({
+                query: content,
+                allowLemma: true,
+                allowRemoveSuffixOrPrefix: false,
+                allowCompounding: false,
+            });
+            if(searchResult){
+                parts2.push(part);
+            } else {
+                const regexp2 = /([-])|([^-]+)/g;
+                let subParts = _splitText(content, regexp2, part.offset);
+                for(const subPart of subParts){
+                    parts2.push(subPart);
+                }
+            }
+        } else {
+            parts2.push(part);
+        }
+    }
+    return parts2;
+}
+
+function _splitText(sentence, regexp, baseIndex) {
     let parts = [];
 
-    const regexp = /([a-zA-Z][a-zA-Z'’&-]+)|([a-zA-Z]+)|([^a-zA-Z]+)/g;
     const str = sentence;
     const matches = str.matchAll(regexp);
 
     for (const match of matches) {
         let part = {
             content: match[0],
-            offset: match.index,
+            offset: match.index + baseIndex,
             length: match[0].length,
         };
         parts.push(part);
     }
 
     return parts;
+}
+
+function isCompoundingWord(word) {
+    var isCompounding = false;
+    if(word){
+        isCompounding = word.match(/[a-zA-Z]+-[a-zA-Z]+/);
+    }
+    return isCompounding;    
+}
+
+function endsWithDot(text){
+    var result = false;
+    if(text){
+        if(text.match(/.+[.]/)){
+            result = true;
+        }
+    }
+    return result;
+}
+
+function trimPunctuations(text){
+    var result = text;
+    let array = text.match(/([a-zA-Z]+['’&.\-]?)+/);
+    if(array){
+        result = array[0];
+    }
+    return result;
 }
 
 /**
