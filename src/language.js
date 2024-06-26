@@ -108,7 +108,7 @@ function searchWordWithDict(request, dicts){
         if(request.allowLemma){
             let done = false;
 
-            let result = definition.match('([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
+            let result = definition.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
             
             //console.log('match result 1:'+result);   
             if(result != null){
