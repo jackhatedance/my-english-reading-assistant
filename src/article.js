@@ -648,7 +648,7 @@ function getSentenceInstanceSelectionFromArticleSelection(article, articleSelect
     let middle = []
     for (let i = 1; i < end.sentenceNumber - start.sentenceNumber; i++) {
         let sentenceNumber = start.sentenceNumber + i;
-        middle.push(start.sentenceNumber);
+        middle.push(sentenceNumber);
     }
 
 
