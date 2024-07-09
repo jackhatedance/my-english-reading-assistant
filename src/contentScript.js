@@ -110,8 +110,10 @@ function messageListener(request, sender, sendResponse) {
     
     //hideAnnotation(request.payload.word);
     let source = request.payload.source;
-    let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible, source);
+    
+    //won't refresh UI until dialog closed
+    //let visible = isPageAnnotationVisible();
+    //resetPageAnnotationVisibilityAndNotify(visible, source);
     
     //resetPageAnnotationVisibility(gDocumentArticleMap, visible, null);
 
@@ -162,6 +164,10 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
   } else if (request.type === 'CLOSE_DIALOG') {
+    //in case some word marked, refresh UI anyway
+    let visible = isPageAnnotationVisible();
+    resetPageAnnotationVisibilityAndNotify(visible);
+
     closeDialog();
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
