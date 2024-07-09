@@ -102,7 +102,7 @@ async function messageListener(request, sender, sendResponse) {
 
     });
   } else if (request.type === 'SELECTION_CHANGE') {
-    let { type, selectedText, sentenceSelection } = request.payload;
+    let { type, selectedText, paragraphSelection } = request.payload;
 
     word.value = request.payload.word;
 
@@ -112,12 +112,12 @@ async function messageListener(request, sender, sendResponse) {
     if (type === 'select-text') {
       let note = {
         selectedText: selectedText,
-        selection: sentenceSelection,
+        selection: paragraphSelection,
         content: '',
         persisted: false,
       };
 
-      let noteEntity = await getNote(sentenceSelection);
+      let noteEntity = await getNote(paragraphSelection);
       if (noteEntity) {
         note.content = noteEntity.content;
         note.persisted = true;

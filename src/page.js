@@ -224,7 +224,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
     if (documentConfig.canProcess) {
         article = parseDocument(document);
 
-        //console.log(JSON.stringify(gArticle));
+        //console.log(JSON.stringify(article));
 
     } else {
         //empty article

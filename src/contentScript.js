@@ -11,7 +11,8 @@ import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js'
 import { sendMessageToBackground } from './message.js';
 import {getBaseWordFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
+import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
+import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
 import { isAllDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
 import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
 import { MenuItems } from './menu.js';
@@ -270,9 +271,15 @@ async function addDocumentEventListener(document, documentConfig) {
       
       let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection);
       //console.log('mouse up, sentence instance selection:'+JSON.stringify(sentenceInstanceSelection));
+
+      let paragraphInstanceSelection = getParagraphInstanceSelectionFromNodeSelection(article, nodeSelection);
+      //console.log('mouse up, paragraph instance selection:'+JSON.stringify(paragraphInstanceSelection));
       
       let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => article.sentences[sentenceNumber].sentenceId);
       //console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
+      
+      let paragraphHashSelection = getParagraphHashSelectionFromInstanceSelection(paragraphInstanceSelection, (paragraphNumber) => article.paragraphs[paragraphNumber].paragraphId);
+      //console.log('mouse up, paragraph hash selection:'+JSON.stringify(paragraphHashSelection));
       
       let isSelectionCollapsed = nodeSelection.isCollapsed;
       
@@ -302,11 +309,19 @@ async function addDocumentEventListener(document, documentConfig) {
         type = 'search-note';
         
 
-        let noteArray = await searchNote(sentenceHashSelection.start);
+        let noteArray = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
 
         for (let note of noteArray) {
+          let isContainsPosition;
+
+          let selectionType = note.selection.type;
+          if(selectionType === 'paragraph'){
+            let paragraphInstanceSelections = getParagraphInstanceSelectionsFromParagraphHashSelection(article, note.selection);
+            isContainsPosition = paragraphInstanceSelections.some((s) => containsParagraphInstancePosition(s, paragraphInstanceSelection.start));
+          } else {
           let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(article, note.selection);
-          let isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
+            isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
+          }
           
           if(!isContainsPosition){
             continue;
@@ -327,7 +342,7 @@ async function addDocumentEventListener(document, documentConfig) {
       }
       
 
-      if (sentenceHashSelection) {
+      if (sentenceHashSelection || paragraphSelection) {
         let request = {
           type: 'SELECTION_CHANGE',
           payload: {
@@ -335,6 +350,7 @@ async function addDocumentEventListener(document, documentConfig) {
             type: type,            
             selectedText: selectedText,
             sentenceSelection: sentenceHashSelection,
+            paragraphSelection: paragraphHashSelection,
             notes: filteredNotes,
           },
         };

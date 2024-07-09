@@ -74,6 +74,7 @@ async function deleteNote(selection) {
 async function setNote(note) {
     //console.log('setNote');
     let cleanNote = cleanCopyNote(note);
+    //console.log('write note:'+ JSON.stringify(cleanNote));
 
     let key = getNoteKey(cleanNote.selection);
     let noteMap = await getNoteMap();
@@ -93,6 +94,15 @@ function cleanCopyNote(srcNote) {
 }
 
 function cleanCopySelection(srcSelection) {
+    let type = srcSelection.type;
+    if(type === 'paragraph'){
+        return cleanCopySelectionOfParagraph(srcSelection);
+    } else {
+        return cleanCopySelectionOfSentence(srcSelection);
+    }
+}
+
+function cleanCopySelectionOfSentence(srcSelection) {
     let selection = {
         start: {
             sentenceId: srcSelection.start.sentenceId,
@@ -100,6 +110,23 @@ function cleanCopySelection(srcSelection) {
         },
         end: {
             sentenceId: srcSelection.end.sentenceId,
+            offset: srcSelection.end.offset,
+        },
+        middle: srcSelection.middle,
+        endOffset: srcSelection.endOffset,
+    };
+    return selection;
+}
+
+function cleanCopySelectionOfParagraph(srcSelection) {
+    let selection = {
+        type: srcSelection.type,
+        start: {
+            paragraphId: srcSelection.start.paragraphId,
+            offset: srcSelection.start.offset,
+        },
+        end: {
+            paragraphId: srcSelection.end.paragraphId,
             offset: srcSelection.end.offset,
         },
         middle: srcSelection.middle,
@@ -137,14 +164,33 @@ function noteMapToArray(map) {
 
 
 
+async function searchNote(sentenceHashPosition, paragraphHashPosition) {
+    let a1 = await searchNoteBySentencePosition(sentenceHashPosition);
+    let a2 = await searchNoteByParagraphPosition(paragraphHashPosition);
+    return a1.concat(a2);
+}
 
-
-async function searchNote(sentenceHashPosition) {
+async function searchNoteBySentencePosition(sentenceHashPosition) {
     let noteArray = await getNotes();
 
     let result = [];
     for (let note of noteArray) {
         if (contains(note.selection, sentenceHashPosition)) {
+            result.push(note);
+
+            let key = getNoteKey(note.selection);
+            note.key = key;
+        }
+    }
+    return result;
+}
+
+async function searchNoteByParagraphPosition(paragraphHashPosition) {
+    let noteArray = await getNotes();
+
+    let result = [];
+    for (let note of noteArray) {
+        if (contains(note.selection, paragraphHashPosition)) {
             result.push(note);
 
             let key = getNoteKey(note.selection);

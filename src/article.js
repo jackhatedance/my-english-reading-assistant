@@ -1,9 +1,11 @@
 'use strict';
 
 import { split } from "sentence-splitter";
-import { traverseElement, traverseNode } from './dom.js';
+import { traverseNode } from './dom.js';
 import { annotateWord, annotateNonword } from './word.js';
-import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, hashPositionToInstancePosition, getSentenceSegmentOffsets, getSegmentOffset } from './sentence.js';
+import { getSegmentOffset } from './segment.js';
+import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
+import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord } from './language.js';
 import { isTextTag } from './html.js';
 import { TEXT_TAG } from './html.js';
@@ -199,7 +201,14 @@ function parseDocument(document, skip = false) {
         //segment offset, first sentence number of the segment
         segmentOffsetSentenceMap: new Map(),
 
+        currentParagraphNumber: 0,
         paragraphs: [],
+        //<ID, info>
+        paragraphMap: new Map(),
+        //<ID, number array>
+        paragraphIdNumbersMap: new Map(),
+        //segment offset, first sentence number of the segment
+        segmentOffsetParagraphMap: new Map(),
 
         textNodes: [],
         textNodeMap: new Map(),
@@ -235,12 +244,14 @@ function parseArticleContent(article, articleContent){
     var lines = breakString(articleContent, '\n');
     
     let offset =0;
+    var paragraphNumber = 0;
     for(let line of lines){
 
         let paragraphInfo ={
             content : line,
             offset: offset,
-            contentLength: line.length,
+            length: line.length,
+            paragraphNumber : paragraphNumber,
             sentences: [],
         };
 
@@ -248,6 +259,7 @@ function parseArticleContent(article, articleContent){
         addParagraph(article, paragraphInfo);
 
         offset += line.length;
+        paragraphNumber++;
     }
 }
 
@@ -312,8 +324,7 @@ function parseParagraphContent(article, paragraphInfo, content){
         
     }
     
-
-    paragraphInfo.contentLength = content.length;
+    paragraphInfo.paragraphId = getParagraphContentHash(content);
     
 }
 
@@ -348,9 +359,35 @@ function addArticleNode(article, nodeInfo){
 }
 
 function addParagraph(article, paragraphInfo){
-    let { paragraphs } = article;
-
+    let { paragraphs, paragraphMap, paragraphIdNumbersMap, segmentOffsetParagraphMap } = article;
+    
     paragraphs.push(paragraphInfo);
+
+    //update index
+    let { paragraphNumber, paragraphId, content } = paragraphInfo;
+
+    paragraphMap.set(paragraphId, content);
+    //paragraphNumberIdMap.set(paragraphNumber, paragraphId);
+
+    let segmentOffsets = getParagraphSegmentOffsets(paragraphInfo);
+    for(let segmentOffset of segmentOffsets){
+        let paragraphNumber = segmentOffsetParagraphMap.get(segmentOffset);
+        if(!paragraphNumber){
+            segmentOffsetParagraphMap.set(segmentOffset, paragraphInfo.paragraphNumber);
+        }
+    }
+
+    let numberArray = paragraphIdNumbersMap.get(paragraphId);
+    if (!numberArray) {
+        numberArray = [];
+        
+        paragraphIdNumbersMap.set(paragraphId, numberArray);
+    }
+    numberArray.push(paragraphNumber);
+
+
+    article.currentParagrapheNumber = article.currentParagraphNumber +1;
+
 }
 
 function addSentence(article, paragraph, sentenceInfo){
@@ -483,6 +520,38 @@ function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelecti
     return nodeSelections;
 }
 
+function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
+
+    //console.log('get node selections from paragraph hash selection');
+    /*steps:
+    1. start paragraphId > start paragraph numbers
+    2. paragraph instance selections
+    3. article selections
+    4. node selections
+    */
+    let startParagraphNumbers = article.paragraphIdNumbersMap.get(paragraphHashSelection.start.paragraphId);
+
+    let nodeSelections = [];
+
+    if (startParagraphNumbers) {
+        //console.log('find start paragraph numbers:' + JSON.stringify(startParagraphNumbers));
+
+        for (let startParagraphNumber of startParagraphNumbers) {
+            let paragraphInstanceSelection = getParagraphInstanceSelectionFromParagraphHashSelection(article, paragraphHashSelection, startParagraphNumber);
+            if (paragraphInstanceSelection) {
+                let articleSelection = getArticleSelectionFromParagraphInstanceSelection(article, paragraphInstanceSelection);
+
+                //let nodeSelection = this.getNodeSelectionFromParagraphSelection(paragraphHashSelection, startParagraphNumber);
+                let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
+
+                nodeSelections.push(nodeSelection);
+
+            }
+        }
+    }
+    return nodeSelections;
+}
+
 function getNodeSelectionFromArticleSelection(article, articleSelection) {
     let anchorNodePosition = getNodePositionFromOffset(article, articleSelection.start);
     let focusNodePosition = getNodePositionFromOffset(article, articleSelection.end);
@@ -548,10 +617,10 @@ function getArticleSelectionFromSentenceInstanceSelection(article, sentenceInsta
 }
 
 function getSentenceInstanceSelectionFromSentenceHashSelection(article, sentenceHashSelection, startSentenceNumber) {
-    let startSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
+    let startSentenceInstancePosition = sentenceHashPositionToInstancePosition(sentenceHashSelection.start, startSentenceNumber);
 
     let endSentenceNumber = startSentenceNumber + getSentenceOffset(sentenceHashSelection);
-    let endSentenceInstancePosition = hashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
+    let endSentenceInstancePosition = sentenceHashPositionToInstancePosition(sentenceHashSelection.end, endSentenceNumber);
 
     //check sentence IDs
     let expectedSentenceIds = getSentenceIds(sentenceHashSelection);
@@ -638,6 +707,12 @@ function getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection) {
     let articleSelection = getArticleSelectionFromNodeSelection(article, nodeSelection);
     let sentenceInstanceSelection = getSentenceInstanceSelectionFromArticleSelection(article, articleSelection);
     return sentenceInstanceSelection;
+}
+
+function getParagraphInstanceSelectionFromNodeSelection(article, nodeSelection) {
+    let articleSelection = getArticleSelectionFromNodeSelection(article, nodeSelection);
+    let paragraphInstanceSelection = getParagraphInstanceSelectionFromArticleSelection(article, articleSelection);
+    return paragraphInstanceSelection;
 }
 
 function getSentenceInstanceSelectionFromArticleSelection(article, articleSelection) {
@@ -729,6 +804,15 @@ function getSentenceInstanceSelectionsFromSentenceHashSelection(article, sentenc
 
 
 function getSelectedTextOfNote(article, note) {
+    let type = note.selection.type;
+    if(type === 'paragraph'){
+        return getSelectedTextOfNoteOfParagraph(article, note);
+    } else {
+        return getSelectedTextOfNoteOfSentence(article, note)
+    }
+}
+
+function getSelectedTextOfNoteOfSentence(article, note) {
     let buffer = '';
   
     let sentenceContent;
@@ -759,4 +843,6 @@ function getSelectedTextOfNote(article, note) {
     return buffer;
 }
 
-export { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getSentenceInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote };
+
+
+export { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote };

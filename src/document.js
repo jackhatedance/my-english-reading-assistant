@@ -6,7 +6,7 @@ import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import {getBaseWordFromElement} from './word.js';
-import { getNodeSelectionsFromSentenceHashSelection } from './article.js';
+import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
 
 var knownWords;
@@ -156,6 +156,8 @@ function getAllDocuments(siteProfile) {
  * reset all word's display attribute according to vocabulary
  */
 async function resetDocumentAnnotationVisibility(article, window, enabled, types) {
+  //console.log('resetDocumentAnnotationVisibility begin');
+
     let document = window.document;
     //set flag
     document.body.setAttribute('mea-visible', enabled);
@@ -189,13 +191,23 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       //console.log('notes:'+JSON.stringify(notes));
   
       //console.log('show notes');
-      window.CSS.highlights.clear();
+      if(window.CSS) {
+        window.CSS.highlights.clear();
+      }
+      
       const highlight = new Highlight();
       
       for (let note of notes) {
         //one sentence selection could map to multiple node selections
         //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
-        let nodeSelections = getNodeSelectionsFromSentenceHashSelection(article, note.selection);
+        let nodeSelections;
+        let selectionType = note.selection.type;
+        if(selectionType === 'paragraph'){
+          nodeSelections = getNodeSelectionsFromParagraphHashSelection(article, note.selection);
+        } else {
+          nodeSelections = getNodeSelectionsFromSentenceHashSelection(article, note.selection);
+        }
+
         for (let nodeSelection of nodeSelections) {
           //console.log('find node selection:' + JSON.stringify(nodeSelection));
           if (nodeSelection) {
@@ -212,6 +224,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       }
     }
   
+    //console.log('resetDocumentAnnotationVisibility end');
   }
 
 export { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility };

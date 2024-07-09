@@ -6,7 +6,7 @@
 # 基本功能
 希望通过阅读英文书籍或者文章来提高英文水平，但是词汇量不够，手工为每一个生词查字典又嫌麻烦？这个软件就是为解决上述问题而生。
 
-<img src="screenshots/cn/web-page.png" width="600">
+<img src="screenshots/cn/epub-book.png" width="600">
 
 这个浏览器插件能自动在英语网页里显示陌生单词的解释。词典释义目前只支持中文，将来有可能支持英文（适合高水平用户）。
 
@@ -135,7 +135,7 @@
 
 大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读epub格式的电子书。只要在浏览器内打开epub阅读器即可。
 
-<img src="screenshots/cn/epub-book.png" width="800">
+<img src="screenshots/cn/web-page.png" width="800">
 
 推荐阅读epub格式电子书的网站：https://app.flowoss.com/
 

@@ -3,6 +3,7 @@
 
 import { md5 } from 'js-md5';
 import { traverseNode } from './dom.js';
+import { getSegmentOffset } from './segment.js';
 
 function purifySentence(sentence) {
     return sentence.replaceAll(/[^\w]+/g, '').toLowerCase();
@@ -98,7 +99,7 @@ function getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection
     return sentenceHashSelection;
 }
 
-function hashPositionToInstancePosition(hashPosition, sentenceNumber) {
+function sentenceHashPositionToInstancePosition(hashPosition, sentenceNumber) {
     let instancePosition = Object.assign({}, hashPosition, { sentenceNumber: sentenceNumber });
     return instancePosition;
 }
@@ -196,9 +197,4 @@ function getSentenceSegmentOffsets(sentenceInfo){
     return segmentOffsets;
 }
 
-function getSegmentOffset(articleOffset, segmentLength = 1000){
-    let segmentOffset = Math.floor(articleOffset / segmentLength);
-    return segmentOffset;
-}
-
-export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, hashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition, getSentenceSegmentOffsets, getSegmentOffset };
+export { getSentenceContentHash, getSentenceOffset, getSentenceIds, generateMiddleSetenceNumbers, sentenceHashPositionToInstancePosition, getSentenceHashSelectionFromInstanceSelection, containsSentenceInstancePosition, getSentenceSegmentOffsets };
