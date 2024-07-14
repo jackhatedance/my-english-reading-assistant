@@ -164,11 +164,11 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
   } else if (request.type === 'CLOSE_DIALOG') {
+    closeDialog();
+
     //in case some word marked, refresh UI anyway
     let visible = isPageAnnotationVisible();
     resetPageAnnotationVisibilityAndNotify(visible);
-
-    closeDialog();
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
     resizeVueApp(width, height);
