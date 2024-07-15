@@ -109,6 +109,7 @@ function addStyle(document) {
 function isDocumentAnnotationInitialized(document) {
     if (!document.body) {
         console.log('body is null');
+        return false;
     }
 
     let meaInitialized = document.body.getAttribute('mea-preprocessed');
