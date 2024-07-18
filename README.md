@@ -14,7 +14,7 @@ My Browser Extension of English reading assistant
 
 自动显示生词词义，带来丝滑英文原著阅读体验。不知不觉扩大词汇量。
 
-Displays the meaning of new words above them, helping English learners to read English books smoothly and expand their vocabulary.
+Automatically display the meaning of new words, bringing you a smooth reading experience of English original works. Expand your vocabulary without realizing it.
 
 ### Long Description
 
