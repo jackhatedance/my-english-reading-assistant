@@ -4,11 +4,11 @@
 如果有意见和建议，可以[发电子邮件](mailto:mera@dingjianghao.com)或者到[github](https://github.com/jackhatedance/my-english-reading-assistant/issues)提交Bug。
 
 # 基本功能
-希望通过阅读英文书籍或者文章来提高英文水平，但是词汇量不够，手工为每一个生词查字典又嫌麻烦？这个软件就是为解决上述问题而生。
+希望通过阅读英文原著来提高英文水平，但是词汇量不够，手工为每一个生词查字典往往会打断阅读体验，导致无法坚持阅读。这个软件就是为解决这个问题而生。
 
 <img src="screenshots/cn/epub-book.png" width="600">
 
-这个浏览器插件能自动在英语网页里显示陌生单词的解释。词典释义目前只支持中文，将来有可能支持英文（适合高水平用户）。
+这个浏览器插件能自动在英语网页里显示陌生单词的解释。词典释义目前只支持中文。
 
 注意：这个软件不是做全文翻译的，如果想要全文翻译的功能，请使用其他软件。
 
@@ -156,7 +156,7 @@
 * Letter from an Unknown Woman一个陌生女人的来信
 * The Five People You Meet in Heaven你在天堂遇见的五个人
 
-鲁阶段三:词汇量5k-7k
+阶段三:词汇量5k-7k
 * Lean in向前一步
 * Animal Farm动物农场
 * The Joy Luck Club喜福会
