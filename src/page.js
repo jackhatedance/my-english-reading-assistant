@@ -196,9 +196,10 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         let currentSiteOption = await getCurrentSiteOptions();
 
         var x = 0;
-        var intervalID = setInterval(async function () {
+        var intervalID = window.setInterval(async function () {
 
             if (containsMeaStyle(document)) {
+                //console.log('containsMeaStyle');
                 changeStyle(document, currentSiteOption.annotation, siteProfile);
                 window.clearInterval(intervalID);
             };
