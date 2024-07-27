@@ -37,7 +37,7 @@ function generateCssRuleOfAnnotation(options) {
     let color = `${options.color}`;
 
     let rule = `.mea-highlight::after {
-      content: attr(data-footnote);
+      content: attr(data-footnote-short);
       position: absolute;
       width:max-content;
       line-height: normal;
@@ -82,12 +82,14 @@ function changeStyle(document, options, siteProfile) {
     if (styleSheet) {
         //annotation
         let index = indexOfMeaAnnotation(styleSheet);
+        //console.log('changed style, index:' + index);
         if (index >= 0) {
             styleSheet.deleteRule(index);
+            //console.log('changed style, delete rule');
         }
         let rule = generateCssRuleOfAnnotation(options);
         styleSheet.insertRule(rule, 0);
-        //console.log('changed style of a document');
+        //console.log('changed style, insert rule');
 
         //highlight, aka. text
         index = indexOfMeaHighlight(styleSheet);

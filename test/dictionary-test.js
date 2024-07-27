@@ -1,16 +1,16 @@
 
-import {removeWordClass, firstMeaning} from '../src/dictionary.js';
+import {parseWordClass, firstMeaning} from '../src/dictionary.js';
 import { strict as assert } from 'assert';
 
 
 describe('dictionary', function () {
-  describe('#removeWordClass()', function () {
+  describe('#parseWordClass()', function () {
     it('should remove "a. " when exists', function () {
-      assert.equal(removeWordClass("ad. foo"), 'foo');
-      assert.equal(removeWordClass("ad. 在船上, 在火车上, 在飞机上"), "在船上, 在火车上, 在飞机上");
-      assert.equal(removeWordClass("vt.vi. 想象, 出现幻想, 产生幻想, 使幻想化, 幻想"), "想象, 出现幻想, 产生幻想, 使幻想化, 幻想");
+      assert.equal(parseWordClass("ad. foo").meanings, 'foo');
+      assert.equal(parseWordClass("ad. 在船上, 在火车上, 在飞机上").meanings, "在船上, 在火车上, 在飞机上");
+      assert.equal(parseWordClass("vt.vi. 想象, 出现幻想, 产生幻想, 使幻想化, 幻想").meanings, "想象, 出现幻想, 产生幻想, 使幻想化, 幻想");
       
-      assert.equal(removeWordClass("视频分布系统, 自动数据系统, 自主开发系统"), "视频分布系统, 自动数据系统, 自主开发系统");
+      assert.equal(parseWordClass("视频分布系统, 自动数据系统, 自主开发系统").meanings, "视频分布系统, 自动数据系统, 自主开发系统");
     });
   });
   describe('#firstMeaning()', function () {

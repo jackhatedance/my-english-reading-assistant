@@ -2,9 +2,9 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
 
 import UnknownWordItem from './UnknownWordItem.vue';
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
+import { loadKnownWords } from '../../vocabularyStore.js';
 import { getWordParts, isKnown } from '../../language.js';
-import { lookupShort } from '../../dictionary.js';
+import { lookup } from '../../dictionary.js';
 
 const props = defineProps({
     items: Array,
@@ -29,7 +29,7 @@ async function buildTargetWords(words) {
             for (let part of parts) {
                 target = part.dictEntry;
 
-                let definition = lookupShort(target);
+                let definition = lookup(target);
 
                 if (definition && !isKnown(target, knownWords)) {
                     expandedWords.push({ target, from });

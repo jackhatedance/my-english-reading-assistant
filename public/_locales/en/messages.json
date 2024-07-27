@@ -41,6 +41,15 @@
     "popupOpacityLabel":{
         "message":"Opacity"
     },
+    "popupMaxMeaningNumberLabel":{
+        "message":"Max Meaning Number"
+    },
+    "popupHideWordClassLabel":{
+        "message":"Hide Word Class"
+    },
+    "popupFootNotes":{
+        "message":"Some settings require refreshing the page to take effect"
+    },
     "popupResetButton":{
         "message":"Reset"
     },

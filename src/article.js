@@ -15,7 +15,13 @@ import { TEXT_TAG } from './html.js';
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document) {
+function tokenizeTextNode(document, siteOptions) {
+    let simplifyDefinitionOptions = {
+            hideWordClass: siteOptions.annotation.hideWordClass,
+            maxMeaningNumber: siteOptions.annotation.maxMeaningNumber,
+    };
+    //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
+    
 
     traverseNode(document.body, (node) => {
         //avoid re-enter
@@ -60,6 +66,7 @@ function tokenizeTextNode(document) {
                     query: query,
                     allowLemma: true,
                     allowRemoveSuffixOrPrefix: false,
+                    simplifyDefinition: simplifyDefinitionOptions,
                 });
 
                 if(!searchResult && isEndWithDot){
@@ -70,6 +77,7 @@ function tokenizeTextNode(document) {
                         query: query,
                         allowLemma: true,
                         allowRemoveSuffixOrPrefix: false,
+                        simplifyDefinition: simplifyDefinitionOptions,
                     });
                 }
 

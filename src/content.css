@@ -52,7 +52,7 @@
 
 
 .mea-highlight::after {
-  content: attr(data-footnote);
+  content: attr(data-footnote-short);
   position: absolute;
   width: max-content;
   line-height: normal;

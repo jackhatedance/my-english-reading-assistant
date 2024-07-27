@@ -144,6 +144,14 @@ input:checked + .slider:before {
   div {
     padding: 5px;
   }
+
+  .footnote {
+    font-size: xx-small;
+
+    .red{
+      color: red;
+    }
+  }
 }
 
 #pageSection{
@@ -159,8 +167,13 @@ input:checked + .slider:before {
   text-align: left;
   clear: both;
 
+  .red{
+    color: red;
+  }
+
   input {
     float: right;
     width: 4em;
+    height: 20px;
   }
 }

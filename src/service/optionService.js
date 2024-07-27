@@ -16,6 +16,8 @@ async function getDefaultSiteOptions(){
                 position: 0.5,        
                 opacity: 0.5,
                 color: '#0000ff',
+                maxMeaningNumber: 3,
+                hideWordClass: false,
             }
         };
     }

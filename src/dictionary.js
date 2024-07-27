@@ -4,6 +4,9 @@ import {dict as dictAffix} from './dicts/dict-affix.js'
 
 function lookup(word, dicts) {
     //console.log(dict);
+    if(!dicts){
+        dicts = ['affix', 'small','large'];
+    }
 
     //replace single quotation
     if(word){
@@ -36,35 +39,139 @@ function getDict(name){
     }
 }
 
-function lookupShort(word) {
-    let def = lookup(word, ['affix', 'small','large']);
+function parseWordClass(def){
     if(def){
-        //def = removeWordClass(def);
-        //def = firstMeaning(def);
+        def = def.trim();
     }
 
-    return def;
-}
+    let result = {
+        wordClass: '',
+        meanings: def,
+    };    
 
-//remove 'a.' , return only def
-function removeWordClass(def){
     if(def){
+
         var rx = /^((\w{1,6}\.)+ )?(.+)$/;
         var arr = rx.exec(def);
         //console.log(arr)
-        return arr[3]; 
+
+        result = {
+            wordClass: arr[2] ? arr[2] : '',
+            meanings: arr[3].trim(),
+        };
     }
+    
+
+    return result;
 }
 
-function firstMeaning(meaning){
-    if(meaning){
-        let arr = meaning.split(',');
+function firstMeaning(meanings){
+    if(meanings){
+        let arr = meanings.split(',');
         return arr[0];
     }
 
-    return meaning;
+    return meanings;
 }
 
+function simplifyDefinition(definition, options){
+    let { maxMeaningNumber, hideWordClass } = options;
 
+    //console.log('simplify definition:'+ JSON.stringify(definition));
 
-export { lookup, lookupShort, removeWordClass, firstMeaning };
+    if(!definition){
+        return definition;
+    }
+
+    let classes = definition.split(';');
+    
+    let totalMeaningNumber = 0;
+    let definitions = [];
+    for(let cls of classes){
+        
+        let wordClassResult = parseWordClass(cls);
+        
+        //console.log('parse word class:'+ JSON.stringify(wordClassResult));
+        let wordClass = wordClassResult.wordClass;
+
+        let meanings;
+        if(wordClassResult.meanings === ''){
+            meanings = [];
+        }else {
+            meanings = wordClassResult.meanings.split(',');
+        }
+
+        let definition = {
+            wordClass: wordClass,
+            meanings: meanings,
+            size: meanings.length,
+            currentIndex: 0,//for later use
+        }
+
+        totalMeaningNumber += meanings.length;
+
+        definitions.push(definition);        
+    }
+
+    //visit meanings one by one
+    let definitionSize = definitions.length;
+    let i =0;
+    let definitionIndex;
+    let meaningCounter=0;
+    while(meaningCounter < maxMeaningNumber && meaningCounter < totalMeaningNumber && i < 100){
+        definitionIndex = i % definitionSize; 
+        let definition = definitions[definitionIndex];
+
+        let available = nextMeaning(definition);
+        if(available){
+            meaningCounter++;
+        }
+
+        i++;
+    }
+
+    //concat definition
+    let definitionStrList = [];
+    for(let def of definitions){
+        if(def.currentIndex == 0){
+            continue;
+        }
+
+        let definitionStr = '';
+
+        if(!hideWordClass){
+            definitionStr = def.wordClass;
+        }
+
+        let visiteMeanings = getVisitedMeanings(def);
+        
+        
+
+        definitionStr = definitionStr + visiteMeanings;
+
+        definitionStrList.push(definitionStr);
+    }
+
+    if(meaningCounter < totalMeaningNumber){
+        definitionStrList.push('...');
+    }
+
+    return definitionStrList.join('; ');    
+}
+
+function nextMeaning(definition){
+    if(definition.currentIndex < definition.size){
+        definition.currentIndex = definition.currentIndex + 1;
+
+        return true;
+    }else {
+        return false;
+    }
+}
+
+function getVisitedMeanings(definition){
+    let visitedMeanings = definition.meanings.slice(0, definition.currentIndex);
+    return visitedMeanings.join(',');    
+}
+
+export { lookup, parseWordClass, simplifyDefinition };

@@ -193,12 +193,12 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 
 
         //console.log('preprocess document');
+        let currentSiteOption = await getCurrentSiteOptions();
 
         var x = 0;
         var intervalID = setInterval(async function () {
 
             if (containsMeaStyle(document)) {
-                let currentSiteOption = await getCurrentSiteOptions();
                 changeStyle(document, currentSiteOption.annotation, siteProfile);
                 window.clearInterval(intervalID);
             };
@@ -216,7 +216,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
           annotateChildTextContents(element, isIframe);
         });
         */
-        tokenizeTextNode(document);
+        tokenizeTextNode(document, currentSiteOption);
 
         addDocumentEventListener(document, documentConfig);
     }

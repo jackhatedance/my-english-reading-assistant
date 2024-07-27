@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
-import { lookupShort } from '../dictionary.js';
+import { lookup } from '../dictionary.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
@@ -18,7 +18,8 @@ let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
-    let def = lookupShort(props.word);
+    let dicts = ['large', 'small', 'affix'];
+    let def = lookup(props.word, dicts);
     if(!def){
         def = '';
     }

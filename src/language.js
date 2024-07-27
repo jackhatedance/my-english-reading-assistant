@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup} from './dictionary.js';
+import {lookup, simplifyDefinition} from './dictionary.js';
 import {existWordRecord} from './vocabularyStore.js';
 import {map as wordParts} from './word-parts.js';
 import {getOptionsFromCache} from './service/optionService.js';
@@ -11,11 +11,15 @@ var gPrefixes, gSuffixes;
 
 function searchWord(request){
     
-    let requestOfSmall = {...request};
-    requestOfSmall.allowRemoveSuffixOrPrefix = false;
+    let requestOfDefault = {...request};
+    requestOfDefault.allowRemoveSuffixOrPrefix = false;
+    let dicts = request.dicts;
+    if(!dicts) {
+        dicts = ['small', 'affix'];
+    }
     
-    let result = searchWordWithDict(requestOfSmall, ['small', 'affix']);
-    if(!result){
+    let result = searchWordWithDict(requestOfDefault, dicts);
+    if(!result && !dicts.includes('large')){
         result = searchWordWithDict(request, ['large']);
     }
 
@@ -59,7 +63,7 @@ function searchCompounding(request, dicts){
   }
 
 function searchWordWithDict(request, dicts){
-
+    //console.log('dicts:' + JSON.stringify(dicts));
     
 
     let input = request.query;
@@ -198,12 +202,18 @@ function searchWordWithDict(request, dicts){
     //finally,
     if(definition){// find the correct form which has definition in dictionary
 
+        let shortDefinition = definition;
+        if(request.simplifyDefinition){
+            shortDefinition = simplifyDefinition(definition, request.simplifyDefinition);
+        }
+
         let result = {
             query : request.query,
             searchType: searchType,
             lemmaType: lemmaType,
             word: word,
             definition: definition,
+            shortDefinition: shortDefinition,
         };
 
         //console.log('search result:'+JSON.stringify(result));
