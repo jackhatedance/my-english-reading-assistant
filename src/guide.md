@@ -6,7 +6,7 @@
 # 基本功能
 希望通过阅读英文原著来提高英文水平，但是词汇量不够，手工为每一个生词查字典往往会打断阅读体验，导致无法坚持阅读。这个软件就是为解决这个问题而生。
 
-<img src="screenshots/cn/epub-book.png" width="600">
+<img src="screenshots/cn/web-page.png" width="600">
 
 这个浏览器插件能自动在英语网页里显示陌生单词的解释。词典释义目前只支持中文。
 
@@ -135,7 +135,7 @@
 书的标题。
 
 ### 网址规则
-我们需要借助通配符映射书与网址的关系，把变化的部分用星号（*）代替。
+我们需要借助通配符映射书与网址的关系，把变化的部分用星号（*）代替。当变化的部分含子目录时，使用双星号(**)
 
 举例1：
 爱丽丝梦游仙境这本书的每一章网址如下，
@@ -199,7 +199,7 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 
 大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读epub格式的电子书。只要在浏览器内打开epub阅读器即可。
 
-<img src="screenshots/cn/web-page.png" width="800">
+<img src="screenshots/cn/epub-book.png" width="800">
 
 推荐阅读epub格式电子书的网站：https://app.flowoss.com/
 
