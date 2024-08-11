@@ -173,11 +173,10 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
         let targetWord = getBaseWordFromElement(element);
   
         if (enabled) {
-  
-          if (isKnown(targetWord, knownWords)) {
-            element.classList.add("mea-hide");
-          } else {
-            element.classList.remove("mea-hide");
+          let hide = element.classList.contains("mea-hide");
+          let known = isKnown(targetWord, knownWords);
+          if ((known && !hide) || (!known && hide)) {
+            element.classList.toggle("mea-hide");
           }
         } else {
           element.classList.add("mea-hide");
