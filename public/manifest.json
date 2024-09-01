@@ -19,7 +19,7 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "storage","contextMenus", "sidePanel"
+    "storage","contextMenus"
   ],
   "content_scripts": [
     {

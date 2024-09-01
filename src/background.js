@@ -30,7 +30,7 @@ function sendMsg(type, baseForm){
 }
 
 chrome.runtime.onInstalled.addListener(async function () {
-  
+  /*
   let toggle = chrome.contextMenus.create({
     title: 'Known <-> Unknown: %s',
     contexts: ['selection'],
@@ -53,7 +53,7 @@ chrome.runtime.onInstalled.addListener(async function () {
     contexts: ['page'],
     id: 'refresh'
   });
-  
+  */
   
 });
 
