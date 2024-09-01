@@ -245,3 +245,5 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 # 版本变化
 ## 0.8.4
 合并单词标记按钮；支持简化词义；
+## 0.8.5
+生词颜色；
