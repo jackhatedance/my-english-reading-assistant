@@ -200,7 +200,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 
             if (containsMeaStyle(document)) {
                 //console.log('containsMeaStyle');
-                changeStyle(document, currentSiteOption.annotation, siteProfile);
+                changeStyle(document, currentSiteOption, siteProfile);
                 window.clearInterval(intervalID);
             };
 

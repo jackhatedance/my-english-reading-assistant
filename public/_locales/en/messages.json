@@ -47,6 +47,9 @@
     "popupHideWordClassLabel":{
         "message":"Hide Word Class"
     },
+    "popupUnknownWordColorLabel":{
+        "message":"Unknown Word Color"
+    },
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
     },

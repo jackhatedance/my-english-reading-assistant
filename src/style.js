@@ -63,9 +63,28 @@ function indexOfMeaHighlight(styleSheet) {
     return -1;
 }
 
-function generateCssRuleOfHighlight(options) {
+function generateCssRuleOfHighlight(options, extraStyle) {
+    let annotationOptions = options.annotation;
+    let contentOptions = options.content;
 
-    let lineHeight = `${options.lineHeight}em`;
+    let lineHeight = `${annotationOptions.lineHeight}em`;
+
+    //TEST
+    /*
+    options.content = {
+        enabled: false,
+        unknownWordColor: 'blue',
+    };
+    */
+
+    let unknownWordStyle = '';
+    if(contentOptions.enabled){
+        unknownWordStyle = `
+            &:not(.mea-hide) {
+                color: ${contentOptions.unknownWordColor} !important;
+            }`;
+    }
+    
 
     let rule = `.mea-highlight {  
       position: relative;
@@ -73,6 +92,10 @@ function generateCssRuleOfHighlight(options) {
       text-indent1: 0px;
       display1: inline-block;
       line-height: ${lineHeight} !important;
+
+      ${unknownWordStyle}
+
+      ${extraStyle}
     }`;
     return rule;
 }
@@ -87,7 +110,7 @@ function changeStyle(document, options, siteProfile) {
             styleSheet.deleteRule(index);
             //console.log('changed style, delete rule');
         }
-        let rule = generateCssRuleOfAnnotation(options);
+        let rule = generateCssRuleOfAnnotation(options.annotation);
         styleSheet.insertRule(rule, 0);
         //console.log('changed style, insert rule');
 
@@ -109,4 +132,4 @@ function changeStyle(document, options, siteProfile) {
 
 
 
-export { changeStyle, findStyleSheet, indexOfMeaAnnotation };
+export { changeStyle, findStyleSheet, indexOfMeaAnnotation, generateCssRuleOfHighlight };

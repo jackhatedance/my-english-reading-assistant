@@ -177,7 +177,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload) {
       //annotationOptions = request.payload;
       getCurrentSiteOptions().then(options => {
-        changeStyleForAllDocuments(gSiteProfile, options.annotation);
+        changeStyleForAllDocuments(gSiteProfile, options);
       });
     }
 

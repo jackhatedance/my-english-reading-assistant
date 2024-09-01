@@ -82,7 +82,7 @@ localizeHtmlPage();
     });
 
     let annotationOptions = pageInfo.siteOptions.annotation;
-
+    
     document.getElementById('annotationPosition').value = annotationOptions.position;
     document.getElementById('annotationPosition').addEventListener('change', (e) => {
       applyStyles();
@@ -119,12 +119,23 @@ localizeHtmlPage();
       applyStyles();
     });
 
+    let contentOptions = pageInfo.siteOptions.content;
+
+    document.getElementById('contentStyleEnabled').checked = contentOptions.enabled;
+    document.getElementById('contentStyleEnabled').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
+    document.getElementById('unknownWordColor').value = contentOptions.unknownWordColor;
+    document.getElementById('unknownWordColor').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
     document.getElementById('resetAnnotationSettings').addEventListener('click', async (e) => {
       
       //console.log('resetAnnotationSettings');
       let siteOptions = await getDefaultSiteOptions();
-      let annotationOptions = siteOptions.annotation;
-      updateOptionsUI(annotationOptions);
+      updateOptionsUI(siteOptions);
       applyStyles();
     });
 
@@ -159,16 +170,24 @@ localizeHtmlPage();
   }
 
   function updateOptionsUI(options){
-    document.getElementById('annotationPosition').value = options.position;
-
-    document.getElementById('fontSize').value = options.fontSize;
-    document.getElementById('lineHeight').value = options.lineHeight;
+    let annotationOptions = options.annotation;
     
-    document.getElementById('color').value = options.color;
-    document.getElementById('opacity').value = options.opacity;
+    document.getElementById('annotationPosition').value = annotationOptions.position;
 
-    document.getElementById('maxMeaningNumber').value = options.maxMeaningNumber;
-    document.getElementById('hideWordClass').checked = options.hideWordClass;
+    document.getElementById('fontSize').value = annotationOptions.fontSize;
+    document.getElementById('lineHeight').value = annotationOptions.lineHeight;
+    
+    document.getElementById('color').value = annotationOptions.color;
+    document.getElementById('opacity').value = annotationOptions.opacity;
+
+    document.getElementById('maxMeaningNumber').value = annotationOptions.maxMeaningNumber;
+    document.getElementById('hideWordClass').checked = annotationOptions.hideWordClass;
+
+
+    let contentOptions = options.annotation;
+
+    document.getElementById('contentStyleEnabled').checked = contentOptions.enabled;
+    document.getElementById('unknownWordColor').value = contentOptions.unknownWordColor;
   }
 
   function buildOptions(){
@@ -186,6 +205,9 @@ localizeHtmlPage();
     let maxMeaningNumber =  document.getElementById('maxMeaningNumber').value;
     let hideWordClass =  document.getElementById('hideWordClass').checked;
 
+    let contentStyleEnabled =  document.getElementById('contentStyleEnabled').checked;
+    let unknownWordColor =  document.getElementById('unknownWordColor').value;
+
     let newOptions = {
       enabled: enabled,
 
@@ -197,6 +219,10 @@ localizeHtmlPage();
         color:color,
         maxMeaningNumber: maxMeaningNumber,
         hideWordClass: hideWordClass,
+      },
+      content: {
+        enabled: contentStyleEnabled,
+        unknownWordColor: unknownWordColor,
       }
     };
 

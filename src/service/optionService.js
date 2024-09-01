@@ -18,6 +18,10 @@ async function getDefaultSiteOptions(){
                 color: '#0000ff',
                 maxMeaningNumber: 3,
                 hideWordClass: false,
+            },
+            content: {
+                enabled: false,
+                unknownWordColor: '#0000ff',
             }
         };
     }
@@ -38,9 +42,10 @@ async function getDefaultSiteOptions(){
 function assignDefaultValues(options, defaultOptions) {
     
     options.annotation = Object.assign({}, defaultOptions.annotation, options.annotation);
+    options.content = Object.assign({}, defaultOptions.content, options.content);
 
     let mergedOptions = Object.assign({}, defaultOptions, options);
-
+    //console.log('merged options:'+JSON.stringify(mergedOptions));
     return mergedOptions;
 
 }
