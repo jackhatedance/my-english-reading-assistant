@@ -23,8 +23,8 @@
     "popupAlwaysShowDefinition":{
         "message":"always show definition on this site: "
     },
-    "popupAnnotationAdjustment":{
-        "message":"Annotation Adjustment"
+    "popupSettings":{
+        "message":"Settings"
     },
     "popupPositionLabel":{
         "message":"Position Up/Down"

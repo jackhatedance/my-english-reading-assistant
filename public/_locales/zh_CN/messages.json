@@ -23,8 +23,8 @@
     "popupAlwaysShowDefinition":{
         "message":"总是在这个网站显示释义"
     },
-    "popupAnnotationAdjustment":{
-        "message":"注解调整"
+    "popupSettings":{
+        "message":"设置"
     },
     "popupPositionLabel":{
         "message":"上下位置调整"
