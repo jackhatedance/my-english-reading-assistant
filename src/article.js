@@ -35,7 +35,7 @@ function tokenizeTextNode(document, siteOptions) {
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
-                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG'];
+                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE'];
                 if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
                     console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
                 }
