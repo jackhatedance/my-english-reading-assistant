@@ -199,6 +199,18 @@
     "sidepanelHideDefinitions":{
         "message":"Hide Definitions"
     },
+    "sidepanelReadingDifficultyLabel": {
+        "message":"Difficulty"
+    },
+    "sidepanelReadingDifficultyEasy": {
+        "message":"Easy"
+    },
+    "sidepanelReadingDifficultyNormal": {
+        "message":"Normal"
+    },
+    "sidepanelReadingDifficultyHard": {
+        "message":"Hard"
+    },
 
     "sidepanelWordActionShowDefinition":{
         "message":"Show Definition"

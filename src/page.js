@@ -50,6 +50,7 @@ async function getPageInfo(siteProfile, documentArticleMap) {
 
     let totalWordCount = unknownWordsCount + knownWordsCount;
     let unknownWordsRatio = unknownWordsCount / totalWordCount;
+    let readingDifficulty = getReadingDifficulty(unknownWordsRatio);
     let visible = isPageAnnotationVisible();
     let siteOptions = await getCurrentSiteOptions();
     let domain = document.location.hostname;
@@ -71,11 +72,29 @@ async function getPageInfo(siteProfile, documentArticleMap) {
         unknownWordsCount: unknownWordsCount,
         unknownWords: unknownWords,
         unknownWordsRatio: unknownWordsRatio,
+        readingDifficulty: readingDifficulty,
         siteOptions: siteOptions,
         isbnsInContent: isbnsInContent,
     };
     //console.log('page info:'+JSON.stringify(pageInfo));
     return pageInfo;
+}
+
+/**
+ * easy, normal, hard
+ */
+function getReadingDifficulty(unknownWordRatio) {
+    //console.log('unknownWordRatio:'+unknownWordRatio);
+
+    let result = 'HARD';
+
+    if(unknownWordRatio < 0.03){
+        result = 'EASY';    
+    } else if(unknownWordRatio < 0.05){
+        result = 'NORMAL';    
+    }
+
+    return result;
 }
 
 function isPageAnnotationVisible() {

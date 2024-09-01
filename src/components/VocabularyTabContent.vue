@@ -20,6 +20,16 @@ const sidepanelHideDefinitions = chrome.i18n.getMessage('sidepanelHideDefinition
 
 const percentage = computed(() => Math.floor(props.page.unknownWordsRatio * 100));
 
+const readingDifficultyLabel = chrome.i18n.getMessage('sidepanelReadingDifficultyLabel');
+
+const readingDifficultyMsg = computed(() => {
+        let readingDifficultyEnum = props.page.readingDifficulty;
+        let readingDifficultyMsgKey = 'sidepanelReadingDifficulty' + readingDifficultyEnum[0].toUpperCase() + readingDifficultyEnum.toLowerCase().substring(1);    
+        //console.log('readingDifficultyMsgKey:'+readingDifficultyMsgKey);
+        return chrome.i18n.getMessage(readingDifficultyMsgKey);
+    });
+
+
 //console.log('vocabularyTabContent, props.page:' + JSON.stringify(props.page));
 
 
@@ -56,7 +66,7 @@ function clickHideDefinition(event){
     <div v-if="page" class="vocabulary-list">
         <h3 id="title" class="vocabulary-title">{{ sidepanelTitle }}</h3>
         <h4>{{ sidepanelWordStatisticsLabel }}<span id="wordStatistics">{{ props.page.unknownWordsCount }}/{{
-            props.page.totalWordCount }} ({{ percentage }}%)</span></h4>
+            props.page.totalWordCount }} ({{ percentage }}%) {{ readingDifficultyLabel }}:{{ readingDifficultyMsg }}</span></h4>
         <p>{{ sidepanelTitleDesc }}</p>
 
         <div class="toolbar">

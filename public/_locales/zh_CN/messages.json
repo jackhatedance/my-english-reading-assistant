@@ -199,7 +199,18 @@
     "sidepanelHideDefinitions":{
         "message":"隐藏释义"
     },
-
+    "sidepanelReadingDifficultyLabel": {
+        "message":"难度"
+    },
+    "sidepanelReadingDifficultyEasy": {
+        "message":"容易"
+    },
+    "sidepanelReadingDifficultyNormal": {
+        "message":"普通"
+    },
+    "sidepanelReadingDifficultyHard": {
+        "message":"困难"
+    },
 
     "sidepanelWordActionShowDefinition":{
         "message":"显示释义"
