@@ -10,6 +10,43 @@ import {dict as dictAffix} from './dicts/dict-affix.js';
 var gPrefixes, gSuffixes;
 
 function searchWord(request){
+    let result = searchWordBase(request);
+    if(!result) {
+        result = searchWordEndsWithDot(request);
+    }
+
+    return result;
+}
+
+function searchWordEndsWithDot(request){
+    let result = null;
+
+    let isEndWithDot = endsWithDot(request.query);
+    if(isEndWithDot && request.allowRemoveEndingDot){
+        let oldQuery = request.query; 
+        let newQuery = oldQuery.slice(0, -1); 
+
+        request.query = newQuery;
+        result = searchWordBase(request);
+        if(!result){//restore
+            request.query = oldQuery;
+        }
+    }
+    
+    return result;
+}
+
+function endsWithDot(text){
+    var result = false;
+    if(text){
+        if(text.match(/.+[.]/)){
+            result = true;
+        }
+    }
+    return result;
+}
+
+function searchWordBase(request){
     
     let requestOfDefault = {...request};
     requestOfDefault.allowRemoveSuffixOrPrefix = false;
