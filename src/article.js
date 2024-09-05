@@ -55,43 +55,24 @@ function tokenizeTextNode(document, siteOptions) {
                 query = trimPunctuations(query);
                 //console.log('after trim punctuation:'+query);
                 
-                let isEndWithDot = endsWithDot(query);
-
-                if(isEndWithDot){
-                    //remove dot
-                    query = query.slice(0, -1);                    
-                }
-
                 let searchResult = searchWord({
                     query: query,
                     allowLemma: true,
                     allowRemoveSuffixOrPrefix: false,
+                    allowRemoveEndingDot: true,
                     simplifyDefinition: simplifyDefinitionOptions,
                 });
-
-                if(!searchResult && isEndWithDot){
-                    //restore dot, could be abbreviation
-                    query = query + '.';
-
-                    searchResult = searchWord({
-                        query: query,
-                        allowLemma: true,
-                        allowRemoveSuffixOrPrefix: false,
-                        simplifyDefinition: simplifyDefinitionOptions,
-                    });
-                }
-
 
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(token.content, searchResult, '', '', 0);
+                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0);
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
                     tokenHtml = annotatedWord;
                 } else {
                     //console.log('search failed');
-                    let annotated = annotateNonword(token.content, '', '', 0);
+                    let annotated = annotateNonword(token.originalContent, '', '', 0);
                     //gTokenNumber++;
                     tokenHtml = annotated;
 
@@ -132,11 +113,25 @@ function splitText(sentence) {
             if(searchResult){
                 parts2.push(part);
             } else {
-                const regexp2 = /([-])|([^-]+)/g;
-                let subParts = _splitText(content, regexp2, part.offset);
-                for(const subPart of subParts){
-                    parts2.push(subPart);
-                }
+                //autofix splitted word
+                let contentWithoutHyphen = content.replaceAll(/[-]/g, "");
+                let searchResult = searchWord({
+                    query: contentWithoutHyphen,
+                    allowLemma: true,
+                    allowRemoveSuffixOrPrefix: false,
+                    allowCompounding: false,
+                    allowRemoveEndingDot: true,
+                });
+                if(searchResult){
+                    part.content = contentWithoutHyphen;
+                    parts2.push(part);
+                } else {
+                    const regexp2 = /([-])|([^-]+)/g;
+                    let subParts = _splitText(content, regexp2, part.offset);
+                    for(const subPart of subParts){
+                        parts2.push(subPart);
+                    }
+                }                
             }
         } else {
             parts2.push(part);
@@ -153,6 +148,7 @@ function _splitText(sentence, regexp, baseIndex) {
 
     for (const match of matches) {
         let part = {
+            originalContent: match[0],
             content: match[0],
             offset: match.index + baseIndex,
             length: match[0].length,
@@ -169,16 +165,6 @@ function isCompoundingWord(word) {
         isCompounding = word.match(/[a-zA-Z]+-[a-zA-Z]+/);
     }
     return isCompounding;    
-}
-
-function endsWithDot(text){
-    var result = false;
-    if(text){
-        if(text.match(/.+[.]/)){
-            result = true;
-        }
-    }
-    return result;
 }
 
 function trimPunctuations(text){
