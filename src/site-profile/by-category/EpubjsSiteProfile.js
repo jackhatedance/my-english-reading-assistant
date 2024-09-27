@@ -1,6 +1,6 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { Matcher } from '../matcher/Matcher.js';
-import { IframeDocumentConfig } from '../config/IframeDocumentProfile.js';
+import { IframeSiteConfig } from '../config/IframeDocumentProfile.js';
 import { searchSubIframesRecursively } from '../utils.js';
 
 class EpubjsMatcher extends Matcher {
@@ -33,7 +33,7 @@ class EpubjsMatcher extends Matcher {
     }  
 }
 
-class EpubjsDocumentConfig extends IframeDocumentConfig {
+class EpubjsDocumentConfig extends IframeSiteConfig {
     matchIframe(iframe){
         let id = iframe.id;
         return id && id.startsWith('epubjs');

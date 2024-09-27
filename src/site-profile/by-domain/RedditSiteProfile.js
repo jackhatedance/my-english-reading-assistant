@@ -1,12 +1,12 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
-import { DefaultDocumentConfig } from '../config/DefaultDocumentProfile.js';
+import { DefaultSiteConfig } from '../config/DefaultDocumentProfile.js';
 import { generateCssRuleOfHighlight as commonGenerateCssRuleOfHighlight } from '../../style.js';
 
 class RedditSiteProfile extends DefaultSiteProfile {
     constructor() {
         let matcher = new DomainMatcher('reddit.com');
-        let config = new DefaultDocumentConfig();
+        let config = new DefaultSiteConfig();
         super(matcher.name, matcher, config);
     } 
     

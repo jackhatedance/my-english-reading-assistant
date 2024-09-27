@@ -1,7 +1,7 @@
 import { searchSubIframesRecursively, isMeaIframe } from '../utils.js';
-import {DefaultDocumentConfig} from './DefaultDocumentProfile.js';
+import {DefaultSiteConfig} from './DefaultDocumentProfile.js';
 
-class IframeDocumentConfig extends DefaultDocumentConfig {
+class IframeSiteConfig extends DefaultSiteConfig {
 
     //abstract method
     matchIframe(iframe){
@@ -69,4 +69,4 @@ class IframeDocumentConfig extends DefaultDocumentConfig {
 
 }
 
-export {IframeDocumentConfig};
+export {IframeSiteConfig};

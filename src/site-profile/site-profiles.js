@@ -5,12 +5,12 @@ import { EpubjsSiteProfile } from './by-category/EpubjsSiteProfile.js';
 
 import { Matcher } from './matcher/Matcher.js';
 import { DefaultSiteProfile } from './DefaultSiteProfile.js';
-import { DefaultDocumentConfig } from './config/DefaultDocumentProfile.js';
+import { DefaultSiteConfig } from './config/DefaultDocumentProfile.js';
 import { searchSubIframesRecursively } from './utils.js';
 
 let name = 'default';
 let matcher = new Matcher('default');
-let config = new DefaultDocumentConfig();
+let config = new DefaultSiteConfig();
 const defaultSiteProfile = new DefaultSiteProfile(name, matcher, config); 
 
 const siteProfiles = [

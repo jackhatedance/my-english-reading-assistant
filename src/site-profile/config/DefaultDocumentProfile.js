@@ -1,6 +1,6 @@
 import { searchSubIframesRecursively, isMeaIframe } from '../utils.js';
 
-class DefaultDocumentConfig {
+class DefaultSiteConfig {
     //top document config
     getDocumentConfig(window, document) {
         let config = {
@@ -49,4 +49,4 @@ class DefaultDocumentConfig {
     }
 }
 
-export {DefaultDocumentConfig};
+export {DefaultSiteConfig};
