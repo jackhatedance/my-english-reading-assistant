@@ -32,6 +32,9 @@ function tokenizeTextNode(document, siteOptions) {
 
         if (node.nodeName === '#text') {
             let textContent = node.textContent;
+            if(!textContent || textContent.trim().length === 0) {
+                return;//blank
+            }
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
