@@ -1,6 +1,6 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
-import { DefaultSiteConfig } from '../config/DefaultDocumentProfile.js';
+import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
 import { generateCssRuleOfHighlight as commonGenerateCssRuleOfHighlight } from '../../style.js';
 
 class RedditSiteProfile extends DefaultSiteProfile {

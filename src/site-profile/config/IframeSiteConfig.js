@@ -1,5 +1,5 @@
 import { searchSubIframesRecursively, isMeaIframe } from '../utils.js';
-import {DefaultSiteConfig} from './DefaultDocumentProfile.js';
+import {DefaultSiteConfig} from './DefaultSiteConfig.js';
 
 class IframeSiteConfig extends DefaultSiteConfig {
 

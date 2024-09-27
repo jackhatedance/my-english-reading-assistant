@@ -1,6 +1,6 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
-import { IframeSiteConfig } from '../config/IframeDocumentProfile.js';
+import { IframeSiteConfig } from '../config/IframeSiteConfig.js';
 
 
 class NoteYoudaoSiteConfig extends IframeSiteConfig {

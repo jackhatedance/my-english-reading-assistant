@@ -1,6 +1,6 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { Matcher } from '../matcher/Matcher.js';
-import { IframeSiteConfig } from '../config/IframeDocumentProfile.js';
+import { IframeSiteConfig } from '../config/IframeSiteConfig.js';
 import { searchSubIframesRecursively } from '../utils.js';
 
 class EpubjsMatcher extends Matcher {

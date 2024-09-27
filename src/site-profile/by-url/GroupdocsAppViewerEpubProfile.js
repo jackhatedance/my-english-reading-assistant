@@ -1,6 +1,6 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { UrlMatcher } from '../matcher/UrlMatcher.js';
-import { IframeSiteConfig } from '../config/IframeDocumentProfile.js';
+import { IframeSiteConfig } from '../config/IframeSiteConfig.js';
 
 class GroupdocsAppViewerEpub extends DefaultSiteProfile {
     constructor() {

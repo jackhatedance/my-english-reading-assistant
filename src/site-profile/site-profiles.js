@@ -5,7 +5,7 @@ import { EpubjsSiteProfile } from './by-category/EpubjsSiteProfile.js';
 
 import { Matcher } from './matcher/Matcher.js';
 import { DefaultSiteProfile } from './DefaultSiteProfile.js';
-import { DefaultSiteConfig } from './config/DefaultDocumentProfile.js';
+import { DefaultSiteConfig } from './config/DefaultSiteConfig.js';
 import { searchSubIframesRecursively } from './utils.js';
 
 let name = 'default';
