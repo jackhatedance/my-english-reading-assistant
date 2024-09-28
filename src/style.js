@@ -4,7 +4,7 @@
 
 function findStyleSheet(document) {
     for (let sheet of document.styleSheets) {
-        if (sheet.title === 'mea-style') {
+        if (sheet.ownerNode.id === 'mea-style') {
             return sheet;
         }
     }

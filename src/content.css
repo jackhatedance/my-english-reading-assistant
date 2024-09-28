@@ -51,21 +51,6 @@
 
 
 
-.mea-highlight::after {
-  content: attr(data-footnote-short);
-  position: absolute;
-  width: max-content;
-  line-height: normal;
-  text-indent: 0px;
-  
-  white-space: nowrap;
-  left: 0;
-  top: -1.5em;
-  font-size: 0.5em;
-  color: grey;
-  opacity: 0.5;
-  visibility: hidden;
-}
 
 
 .mea-toolbar {
@@ -127,6 +112,6 @@
 
   
 
-  
 
+  
 

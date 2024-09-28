@@ -98,8 +98,31 @@ function addStyle(document) {
     link.href = chrome.runtime.getURL("contentScript.css");
     link.type = "text/css";
     link.rel = "stylesheet";
-    link.title = "mea-style";
+    //link.title = "mea-style";
     document.getElementsByTagName("head")[0].appendChild(link);
+
+
+    //dynamic style
+    var style = document.createElement("style");
+    //link.href = chrome.runtime.getURL("contentScript.css");
+    //style.type = "text/css";
+    //link.rel = "stylesheet";
+    style.id = "mea-style";
+    style.innerHTML = '.mea-highlight::after {\
+        content: attr(data-footnote-short);\
+        position: absolute;\
+        width: max-content;\
+        line-height: normal;\
+        text-indent: 0px;\
+        white-space: nowrap;\
+        left: 0;\
+        top: -1.5em;\
+        font-size: 0.5em;\
+        color: grey;\
+        opacity: 0.5;\
+        visibility: hidden;\
+      }';
+    document.getElementsByTagName("head")[0].appendChild(style);
     //console.log('add style');
 }
 
