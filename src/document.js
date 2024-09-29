@@ -94,34 +94,138 @@ function containsMeaStyle(document) {
 
 
 function addStyle(document) {
-    var link = document.createElement("link");
-    link.href = chrome.runtime.getURL("contentScript.css");
-    link.type = "text/css";
-    link.rel = "stylesheet";
-    //link.title = "mea-style";
-    document.getElementsByTagName("head")[0].appendChild(link);
-
-
+    
     //dynamic style
-    var style = document.createElement("style");
-    //link.href = chrome.runtime.getURL("contentScript.css");
-    //style.type = "text/css";
-    //link.rel = "stylesheet";
+    var style = document.createElement("style");    
     style.id = "mea-style";
-    style.innerHTML = '.mea-highlight::after {\
-        content: attr(data-footnote-short);\
-        position: absolute;\
-        width: max-content;\
-        line-height: normal;\
-        text-indent: 0px;\
-        white-space: nowrap;\
-        left: 0;\
-        top: -1.5em;\
-        font-size: 0.5em;\
-        color: grey;\
-        opacity: 0.5;\
-        visibility: hidden;\
-      }';
+    style.innerHTML = `    
+      .mea-sentence {
+        
+        &::before {
+          content: '[';
+        }
+        &::after {
+          content: ']';
+        }
+      }
+
+      .mea-nonword {
+        display:inline !important;
+      }
+
+      .mea-highlight {  
+        position: relative;
+        margin-top: 0px;
+        text-indent1: 0px;
+        display1: inline-block;
+      }
+
+      .mea-highlight { 
+        &.mea-hide {
+          &::after {
+            visibility: hidden;
+          }
+        }
+
+        &:hover, &.mea-hide:hover {
+          &::after{
+            background-color: white;
+            border: solid 1px;
+            opacity: 1;
+            z-index: 99;
+            visibility: visible;
+
+            content: attr(data-footnote);
+          }
+        }
+
+        &:not([data-parts='']) {
+          &:hover, &.mea-hide:hover {
+            &::after{
+              content: attr(data-footnote) ' [' attr(data-parts) ']';
+            }
+          }
+        } 
+      }
+
+
+      .mea-highlight::after {
+        content: attr(data-footnote-short);
+        position: absolute;
+        width: max-content;
+        line-height: normal;
+        text-indent: 0px;
+        
+        white-space: nowrap;
+        left: 0;
+        top: -1.5em;
+        font-size: 0.5em;
+        color: grey;
+        opacity: 0.5;
+        visibility: hidden;
+      }
+
+
+
+
+      .mea-toolbar {
+        position: absolute;
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height:auto;
+        background: white;
+        text-align: center;
+        color: black;
+        z-index: 100;
+
+      }
+
+      .mea-toolbar-button {
+        border: none;
+        margin-right: 2px;
+        padding:0px;
+        padding-inline: none;
+        background: white;
+
+        
+      }
+
+      .mea-icon {
+        width: 16px;
+        height: 16px;
+
+      }
+
+      ::highlight(user-1-highlight) {
+        background-color: rgb(255, 241, 92);
+        color: black;
+      }
+      #mea-vue-container * {
+        all: revert;
+      }
+      #mea-vue-container {
+        border: none;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        width: fit-content;
+        height: fit-content;
+        padding: 0px;
+        #mea-vueapp-iframe {
+          width: 400px;
+          height: 610px;
+          border: none;
+        }
+
+        #vue {
+          width: 400px;
+          
+        }
+      }
+
+    `;
     document.getElementsByTagName("head")[0].appendChild(style);
     //console.log('add style');
 }
