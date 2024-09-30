@@ -8,7 +8,7 @@
 # 基本功能
 想阅读英文小说，但是词汇量不够，一个一个的查字典太麻烦了，坚持不下去怎么办？这个软件可以帮助你。
 
-<img src="screenshots/cn/web-page.png" width="600">
+<img src="screenshots/web-page-novel.png" width="600">
 
 这个浏览器插件能自动在英语网页里显示陌生单词的词义。
 
