@@ -151,6 +151,11 @@ localizeHtmlPage();
   }
 
   function renderGlobalSection(options){
+    document.getElementById('forum').addEventListener('click', (e) => {
+      chrome.tabs.create({url: e.target.href});
+      return false;
+    });
+
     if(options.report.enabled){
       document.getElementById('report').addEventListener('click', (e) => {
         chrome.tabs.create({url: chrome.runtime.getURL('report.html')});

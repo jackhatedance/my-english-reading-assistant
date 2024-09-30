@@ -8,6 +8,9 @@
     "extensionDefaultTitle":{
         "message":"我的英文阅读助手"
     },
+    "popupForum":{
+        "message":"贴吧"
+    },
     "popupReport":{
         "message":"报告"
     },

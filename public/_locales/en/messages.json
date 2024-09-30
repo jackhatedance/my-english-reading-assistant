@@ -8,6 +8,9 @@
     "extensionDefaultTitle":{
         "message":"My English Reading Assistant"
     },
+    "popupForum":{
+        "message":"Forum"
+    },
     "popupReport":{
         "message":"Report"
     },
