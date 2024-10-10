@@ -169,6 +169,10 @@ localizeHtmlPage();
       chrome.tabs.create({url: chrome.runtime.getURL('guide.html')});
     });
 
+    document.getElementById('faq').addEventListener('click', (e) => {
+      chrome.tabs.create({url: chrome.runtime.getURL('faq.html')});
+    });
+
     document.getElementById('options').addEventListener('click', (e) => {
       chrome.runtime.openOptionsPage();
     });

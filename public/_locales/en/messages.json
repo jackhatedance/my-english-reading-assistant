@@ -17,6 +17,9 @@
     "popupHelp":{
         "message":"Help"
     },
+    "popupFaq":{
+        "message":"FAQ"
+    },
     "popupOptions":{
         "message":"Options"
     },

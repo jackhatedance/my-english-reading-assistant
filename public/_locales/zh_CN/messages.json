@@ -17,6 +17,9 @@
     "popupHelp":{
         "message":"帮助"
     },
+    "popupFaq":{
+        "message":"常见问题"
+    },
     "popupOptions":{
         "message":"设置"
     },
