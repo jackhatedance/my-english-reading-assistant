@@ -18,18 +18,22 @@ Automatically display the meaning of new words, bringing you a smooth reading ex
 
 ### Long Description
 
-我们每个人在学校学习了多年英语，并且通过了英语等级考试，但是大部分人却没看过一本英文书。毕业以后渐渐地就把英语忘光了。如果我们能在日常生活中把英语用起来，就不会陷于一直学一直忘尴尬境地。
+解决阅读英文文章生词过多的问题，自动显示生词含义，改善阅读体验。
+主要功能如下：
+1. 个人词汇表的初始化/导入/导出。
+2. 根据个人词汇表，在网页中自动显示生词的含义。
+3. 在阅读过程中，标记单词为认识/不认识,从而更新个人词汇表。
+4. 查看阅读历史。
+5. 对网页内容进行高亮，记笔记。
 
-我们想阅读英文原著，但是词汇量不够，几乎每一页里都包含很多生词。手工为每一个生词查字典往往会打断阅读体验，导致无法坚持阅读。这个软件就是为这个解决问题而生。
 
-该软件围绕个人词汇表这个核心概念，在英文网页上自动为用户展示陌生单词的词义。帮助英文水平不高的人顺利阅读英文书籍。在阅读过程中，该软件会显示当前页面的所有生词。用户可以随时标记单词为“认识”或者“不认识”。凡是标记为“认识”的单词，将来就不会在文章里显示词义。随着不断的阅读和标记，我们的个人词汇表越来越精准。虽然背单词不是本软件的目的，但是在阅读过程中，无意识的记住了更多的单词。这些单词与小说情节相关联，更不容易忘记。
-
-
-Each of us has studied English for many years in school and passed the English proficiency test, but most of us have never read an English book. After graduation, we gradually forget all the English we know. If we can use English in our daily lives, we will not be trapped in the embarrassing situation of learning and forgetting all the time.
-
-We want to read English originals, but our vocabulary is not enough, and almost every page contains many new words. Manually looking up the dictionary for each new word often interrupts the reading experience and makes it impossible to persist in reading. This software is born to solve this problem.
-
-The software revolves around the core concept of personal vocabulary and automatically displays the meaning of unfamiliar words to users on English web pages. Helps people with low English proficiency to read English books smoothly. During the reading process, the software will display all the new words on the current page. Users can mark words as "recognized" or "unrecognized" at any time. Any word marked as "recognized" will not show its meaning in the article in the future. With continuous reading and marking, our personal vocabulary becomes more and more accurate. Although memorizing words is not the purpose of this software, more words are unconsciously remembered during the reading process. These words are related to the plot of the novel and are less likely to be forgotten.
+Solve the problem of too many new words when reading English articles, automatically display the meaning of new words, and improve the reading experience.
+The main functions are as follows:
+1. Initialize/import/export personal vocabulary.
+2. Automatically display the meaning of new words on the web page according to the personal vocabulary.
+3. During the reading process, mark words as known/unknown, so as to update the personal vocabulary.
+4. View reading history.
+5. Highlight the content of the web page and take notes.
 
 ## Install Chrome extension
 
