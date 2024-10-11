@@ -11,14 +11,11 @@ My Browser Extension of English reading assistant
 ## Features
 
 ### Short description
-
-自动显示生词词义，带来丝滑英文原著阅读体验。不知不觉扩大词汇量。
-
-Automatically display the meaning of new words, bringing you a smooth reading experience of English original works. Expand your vocabulary without realizing it.
+参见 [资源文件](./public/_locales/en/messages.json), key: extensionDescription
 
 ### Long Description
 
-解决阅读英文文章生词过多的问题，自动显示生词含义，改善阅读体验。
+自动显示英文陌生单词含义。改善英语学习者阅读新闻/原著的体验。
 主要功能如下：
 1. 个人词汇表的初始化/导入/导出。
 2. 根据个人词汇表，在网页中自动显示生词的含义。
@@ -27,7 +24,7 @@ Automatically display the meaning of new words, bringing you a smooth reading ex
 5. 对网页内容进行高亮，记笔记。
 
 
-Solve the problem of too many new words when reading English articles, automatically display the meaning of new words, and improve the reading experience.
+Automatically display the meaning of new English words. Improve the experience of English learners in reading news/original works.
 The main functions are as follows:
 1. Initialize/import/export personal vocabulary.
 2. Automatically display the meaning of new words on the web page according to the personal vocabulary.
