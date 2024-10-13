@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition} from './dictionary.js';
+import {lookup, simplifyDefinition, splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary.js';
 import {existWordRecord} from './vocabularyStore.js';
 import {map as wordParts} from './word-parts.js';
 import {getOptionsFromCache} from './service/optionService.js';
@@ -172,6 +172,27 @@ function searchWordWithDict(request, dicts){
 
                         lemmaType = 'plural';
                         done = true;
+                    }
+                }
+            }
+
+            if(!done){
+                let wordClasses = splitWordClasses(definition);
+                if(wordClasses.length === 1) {
+                    let wordClassResult = parseWordClass(wordClasses[0]);
+                    let meanings = splitWordMeanings(wordClassResult.meanings);
+                    if(meanings.length === 1) {
+                        let result = meanings[0].match('^([a-zA-Z]+)的((变形))');
+                        if(result != null){
+                            word = result[1];
+                            let def = lookup(word, dicts);
+                            if(def){
+                                definition = def;
+
+                                lemmaType = 'morph';
+                                done = true;
+                            }
+                        }
                     }
                 }
             }

@@ -74,6 +74,20 @@ function firstMeaning(meanings){
     return meanings;
 }
 
+function splitWordClasses(definition){
+    return definition.split(';');
+}
+
+function splitWordMeanings(meaningsStr){
+    let meanings;
+    if(meaningsStr === ''){
+        meanings = [];
+    }else {
+        meanings = meaningsStr.split(',');
+    }
+    return meanings;
+}
+
 function simplifyDefinition(definition, options){
     let { maxMeaningNumber, hideWordClass } = options;
 
@@ -83,8 +97,8 @@ function simplifyDefinition(definition, options){
         return definition;
     }
 
-    let classes = definition.split(';');
-    
+    let classes = splitWordClasses(definition);
+
     let totalMeaningNumber = 0;
     let definitions = [];
     for(let cls of classes){
@@ -94,12 +108,7 @@ function simplifyDefinition(definition, options){
         //console.log('parse word class:'+ JSON.stringify(wordClassResult));
         let wordClass = wordClassResult.wordClass;
 
-        let meanings;
-        if(wordClassResult.meanings === ''){
-            meanings = [];
-        }else {
-            meanings = wordClassResult.meanings.split(',');
-        }
+        let meanings = splitWordMeanings(wordClassResult.meanings);
 
         let definition = {
             wordClass: wordClass,
@@ -174,4 +183,4 @@ function getVisitedMeanings(definition){
     return visitedMeanings.join(',');    
 }
 
-export { lookup, parseWordClass, simplifyDefinition };
+export { lookup, splitWordClasses, parseWordClass, splitWordMeanings, simplifyDefinition };
