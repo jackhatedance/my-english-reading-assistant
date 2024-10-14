@@ -109,7 +109,7 @@ function searchWordWithDict(request, dicts){
     //console.log('input:'+input);
     //replace single quotation mark
     input = input.replaceAll(/[’]/g, "'");
-
+    
     let word = input;
     let definition = lookup(word, dicts);
 
@@ -313,6 +313,14 @@ function transformLemmatize(input, dicts){
         }
     }
 
+    //word-parts dictionary has higher priority than lemmatize lib
+    if(!definition) {
+        word = getBaseFromWordParts(input)
+        if(word !== input){
+            definition = lookup(word, dicts);
+        }
+    }
+
     if(!definition) {
         word = lemmatize.adjective(input);
         if(word !== input){
@@ -435,6 +443,27 @@ function removeSuffix(word){
 function isSuffix(s){    
     //console.log('isSuffix:'+s);
     return getSuffixes().includes(s);
+}
+
+function getBaseFromWordParts(word){
+    let parts = wordParts[word];
+    if(parts){
+        if(parts.length === 3 && parts[0] === '' && parts[1] !== '' && parts[2] !== ''){
+            let base = parts[1];
+            let suffix = parts[2];
+
+            let lastChar = base.charAt(base.length - 1);
+
+            if(suffix === 'ed' || suffix === 'd' || suffix === lastChar + 'ed'
+                //|| suffix === 's' || suffix === 'es'
+             ) {
+                return base;     
+            }
+
+        }
+    }
+
+    return word;
 }
 
 function getBaseFromPossessive(word){
