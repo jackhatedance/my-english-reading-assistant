@@ -10,9 +10,15 @@ import {dict as dictAffix} from './dicts/dict-affix.js';
 var gPrefixes, gSuffixes;
 
 function searchWord(request){
-    let result = searchWordBase(request);
-    if(!result) {
+    let result;
+
+    let isEndWithDot = endsWithDot(request.query);
+    if(isEndWithDot) {
         result = searchWordEndsWithDot(request);
+    }
+    
+    if(!result) {
+        result = searchWordBase(request);
     }
 
     return result;
@@ -21,8 +27,7 @@ function searchWord(request){
 function searchWordEndsWithDot(request){
     let result = null;
 
-    let isEndWithDot = endsWithDot(request.query);
-    if(isEndWithDot && request.allowRemoveEndingDot){
+    if(request.allowRemoveEndingDot){
         let oldQuery = request.query; 
         let newQuery = oldQuery.slice(0, -1); 
 
@@ -102,7 +107,6 @@ function searchCompounding(request, dicts){
 function searchWordWithDict(request, dicts){
     //console.log('dicts:' + JSON.stringify(dicts));
     
-
     let input = request.query;
     let searchType = 'raw';
     let lemmaType = 'regular';
@@ -110,6 +114,11 @@ function searchWordWithDict(request, dicts){
     //replace single quotation mark
     input = input.replaceAll(/[’]/g, "'");
     
+    //debug purpose
+    if(input === 'man.') {
+        console.log(input);
+    }
+
     let word = input;
     let definition = lookup(word, dicts);
 
