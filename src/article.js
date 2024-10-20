@@ -100,8 +100,8 @@ function tokenizeTextNode(document, siteOptions) {
 }
 
 function splitText(sentence) {
-    //split by space.
-    const regexp = /([^\s]+)|([\s]+)/g;
+    //split by space, dash
+    const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitText(sentence, regexp, 0);
     let parts2 = [];
     for(const part of parts){
