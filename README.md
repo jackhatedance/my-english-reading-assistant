@@ -15,22 +15,25 @@ My Browser Extension of English reading assistant
 
 ### Long Description
 
-自动显示英文陌生单词含义。改善英语学习者阅读新闻/原著的体验。
+免去阅读英文文章时不停查字典的麻烦，帮你克服英语阅读的困难。
+
 主要功能如下：
 1. 个人词汇表的初始化/导入/导出。
 2. 根据个人词汇表，在网页中自动显示生词的含义。
 3. 在阅读过程中，标记单词为认识/不认识,从而更新个人词汇表。
 4. 查看阅读历史。
 5. 对网页内容进行高亮，记笔记。
+6. 支持epub格式的电子书（小说，外刊等），新闻，论坛等大部分英文网站。
 
+Eliminate the trouble of constantly looking up dictionaries when reading English articles, and help you overcome the difficulties of English reading.
 
-Automatically display the meaning of new English words. Improve the experience of English learners in reading news/original works.
 The main functions are as follows:
 1. Initialize/import/export personal vocabulary.
 2. Automatically display the meaning of new words on the web page according to the personal vocabulary.
 3. During the reading process, mark words as known/unknown, so as to update the personal vocabulary.
 4. View reading history.
-5. Highlight the content of the web page and take notes.
+5. Highlight web page content and take notes.
+6. Support epub format e-books (novels, foreign magazines, etc.), news, forums and most other English websites.
 
 ## Install Chrome extension
 
