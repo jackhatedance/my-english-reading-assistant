@@ -23,7 +23,7 @@ My Browser Extension of English reading assistant
 3. 在阅读过程中，标记单词为认识/不认识,从而更新个人词汇表。
 4. 查看阅读历史。
 5. 对网页内容进行高亮，记笔记。
-6. 支持epub格式的电子书（小说，外刊等），新闻，论坛等大部分英文网站。
+6. 支持epub/pdf格式的电子书（小说，外刊等），新闻，论坛等大部分英文网站。
 
 Eliminate the trouble of constantly looking up dictionaries when reading English articles, and help you overcome the difficulties of English reading.
 
@@ -33,7 +33,7 @@ The main functions are as follows:
 3. During the reading process, mark words as known/unknown, so as to update the personal vocabulary.
 4. View reading history.
 5. Highlight web page content and take notes.
-6. Support epub format e-books (novels, foreign magazines, etc.), news, forums and most other English websites.
+6. Support epub/pdf format e-books (novels, foreign magazines, etc.), news, forums and most other English websites.
 
 ## Install Chrome extension
 
