@@ -201,13 +201,15 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 
 # 电子书
 
-大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读电子书。只要在浏览器内打开阅读器即可。
+大部分英文小说都是以书籍的形式存在的。该插件也可以用于阅读电子书。前提是电子书必须在浏览器里打开。
 
 <img src="screenshots/cn/epub-book.png" width="800">
 
-已知的一些浏览器支持的阅读器：
-epub电子书阅读器：https://app.flowoss.com/
-PDF电子书阅读器：https://mozilla.github.io/pdf.js/web/viewer.html
+已知的一些电子书的阅读器网址及其支持的格式：
+|网址|格式|
+|--|--|
+| https://app.flowoss.com/ | epub|
+| https://mozilla.github.io/pdf.js/web/viewer.html | PDF |
 
 
 一些推荐的英文书
