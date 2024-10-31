@@ -210,6 +210,7 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 |--|--|
 | https://app.flowoss.com/ | epub|
 | https://mozilla.github.io/pdf.js/web/viewer.html | PDF |
+| https://webbrowsertools.com/mobi-reader/ | mobi |
 
 
 一些推荐的英文书

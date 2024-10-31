@@ -12,4 +12,4 @@
 |--|--|
 | https://app.flowoss.com/ | epub|
 | https://mozilla.github.io/pdf.js/web/viewer.html | PDF |
-
+| https://webbrowsertools.com/mobi-reader/ | mobi |
