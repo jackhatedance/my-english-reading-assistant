@@ -99,7 +99,7 @@ function tokenizeTextNode(document, siteOptions) {
 }
 
 function splitText(sentence) {
-    //split by space, dash
+    //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitText(sentence, regexp, 0);
     let parts2 = [];
