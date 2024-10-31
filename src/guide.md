@@ -261,4 +261,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.8.6
 修复Yahoo网站样式问题；添加贴吧入口；
 ## 0.8.7
-支持变形词；优先查询非缩略词；支持破折号；
+支持变形词；优先查询非缩略词；支持破折号；修复PDF相关问题；添加FAQ；
