@@ -117,6 +117,8 @@ function splitText(sentence) {
             } else {
                 //autofix splitted word
                 let contentWithoutHyphen = content.replaceAll(/[-]/g, "");
+                contentWithoutHyphen = trimPunctuations(contentWithoutHyphen);
+
                 let searchResult = searchWord({
                     query: contentWithoutHyphen,
                     allowLemma: true,
