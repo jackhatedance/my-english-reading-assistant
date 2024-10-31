@@ -3,8 +3,8 @@
 import { getWordParts } from './language.js';
 import {  TOKEN_TAG } from './html.js';
 
-function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber) {
-    let query = token;
+function buildAnnotationParameters(searchResult) {
+    
     let baseWord = searchResult.word;
     let definition = searchResult.definition;
     let shortDefinition = searchResult.shortDefinition;
@@ -31,10 +31,35 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
         }
         parts = partArray.join(' ');
     }
-    let formatted = format(query, definition, shortDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+
+    let annotationParameters = {
+        definition, shortDefinition, baseWord, parts
+    };
+    return annotationParameters;
+}
+
+function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber) {
+    let annotationParameters = buildAnnotationParameters(searchResult);
+    let { definition, shortDefinition, baseWord, parts } = annotationParameters;
+    let formatted = format(token, definition, shortDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
     //console.log('formatted:'+formatted);
 
     return formatted;
+}
+
+function updateWordAnnotation(textElement, searchResult){
+    let annotationParameters = buildAnnotationParameters(searchResult);
+    let { definition, shortDefinition, baseWord, parts } = annotationParameters;
+
+    let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
+
+    textElement.classList.remove('mea-nonword');
+    textElement.classList.add('mea-word');
+
+    textElement.setAttribute('data-base-word', escapedBaseWord);
+    textElement.setAttribute('data-parts', `${parts}`);
+    textElement.setAttribute('data-footnote', definition);
+    textElement.setAttribute('data-footnote-short', shortDefinition);
 }
 
 function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
@@ -63,4 +88,4 @@ function getBaseWordFromElement(element) {
     return element.getAttribute('data-base-word');
 }
 
-export { annotateWord, annotateNonword, getBaseWordFromElement };
+export { annotateWord, annotateNonword, updateWordAnnotation, getBaseWordFromElement };

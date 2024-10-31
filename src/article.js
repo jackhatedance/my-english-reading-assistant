@@ -2,13 +2,14 @@
 
 import { split } from "sentence-splitter";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord } from './language.js';
 import { isTextTag } from './html.js';
 import { TEXT_TAG } from './html.js';
+import { getSimplifyDefinitionOptions } from './service/optionService.js';
 
 /**
  * split text node to words, wrapped by span.
@@ -16,10 +17,8 @@ import { TEXT_TAG } from './html.js';
  * @param {*} document 
  */
 function tokenizeTextNode(document, siteOptions) {
-    let simplifyDefinitionOptions = {
-            hideWordClass: siteOptions.annotation.hideWordClass,
-            maxMeaningNumber: siteOptions.annotation.maxMeaningNumber,
-    };
+    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
+
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
 
@@ -38,7 +37,7 @@ function tokenizeTextNode(document, siteOptions) {
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
-                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE'];
+                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE', 'OPTION'];
                 if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
                     console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
                 }
@@ -186,7 +185,7 @@ function trimPunctuations(text){
  * 
  * @param {*} document 
  */
-function parseDocument(document, skip = false) {
+function parseDocument(document, siteOptions, skip = false) {
     
     let article = {
         currentSentenceNumber: 0,
@@ -227,8 +226,10 @@ function parseDocument(document, skip = false) {
       */
 
     if(!skip) {    
+        //parse paragraph, token
         parseArticleContent(article, document.body.textContent);
-        parseArticleTextNodes(article, document.body);
+        //parse text node(offset)
+        parseArticleTextNodes(article, document.body, siteOptions);
 
         article.contentLength = document.body.textContent.length;
         article.document = document;
@@ -290,7 +291,7 @@ function parseParagraphContent(article, paragraphInfo, content){
     }
     
 
-    //console.log('content:'+content);
+    //console.log('paragraph:'+content);
     let paragraphStartOffsetOfArticle = paragraphInfo.offset;
     let sentences = split(content);
 
@@ -325,11 +326,14 @@ function parseParagraphContent(article, paragraphInfo, content){
     
 }
 
-function parseArticleTextNodes(article, element){
+function parseArticleTextNodes(article, element, siteOptions){
+    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
+
     let offset = 0;
     traverseNode(element, (node) => {
         if (node.nodeName === '#text') {
             let length = node.textContent.length;
+            //console.log(node.textContent);
 
             let nodeInfo = { 
                 node: node,
@@ -339,6 +343,41 @@ function parseArticleTextNodes(article, element){
             };
             
             addArticleNode(article, nodeInfo);
+
+
+            let token = findTokenInArticle(article, offset);
+            //console.log(token);
+            
+            //debug purpose
+            /*
+            if(node.textContent === 'af-' && token){
+                console.log(node.textContent);
+                console.log(token);
+            }
+            */
+           
+            //if(token && nodeInfo.offset === token.articleOffset){
+            if(token 
+                && nodeInfo.offset >= token.articleOffset
+                && nodeInfo.offset < token.articleOffset + token.length
+            ){
+                
+                if(token.content && token.content.trim().length > 0) {
+                    let searchResult = searchWord({
+                        query: token.content,
+                        allowLemma: true,
+                        allowRemoveSuffixOrPrefix: false,
+                        allowRemoveEndingDot: true,
+                        simplifyDefinition: simplifyDefinitionOptions,
+                    });
+                    if(searchResult) {
+                        updateWordAnnotation(node.parentElement, searchResult);
+                    } else {
+                        //console.log('search not found:' + token.content);
+                    }
+                }
+            }
+        
             
             offset += length;
         }
@@ -470,7 +509,7 @@ function findTokenInSentence(sentence, offset) {
         if (tokenArtileOffset <= offset && offset < (tokenArtileOffset + token.length)) {
             let result = Object.assign({}, token);
             result.articleOffset = tokenArtileOffset;
-            console.log('find token in sentence');
+            //console.log('find token in sentence');
             return result;
         }
     }

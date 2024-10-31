@@ -184,5 +184,13 @@ function getOptionsFromCache(){
     }
     return gOptions;
 } 
-  
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty};
+
+function getSimplifyDefinitionOptions(siteOptions){
+    let simplifyDefinitionOptions = {
+        hideWordClass: siteOptions.annotation.hideWordClass,
+        maxMeaningNumber: siteOptions.annotation.maxMeaningNumber,
+    };
+    return simplifyDefinitionOptions;
+}
+
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions};

@@ -207,13 +207,14 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         }        
     }
 
+    let currentSiteOption = await getCurrentSiteOptions();
+
     let article = null;
     if (documentConfig.canProcess) {
 
 
         //console.log('preprocess document');
-        let currentSiteOption = await getCurrentSiteOptions();
-
+        
         var x = 0;
         var intervalID = window.setInterval(async function () {
 
@@ -242,13 +243,13 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
     }
     
     if (documentConfig.canProcess) {
-        article = parseDocument(document);
+        article = parseDocument(document, currentSiteOption);
 
         //console.log(JSON.stringify(article));
 
     } else {
         //empty article
-        article = parseDocument(document, true);
+        article = parseDocument(document, currentSiteOption, true);
     }
     return article;
 
