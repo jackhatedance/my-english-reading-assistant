@@ -7,9 +7,14 @@
 
 #### 支持PDF格式的电子书吗？
 支持常见的电子书格式。理论上，只要是网页版的电子书阅读器，都是支持的。大家可以自行搜索。
+
 已知的一些网页版电子书阅读器：
 |网址|格式|
 |--|--|
 | https://app.flowoss.com/ | epub|
 | https://mozilla.github.io/pdf.js/web/viewer.html | PDF |
 | https://webbrowsertools.com/mobi-reader/ | mobi |
+
+#### 英文原著，外刊电子书哪里找？
+* 去某宝请人“代找英文书”
+* zlib
