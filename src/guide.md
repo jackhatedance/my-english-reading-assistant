@@ -201,7 +201,7 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 
 # 电子书
 
-大部分英文小说和报刊都是以书籍的形式存在的。该插件也可以用于阅读电子书。前提是电子书必须在浏览器里打开。
+大部分英文小说和报刊都是以电子书的形式存在的。该插件也可以用于阅读电子书。前提是电子书必须在浏览器里打开。
 
 <img src="screenshots/cn/epub-book.png" width="800">
 
