@@ -1,3 +1,8 @@
+:root {
+  --borderColor-default: black;
+  
+}
+
 /* normalize css starts here */
 *,
 *::before,
@@ -228,7 +233,8 @@ html {
   width: 100%;
   width: max-content;
   max-width: 100%;
-  overflow: auto
+  overflow: auto;
+  border-collapse: collapse;
 }
 
 .markdown-body table th {
