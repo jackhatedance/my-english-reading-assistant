@@ -352,14 +352,15 @@ function parseArticleTextNodes(article, element, siteOptions){
             
             //debug purpose
             /*
-            if(node.textContent === 'af-' && token){
+            if(node.textContent === 'mis-' && token && token.content === 'mission'){
                 console.log(node.textContent);
                 console.log(token);
             }
             */
            
-            //if(token && nodeInfo.offset === token.articleOffset){
             if(token 
+                && token.originalContent.includes('-')
+                && !token.content.includes('-')
                 && nodeInfo.offset >= token.articleOffset
                 && nodeInfo.offset < token.articleOffset + token.length
             ){
