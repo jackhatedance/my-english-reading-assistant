@@ -269,10 +269,12 @@ async function addDocumentEventListener(document, documentConfig) {
     }
 
     let nodeSelection = document.getSelection();
+    let { anchorNode, focusNode } = nodeSelection;
+    let bothTextNode = (anchorNode && focusNode && anchorNode.nodeName === '#text' && focusNode.nodeName === '#text');
     let selectedText = nodeSelection.toString();
 
     let article = gDocumentArticleMap.get(document);
-    if(article && nodeSelection.type !== 'None'){
+    if(article && nodeSelection.type !== 'None' && bothTextNode){
 
       
       let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection);
