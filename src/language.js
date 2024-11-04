@@ -2,7 +2,7 @@
 
 import {lookup, simplifyDefinition, splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary.js';
 import {existWordRecord} from './vocabularyStore.js';
-import {map as wordParts} from './word-parts.js';
+import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
@@ -455,7 +455,7 @@ function isSuffix(s){
 }
 
 function getBaseFromWordParts(word){
-    let parts = wordParts[word];
+    let parts = getWordPartsFromDict(word);
     if(parts){
         if(parts.length === 3 && parts[0] === '' && parts[1] !== '' && parts[2] !== ''){
             let base = parts[1];
@@ -566,7 +566,7 @@ function isKnown(baseWord, vocabulary){
 }
 
 function getWordParts(baseWord){
-    let parts = wordParts[baseWord];
+    let parts = getWordPartsFromDict(baseWord);
 
     if(!parts){
         //compouding
@@ -580,10 +580,10 @@ function getWordParts(baseWord){
     }
 
     let objArray = [];
-    for(let part of parts){
-        if(part){
-            objArray.push({word:part, dictEntry: part, type:'root'});
-        }
+        for(let part of parts){
+            if(part){
+                objArray.push({word:part, dictEntry: part, type:'root'});
+            }
     }
     
     let first = objArray[0];
