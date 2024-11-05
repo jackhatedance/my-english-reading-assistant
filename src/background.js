@@ -236,7 +236,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
     let endTime = new Date().getTime();
     var duration = endTime - tabInfo.startTime;
     
-    console.log(`finish read page <<${tabInfo.title}>> in ${duration} seconds, word changes:${tabInfo.wordChanges}`);
+    //console.log(`finish read page <<${tabInfo.title}>> in ${duration} seconds, word changes:${tabInfo.wordChanges}`);
     addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,
