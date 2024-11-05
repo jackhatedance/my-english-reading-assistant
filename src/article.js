@@ -1,7 +1,7 @@
 'use strict';
 
 import { split } from "sentence-splitter";
-import { traverseNode } from './dom.js';
+import { traverseNode, traverseElement } from './dom.js';
 import { annotateWord, annotateNonword, updateWordAnnotation } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
@@ -98,12 +98,14 @@ function tokenizeTextNode(document, siteOptions) {
     });
 }
 
-function splitText(sentence) {
+function splitText(sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-    let parts = _splitText(sentence, regexp, 0);
+    let parts = _splitTextByRegex(sentence, regexp, 0);
+    let parts1 = splitPartsTextByNewLines(parts, offsetOfArticle, newLinePositions);
+    //console.log(parts1);
     let parts2 = [];
-    for(const part of parts){
+    for(const part of parts1){
         let content = part.content;
         if(isCompoundingWord(content)){
             let searchResult = searchWord({
@@ -131,7 +133,7 @@ function splitText(sentence) {
                     parts2.push(part);
                 } else {
                     const regexp2 = /([-])|([^-]+)/g;
-                    let subParts = _splitText(content, regexp2, part.offset);
+                    let subParts = _splitTextByRegex(content, regexp2, part.offset);
                     for(const subPart of subParts){
                         parts2.push(subPart);
                     }
@@ -144,7 +146,7 @@ function splitText(sentence) {
     return parts2;
 }
 
-function _splitText(sentence, regexp, baseIndex) {
+function _splitTextByRegex(sentence, regexp, baseIndex) {
     let parts = [];
 
     const str = sentence;
@@ -154,6 +156,7 @@ function _splitText(sentence, regexp, baseIndex) {
         let part = {
             originalContent: match[0],
             content: match[0],
+            //relative to sentence
             offset: match.index + baseIndex,
             length: match[0].length,
         };
@@ -161,6 +164,103 @@ function _splitText(sentence, regexp, baseIndex) {
     }
 
     return parts;
+}
+
+function splitPartsTextByNewLines(parts, sentenceOffsetOfArticle, newLinePositions) {
+
+    let parts2 = [];
+    let startPositionIndex = 0;
+    for(const part of parts){
+        /*
+        if(part.originalContent.includes('com-')){
+            console.log('com-');
+        }
+        */
+
+        part.sentenceOffsetOfArticle = sentenceOffsetOfArticle;
+        let positionIndexes = _findPartPositionIndexes(part, newLinePositions, startPositionIndex);
+        
+        if(positionIndexes.length > 0){//found
+            //console.log("positionIndexes:");
+            //console.log(positionIndexes);
+
+            let positions = [];
+            for(let idx of positionIndexes){
+                let pos = newLinePositions[idx];
+                positions.push(pos);
+            }
+
+            let subparts = _splitPartByNewLines(part, positions);
+
+            for(let subpart of subparts){
+                parts2.push(subpart);
+            }
+
+            let lastPositionIndex = positionIndexes[positionIndexes.length - 1];
+            startPositionIndex = lastPositionIndex + 1;
+        }else{
+            parts2.push(part);
+        }
+    }
+    return parts2;
+}
+
+function _findPartPositionIndexes(part, positions, startPositionIndex){
+    let positionIndexes = [];
+
+    for(let i = startPositionIndex; i < positions.length; i++){
+        let pos = positions[i] - part.sentenceOffsetOfArticle;
+
+        let found = pos > part.offset && pos < (part.offset + part.length);
+        if(found){
+            positionIndexes.push(i);
+        }
+    }
+
+    return positionIndexes;
+}
+
+function _splitPartByNewLines(part, positions) {
+    let parts2 = [];
+
+    let text = part.originalContent;
+
+    let startTextIndex =0;
+    for(let i=0;i<positions.length;i++){
+        let absolutePos = positions[i];
+    
+        let endTextIndex = absolutePos - part.offset - part.sentenceOffsetOfArticle;
+        
+        //do not split when previous character is '-'
+        if(endTextIndex>0 && text.charAt(endTextIndex-1) === '-') {
+            //console.log('hyphen:'+ text);
+            continue;
+        }
+        
+        let subtext = text.substring(startTextIndex, endTextIndex);
+        let subpart = {
+            originalContent: subtext,
+            content: subtext,
+            offset: startTextIndex + part.offset,
+            length: subtext.length,
+        };
+        parts2.push(subpart);        
+
+        //for next loop
+        startTextIndex = endTextIndex;
+    }
+
+    //last subpart
+    let subtext = text.substring(startTextIndex);
+    let subpart = {
+        originalContent: subtext,
+        content: subtext,
+        offset: startTextIndex + part.offset,
+        length: subtext.length,
+    };
+    parts2.push(subpart);        
+    
+    return parts2;
 }
 
 function isCompoundingWord(word) {
@@ -228,8 +328,12 @@ function parseDocument(document, siteOptions, skip = false) {
       */
 
     if(!skip) {    
+        //let lines = getParagraphLines2(document.body);
+        let lines = breakString(document.body.textContent, '\n');
+        let newLinePositions = getNewLinePositions(document.body);
+        //console.log('newLinePositions');
         //parse paragraph, token
-        parseArticleContent(article, document.body.textContent);
+        parseArticleContent(article, lines, newLinePositions);
         //parse text node(offset)
         parseArticleTextNodes(article, document.body, siteOptions);
 
@@ -240,8 +344,41 @@ function parseDocument(document, siteOptions, skip = false) {
     return article;
 }
 
-function parseArticleContent(article, articleContent){
-    var lines = breakString(articleContent, '\n');
+function getNewLinePositions(bodyElement){
+    const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
+
+    let positions = [];
+    let text = '';
+    //let lines = [];
+    let line = '';
+    
+    traverseNode(bodyElement, (node) => {
+
+        if(NEW_LINE_ELEMENTS.includes(node.nodeName) && line.length >0){
+            
+            text += line;
+            //lines.push(line);
+            line = '';
+
+            
+            let pos = text.length;
+            if(pos > 0){
+                positions.push(pos);
+            }
+        }
+
+        if (node.nodeName === '#text') {
+            line += node.textContent;
+        }
+
+    });
+
+    //lines.push(line);
+    //console.log(lines);
+    return positions;
+}
+
+function parseArticleContent(article, lines, newLinePositions){
     
     let offset =0;
     var paragraphNumber = 0;
@@ -255,12 +392,13 @@ function parseArticleContent(article, articleContent){
             sentences: [],
         };
 
-        parseParagraphContent(article, paragraphInfo, line);
+        parseParagraphContent(article, paragraphInfo, line, newLinePositions);
         addParagraph(article, paragraphInfo);
 
         offset += line.length;
         paragraphNumber++;
     }
+    article.length = offset;
 }
 
 
@@ -283,7 +421,7 @@ function extractIsbn(content) {
     return isbns;
 }
 
-function parseParagraphContent(article, paragraphInfo, content){
+function parseParagraphContent(article, paragraphInfo, content, newLinePositions){
     //search isbn
     let isbns = extractIsbn(content);
     if(isbns){
@@ -298,10 +436,7 @@ function parseParagraphContent(article, paragraphInfo, content){
     let sentences = split(content);
 
     for (let sentence of sentences) {
-     
-        
-        let tokens = splitText(sentence.raw);
-        
+             
         let begin = sentence.range[0];
         let end = sentence.range[1];
         let offsetOfParagraph = begin;
@@ -309,6 +444,8 @@ function parseParagraphContent(article, paragraphInfo, content){
         let length = end - begin;
 
         let sentenceId = getSentenceContentHash(sentence.raw);
+
+        let tokens = splitText(sentence.raw, offsetOfArticle, newLinePositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -351,16 +488,18 @@ function parseArticleTextNodes(article, element, siteOptions){
             //console.log(token);
             
             //debug purpose
+            
             /*
-            if(node.textContent === 'mis-' && token && token.content === 'mission'){
+            if(node.textContent === 'EXT'){
                 console.log(node.textContent);
                 console.log(token);
             }
-            */
+                */
+            
            
             if(token 
-                && token.originalContent.includes('-')
-                && !token.content.includes('-')
+                //&& token.originalContent.includes('-')
+                //&& !token.content.includes('-')
                 && nodeInfo.offset >= token.articleOffset
                 && nodeInfo.offset < token.articleOffset + token.length
             ){
