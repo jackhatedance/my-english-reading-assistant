@@ -172,8 +172,8 @@ function splitPartsTextByNewLines(parts, sentenceOffsetOfArticle, newLinePositio
     let startPositionIndex = 0;
     for(const part of parts){
         /*
-        if(part.originalContent.includes('com-')){
-            console.log('com-');
+        if(part.originalContent.includes('Ne-')){
+            console.log('Ne-');
         }
         */
 
@@ -220,6 +220,23 @@ function _findPartPositionIndexes(part, positions, startPositionIndex){
     return positionIndexes;
 }
 
+function setCharAt(str,index,chr) {
+    if(index > str.length-1) return str;
+    return str.substring(0,index) + chr + str.substring(index+1);
+}
+
+function markUnnecessaryChars(str, index){
+    return setCharAt(str, index, ' ');
+}
+
+function restoreUnnecessaryChars(str){
+    return str.replaceAll(/[ ]/g, "-");
+}
+
+function removeUnnecessaryChars(str){
+    return str.replaceAll(/[ ]/g, "");
+}
+
 function _splitPartByNewLines(part, positions) {
     let parts2 = [];
 
@@ -234,13 +251,15 @@ function _splitPartByNewLines(part, positions) {
         //do not split when previous character is '-'
         if(endTextIndex>0 && text.charAt(endTextIndex-1) === '-') {
             //console.log('hyphen:'+ text);
+            text = markUnnecessaryChars(text, endTextIndex-1);
+
             continue;
         }
         
         let subtext = text.substring(startTextIndex, endTextIndex);
         let subpart = {
-            originalContent: subtext,
-            content: subtext,
+            originalContent: restoreUnnecessaryChars(subtext),
+            content: removeUnnecessaryChars(subtext),
             offset: startTextIndex + part.offset,
             length: subtext.length,
         };
@@ -253,8 +272,8 @@ function _splitPartByNewLines(part, positions) {
     //last subpart
     let subtext = text.substring(startTextIndex);
     let subpart = {
-        originalContent: subtext,
-        content: subtext,
+        originalContent: restoreUnnecessaryChars(subtext),
+        content: removeUnnecessaryChars(subtext),
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
@@ -490,11 +509,11 @@ function parseArticleTextNodes(article, element, siteOptions){
             //debug purpose
             
             /*
-            if(node.textContent === 'EXT'){
+            if(node.textContent === 'Ne-'){
                 console.log(node.textContent);
                 console.log(token);
             }
-                */
+            */  
             
            
             if(token 
@@ -506,7 +525,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                 
                 if(token.content && token.content.trim().length > 0) {
                     let searchResult = searchWord({
-                        query: token.content,
+                        query: trimPunctuations(token.content),
                         allowLemma: true,
                         allowRemoveSuffixOrPrefix: false,
                         allowRemoveEndingDot: true,
