@@ -2,11 +2,10 @@
 # 意见反馈方法
 
 * 在[github](https://github.com/jackhatedance/my-english-reading-assistant/issues)提交Bug。
-
+* [发电子邮件](mailto:mera@dingjianghao.com)给作者
 * 在知乎相关帖子下评论：
     * [大量阅读英文原著后有什么质的改变](https://www.zhihu.com/question/289069988/answer/3557780808)
     * [假如一个英语不太好的人，去读原版英文小说，并逐字逐句的查字典翻译，请问对提升英语水平有帮助吗？](https://www.zhihu.com/question/388052922/answer/3428408535)
-* [发电子邮件](mailto:mera@dingjianghao.com)给作者
 
 # 教学视频
 如果看文档嫌麻烦，可以直接看[教学视频](https://www.bilibili.com/video/BV181pMe9EDf?vd_source=1ae3868905e9e104b8689611af91b19d)。
