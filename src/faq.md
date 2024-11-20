@@ -13,9 +13,9 @@
 |--|--|--|
 | [flowoss](https://app.flowoss.com) | epub||
 | [mozilla pdf viewer](https://mozilla.github.io/pdf.js/web/viewer.html) | PDF | 点击右上角“>>”按钮，Open。|
-| [mobi-reader](https://webbrowsertools.com/mobi-reader/) | mobi ||
 
 #### 英文原著，外刊电子书哪里找？
 已知的一些方法：
 * 去某宝请人“代找英文书”
+* 在知乎上搜“外刊在哪里找”
 * zlib
