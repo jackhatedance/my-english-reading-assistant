@@ -10,6 +10,7 @@ const props = defineProps({
     items: Array,
     showDefinition: Boolean,
     reset: Boolean,
+    siteOptions: Object,
 });
 
 
@@ -109,7 +110,7 @@ onUpdated(() => {
         <ol id="unknownWordList">
             <UnknownWordItem v-for="item of items" :word="item" 
                 :key="item.target" :showDefinition="props.showDefinition" 
-                :reset="props.reset" @mark-word="onMarkWord" :isKnown="item.isKnown">
+                :reset="props.reset" @mark-word="onMarkWord" :isKnown="item.isKnown" :siteOptions="siteOptions">
             </UnknownWordItem>
         </ol>
     </div>

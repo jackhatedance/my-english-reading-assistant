@@ -6,10 +6,11 @@ import { annotateWord, annotateNonword, updateWordAnnotation } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
-import { searchWord } from './language.js';
+import { searchWord, buildDictionaryOptions } from './language.js';
 import { isTextTag } from './html.js';
 import { TEXT_TAG } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
+import { trimPunctuations } from './text/textUtils.js';
 
 /**
  * split text node to words, wrapped by span.
@@ -46,7 +47,8 @@ function tokenizeTextNode(document, siteOptions) {
             }
             
 
-            let tokens = splitText(textContent);
+            let tokens = splitText(siteOptions, textContent);
+            console.log(siteOptions);
 
             let tokenHtmls = [];
             for (let token of tokens) {
@@ -63,6 +65,7 @@ function tokenizeTextNode(document, siteOptions) {
                     allowRemoveSuffixOrPrefix: false,
                     allowRemoveEndingDot: true,
                     simplifyDefinition: simplifyDefinitionOptions,
+                    dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
                 //console.log(JSON.stringify(searchResult));
@@ -98,7 +101,7 @@ function tokenizeTextNode(document, siteOptions) {
     });
 }
 
-function splitText(sentence, offsetOfArticle, newLinePositions = []) {
+function splitText(siteOptions, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0);
@@ -113,32 +116,21 @@ function splitText(sentence, offsetOfArticle, newLinePositions = []) {
                 allowLemma: true,
                 allowRemoveSuffixOrPrefix: false,
                 allowCompounding: false,
+                allowRemoveHyphen: true,
+                dictionaryOptions: buildDictionaryOptions(siteOptions),	
             });
+            
             if(searchResult){
+                part.content = searchResult.word;
                 parts2.push(part);
             } else {
-                //autofix splitted word
-                let contentWithoutHyphen = content.replaceAll(/[-]/g, "");
-                contentWithoutHyphen = trimPunctuations(contentWithoutHyphen);
-
-                let searchResult = searchWord({
-                    query: contentWithoutHyphen,
-                    allowLemma: true,
-                    allowRemoveSuffixOrPrefix: false,
-                    allowCompounding: false,
-                    allowRemoveEndingDot: true,
-                });
-                if(searchResult){
-                    part.content = contentWithoutHyphen;
-                    parts2.push(part);
-                } else {
-                    const regexp2 = /([-])|([^-]+)/g;
-                    let subParts = _splitTextByRegex(content, regexp2, part.offset);
-                    for(const subPart of subParts){
-                        parts2.push(subPart);
-                    }
-                }                
-            }
+                const regexp2 = /([-])|([^-]+)/g;
+                let subParts = _splitTextByRegex(content, regexp2, part.offset);
+                for(const subPart of subParts){
+                    parts2.push(subPart);
+                }
+            }                
+        
         } else {
             parts2.push(part);
         }
@@ -290,15 +282,6 @@ function isCompoundingWord(word) {
     return isCompounding;    
 }
 
-function trimPunctuations(text){
-    var result = text;
-    let array = text.match(/([a-zA-Z]+['’&.\-]?)+/);
-    if(array){
-        result = array[0];
-    }
-    return result;
-}
-
 /**
  * parse document into sentences
  * 
@@ -352,12 +335,12 @@ function parseDocument(document, siteOptions, skip = false) {
         let newLinePositions = getNewLinePositions(document.body);
         //console.log('newLinePositions');
         //parse paragraph, token
-        parseArticleContent(article, lines, newLinePositions);
+        parseArticleContent(siteOptions, article, lines, newLinePositions);
         //parse text node(offset)
         parseArticleTextNodes(article, document.body, siteOptions);
 
         article.contentLength = document.body.textContent.length;
-        article.document = document;
+        article.document = document;        
     }
 
     return article;
@@ -397,7 +380,7 @@ function getNewLinePositions(bodyElement){
     return positions;
 }
 
-function parseArticleContent(article, lines, newLinePositions){
+function parseArticleContent(siteOptions, article, lines, newLinePositions){
     
     let offset =0;
     var paragraphNumber = 0;
@@ -411,7 +394,7 @@ function parseArticleContent(article, lines, newLinePositions){
             sentences: [],
         };
 
-        parseParagraphContent(article, paragraphInfo, line, newLinePositions);
+        parseParagraphContent(siteOptions, article, paragraphInfo, line, newLinePositions);
         addParagraph(article, paragraphInfo);
 
         offset += line.length;
@@ -440,7 +423,7 @@ function extractIsbn(content) {
     return isbns;
 }
 
-function parseParagraphContent(article, paragraphInfo, content, newLinePositions){
+function parseParagraphContent(siteOptions, article, paragraphInfo, content, newLinePositions){
     //search isbn
     let isbns = extractIsbn(content);
     if(isbns){
@@ -464,7 +447,7 @@ function parseParagraphContent(article, paragraphInfo, content, newLinePositions
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = splitText(sentence.raw, offsetOfArticle, newLinePositions);
+        let tokens = splitText(siteOptions, sentence.raw, offsetOfArticle, newLinePositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -530,6 +513,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                         allowRemoveSuffixOrPrefix: false,
                         allowRemoveEndingDot: true,
                         simplifyDefinition: simplifyDefinitionOptions,
+                        dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {
                         updateWordAnnotation(node.parentElement, searchResult);

@@ -1,11 +1,12 @@
 import {dict as dictLarge} from './dicts/dict-large.js'
 import {dict as dictSmall} from './dicts/dict-small.js'
 import {dict as dictAffix} from './dicts/dict-affix.js'
-
+import { getCustomDictionary } from './dictionary/customDictionary.js'
+                                             
 function lookup(word, dicts) {
     //console.log(dict);
     if(!dicts){
-        dicts = ['affix', 'small','large'];
+        dicts = ['#affix', '#small','#large'];
     }
 
     //replace single quotation
@@ -18,7 +19,10 @@ function lookup(word, dicts) {
 
     for(let name of dicts){
         let dict = getDict(name);
-        def = dict[word];
+        
+        if(dict && dict.hasOwnProperty(word)){
+            def = dict[word];
+        }
         if(def){
            break; 
         }
@@ -28,12 +32,14 @@ function lookup(word, dicts) {
 }
 
 function getDict(name){
-    if(name==='small'){
+    if(name==='#small#'){
         return dictSmall;
-    }else if(name==='large'){
+    }else if(name==='#large'){
         return dictLarge;
-    }else if(name==='affix'){
+    }else if(name==='#affix'){
         return dictAffix;
+    }else if(name !=='' && !name.startsWith('#')){
+        return getCustomDictionary(name);
     }else{
         return null;
     }

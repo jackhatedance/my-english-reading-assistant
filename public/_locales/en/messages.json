@@ -1,6 +1,6 @@
 {
     "extensionName":{
-        "message":"My English Reading Assistant"
+        "message":"Digno My English Reading Assistant"
     },
     "extensionDescription":{
         "message":"Automatically display the meaning of unfamiliar words based on your personal vocabulary to improve your English reading experience."
@@ -52,6 +52,9 @@
     },
     "popupUnknownWordColorLabel":{
         "message":"Unknown Word Color"
+    },
+    "popupDictionaryLabel":{
+        "message":"Additional Dictionary"
     },
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
@@ -159,6 +162,35 @@
     },
     "optionsDeleteReadingHistoryAction":{
         "message":"Clear History Data"
+    },
+
+    "optionsEditDictionaryLabel":{
+        "message":"Dictionaries"
+    },
+    "optionsEditDictionaryLabelDesc":{
+        "message":"add/delete custom dictionaries"
+    },    
+    "optionsDictionaryDropTips":{
+        "message":"Drag and drop dictionary file here"
+    },
+    "optionsDeleteDictionaryAction":{
+        "message":"Delete Dictionary"
+    },  
+
+    "optionsUnrecognizedWordsLabel":{
+        "message":"Unrecognized words"
+    },
+    "optionsUnrecognizedWordsLabelDesc":{
+        "message":"words not in existing dictionaries, can be used to create custom dictionary"
+    },
+    "optionsUnrecognizedWordsTotal":{
+        "message":"total:"
+    },
+    "optionsUnrecognizedWordsToggleLabel":{
+        "message":"Enable record unrecognized words"
+    },
+    "optionsClearUnrecognizedWordsAction":{
+        "message":"Clear unrecognized words"
     },
     
     "optionsSaveAction":{

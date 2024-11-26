@@ -7,6 +7,7 @@ import { isKnown } from '../language.js'
 
 const props = defineProps({
     word: String,
+    siteOptions: Object,
 });
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
@@ -18,7 +19,16 @@ let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
-    let dicts = ['large', 'small', 'affix'];
+    let dicts = ['#large', '#small', '#affix'];
+    //console.log(props.siteOptions);
+    let additionalDictionaries = props.siteOptions.other.dictionaries;
+    for(let additionalDictionary of additionalDictionaries){
+        if(additionalDictionary && !dicts.includes(additionalDictionary)){
+            dicts.unshift(additionalDictionary);
+        }
+    }
+    
+    //console.log(dicts);
     let def = lookup(props.word, dicts);
     if(!def){
         def = '';

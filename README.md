@@ -15,7 +15,7 @@ My Browser Extension of English reading assistant
 
 ### Long Description
 
-免去阅读英文文章时不停查字典的麻烦，帮你克服英语阅读的困难。只要能坚持每天看小说，读报纸，不用刻意背单词，就能不知不觉中提高英文水平。
+英语初学者常常因为词汇量不足而无法坚持阅读英文文章。本软件可以免去读者不停查字典的痛苦，克服因为词汇量不足而造成的阅读困难。只要能坚持经常看小说，读报纸，即使不刻意背单词，也能不知不觉提高英文水平。
 
 主要功能如下：
 1. 个人词汇表的初始化/导入/导出。
@@ -25,7 +25,7 @@ My Browser Extension of English reading assistant
 5. 对网页内容进行高亮，记笔记。
 6. 支持epub/pdf格式的电子书（小说，外刊等），新闻，论坛等大部分英文网站。
 
-Eliminate the trouble of constantly looking up dictionaries when reading English articles, and help you overcome the difficulties of English reading.As long as you persist in reading novels and newspapers every day, you can improve your English level unknowingly without deliberately memorizing words.
+English beginners often have trouble reading English articles because of their insufficient vocabulary. This software can save readers from the pain of constantly looking up dictionaries and overcome reading difficulties caused by insufficient vocabulary. As long as you can keep reading novels and newspapers regularly, even if you don't deliberately memorize words, you can improve your English level unconsciously.
 
 The main functions are as follows:
 1. Initialize/import/export personal vocabulary.

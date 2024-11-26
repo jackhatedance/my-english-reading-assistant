@@ -22,6 +22,9 @@ async function getDefaultSiteOptions(){
             content: {
                 enabled: false,
                 unknownWordColor: '#0000ff',
+            },
+            other:{
+                dictionaries: [],
             }
         };
     }
@@ -43,6 +46,7 @@ function assignDefaultValues(options, defaultOptions) {
     
     options.annotation = Object.assign({}, defaultOptions.annotation, options.annotation);
     options.content = Object.assign({}, defaultOptions.content, options.content);
+    options.other = Object.assign({}, defaultOptions.other, options.other);
 
     let mergedOptions = Object.assign({}, defaultOptions, options);
     //console.log('merged options:'+JSON.stringify(mergedOptions));
@@ -101,6 +105,14 @@ function getOptions(){
                     enabled:false,
                 };
             }
+            if(!options.dictionaries){
+                options.dictionaries = [];
+            }
+
+            if(!options.unrecognizedWords){
+                options.unrecognizedWords = { enabled:false};
+            }
+
             resolve(options);
         });
     });

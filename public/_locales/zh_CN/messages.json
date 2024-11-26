@@ -1,6 +1,6 @@
 {
     "extensionName":{
-        "message":"我的英文阅读助手"
+        "message":"Dingo 我的英文阅读助手"
     },
     "extensionDescription":{
         "message":"根据个人词汇表自动显示生词含义，改善英文阅读体验。"
@@ -52,6 +52,9 @@
     },
     "popupUnknownWordColorLabel":{
         "message":"生词颜色"
+    },
+    "popupDictionaryLabel":{
+        "message":"附加词典"
     },
     "popupFootNotes":{
         "message":"部分设置需要刷新页面才能生效"
@@ -160,6 +163,34 @@
         "message":"清除历史数据"
     },
 
+    "optionsEditDictionaryLabel":{
+        "message":"词典"
+    },
+    "optionsEditDictionaryLabelDesc":{
+        "message":"添加/删除定制词典"
+    },    
+    "optionsDictionaryDropTips":{
+        "message":"拖拽词典文件到此处"
+    },
+    "optionsDeleteDictionaryAction":{
+        "message":"删除词典"
+    },  
+
+    "optionsUnrecognizedWordsLabel":{
+        "message":"不识别的单词"
+    },
+    "optionsUnrecognizedWordsLabelDesc":{
+        "message":"不在词典里的单词，可以用于制作定制词典"
+    },
+    "optionsUnrecognizedWordsTotal":{
+        "message":"总数:"
+    },
+    "optionsUnrecognizedWordsToggleLabel":{
+        "message":"启用记录不识别的单词"
+    },
+    "optionsClearUnrecognizedWordsAction":{
+        "message":"清除不识别的单词"
+    },
 
     "optionsSaveAction":{
         "message":"保存"

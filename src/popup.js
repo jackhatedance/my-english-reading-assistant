@@ -1,7 +1,8 @@
 'use strict';
 
 import './popup.css';
-import {setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
+import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
+import { getCurrentSiteOptions } from './page.js';
 import {localizeHtmlPage} from './locale.js';
 import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
  
@@ -81,55 +82,7 @@ localizeHtmlPage();
       applyStyles();
     });
 
-    let annotationOptions = pageInfo.siteOptions.annotation;
-    
-    document.getElementById('annotationPosition').value = annotationOptions.position;
-    document.getElementById('annotationPosition').addEventListener('change', (e) => {
-      applyStyles();
-    });
-
-    document.getElementById('fontSize').value = annotationOptions.fontSize;
-    document.getElementById('fontSize').addEventListener('change', (e) => {      
-      applyStyles();
-    });
-
-    document.getElementById('lineHeight').value = annotationOptions.lineHeight;
-    document.getElementById('lineHeight').addEventListener('change', (e) => {      
-      applyStyles();
-    });
-
-    document.getElementById('color').value = annotationOptions.color;
-    document.getElementById('color').addEventListener('change', (e) => {
-      
-      applyStyles();
-    });
-
-    document.getElementById('opacity').value = annotationOptions.opacity;
-    document.getElementById('opacity').addEventListener('change', (e) => {
-      applyStyles();
-    });
-
-    document.getElementById('maxMeaningNumber').value = annotationOptions.maxMeaningNumber;
-    document.getElementById('maxMeaningNumber').addEventListener('change', (e) => {
-      applyStyles();
-    });
-
-    document.getElementById('hideWordClass').checked = annotationOptions.hideWordClass;
-    document.getElementById('hideWordClass').addEventListener('change', (e) => {
-      applyStyles();
-    });
-
-    let contentOptions = pageInfo.siteOptions.content;
-
-    document.getElementById('contentStyleEnabled').checked = contentOptions.enabled;
-    document.getElementById('contentStyleEnabled').addEventListener('change', (e) => {
-      applyStyles();
-    });
-
-    document.getElementById('unknownWordColor').value = contentOptions.unknownWordColor;
-    document.getElementById('unknownWordColor').addEventListener('change', (e) => {
-      applyStyles();
-    });
+    updateOptionsUI(pageInfo.siteOptions);
 
     document.getElementById('resetAnnotationSettings').addEventListener('click', async (e) => {
       
@@ -177,21 +130,67 @@ localizeHtmlPage();
     let annotationOptions = options.annotation;
     
     document.getElementById('annotationPosition').value = annotationOptions.position;
-
-    document.getElementById('fontSize').value = annotationOptions.fontSize;
-    document.getElementById('lineHeight').value = annotationOptions.lineHeight;
+    document.getElementById('annotationPosition').addEventListener('change', (e) => {
+      applyStyles();
+    });
     
+    document.getElementById('fontSize').value = annotationOptions.fontSize;
+    document.getElementById('fontSize').addEventListener('change', (e) => {      
+      applyStyles();
+    });
+
+    document.getElementById('lineHeight').value = annotationOptions.lineHeight;
+    document.getElementById('lineHeight').addEventListener('change', (e) => {      
+      applyStyles();
+    });
+
     document.getElementById('color').value = annotationOptions.color;
+    document.getElementById('color').addEventListener('change', (e) => {
+      
+      applyStyles();
+    });
+
     document.getElementById('opacity').value = annotationOptions.opacity;
+    document.getElementById('opacity').addEventListener('change', (e) => {
+      applyStyles();
+    });
 
     document.getElementById('maxMeaningNumber').value = annotationOptions.maxMeaningNumber;
+    document.getElementById('maxMeaningNumber').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
     document.getElementById('hideWordClass').checked = annotationOptions.hideWordClass;
+    document.getElementById('hideWordClass').addEventListener('change', (e) => {
+      applyStyles();
+    });
 
-
-    let contentOptions = options.annotation;
+    let contentOptions = options.content;
 
     document.getElementById('contentStyleEnabled').checked = contentOptions.enabled;
+    document.getElementById('contentStyleEnabled').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
     document.getElementById('unknownWordColor').value = contentOptions.unknownWordColor;
+    document.getElementById('unknownWordColor').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
+    let otherOptions = options.other;
+
+    let directionariesElement = document.getElementById('dictionaries');
+    const valuesToSet = otherOptions.dictionaries;
+    console.log(valuesToSet);
+
+    // Set the selected options
+    for (let i = 0; i < directionariesElement.options.length; i++) {
+      directionariesElement.options[i].selected = valuesToSet.includes(directionariesElement.options[i].value);
+    }
+    document.getElementById('dictionaries').addEventListener('change', (e) => {
+      applyStyles();
+    });
+    
   }
 
   function buildOptions(){
@@ -211,6 +210,9 @@ localizeHtmlPage();
 
     let contentStyleEnabled =  document.getElementById('contentStyleEnabled').checked;
     let unknownWordColor =  document.getElementById('unknownWordColor').value;
+    let dictionariesElement =  document.getElementById('dictionaries');
+    const selectedDictionaryValues = Array.from(dictionariesElement.selectedOptions).map(option => option.value);
+    console.log(selectedDictionaryValues);
 
     let newOptions = {
       enabled: enabled,
@@ -227,6 +229,9 @@ localizeHtmlPage();
       content: {
         enabled: contentStyleEnabled,
         unknownWordColor: unknownWordColor,
+      },
+      other: {
+        dictionaries: selectedDictionaryValues,
       }
     };
 
@@ -240,6 +245,7 @@ localizeHtmlPage();
 
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
+    console.log(newOptions);
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
@@ -319,6 +325,7 @@ localizeHtmlPage();
 
     initVocabularyIfEmpty();
     
+    initDictionaryUI();
 
     getPageInfo((_pageInfo) => {
       pageInfo = _pageInfo;
@@ -329,6 +336,25 @@ localizeHtmlPage();
     });
 
     
+  }
+
+  async function initDictionaryUI(){
+    let options = getOptionsFromCache();
+    let siteOptions = await getCurrentSiteOptions();
+
+    
+    var dictionariesElement = document.getElementById('dictionaries');
+
+    let dictionaryNames = options.dictionaries;    
+    for(let name of dictionaryNames) {
+      const opt1 = document.createElement("option");
+      
+      opt1.value = name;
+      opt1.text = name;
+      dictionariesElement.add(opt1);
+    }
+
+    dictionariesElement.value = siteOptions.dictionary;
   }
 
   function showPageSection(){

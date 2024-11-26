@@ -6,11 +6,20 @@ import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
+import { addUnrecognizedWord } from './service/dictionaryService.js';
+import { trimPunctuations } from './text/textUtils.js';
 
 var gPrefixes, gSuffixes;
 
 function searchWord(request){
     let result;
+
+    let query = request.query;
+
+    //no alphabet at all
+    if(query.match(/^[^a-zA-Z]+$/)){
+        return result;
+    }
 
     let isEndWithDot = endsWithDot(request.query);
     if(isEndWithDot) {
@@ -19,6 +28,11 @@ function searchWord(request){
     
     if(!result) {
         result = searchWordBase(request);
+    }
+
+    if(!result) {
+        //console.log('word not in dictionary: '+request.query);
+        addUnrecognizedWord(query);
     }
 
     return result;
@@ -57,18 +71,46 @@ function searchWordBase(request){
     requestOfDefault.allowRemoveSuffixOrPrefix = false;
     let dicts = request.dicts;
     if(!dicts) {
-        dicts = ['small', 'affix'];
+        dicts = ['#small', '#affix'];
+    }
+
+    if(request.dictionaryOptions){
+        let dictionaryOptions = request.dictionaryOptions;
+
+        for(let additionalDictionary of dictionaryOptions.additionalDictionaries){
+            if(additionalDictionary && !dicts.includes(additionalDictionary)){
+                dicts.unshift(additionalDictionary);
+            }
+        }        
     }
     
     let result = searchWordWithDict(requestOfDefault, dicts);
-    if(!result && !dicts.includes('large')){
-        result = searchWordWithDict(request, ['large']);
+    //console.log(result);
+    if(!result && !dicts.includes('#large')){
+        result = searchWordWithDict(request, ['#large']);
+    }
+    
+    if(!result){
+        let containsHyphen = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
+        if(containsHyphen && request.allowRemoveHyphen){
+            let oldQuery = request.query;
+
+            let queryWithoutHyphen = request.query.replaceAll(/[-]/g, "");
+            queryWithoutHyphen = trimPunctuations(queryWithoutHyphen);
+
+            //try new query
+            request.query = queryWithoutHyphen;
+            result = searchWordWithDict(request, ['#large']);    
+
+            //restore old query
+            request.query = oldQuery;
+        }        
     }
 
     if(!result){
         let isCompounding = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
         if(isCompounding && request.allowCompounding){
-            result = searchCompounding(request, ['large']);    
+            result = searchCompounding(request, ['#large']);    
         }        
     }
 
@@ -105,7 +147,7 @@ function searchCompounding(request, dicts){
   }
 
 function searchWordWithDict(request, dicts){
-    //console.log('dicts:' + JSON.stringify(dicts));
+    //console.log('request:' + JSON.stringify(request)+', dicts:' + JSON.stringify(dicts));
     
     let input = request.query;
     let searchType = 'raw';
@@ -158,6 +200,7 @@ function searchWordWithDict(request, dicts){
         if(request.allowLemma){
             let done = false;
 
+            //console.log(input);
             let result = definition.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
             
             //console.log('match result 1:'+result);   
@@ -602,5 +645,9 @@ function getWordParts(baseWord){
 
     return objArray;
 }
+
+function buildDictionaryOptions(siteOptions){
+    return { additionalDictionaries: siteOptions.other.dictionaries };
+}
   
-export {searchWord, isKnown, getWordParts};
+export {searchWord, isKnown, getWordParts, buildDictionaryOptions};

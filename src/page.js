@@ -1,14 +1,15 @@
 'use strict';
 
 import { getSiteOptions, } from './service/optionService.js';
+import { loadCustomDictionariesToCache } from './dictionary/customDictionary.js';
 import { tokenizeTextNode, parseDocument, } from './article.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, resetDocumentAnnotationVisibility } from './document.js';
-import { initializeOptionService, } from './service/optionService.js';
-import { findSiteProfile } from './site-profile/site-profiles.js';
+import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
 import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
 import { getIsbn } from './service/pageService.js';
+import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
 
 /**
  * 
@@ -123,6 +124,9 @@ function isPageAnnotationInitialized() {
 async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     //console.log('initPageAnnotations');
     await initializeOptionService();
+    let options = getOptionsFromCache();
+    await loadCustomDictionariesToCache(options.dictionaries);
+    await initializeDictionaryService(options.unrecognizedWords.enabled);
 
     let documentArticleMap = new Map();
     /*
@@ -153,7 +157,8 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
         }
     }
 
-
+    flushUnrecognizedWords();
+    
     //send message to background
     //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
     sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo, documentArticleMap);

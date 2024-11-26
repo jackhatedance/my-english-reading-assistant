@@ -143,6 +143,7 @@ input:checked + .slider:before {
   padding: 10px;
   div {
     padding: 5px;
+    clear: both;
   }
 
   .footnote {
@@ -165,7 +166,7 @@ input:checked + .slider:before {
 
 .field {
   text-align: left;
-  clear: both;
+  
 
   .red{
     color: red;
@@ -176,4 +177,12 @@ input:checked + .slider:before {
     width: 4em;
     height: 20px;
   }
+  select {
+    float: right;
+    width: 4em;
+  }
+}
+
+#dictionaries {
+  width: 50%;
 }

@@ -103,7 +103,7 @@ onUpdated(() => {
         </TabBody>
         <TabBody id="actions-tab" v-show="activeTabId === 'actions-tab'" :isActive="activeTabId === 'actions-tab'">
             
-            <ActionsTabContent :word="word" :notes="props.notes"></ActionsTabContent>
+            <ActionsTabContent :page="page" :word="word" :notes="props.notes"></ActionsTabContent>
         </TabBody>
 
         

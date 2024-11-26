@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
-import {searchWord, isKnown } from '../../language.js';
+import {searchWord, isKnown, buildDictionaryOptions } from '../../language.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../../message.js';
 
@@ -9,6 +9,7 @@ const props = defineProps({
     showDefinition: Boolean,
     reset: Boolean,
     isKnown: Boolean,
+    siteOptions: Object,
 });
 
 const emit = defineEmits(['markWord']);
@@ -33,12 +34,18 @@ const wordStr = computed(() => {
 const definition = computed(() => {
     let { target, from } = props.word;
     let word = target;
+    
+    let dictionaryOptions = null;
+    if(props.siteOptions) {
+        dictionaryOptions = buildDictionaryOptions(props.siteOptions);
+    }    
 
     //query root word
     let searchResult = searchWord({
       query: word,
       allowLemma: true,
-      allowRemoveSuffixOrPrefix: false,      
+      allowRemoveSuffixOrPrefix: false,    
+      dictionaryOptions: dictionaryOptions,  
     });
     
     let definition = '';

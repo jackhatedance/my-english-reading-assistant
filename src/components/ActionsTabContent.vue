@@ -5,6 +5,7 @@ import Notes from './Notes.vue';
 
 
 const props = defineProps({
+    page: Object,
     word: String,
     notes: Array
 
@@ -23,7 +24,7 @@ init();
 </script>
 
 <template>
-    <Word v-if="props.word" :word="props.word"></Word>
+    <Word v-if="props.word" :siteOptions="page.siteOptions" :word="props.word"></Word>
 
 
     <Notes v-if="!isNotesEmpty" :items="props.notes">

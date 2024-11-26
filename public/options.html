@@ -146,6 +146,43 @@
           <button id="deleteReadingHistory" class="button">__MSG_optionsDeleteReadingHistoryAction__</button>  
         </div>
       </div>
+      
+      <div class="section">
+        <div class="label">
+          <h3>__MSG_optionsEditDictionaryLabel__</h3>
+          <p>__MSG_optionsEditDictionaryLabelDesc__</p>
+        </div>
+        <div id="dropArea" class="input">
+          <p>__MSG_optionsDictionaryDropTips__</p>
+          <select id="dictionaries" size="10" >
+          </select>
+        </div>
+        <div class="action">
+          <button id="deleteDictionary" class="button">__MSG_optionsDeleteDictionaryAction__</button>
+        </div>
+      </div>      
+            
+      <div class="section">
+        <div class="label">
+          
+          <h3>__MSG_optionsUnrecognizedWordsLabel__</h3>
+          <p>__MSG_optionsUnrecognizedWordsLabelDesc__</p>
+        </div>
+       
+        <div class="input">
+          <div>
+            <textarea id="unrecognizedWords" name="unrecognizedWords" rows="10" maxlength="500000" readonly></textarea>
+            <p>__MSG_optionsUnrecognizedWordsTotal__<span id="unrecognizedWordsCount"></span></p>
+            <br>
+            <label>__MSG_optionsUnrecognizedWordsToggleLabel__</label>
+            <input id="enableUnrecognizedWords" type="checkbox">
+          </div>
+          
+        </div>
+        <div class="action">
+          <button id="clearUnrecognizedWords" class="button">__MSG_optionsClearUnrecognizedWordsAction__</button>  
+        </div>
+      </div>
 
       <div class="section">
         <div class="label">

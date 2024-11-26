@@ -73,14 +73,11 @@ function clickHideDefinition(event){
             <button id="showAllDefinitions" @click="clickShowDefinition">{{ sidepanelShowDefinitions }}</button>
             <button id="hideAllDefinitions" @click="clickHideDefinition">{{ sidepanelHideDefinitions }}</button>
         </div>
-        <UnknownWordList :items="page.unknownWords" :showDefinition="showDefinition" :reset="reset"></UnknownWordList>
+        <UnknownWordList :items="page.unknownWords" :showDefinition="showDefinition" :reset="reset" :siteOptions="page.siteOptions"></UnknownWordList>
     </div>
 </template>
 
 <style>
-.vocabulary-list {
-    
-}
 
 
 </style>
