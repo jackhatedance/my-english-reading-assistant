@@ -181,7 +181,7 @@ localizeHtmlPage();
 
     let directionariesElement = document.getElementById('dictionaries');
     const valuesToSet = otherOptions.dictionaries;
-    console.log(valuesToSet);
+    //console.log(valuesToSet);
 
     // Set the selected options
     for (let i = 0; i < directionariesElement.options.length; i++) {
@@ -212,7 +212,7 @@ localizeHtmlPage();
     let unknownWordColor =  document.getElementById('unknownWordColor').value;
     let dictionariesElement =  document.getElementById('dictionaries');
     const selectedDictionaryValues = Array.from(dictionariesElement.selectedOptions).map(option => option.value);
-    console.log(selectedDictionaryValues);
+    //console.log(selectedDictionaryValues);
 
     let newOptions = {
       enabled: enabled,
@@ -340,12 +340,19 @@ localizeHtmlPage();
 
   async function initDictionaryUI(){
     let options = getOptionsFromCache();
+
+    if(!options.dictionary.enabled){
+      //hide UI
+      document.getElementById('dictionaryField').style.display = 'none';
+      //return;
+    }
+
     let siteOptions = await getCurrentSiteOptions();
 
     
     var dictionariesElement = document.getElementById('dictionaries');
-
-    let dictionaryNames = options.dictionaries;    
+    
+    let dictionaryNames = options.dictionary.dictionaries;    
     for(let name of dictionaryNames) {
       const opt1 = document.createElement("option");
       

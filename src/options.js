@@ -30,6 +30,7 @@ var gNewDictionaryMap = {};
     let notesArray = JSON.parse(document.getElementById('notes').value);
     let wordMarkRootMode = document.getElementById('rootMode').checked;
     let enableReport = document.getElementById('enableReport').checked;
+    let enableDictionary = document.getElementById('enableDictionary').checked;
     let enableUnrecognizedWords = document.getElementById('enableUnrecognizedWords').checked;
     
     await save({
@@ -42,7 +43,10 @@ var gNewDictionaryMap = {};
         report:{
           enabled: enableReport,
         },
-        dictionaries: dictionaryNames,
+        dictionary:{
+          enabled: enableDictionary,
+          dictionaries: dictionaryNames,
+        },        
         unrecognizedWords:{
           enabled: enableUnrecognizedWords,
         }
@@ -115,10 +119,10 @@ var gNewDictionaryMap = {};
 
     console.log(options);
     
-    let dictionaryNames = options.dictionaries;
-    if(dictionaryNames){
-      gOldDictionaryNames = dictionaryNames;
-      updateDictionaries(dictionaryNames);
+    let dictionaryOptions = options.dictionary;
+    if(dictionaryOptions.dictionaries){
+      gOldDictionaryNames = dictionaryOptions.dictionaries;
+      updateDictionaries(dictionaryOptions);
     }
     
     updateWordMark(options.rootAndAffix?.enabled);
@@ -218,9 +222,11 @@ var gNewDictionaryMap = {};
     document.getElementById('noteCount').innerHTML = wordArray.length;
   }
 
-  function updateDictionaries(dictionaryNames){
+  function updateDictionaries(dictionaryOptions){
+    document.getElementById('enableDictionary').checked = dictionaryOptions.enabled;
+    console.log(dictionaryOptions);
     var dictionaries = document.getElementById('dictionaries');
-    for(let name of dictionaryNames) {
+    for(let name of dictionaryOptions.dictionaries) {
       const opt1 = document.createElement("option");
       
       opt1.value = name;
@@ -250,9 +256,9 @@ var gNewDictionaryMap = {};
       settings.knownWords = null;
     }
 
-    if(settings.options.dictionaries){
-      let dictionaryNames = settings.options.dictionaries;
-      await saveDictionaries(dictionaryNames);      
+    if(settings.options.dictionary){
+      let dictionaryOptions = settings.options.dictionary;
+      await saveDictionaries(dictionaryOptions.dictionaries);      
     }
 
     if(settings.notes){

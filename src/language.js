@@ -647,7 +647,15 @@ function getWordParts(baseWord){
 }
 
 function buildDictionaryOptions(siteOptions){
-    return { additionalDictionaries: siteOptions.other.dictionaries };
+    let options = getOptionsFromCache();
+    
+    let dictionaryOptions;
+    if(options.dictionary.enabled){
+        dictionaryOptions = { additionalDictionaries: siteOptions.other.dictionaries };
+    } else {
+        dictionaryOptions = { additionalDictionaries: [] };
+    }
+    return dictionaryOptions;
 }
   
 export {searchWord, isKnown, getWordParts, buildDictionaryOptions};

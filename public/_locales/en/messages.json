@@ -54,7 +54,7 @@
         "message":"Unknown Word Color"
     },
     "popupDictionaryLabel":{
-        "message":"Additional Dictionary"
+        "message":"Additional Dictionaries"
     },
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
@@ -169,6 +169,9 @@
     },
     "optionsEditDictionaryLabelDesc":{
         "message":"add/delete custom dictionaries"
+    },
+    "optionsDictionaryEnableDictionaryLabel":{
+        "message":"Enable dictionary"
     },    
     "optionsDictionaryDropTips":{
         "message":"Drag and drop dictionary file here"

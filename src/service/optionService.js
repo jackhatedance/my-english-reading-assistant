@@ -105,8 +105,11 @@ function getOptions(){
                     enabled:false,
                 };
             }
-            if(!options.dictionaries){
-                options.dictionaries = [];
+            if(!options.dictionary){
+                options.dictionary = {
+                    enabled:false,
+                    dictionaries:[]
+                };
             }
 
             if(!options.unrecognizedWords){
