@@ -48,7 +48,7 @@ function tokenizeTextNode(document, siteOptions) {
             
 
             let tokens = splitText(siteOptions, textContent);
-            console.log(siteOptions);
+            //console.log(siteOptions);
 
             let tokenHtmls = [];
             for (let token of tokens) {

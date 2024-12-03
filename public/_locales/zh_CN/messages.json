@@ -169,6 +169,9 @@
     "optionsEditDictionaryLabelDesc":{
         "message":"添加/删除定制词典"
     },    
+    "optionsDictionaryEnableDictionaryLabel":{
+        "message":"启用字典"
+    },
     "optionsDictionaryDropTips":{
         "message":"拖拽词典文件到此处"
     },
@@ -186,7 +189,7 @@
         "message":"总数:"
     },
     "optionsUnrecognizedWordsToggleLabel":{
-        "message":"启用记录不识别的单词"
+        "message":"记录不识别的单词"
     },
     "optionsClearUnrecognizedWordsAction":{
         "message":"清除不识别的单词"
