@@ -13,10 +13,7 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     let parts2 = [];
     for(const part of parts1){
         let content = part.content;
-        //console.log(content);
-        if(!content){
-            console.log(part);
-        }
+        //console.log(content);        
         let contentWithoutPunctuation = trimPunctuations(content);
         if(isCompoundWord(contentWithoutPunctuation)){
             let checkWordResult = checkWord(contentWithoutPunctuation);            
@@ -74,7 +71,7 @@ function splitPartsTextByNewLines(checkWord, parts, sentenceOffsetOfArticle, new
     for(const part of parts){
         /*
         if(part.originalContent.includes('Ne-')){
-            console.log('Ne-');
+            //console.log('Ne-');
         }
         */
 

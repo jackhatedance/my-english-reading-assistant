@@ -35,7 +35,7 @@ function findSiteProfile(document) {
     if(!searchResult){
         searchResult = defaultSiteProfile;
     }
-    console.log('find site profile:'+searchResult.name);
+    //console.log('find site profile:'+searchResult.name);
     return searchResult;
 }
 

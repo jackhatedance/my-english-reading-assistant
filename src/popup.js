@@ -245,7 +245,7 @@ localizeHtmlPage();
 
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
-    console.log(newOptions);
+    //console.log(newOptions);
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
@@ -310,7 +310,7 @@ localizeHtmlPage();
         },
         (response) => {
           if(response){
-            console.log('getPageInfo:'+JSON.stringify(response));
+            //console.log('getPageInfo:'+JSON.stringify(response));
             resolve(response.pageInfo?response.pageInfo:undefined);
           }else {
             resolve(undefined);

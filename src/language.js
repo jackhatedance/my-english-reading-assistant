@@ -158,7 +158,7 @@ function searchWordWithDict(request, dicts){
     
     //debug purpose
     if(input === 'man.') {
-        console.log(input);
+        //console.log(input);
     }
 
     let word = input;

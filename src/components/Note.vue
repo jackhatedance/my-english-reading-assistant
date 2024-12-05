@@ -100,10 +100,10 @@ function getScEditor() {
 function bbcodeToHtml(bbcodeContent) {
     /*
     if (sceditorInitialized) {
-        console.log('bbcodeToHtml 1');
+        //('bbcodeToHtml 1');
         return getScEditor().fromBBCode(bbcodeContent);
     } else {
-        console.log('bbcodeToHtml 2');
+        //console.log('bbcodeToHtml 2');
         return bbcodeContent;
     }
     */

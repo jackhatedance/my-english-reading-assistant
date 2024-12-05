@@ -183,7 +183,7 @@ chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
-      console.log(`on updated page: ${tabInfo.title}`);
+      //console.log(`on updated page: ${tabInfo.title}`);
       //saveActivities(tabId, tabInfo);
     }
   }
@@ -199,7 +199,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       let tabInfo = tabInfoMap.get(key);
       
       if(!tabInfo){
-        console.log('tabInfo is null, key:'+key);
+        //console.log('tabInfo is null, key:'+key);
       }
       
       if(tabId === key){

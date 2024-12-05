@@ -72,7 +72,7 @@ window.addEventListener('message', event => {
     // IMPORTANT: check the origin of the data!
     /* TODO
     if (event.origin === 'https://your-first-site.example') {
-        console.log(event.data);
+       //console.log(event.data);
     } 
     */
     gSendMessageToApp(event.data, null, (response)=>{});

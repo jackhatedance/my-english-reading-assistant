@@ -82,7 +82,7 @@ function messageListener(request, sender, sendResponse) {
     }
 
   } else if (request.type === 'REFRESH_PAGE') {
-    console.log(`refresh page`);
+    //console.log(`refresh page`);
     let visible = isPageAnnotationVisible();
 
     if (visible) {//master document
@@ -126,7 +126,7 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'GET_PAGE_INFO') {
     //it is from popup page
 
-    console.log(`${request.type}`);
+    //console.log(`${request.type}`);
 
     
       getPageInfo(gSiteProfile, gDocumentArticleMap).then((pageInfo) => {

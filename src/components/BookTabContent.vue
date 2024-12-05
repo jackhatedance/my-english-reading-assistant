@@ -97,7 +97,7 @@ function updateBookUI(book){
 }
 
 function clickSave() {
-    console.log('click save');
+    //console.log('click save');
     let page = {
         url: props.url,
         isBook: isBook.value,
@@ -110,14 +110,13 @@ function clickSave() {
         urlPattern: urlPattern.value,
     }
 
-    console.log('page:'+ JSON.stringify(page));
-    console.log('book:'+ JSON.stringify(book));
+    //console.log('page:'+ JSON.stringify(page));
+    //console.log('book:'+ JSON.stringify(book));
     pageDao.set(page);
     bookDao.set(book);
 }
 
 function clickDelete() {
-    console.log('click save');
     let page = {
         url: props.url,
         isBook: isBook.value,
@@ -142,7 +141,7 @@ async function clickQuery() {
 }
 
 async function clickDetect() {
-    console.log('page:'+ JSON.stringify(props.page));
+    //console.log('page:'+ JSON.stringify(props.page));
     isbn.value = props.page.isbnsInContent.join(',');
     title.value = props.page.title;
     urlPattern.value = props.url;

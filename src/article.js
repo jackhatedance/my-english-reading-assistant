@@ -335,8 +335,8 @@ function parseArticleTextNodes(article, element, siteOptions){
             
             /*
             if(node.textContent === 'Ne-'){
-                console.log(node.textContent);
-                console.log(token);
+                //console.log(node.textContent);
+                //console.log(token);
             }
             */  
             

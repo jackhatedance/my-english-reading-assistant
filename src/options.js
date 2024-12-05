@@ -224,7 +224,7 @@ var gNewDictionaryMap = {};
 
   function updateDictionaries(dictionaryOptions){
     document.getElementById('enableDictionary').checked = dictionaryOptions.enabled;
-    console.log(dictionaryOptions);
+    //(dictionaryOptions);
     var dictionaries = document.getElementById('dictionaries');
     for(let name of dictionaryOptions.dictionaries) {
       const opt1 = document.createElement("option");
