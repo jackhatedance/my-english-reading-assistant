@@ -30,7 +30,7 @@ function searchWord(request){
         result = searchWordBase(request);
     }
 
-    if(!result) {
+    if(!result && !request.anonymous) {
         //console.log('word not in dictionary: '+request.query);
         addUnrecognizedWord(query);
     }

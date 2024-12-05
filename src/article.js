@@ -12,6 +12,7 @@ import { isTextTag } from './html.js';
 import { TEXT_TAG } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
+import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 
 /**
  * split text node to words, wrapped by span.
@@ -293,9 +294,11 @@ function checkWord(siteOptions, text){
         query: text,
         allowLemma: true,
         allowRemoveSuffixOrPrefix: false,
+        allowRemoveEndingDot: true,
         allowCompounding: false,
-        allowRemoveHyphen: true,
+        allowRemoveHyphen: false,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
+        anonymous: true,
     });
 
     let result ;
@@ -311,14 +314,15 @@ function parseArticleTextNodes(article, element, siteOptions){
     let offset = 0;
     traverseNode(element, (node) => {
         if (node.nodeName === '#text') {
-            let length = node.textContent.length;
+            let nodeContent = node.textContent;
+            let length = nodeContent.length;
             //console.log(node.textContent);
 
             let nodeInfo = { 
                 node: node,
                 offset: offset, 
                 length: length, 
-                content: node.textContent 
+                content: nodeContent,
             };
             
             addArticleNode(article, nodeInfo);
@@ -340,13 +344,16 @@ function parseArticleTextNodes(article, element, siteOptions){
             if(token 
                 //&& token.originalContent.includes('-')
                 //&& !token.content.includes('-')
+                && token.content !== nodeContent
                 && nodeInfo.offset >= token.articleOffset
                 && nodeInfo.offset < token.articleOffset + token.length
             ){
                 
                 if(token.content && token.content.trim().length > 0) {
+                    let contentWithoutPunctuation = trimPunctuations(token.content);
+                    //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord({
-                        query: trimPunctuations(token.content),
+                        query: contentWithoutPunctuation,
                         allowLemma: true,
                         allowRemoveSuffixOrPrefix: false,
                         allowRemoveEndingDot: true,
@@ -355,6 +362,11 @@ function parseArticleTextNodes(article, element, siteOptions){
                     });
                     if(searchResult) {
                         updateWordAnnotation(node.parentElement, searchResult);
+
+
+                        //in case the wrong word has been searched
+                        //console.log('deleteUnrecognizedWord, node content:'+nodeContent + '; token content:'+token.content);
+                        deleteUnrecognizedWord(nodeContent);
                     } else {
                         //console.log('search not found:' + token.content);
                     }

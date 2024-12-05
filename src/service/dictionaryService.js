@@ -18,6 +18,15 @@ function addUnrecognizedWord(word){
     gUnrecogizedWordsSet.add(word);    
 }
 
+// memory set
+function deleteUnrecognizedWord(word){
+    if(!gEnabled){
+        return;
+    }
+
+    gUnrecogizedWordsSet.delete(word);    
+}
+
 //write words to store
 async function flushUnrecognizedWords(){
     if(!gEnabled){
@@ -63,4 +72,4 @@ async function clearUnrecognizedWords(){
 }
 
 
-export { initializeDictionaryService, addUnrecognizedWord, flushUnrecognizedWords, getUnrecognizedWords, clearUnrecognizedWords};
+export { initializeDictionaryService, addUnrecognizedWord, deleteUnrecognizedWord, flushUnrecognizedWords, getUnrecognizedWords, clearUnrecognizedWords};

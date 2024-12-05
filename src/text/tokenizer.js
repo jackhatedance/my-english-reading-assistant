@@ -1,16 +1,25 @@
-
+import { trimPunctuations } from './textUtils.js';
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
+
+    //clean punctuations
+    sentence = sentence.replaceAll(/[’]/g, "'");
+
     let parts = _splitTextByRegex(sentence, regexp, 0);
-    let parts1 = splitPartsTextByNewLines(parts, offsetOfArticle, newLinePositions);
+    let parts1 = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
     //console.log(parts1);
     let parts2 = [];
     for(const part of parts1){
         let content = part.content;
-        if(isCompoundingWord(content)){
-            let checkWordResult = checkWord(content);            
+        //console.log(content);
+        if(!content){
+            console.log(part);
+        }
+        let contentWithoutPunctuation = trimPunctuations(content);
+        if(isCompoundWord(contentWithoutPunctuation)){
+            let checkWordResult = checkWord(contentWithoutPunctuation);            
             if(checkWordResult){
                 part.content = checkWordResult;
                 parts2.push(part);
@@ -23,6 +32,13 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
             }                
         
         } else {
+            if(contentWithoutPunctuation.endsWith("'s") && !checkWord(contentWithoutPunctuation)){
+                //console.log(contentWithoutPunctuation);
+                let contentWithoutS = contentWithoutPunctuation.slice(0, -2);
+                //console.log(contentWithoutS);
+                part.content = contentWithoutS;                
+            }
+
             parts2.push(part);
         }
     }
@@ -36,9 +52,11 @@ function _splitTextByRegex(sentence, regexp, baseIndex) {
     const matches = str.matchAll(regexp);
 
     for (const match of matches) {
+        let contentWithoutPunctuation = trimPunctuations(match[0]);
+        //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let part = {
             originalContent: match[0],
-            content: match[0],
+            content:contentWithoutPunctuation,
             //relative to sentence
             offset: match.index + baseIndex,
             length: match[0].length,
@@ -49,7 +67,7 @@ function _splitTextByRegex(sentence, regexp, baseIndex) {
     return parts;
 }
 
-function splitPartsTextByNewLines(parts, sentenceOffsetOfArticle, newLinePositions) {
+function splitPartsTextByNewLines(checkWord, parts, sentenceOffsetOfArticle, newLinePositions) {
 
     let parts2 = [];
     let startPositionIndex = 0;
@@ -73,7 +91,7 @@ function splitPartsTextByNewLines(parts, sentenceOffsetOfArticle, newLinePositio
                 positions.push(pos);
             }
 
-            let subparts = _splitPartByNewLines(part, positions);
+            let subparts = _splitPartByNewLines(checkWord, part, positions);
 
             for(let subpart of subparts){
                 parts2.push(subpart);
@@ -103,7 +121,7 @@ function _findPartPositionIndexes(part, positions, startPositionIndex){
     return positionIndexes;
 }
 
-function isCompoundingWord(word) {
+function isCompoundWord(word) {
     var isCompounding = false;
     if(word){
         isCompounding = word.match(/[a-zA-Z]+-[a-zA-Z]+/);
@@ -130,7 +148,11 @@ function removeUnnecessaryChars(str){
     return str.replaceAll(/[ ]/g, "");
 }
 
-function _splitPartByNewLines(part, positions) {
+function containsUnnecessaryChars(str){
+    return str && str.includes(' ');
+}
+
+function _splitPartByNewLines(checkWord, part, positions) {
     let parts2 = [];
 
     let text = part.originalContent;
@@ -150,9 +172,13 @@ function _splitPartByNewLines(part, positions) {
         }
         
         let subtext = text.substring(startTextIndex, endTextIndex);
+
+        let originalContent = restoreUnnecessaryChars(subtext);
+        let content = getContent(checkWord, originalContent, subtext);
+
         let subpart = {
-            originalContent: restoreUnnecessaryChars(subtext),
-            content: removeUnnecessaryChars(subtext),
+            originalContent: originalContent,
+            content: content,
             offset: startTextIndex + part.offset,
             length: subtext.length,
         };
@@ -164,9 +190,13 @@ function _splitPartByNewLines(part, positions) {
 
     //last subpart
     let subtext = text.substring(startTextIndex);
+
+    let originalContent = restoreUnnecessaryChars(subtext);
+    let content = getContent(checkWord, originalContent, subtext);
+    
     let subpart = {
-        originalContent: restoreUnnecessaryChars(subtext),
-        content: removeUnnecessaryChars(subtext),
+        originalContent: originalContent,
+        content: content,
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
@@ -175,5 +205,23 @@ function _splitPartByNewLines(part, positions) {
     return parts2;
 }
 
+function getContent(checkWord, originalContent, subtext){
+    let content;
+    //sometimes the hyphen at the end of a line is required. 
+    if(containsUnnecessaryChars(subtext)){
+        let cleanContent = removeUnnecessaryChars(subtext);
+        let cleanContentWithoutPunctuation = trimPunctuations(cleanContent);
+        let checkWordResult = checkWord(cleanContentWithoutPunctuation); 
+        
+        if(checkWordResult){
+            content = cleanContent;
+        }else{
+            content = originalContent;
+        }
+    }else {
+        content = originalContent;
+    }
+    return content;
+}
 
 export { tokenize };
