@@ -88,10 +88,29 @@ describe('tokenizer', function () {
       assert.equal(tokens[0].content, "his");
       assert.equal(tokens[1].content, " ");
       assert.equal(tokens[2].content, "son-in-law");
-      
-      
+            
     });
 
+    it('Spanish word', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['hello', 'Buendía'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "Hello, Buendía.", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[1].content, " ");
+      assert.equal(tokens[2].content, "Buendía.");
+            
+    });
   });
 
   
