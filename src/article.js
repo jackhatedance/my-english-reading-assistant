@@ -230,7 +230,7 @@ function extractIsbn(content) {
     let isbns = [];
 
     if(content.includes('ISBN')){
-        console.log('ISBN:'+content);
+        //console.log('ISBN:'+content);
     }
 
     const regexp = /ISBN[^\d]+([\d-]+)/g;
