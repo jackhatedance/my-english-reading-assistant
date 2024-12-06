@@ -1,7 +1,8 @@
 'use strict';
 
-const TOKEN_TAG = 'mea-token';
-const TEXT_TAG = 'mea-text';
+const MEA_TAG_PREFIX = 'MEA-';
+const TOKEN_TAG = 'MEA-TOKEN';
+const TEXT_TAG = 'MEA-TEXT';
 
 const INLINE_TAGS = [
     'A', 'ABBR', 'ACRONYM', 'B', 'BDO', 'BIG', 
@@ -49,4 +50,4 @@ function isTextTag(tag){
 }
 
 
-export { TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag };
+export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag };
