@@ -1,7 +1,7 @@
 
 # 意见反馈
 
-* [github](https://github.com/jackhatedance/my-english-reading-assistant/issues)，可以看源码，提交Bug。
+* [github](https://github.com/jackhatedance/my-english-reading-assistant/issues)，可以看源码，提交Bug, PR。
 * [电子邮件](mailto:mera@dingjianghao.com)
 * [知乎](https://www.zhihu.com/people/ding-jack-94)，可以评论
     * [大量阅读英文原著后有什么质的改变](https://www.zhihu.com/question/289069988/answer/3557780808)
@@ -270,7 +270,7 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 看小说一般是泛读模式，遇到生词看一眼释义，不影响理解句子意思就过去了。所以生词高亮功能一般不开启。也不追求把阅读过程中遇到的生词都试图记住。而是比较随缘的把刚巧还记得意思的单词标记一下。这样阅读没有太大压力，词汇量增长也没那么快。如果追求背单词，建议使用专门的背单词软件。但是通过阅读记住的单词也不容易忘记。
 
 
-最后，祝大家都能在这个工具的辅助下，能够顺利阅读英文小说。
+最后，祝大家都能在这个工具的辅助下，能够顺利阅读英文小说和报纸。
 
 # 版本变化
 ## 0.8.4
@@ -284,4 +284,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.8.8
 修复个别单词的查询问题；修复跨元素单词的识别问题；
 ## 0.10.0
-支持自定义词典；
+支持自定义词典；修复pdf相关的分词问题；支持西班牙字符；
