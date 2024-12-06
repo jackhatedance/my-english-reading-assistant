@@ -111,6 +111,31 @@ describe('tokenizer', function () {
       assert.equal(tokens[2].content, "Buendía.");
             
     });
+
+    it('Turkish word', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['C¸atal', 'Hu¨yu¨k', 'Çatalhöyük'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "C¸atal Hu¨yu¨k, Çatalhöyük", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "C¸atal");
+      assert.equal(tokens[1].content, " ");
+      assert.equal(tokens[2].content, "Hu¨yu¨k");
+      assert.equal(tokens[3].content, " ");
+      assert.equal(tokens[4].content, "Çatalhöyük");
+            
+    });
+
+
   });
 
   

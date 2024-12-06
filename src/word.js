@@ -47,7 +47,7 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
     return formatted;
 }
 
-function updateWordAnnotation(textElement, searchResult){
+function updateWordAnnotation(textElement, searchResult, showShortDefinition){
     let annotationParameters = buildAnnotationParameters(searchResult);
     let { definition, shortDefinition, baseWord, parts } = annotationParameters;
 
@@ -59,6 +59,10 @@ function updateWordAnnotation(textElement, searchResult){
     textElement.setAttribute('data-base-word', escapedBaseWord);
     textElement.setAttribute('data-parts', `${parts}`);
     textElement.setAttribute('data-footnote', definition);
+
+    if(!showShortDefinition){
+        shortDefinition = '';
+    }
     textElement.setAttribute('data-footnote-short', shortDefinition);
 }
 

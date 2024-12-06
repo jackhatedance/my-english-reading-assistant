@@ -2,7 +2,7 @@
 
 function trimPunctuations(text){
     var result = text;
-    let array = text.match(/([a-zA-ZÀ-ÿ]+['’&.\-]?)+/);
+    let array = text.match(/([^,!?(){};"]+)/);
     if(array){
         result = array[0];
     }

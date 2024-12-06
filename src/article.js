@@ -348,7 +348,9 @@ function parseArticleTextNodes(article, element, siteOptions){
                 && nodeInfo.offset >= token.articleOffset
                 && nodeInfo.offset < token.articleOffset + token.length
             ){
-                
+                let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
+                let showShortDefinition = firstNodeOfTheToken;
+
                 if(token.content && token.content.trim().length > 0) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
                     //console.log(contentWithoutPunctuation);
@@ -361,7 +363,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {
-                        updateWordAnnotation(node.parentElement, searchResult);
+                        updateWordAnnotation(node.parentElement, searchResult, showShortDefinition);
 
 
                         //in case the wrong word has been searched
