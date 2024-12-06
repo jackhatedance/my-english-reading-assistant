@@ -16,6 +16,7 @@ import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSele
 import { isAllDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
 import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
 import { MenuItems } from './menu.js';
+import { MEA_TAG_PREFIX } from './html.js';
 
 
 //used to check if title changed
@@ -192,9 +193,7 @@ chrome.runtime.onMessage.addListener(messageListener);
 
 
 
-setInterval(monitorTimer, 2000);
-
-function monitorTimer() {
+async function domMonitor() {
 
   let siteInfoSame = checkSiteInfoChanges();
   if(!gSiteProfile || !siteInfoSame){
@@ -212,6 +211,8 @@ function monitorTimer() {
 
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
+      //no more changes in this interval. now we can reset annotations
+      
       //console.log('DOM changed, auto refresh page annotation');
       
       //reset
@@ -219,10 +220,19 @@ function monitorTimer() {
 
       clearPagePreprocessMark(gSiteProfile);
       
-      initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
-        gDocumentArticleMap = documentArticleMap;
-        resetPageAnnotationVisibilityAndNotify(true);
-      });  
+      //console.log('begin');
+
+      gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
+      
+      let startTime = new Date().getTime();
+      await resetPageAnnotationVisibilityAndNotify(true);
+
+      //console.log('end');
+      let endTime = new Date().getTime();
+
+      let elapseTime = endTime - startTime;
+      //console.log('elapseTime：'+ elapseTime);    
+
     } else {
       gDomChangesMonitored = gDomChanges;
     } 
@@ -238,6 +248,15 @@ function monitorTimer() {
   gUrl = url;
 
 }
+
+//enahnced version of setInterval(), make sure tasks are exectued sequentially.
+(function domMonitorLoop() {
+  setTimeout(async () => {    
+    await domMonitor();
+
+    domMonitorLoop();
+  }, 2000);
+})();
 
 function checkSiteInfoChanges(){
   let siteInfo = getSiteInfo();
@@ -382,8 +401,12 @@ async function addDocumentEventListener(document, documentConfig) {
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
     for (const mutation of mutationList) {
-      if (mutation.type === "childList") {
+      if (mutation.type === "childList"
+        //skip the mutations that triggered by itself.
+        && !(mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX))
+      ) {
         //console.log("A child node has been added or removed.");
+        //console.log(mutation);
         gDomChanges ++;
       } else if (mutation.type === "attributes") {
         //console.log(`The ${mutation.attributeName} attribute was modified.`);
