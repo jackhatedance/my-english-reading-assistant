@@ -67,7 +67,7 @@
     },
 
     "optionsPageTitle":{
-        "message":"我的英文阅读助手设置"
+        "message":"Dingo | 我的英文阅读助手设置"
     },
     "optionsTitle":{
         "message":"设置"
@@ -189,7 +189,7 @@
         "message":"总数:"
     },
     "optionsUnrecognizedWordsToggleLabel":{
-        "message":"记录不识别的单词"
+        "message":"开启捕捉不识别的单词"
     },
     "optionsClearUnrecognizedWordsAction":{
         "message":"清除不识别的单词"
@@ -200,7 +200,7 @@
     },
 
     "sidepanelPageTitle":{
-        "message":"我的英文阅读助手侧栏"
+        "message":"Dingo | 我的英文阅读助手侧栏"
     },
     "sidepanelNotAvailable":{
         "message":"不可用"

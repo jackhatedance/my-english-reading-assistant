@@ -67,7 +67,7 @@
     },
 
     "optionsPageTitle":{
-        "message":"My English Reading Assistant Options"
+        "message":"Dingo | My English Reading Assistant Options"
     },
     "optionsTitle":{
         "message":"Options"
@@ -190,7 +190,7 @@
         "message":"total:"
     },
     "optionsUnrecognizedWordsToggleLabel":{
-        "message":"Enable record unrecognized words"
+        "message":"Enable capturing unrecognized words"
     },
     "optionsClearUnrecognizedWordsAction":{
         "message":"Clear unrecognized words"
@@ -201,7 +201,7 @@
     },
 
     "sidepanelPageTitle":{
-        "message":"My English Reading Assistant Side Panel"
+        "message":"Dingo | My English Reading Assistant Side Panel"
     },
     "sidepanelNotAvailable":{
         "message":"not available"
