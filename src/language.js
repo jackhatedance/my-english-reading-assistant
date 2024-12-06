@@ -16,6 +16,11 @@ function searchWord(request){
 
     let query = request.query;
 
+    //too long
+    if(query.length > 45){
+        return;
+    }
+    
     //no alphabet at all
     if(query.match(/^[^a-zA-Z]+$/)){
         return result;
