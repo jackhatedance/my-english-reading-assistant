@@ -163,20 +163,20 @@
         "message":"清除历史数据"
     },
 
-    "optionsEditDictionaryLabel":{
-        "message":"词典"
+    "optionsEditCustomDictionaryLabel":{
+        "message":"定制词典"
     },
-    "optionsEditDictionaryLabelDesc":{
+    "optionsEditCustomDictionaryLabelDesc":{
         "message":"添加/删除定制词典"
     },    
-    "optionsDictionaryEnableDictionaryLabel":{
-        "message":"启用字典"
+    "optionsCustomDictionaryEnableDictionaryLabel":{
+        "message":"启用定制字典"
     },
-    "optionsDictionaryDropTips":{
-        "message":"拖拽词典文件到此处"
+    "optionsCustomDictionaryDropTips":{
+        "message":"拖拽定制词典文件到此处"
     },
-    "optionsDeleteDictionaryAction":{
-        "message":"删除词典"
+    "optionsDeleteCustomDictionaryAction":{
+        "message":"删除定制词典"
     },  
 
     "optionsUnrecognizedWordsLabel":{

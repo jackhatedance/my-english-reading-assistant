@@ -164,20 +164,20 @@
         "message":"Clear History Data"
     },
 
-    "optionsEditDictionaryLabel":{
-        "message":"Dictionaries"
+    "optionsEditCustomDictionaryLabel":{
+        "message":"Custom Dictionary"
     },
-    "optionsEditDictionaryLabelDesc":{
+    "optionsEditCustomDictionaryLabelDesc":{
         "message":"add/delete custom dictionaries"
     },
-    "optionsDictionaryEnableDictionaryLabel":{
-        "message":"Enable dictionary"
+    "optionsCustomDictionaryEnableDictionaryLabel":{
+        "message":"Enable custom dictionary"
     },    
-    "optionsDictionaryDropTips":{
-        "message":"Drag and drop dictionary file here"
+    "optionsCustomDictionaryDropTips":{
+        "message":"Drag and drop custom dictionary file here"
     },
-    "optionsDeleteDictionaryAction":{
-        "message":"Delete Dictionary"
+    "optionsDeleteCustomDictionaryAction":{
+        "message":"Delete custom dictionary"
     },  
 
     "optionsUnrecognizedWordsLabel":{
