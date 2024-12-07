@@ -2,7 +2,6 @@
 
 import './popup.css';
 import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
-import { getCurrentSiteOptions } from './page.js';
 import {localizeHtmlPage} from './locale.js';
 import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
  
@@ -346,9 +345,6 @@ localizeHtmlPage();
       document.getElementById('dictionaryField').style.display = 'none';
       //return;
     }
-
-    let siteOptions = await getCurrentSiteOptions();
-
     
     var dictionariesElement = document.getElementById('dictionaries');
     
@@ -361,7 +357,6 @@ localizeHtmlPage();
       dictionariesElement.add(opt1);
     }
 
-    dictionariesElement.value = siteOptions.dictionary;
   }
 
   function showPageSection(){

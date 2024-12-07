@@ -107,7 +107,10 @@ function isPageAnnotationVisible() {
     }
 }
 
-
+/**
+ * DON'T import it from popup.js, I don't know why. otherwise the project cannot be built.
+ * @returns 
+ */
 async function getCurrentSiteOptions() {
     let siteDomain = document.location.hostname;
     let options = await getSiteOptions(siteDomain);
