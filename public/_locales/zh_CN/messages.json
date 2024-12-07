@@ -53,8 +53,8 @@
     "popupUnknownWordColorLabel":{
         "message":"生词颜色"
     },
-    "popupDictionaryLabel":{
-        "message":"附加词典"
+    "popupCustomDictionaryLabel":{
+        "message":"定制词典"
     },
     "popupFootNotes":{
         "message":"部分设置需要刷新页面才能生效"

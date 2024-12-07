@@ -53,8 +53,8 @@
     "popupUnknownWordColorLabel":{
         "message":"Unknown Word Color"
     },
-    "popupDictionaryLabel":{
-        "message":"Additional Dictionaries"
+    "popupCustomDictionaryLabel":{
+        "message":"Custom Dictionaries"
     },
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
