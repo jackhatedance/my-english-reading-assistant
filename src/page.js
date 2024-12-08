@@ -128,7 +128,7 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     //console.log('initPageAnnotations');
     await initializeOptionService();
     let options = getOptionsFromCache();
-    await loadCustomDictionariesToCache(options.dictionary.dictionaries);
+    await loadCustomDictionariesToCache(options.dictionary.additionalDictionaries);
     await initializeDictionaryService(options.unrecognizedWords.enabled);
 
     let documentArticleMap = new Map();

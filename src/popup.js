@@ -178,15 +178,14 @@ localizeHtmlPage();
 
     let otherOptions = options.other;
 
-    let directionariesElement = document.getElementById('dictionaries');
-    const valuesToSet = otherOptions.dictionaries;
-    //console.log(valuesToSet);
-
+    let additionalDirectionariesElement = document.getElementById('additionalDictionaries');
+    const valuesToSet = otherOptions.additionalDictionaries;
+    
     // Set the selected options
-    for (let i = 0; i < directionariesElement.options.length; i++) {
-      directionariesElement.options[i].selected = valuesToSet.includes(directionariesElement.options[i].value);
+    for (let i = 0; i < additionalDirectionariesElement.options.length; i++) {
+      additionalDirectionariesElement.options[i].selected = valuesToSet.includes(additionalDirectionariesElement.options[i].value);
     }
-    document.getElementById('dictionaries').addEventListener('change', (e) => {
+    document.getElementById('additionalDictionaries').addEventListener('change', (e) => {
       applyStyles();
     });
     
@@ -209,10 +208,9 @@ localizeHtmlPage();
 
     let contentStyleEnabled =  document.getElementById('contentStyleEnabled').checked;
     let unknownWordColor =  document.getElementById('unknownWordColor').value;
-    let dictionariesElement =  document.getElementById('dictionaries');
-    const selectedDictionaryValues = Array.from(dictionariesElement.selectedOptions).map(option => option.value);
-    //console.log(selectedDictionaryValues);
-
+    let additionalDictionariesElement =  document.getElementById('additionalDictionaries');
+    const selectedAdditionalDictionaryValues = Array.from(additionalDictionariesElement.selectedOptions).map(option => option.value);
+    
     let newOptions = {
       enabled: enabled,
 
@@ -230,7 +228,7 @@ localizeHtmlPage();
         unknownWordColor: unknownWordColor,
       },
       other: {
-        dictionaries: selectedDictionaryValues,
+        additionalDictionaries: selectedAdditionalDictionaryValues,
       }
     };
 
@@ -340,21 +338,21 @@ localizeHtmlPage();
   async function initDictionaryUI(){
     let options = getOptionsFromCache();
 
-    if(!options.dictionary.enabled){
+    if(!options.dictionary.additionalDictionaryEnabled){
       //hide UI
       document.getElementById('dictionaryField').style.display = 'none';
       //return;
     }
     
-    var dictionariesElement = document.getElementById('dictionaries');
+    var additionalDictionariesElement = document.getElementById('additionalDictionaries');
     
-    let dictionaryNames = options.dictionary.dictionaries;    
+    let dictionaryNames = options.dictionary.additionalDictionaries;    
     for(let name of dictionaryNames) {
       const opt1 = document.createElement("option");
       
       opt1.value = name;
       opt1.text = name;
-      dictionariesElement.add(opt1);
+      additionalDictionariesElement.add(opt1);
     }
 
   }

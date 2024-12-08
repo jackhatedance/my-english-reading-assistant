@@ -21,7 +21,7 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 const definition = computed(() => {
     let dicts = ['#large', '#small', '#affix'];
     //console.log(props.siteOptions);
-    let additionalDictionaries = props.siteOptions.other.dictionaries;
+    let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
     for(let additionalDictionary of additionalDictionaries){
         if(additionalDictionary && !dicts.includes(additionalDictionary)){
             dicts.unshift(additionalDictionary);

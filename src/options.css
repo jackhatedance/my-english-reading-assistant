@@ -8,7 +8,10 @@ html {
   color: #222;
 }
 
-.section {
+.module * {
+  margin: 4px;
+}
+.module {
   padding: 5px;
   margin: 5px;
   border-bottom: solid 1px rgb(199, 195, 195);
@@ -16,16 +19,37 @@ html {
   display: flex;
 
   .label {
-    width: 30%;
+    width: 20%;
+    vertical-align: middle;
   }
 
-  .input {
-    width: 40%;
+  .sections {
+    width: 80%;
+    border-left: solid 1px rgb(199, 195, 195);
+  
+    .section {
+      width: 100%;
+      display: flex;
+
+      .label {
+        width: 30%;
+        vertical-align: middle;
+      }
+      .input {
+        width: 40%;        
+      }
+      .action {
+        width: 30%;        
+      }
+    }
+
+    .section:not(:first-child) {
+      border-top: solid 1px rgb(227, 225, 225);
+    }
+    
   }
 
-  .action {
-    width: 30%;
-  }
+  
 }
 
 
@@ -67,8 +91,7 @@ code {
   border: 0;
   display: inline-block;
   padding: 10px 20px;
-  margin-right: 4px;
-  margin-left: 4px;
+  margin: 4px;
   background-color: bisque;
   font-size: 16px;
   cursor: pointer;

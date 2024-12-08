@@ -81,10 +81,9 @@ function searchWordBase(request){
 
     if(request.dictionaryOptions){
         let dictionaryOptions = request.dictionaryOptions;
-
-        for(let additionalDictionary of dictionaryOptions.additionalDictionaries){
-            if(additionalDictionary && !dicts.includes(additionalDictionary)){
-                dicts.unshift(additionalDictionary);
+        for(let ad of dictionaryOptions.additionalDictionaries){
+            if(ad && !dicts.includes(ad)){
+                dicts.unshift(ad);
             }
         }        
     }
@@ -591,7 +590,7 @@ function isKnown(baseWord, vocabulary){
         //console.log('get word parts:'+ baseWord);
         if(parts){
             if(parts.includes(baseWord)){
-                console.log('infinite revursive:'+ baseWord);
+                console.warn('infinite revursive:'+ baseWord);
                 return false;
             }
 
@@ -655,8 +654,8 @@ function buildDictionaryOptions(siteOptions){
     let options = getOptionsFromCache();
     
     let dictionaryOptions;
-    if(options.dictionary.enabled){
-        dictionaryOptions = { additionalDictionaries: siteOptions.other.dictionaries };
+    if(options.dictionary.additionalDictionaryEnabled){
+        dictionaryOptions = { additionalDictionaries: siteOptions.other.additionalDictionaries };
     } else {
         dictionaryOptions = { additionalDictionaries: [] };
     }

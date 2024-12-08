@@ -53,8 +53,8 @@
     "popupUnknownWordColorLabel":{
         "message":"生词颜色"
     },
-    "popupCustomDictionaryLabel":{
-        "message":"定制词典"
+    "popupAdditionalDictionaryLabel":{
+        "message":"附加词典"
     },
     "popupFootNotes":{
         "message":"部分设置需要刷新页面才能生效"
@@ -71,6 +71,9 @@
     },
     "optionsTitle":{
         "message":"设置"
+    },
+    "optionsSectionVocabularyTitle":{
+        "message":"词汇表"
     },
     "optionsInitializeVocabularyLabel":{
         "message":"选择词汇表"
@@ -163,20 +166,26 @@
         "message":"清除历史数据"
     },
 
-    "optionsEditCustomDictionaryLabel":{
-        "message":"定制词典"
+    "optionsSectionDictionaryTitle":{
+        "message":"词典"
     },
-    "optionsEditCustomDictionaryLabelDesc":{
-        "message":"添加/删除定制词典"
+    "optionsEditAdditionalDictionaryLabel":{
+        "message":"附加词典"
+    },
+    "optionsEditAdditionalDictionaryLabelDesc":{
+        "message":"添加/删除附加词典"
     },    
-    "optionsCustomDictionaryEnableDictionaryLabel":{
-        "message":"启用定制字典"
+    "optionsAdditionalDictionaryEnableDictionaryLabel":{
+        "message":"启用附加字典"
     },
-    "optionsCustomDictionaryDropTips":{
-        "message":"拖拽定制词典文件到此处"
+    "optionsAdditionalDictionaryLabel":{
+        "message":"附加词典"
     },
-    "optionsDeleteCustomDictionaryAction":{
-        "message":"删除定制词典"
+    "optionsImportAdditionalDictionaryAction":{
+        "message":"导入附加词典"
+    },
+    "optionsDeleteAdditionalDictionaryAction":{
+        "message":"删除附加词典"
     },  
 
     "optionsUnrecognizedWordsLabel":{
@@ -405,5 +414,4 @@
     "reportVocabularyChartLabel":{
         "message":"词汇量"
     }
-
 }

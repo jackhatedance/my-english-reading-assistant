@@ -22,15 +22,15 @@ var gNewDictionaryMap = {};
     
     //custom dictionary names
     const dictionaryOptions = document.getElementById('dictionaries').options;
-    let dictionaryNames = [];
+    let additionalDictionaryNames = [];
     for (let i = 0; i < dictionaryOptions.length; i++) {
-      dictionaryNames.push(dictionaryOptions[i].value);
+      additionalDictionaryNames.push(dictionaryOptions[i].value);
     }
 
     let notesArray = JSON.parse(document.getElementById('notes').value);
     let wordMarkRootMode = document.getElementById('rootMode').checked;
     let enableReport = document.getElementById('enableReport').checked;
-    let enableDictionary = document.getElementById('enableDictionary').checked;
+    let additionalDictionaryEnabled = document.getElementById('additionalDictionaryEnabled').checked;
     let enableUnrecognizedWords = document.getElementById('enableUnrecognizedWords').checked;
     
     await save({
@@ -44,8 +44,8 @@ var gNewDictionaryMap = {};
           enabled: enableReport,
         },
         dictionary:{
-          enabled: enableDictionary,
-          dictionaries: dictionaryNames,
+          additionalDictionaryEnabled: additionalDictionaryEnabled,
+          additionalDictionaries: additionalDictionaryNames,
         },        
         unrecognizedWords:{
           enabled: enableUnrecognizedWords,
@@ -120,8 +120,8 @@ var gNewDictionaryMap = {};
     console.log(options);
     
     let dictionaryOptions = options.dictionary;
-    if(dictionaryOptions.dictionaries){
-      gOldDictionaryNames = dictionaryOptions.dictionaries;
+    if(dictionaryOptions.additionalDictionaries){
+      gOldDictionaryNames = dictionaryOptions.additionalDictionaries;
       updateDictionaries(dictionaryOptions);
     }
     
@@ -209,6 +209,40 @@ var gNewDictionaryMap = {};
 
   };
 
+  function loadAdditionalDictionaryFromFile() {
+    
+    var file = document.getElementById("additionalDictionaryFile").files[0];
+    if(!file){
+        alert('pick file first.');
+        return;
+    }
+
+    let name = file.name;
+    if(name.endsWith('.txt')){
+      name = name.slice(0, -4);
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e){
+      //console.log(e.target.result);
+      let array = e.target.result.split(/\r*\n/);
+      //save dict data to memory temporarily
+      gNewDictionaryMap[name] = array;
+    }
+    reader.readAsText(file);
+
+    //add dictionary name to select element
+    var dictionaries = document.getElementById('dictionaries');
+    const optionExists = Array.from(dictionaries.options).some(option => option.value === name);
+    if(!optionExists){
+      const opt1 = document.createElement("option");
+    
+      opt1.value = name;
+      opt1.text = name;
+      dictionaries.add(opt1);
+    }
+  };
+
   function updateVocabulary(wordArray){
     document.getElementById('knownWords').value = wordArray.join('\n');
 
@@ -223,10 +257,10 @@ var gNewDictionaryMap = {};
   }
 
   function updateDictionaries(dictionaryOptions){
-    document.getElementById('enableDictionary').checked = dictionaryOptions.enabled;
+    document.getElementById('additionalDictionaryEnabled').checked = dictionaryOptions.additionalDictionaryEnabled;
     //(dictionaryOptions);
     var dictionaries = document.getElementById('dictionaries');
-    for(let name of dictionaryOptions.dictionaries) {
+    for(let name of dictionaryOptions.additionalDictionaries) {
       const opt1 = document.createElement("option");
       
       opt1.value = name;
@@ -258,7 +292,7 @@ var gNewDictionaryMap = {};
 
     if(settings.options.dictionary){
       let dictionaryOptions = settings.options.dictionary;
-      await saveDictionaries(dictionaryOptions.dictionaries);      
+      await saveDictionaries(dictionaryOptions.additionalDictionaries);      
     }
 
     if(settings.notes){
@@ -340,78 +374,6 @@ var gNewDictionaryMap = {};
     downloadLink.click();
   }
   
-  function initializeDictionaryDropSupport(){
-    const dropArea = document.getElementById("dropArea");
-
-    // Prevent default drag behaviors
-    ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-      dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-
-    function preventDefaults(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    // Highlight drop area when item is dragged over it
-    ["dragenter", "dragover"].forEach(eventName => {
-      dropArea.addEventListener(eventName, highlight, false);
-    });
-
-    ["dragleave", "drop"].forEach(eventName => {
-      dropArea.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight(e) {
-      dropArea.classList.add("highlight");
-    }
-
-    function unhighlight(e) {
-      dropArea.classList.remove("highlight");
-    }
-
-    // Handle dropped files
-    dropArea.addEventListener("drop", handleDrop, false);
-
-    function handleDrop(e) {
-      let dt = e.dataTransfer;
-      let files = dt.files;
-
-      handleFiles(files);
-    }
-
-    function handleFiles(files) {
-      ([...files]).forEach(file => {
-        //console.log(file.name); // Do something with the file
-        let name = file.name;
-        if(name.endsWith('.txt')){
-          name = name.slice(0, -4);
-        }
-
-        var reader = new FileReader();
-        reader.onload = function(e){
-          //console.log(e.target.result);
-          let array = e.target.result.split(/\r*\n/);
-          //save dict data to memory temporarily
-          gNewDictionaryMap[name] = array;
-        }
-        reader.readAsText(file);
-
-        
-        //add dictionary name to select element
-        var dictionaries = document.getElementById('dictionaries');
-        const optionExists = Array.from(dictionaries.options).some(option => option.value === name);
-        if(!optionExists){
-          const opt1 = document.createElement("option");
-        
-          opt1.value = name;
-          opt1.text = name;
-          dictionaries.add(opt1);
-        }
-        
-      });
-    }
-  }
   
   document.addEventListener('DOMContentLoaded', restoreOptions);
   document.getElementById('backupVocabulary').addEventListener('click', backupVocabulary);
@@ -423,5 +385,5 @@ var gNewDictionaryMap = {};
   document.getElementById('loadNotesFromFile').addEventListener('click', loadNotesFromFile);
   document.getElementById('clearNotes').addEventListener('click', clearNotes);
   document.getElementById('deleteReadingHistory').addEventListener('click', deleteReadingHistoryUI);
+  document.getElementById('importDictionary').addEventListener('click', loadAdditionalDictionaryFromFile);
   document.getElementById('clearUnrecognizedWords').addEventListener('click', clearUnrecognizedWordsAction);
-  initializeDictionaryDropSupport();

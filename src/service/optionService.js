@@ -1,6 +1,8 @@
 'use strict';
 
 import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from '../vocabularyStore.js';
+import { patchDefaultOptionValues } from '../options/defaultOptionValues.js';
+import { patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
 
 var gOptions;
 
@@ -24,11 +26,12 @@ async function getDefaultSiteOptions(){
                 unknownWordColor: '#0000ff',
             },
             other:{
-                dictionaries: [],
+                additionalDictionaries: [],
             }
         };
     }
-
+    
+    patchDefaultSiteOptionValues(options);
     //force to false, otherwise all unsaved sites will be enabled by default, bad experience
     options.enabled = false;
 
@@ -51,7 +54,7 @@ function assignDefaultValues(options, defaultOptions) {
     let mergedOptions = Object.assign({}, defaultOptions, options);
     //console.log('merged options:'+JSON.stringify(mergedOptions));
     return mergedOptions;
-
+    
 }
 
 
@@ -116,6 +119,7 @@ function getOptions(){
                 options.unrecognizedWords = { enabled:false};
             }
 
+            patchDefaultOptionValues(options);
             resolve(options);
         });
     });
@@ -136,7 +140,7 @@ function setSiteOptionsAsDefault(options){
 async function getSiteOptions(siteDomain){
     
     let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
-    if(!options){
+        if(!options){
         options ={};
     }
 
@@ -145,6 +149,7 @@ async function getSiteOptions(siteDomain){
     
     let effectiveOptions = assignDefaultValues(options, defaultOptions);
 
+    patchDefaultSiteOptionValues(effectiveOptions);
     return effectiveOptions;
 }
 

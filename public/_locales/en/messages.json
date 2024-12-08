@@ -53,8 +53,8 @@
     "popupUnknownWordColorLabel":{
         "message":"Unknown Word Color"
     },
-    "popupCustomDictionaryLabel":{
-        "message":"Custom Dictionaries"
+    "popupAdditionalDictionaryLabel":{
+        "message":"Additional Dictionaries"
     },
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
@@ -71,6 +71,9 @@
     },
     "optionsTitle":{
         "message":"Options"
+    },
+    "optionsSectionVocabularyTitle":{
+        "message":"Vocabulary"
     },
     "optionsInitializeVocabularyLabel":{
         "message":"Select the word lists"
@@ -164,20 +167,26 @@
         "message":"Clear History Data"
     },
 
-    "optionsEditCustomDictionaryLabel":{
-        "message":"Custom Dictionary"
+    "optionsSectionDictionaryTitle":{
+        "message":"Dictionary"
     },
-    "optionsEditCustomDictionaryLabelDesc":{
-        "message":"add/delete custom dictionaries"
+    "optionsEditAdditionalDictionaryLabel":{
+        "message":"Additional Dictionary"
     },
-    "optionsCustomDictionaryEnableDictionaryLabel":{
-        "message":"Enable custom dictionary"
+    "optionsEditAdditionalDictionaryLabelDesc":{
+        "message":"add/delete additional dictionaries"
+    },
+    "optionsAdditionalDictionaryEnableDictionaryLabel":{
+        "message":"Enable additional dictionary"
     },    
-    "optionsCustomDictionaryDropTips":{
-        "message":"Drag and drop custom dictionary file here"
+    "optionsAdditionalDictionaryLabel":{
+        "message":"additional dictionary"
     },
-    "optionsDeleteCustomDictionaryAction":{
-        "message":"Delete custom dictionary"
+    "optionsImportAdditionalDictionaryAction":{
+        "message":"Import additional dictionary"
+    },
+    "optionsDeleteAdditionalDictionaryAction":{
+        "message":"Delete additional dictionary"
     },  
 
     "optionsUnrecognizedWordsLabel":{
@@ -405,9 +414,4 @@
     "reportVocabularyChartLabel":{
         "message":"vocabulary size"
     }
-    
-
-
-
-
 }
