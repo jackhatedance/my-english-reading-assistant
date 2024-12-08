@@ -235,7 +235,7 @@ function addStyle(document) {
 
 function isDocumentAnnotationInitialized(document) {
     if (!document.body) {
-        console.log('body is null');
+        console.warn('body is null');
         return false;
     }
 
