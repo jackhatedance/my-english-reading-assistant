@@ -14,7 +14,9 @@ var gPrefixes, gSuffixes;
 function searchWord(request){
     let result;
     
-    let query = variableLengthStandardizeCharacters(request.query);
+    request.query = variableLengthStandardizeCharacters(request.query);
+
+    let query = request.query;
 
     //too long
     if(query.length > 45){
