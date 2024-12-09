@@ -176,11 +176,17 @@
     "optionsEditAdditionalDictionaryLabelDesc":{
         "message":"add/delete additional dictionaries"
     },
+    "optionsAdditionalDictionaryEnableDictionaryDesc":{
+        "message":"by enabling it, you can choose additional dictionaries while reading"
+    },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"Enable additional dictionary"
     },    
     "optionsAdditionalDictionaryLabel":{
-        "message":"additional dictionary"
+        "message":"additional dictionaries"
+    },
+    "optionsAdditionalDictionaryLabelDesc":{
+        "message":"Additional dictionaries are available for certain types of books or professions, such as computer science dictionaries or Harry Potter series dictionaries."
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"Import additional dictionary"
@@ -193,10 +199,13 @@
         "message":"Unrecognized words"
     },
     "optionsUnrecognizedWordsLabelDesc":{
-        "message":"words not in existing dictionaries, can be used to create custom dictionary"
+        "message":"words not in existing dictionaries, can be used to create additional dictionary"
     },
     "optionsUnrecognizedWordsTotal":{
         "message":"total:"
+    },
+    "optionsUnrecognizedWordsToggleDesc":{
+        "message":"enable it only when you want to make additional dictionary"
     },
     "optionsUnrecognizedWordsToggleLabel":{
         "message":"Enable capturing unrecognized words"

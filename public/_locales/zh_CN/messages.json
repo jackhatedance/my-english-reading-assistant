@@ -175,11 +175,17 @@
     "optionsEditAdditionalDictionaryLabelDesc":{
         "message":"添加/删除附加词典"
     },    
+    "optionsAdditionalDictionaryEnableDictionaryDesc":{
+        "message":"启用此功能，你能在阅读时选择附加词典"
+    },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"启用附加字典"
     },
     "optionsAdditionalDictionaryLabel":{
         "message":"附加词典"
+    },
+    "optionsAdditionalDictionaryLabelDesc":{
+        "message":"附加字典适用于某类书籍或者专业，比如计算机专业词典或者哈利波特系列词典"
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"导入附加词典"
@@ -192,10 +198,13 @@
         "message":"不识别的单词"
     },
     "optionsUnrecognizedWordsLabelDesc":{
-        "message":"不在词典里的单词，可以用于制作定制词典"
+        "message":"不在词典里的单词，可以用于制作附加词典"
     },
     "optionsUnrecognizedWordsTotal":{
         "message":"总数:"
+    },
+    "optionsUnrecognizedWordsToggleDesc":{
+        "message":"只有当需要制作附加词典时才开启"
     },
     "optionsUnrecognizedWordsToggleLabel":{
         "message":"开启捕捉不识别的单词"
