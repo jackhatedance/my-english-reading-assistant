@@ -63,6 +63,18 @@ async function getUnrecognizedWords(){
     return words;
 }
 
+//update memory and flush to store
+async function updateUnrecognizedWords(wordsArray, flush = false){
+    gUnrecogizedWordsSet.clear();
+
+    wordsArray.forEach(item => gUnrecogizedWordsSet.add(item));
+    
+    if(flush){
+        let words = Array.from(gUnrecogizedWordsSet);
+        await saveUnrecognizedWords(words);
+    }    
+}
+
 //both memory set and store
 async function clearUnrecognizedWords(){
     gUnrecogizedWordsSet.clear();
@@ -72,4 +84,4 @@ async function clearUnrecognizedWords(){
 }
 
 
-export { initializeDictionaryService, addUnrecognizedWord, deleteUnrecognizedWord, flushUnrecognizedWords, getUnrecognizedWords, clearUnrecognizedWords};
+export { initializeDictionaryService, addUnrecognizedWord, deleteUnrecognizedWord, flushUnrecognizedWords, getUnrecognizedWords, updateUnrecognizedWords};

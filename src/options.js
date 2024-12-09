@@ -7,7 +7,7 @@ import {getOptions, setOptions} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
 import {deleteAllReadingHistory} from './service/activityService.js';
 import { getNotes, setNotes } from './service/noteService.js';
-import { getUnrecognizedWords, clearUnrecognizedWords } from './service/dictionaryService.js';
+import { getUnrecognizedWords, updateUnrecognizedWords } from './service/dictionaryService.js';
 
 localizeHtmlPage();
 
@@ -33,6 +33,14 @@ var gNewDictionaryMap = {};
     let additionalDictionaryEnabled = document.getElementById('additionalDictionaryEnabled').checked;
     let enableUnrecognizedWords = document.getElementById('enableUnrecognizedWords').checked;
     
+    let unrecognizedWordsStr = document.getElementById('unrecognizedWords').value;
+    let unrecognizedWordArray = [];
+    if(unrecognizedWordsStr.length > 0){
+      
+      unrecognizedWordArray = unrecognizedWordsStr.split(splitter);
+    }
+    
+    
     await save({
       knownWords: knownWordsArray,
       notes: notesArray,
@@ -49,6 +57,7 @@ var gNewDictionaryMap = {};
         },        
         unrecognizedWords:{
           enabled: enableUnrecognizedWords,
+          unrecognizedWords: unrecognizedWordArray,
         }
       }
     });
@@ -94,10 +103,7 @@ var gNewDictionaryMap = {};
 
   function clearUnrecognizedWordsAction(){
     //clear UI
-    document.getElementById('unrecognizedWords').value = '';
-    
-    //delete from store
-    clearUnrecognizedWords();
+    updateUnrecognizedWordsUI([]);    
   }
 
   // Restores select box and checkbox state using the preferences
@@ -117,7 +123,6 @@ var gNewDictionaryMap = {};
     //word mark
     let options = await getOptions();
 
-    console.log(options);
     
     let dictionaryOptions = options.dictionary;
     if(dictionaryOptions.additionalDictionaries){
@@ -129,7 +134,7 @@ var gNewDictionaryMap = {};
     updateReport(options.report);
 
     let unrecognizedWords = await getUnrecognizedWords();
-    updateUnrecognizedWords(unrecognizedWords, options.unrecognizedWords);
+    updateUnrecognizedWordsUI(unrecognizedWords, options.unrecognizedWords);
     
   };
 
@@ -277,10 +282,16 @@ var gNewDictionaryMap = {};
     document.getElementById('enableReport').checked = reportOptions.enabled;
   }
 
-  function updateUnrecognizedWords(unrecognizedWords, unrecognizedWordsOptions) {
-    document.getElementById('unrecognizedWords').value = unrecognizedWords.join('\n');
-    document.getElementById('unrecognizedWordsCount').innerHTML = unrecognizedWords.length;
-    document.getElementById('enableUnrecognizedWords').checked = unrecognizedWordsOptions.enabled;
+  function updateUnrecognizedWordsUI(unrecognizedWords, unrecognizedWordsOptions) {
+    if(unrecognizedWords){
+      document.getElementById('unrecognizedWords').value = unrecognizedWords.join('\n');
+      document.getElementById('unrecognizedWordsCount').innerHTML = unrecognizedWords.length;
+    }
+    
+    if(unrecognizedWordsOptions){
+      document.getElementById('enableUnrecognizedWords').checked = unrecognizedWordsOptions.enabled;
+    }
+    
   }
 
   async function save(settings){
@@ -292,7 +303,12 @@ var gNewDictionaryMap = {};
 
     if(settings.options.dictionary){
       let dictionaryOptions = settings.options.dictionary;
-      await saveDictionaries(dictionaryOptions.additionalDictionaries);      
+      await saveDictionaries(dictionaryOptions.additionalDictionaries);        
+    }
+
+    if(settings.options.unrecognizedWords){
+      let unrecognizedWordsOptions = settings.options.unrecognizedWords;
+      await updateUnrecognizedWords(unrecognizedWordsOptions.unrecognizedWords, true);    
     }
 
     if(settings.notes){
