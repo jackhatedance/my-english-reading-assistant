@@ -76,10 +76,10 @@
         "message":"Vocabulary"
     },
     "optionsInitializeVocabularyLabel":{
-        "message":"Select the word lists"
+        "message":"Initialize Personal Vocabulary"
     },
     "optionsInitializeVocabularyLabelDesc":{
-        "message":"multiple selection is allowed(use Ctrl/Command key) Vocabulary lists that do not contain commonly used words need to be used in conjunction with other commonly used vocabulary lists."
+        "message":"Select a set of preset vocabularies to initialize your personal vocabulary. Multiple selection is allowed (using Ctrl/Command keys)."
     },
     "optionsInitializeVocabularyActionWarning":{
         "message":"Dangerous, backup first."
@@ -117,7 +117,7 @@
         "message":"read notes from file"
     },
     "optionsImportNotesAction":{
-        "message":"Import Notes"
+        "message":"Import"
     },
 
 
@@ -125,7 +125,7 @@
         "message":"backup notes to file"
     },
     "optionsExportNotesAction":{
-        "message":"Export Notes"
+        "message":"Export"
     },
 
     "optionsEditNotesLabel":{
@@ -138,7 +138,7 @@
         "message":"total:"
     },
     "optionsClearNotesAction":{
-        "message":"Clear Notes"
+        "message":"Clear"
     },
 
     "optionsRootAndAffixLabel":{
@@ -164,7 +164,7 @@
         "message":"Enable Report"
     },
     "optionsDeleteReadingHistoryAction":{
-        "message":"Clear History Data"
+        "message":"Clear Report Data"
     },
 
     "optionsSectionDictionaryTitle":{
@@ -189,10 +189,10 @@
         "message":"Additional dictionaries are available for certain types of books or professions, such as computer science dictionaries or Harry Potter series dictionaries."
     },
     "optionsImportAdditionalDictionaryAction":{
-        "message":"Import additional dictionary"
+        "message":"Import"
     },
     "optionsDeleteAdditionalDictionaryAction":{
-        "message":"Delete additional dictionary"
+        "message":"Delete"
     },  
 
     "optionsUnrecognizedWordsLabel":{
@@ -211,7 +211,7 @@
         "message":"Enable capturing unrecognized words"
     },
     "optionsClearUnrecognizedWordsAction":{
-        "message":"Clear unrecognized words"
+        "message":"Clear"
     },
     
     "optionsSaveAction":{
