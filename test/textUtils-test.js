@@ -40,11 +40,23 @@ describe('textUtils', function () {
 
   });
 
-  describe('#standardizeCharacters()', function () {
+  describe('#sameLengthStandardizeCharacters()', function () {
+    it('single quotations', async function () {
+      assert.equal(sameLengthStandardizeCharacters("‘did"), "'did");
+      assert.equal(sameLengthStandardizeCharacters("did’"), "did'");
+      assert.equal(sameLengthStandardizeCharacters("`did"), "'did");
+    });
+
     it('asterisk 2', async function () {
       assert.equal(sameLengthStandardizeCharacters("did∗"), "did*");
     });
 
+    
+    
+  });
+
+  describe('#variableLengthStandardizeCharacters()', function () {
+    
     it('latin small ligature - fi', async function () {
       assert.equal(variableLengthStandardizeCharacters("ﬁ"), "fi");
     });

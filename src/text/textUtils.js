@@ -12,7 +12,7 @@ function trimPunctuations(text){
 }
 
 function sameLengthStandardizeCharacters(text){
-    return text.replaceAll(/[‘’]/g, "'")
+    return text.replaceAll(/[‘’`]/g, "'")
         .replaceAll(/[“”]/g, '"')
         .replaceAll(/[∗]/g, '*')    
            
