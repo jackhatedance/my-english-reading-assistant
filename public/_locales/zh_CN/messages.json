@@ -1,12 +1,12 @@
 {
     "extensionName":{
-        "message":"Dingo | 我的英文阅读助手"
+        "message":"我的英文阅读助手"
     },
     "extensionDescription":{
         "message":"根据个人词汇表自动显示生词含义，改善英文阅读体验。"
     },
     "extensionDefaultTitle":{
-        "message":"Dingo | 我的英文阅读助手"
+        "message":"我的英文阅读助手"
     },
     "popupReport":{
         "message":"报告"
@@ -67,7 +67,7 @@
     },
 
     "optionsPageTitle":{
-        "message":"Dingo | 我的英文阅读助手设置"
+        "message":"我的英文阅读助手设置"
     },
     "optionsTitle":{
         "message":"设置"
@@ -218,7 +218,7 @@
     },
 
     "sidepanelPageTitle":{
-        "message":"Dingo | 我的英文阅读助手侧栏"
+        "message":"我的英文阅读助手侧栏"
     },
     "sidepanelNotAvailable":{
         "message":"不可用"
