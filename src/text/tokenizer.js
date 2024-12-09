@@ -1,12 +1,10 @@
-import { trimPunctuations } from './textUtils.js';
+import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
 
-    //clean punctuations
-    sentence = sentence.replaceAll(/[’]/g, "'");
-
+    
     let parts = _splitTextByRegex(sentence, regexp, 0);
     let parts1 = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
     //console.log(parts1);
@@ -42,17 +40,21 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     return parts2;
 }
 
-function _splitTextByRegex(sentence, regexp, baseIndex) {
+function _splitTextByRegex(originalSentence, regexp, baseIndex) {
     let parts = [];
 
+   
+    let sentence = sameLengthStandardizeCharacters(originalSentence);
+    
     const str = sentence;
     const matches = str.matchAll(regexp);
 
     for (const match of matches) {
         let contentWithoutPunctuation = trimPunctuations(match[0]);
+        let originalContent = originalSentence.substring(match.index, match.index + match[0].length);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let part = {
-            originalContent: match[0],
+            originalContent: originalContent,
             content:contentWithoutPunctuation,
             //relative to sentence
             offset: match.index + baseIndex,
@@ -152,7 +154,7 @@ function containsUnnecessaryChars(str){
 function _splitPartByNewLines(checkWord, part, positions) {
     let parts2 = [];
 
-    let text = part.originalContent;
+    let text = sameLengthStandardizeCharacters(part.originalContent);
 
     let startTextIndex =0;
     for(let i=0;i<positions.length;i++){

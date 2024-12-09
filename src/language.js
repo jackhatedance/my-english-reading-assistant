@@ -7,14 +7,14 @@ import {getOptionsFromCache} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
-import { trimPunctuations } from './text/textUtils.js';
+import { trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
 
 var gPrefixes, gSuffixes;
 
 function searchWord(request){
     let result;
-
-    let query = request.query;
+    
+    let query = variableLengthStandardizeCharacters(request.query);
 
     //too long
     if(query.length > 45){
