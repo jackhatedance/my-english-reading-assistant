@@ -8,7 +8,9 @@
     * [假如一个英语不太好的人，去读原版英文小说，并逐字逐句的查字典翻译，请问对提升英语水平有帮助吗？](https://www.zhihu.com/question/388052922/answer/3428408535)
 
 # 教学视频
-如果看文档嫌麻烦，可以直接看[教学视频](https://www.bilibili.com/video/BV181pMe9EDf?vd_source=1ae3868905e9e104b8689611af91b19d)。
+如果看文档嫌麻烦，可以直接看教学视频:
+* [英文阅读助手基本介绍](https://www.bilibili.com/video/BV181pMe9EDf?vd_source=1ae3868905e9e104b8689611af91b19d)
+* [英文阅读助手功能介绍：看PDF报纸](https://www.bilibili.com/video/BV1TTqgYzEBa)
 
 # 基本功能
 想阅读英文小说/报纸，但是词汇量不够，一个一个的查字典太麻烦了，坚持不下去怎么办？这个软件可以帮助你。
