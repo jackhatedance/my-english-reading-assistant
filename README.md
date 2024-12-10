@@ -10,30 +10,6 @@ My Browser Extension of English reading assistant
 
 ## Features
 
-### Short description
-参见 [资源文件](./public/_locales/en/messages.json), key: extensionDescription
-
-### Long Description
-
-英语初学者常常因为词汇量不足而无法坚持阅读英文文章。本软件可以免去读者不停查字典的痛苦，克服因为词汇量不足而造成的阅读困难。只要能坚持经常看小说，读报纸，即使不刻意背单词，也能不知不觉提高英文水平。
-
-主要功能如下：
-1. 个人词汇表的初始化/导入/导出。
-2. 根据个人词汇表，在网页中自动显示生词的含义。
-3. 在阅读过程中，标记单词为认识/不认识,从而更新个人词汇表。
-4. 查看阅读历史。
-5. 对网页内容进行高亮，记笔记。
-6. 支持epub/pdf格式的电子书（小说，外刊等），新闻，论坛等大部分英文网站。
-
-English beginners often have trouble reading English articles because of their insufficient vocabulary. This software can save readers from the pain of constantly looking up dictionaries and overcome reading difficulties caused by insufficient vocabulary. As long as you can keep reading novels and newspapers regularly, even if you don't deliberately memorize words, you can improve your English level unconsciously.
-
-The main functions are as follows:
-1. Initialize/import/export personal vocabulary.
-2. Automatically display the meaning of new words on the web page according to the personal vocabulary.
-3. During the reading process, mark words as known/unknown, so as to update the personal vocabulary.
-4. View reading history.
-5. Highlight web page content and take notes.
-6. Support epub/pdf format e-books (novels, foreign magazines, etc.), news, forums and most other English websites.
 
 ## Install Chrome extension
 
