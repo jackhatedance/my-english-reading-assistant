@@ -3,40 +3,73 @@ import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.j
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-
-    
     let parts = _splitTextByRegex(sentence, regexp, 0);
+
     let parts1 = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
     //console.log(parts1);
+    let parts2 = splitCompoundWord(checkWord, parts1);
+
+    let parts3 = trimWords(checkWord, parts2);
+
+    return parts3;
+}
+
+function splitCompoundWord(checkWord, parts){
     let parts2 = [];
-    for(const part of parts1){
+    for(const part of parts){
         let content = part.content;
         //console.log(content);        
         let contentWithoutPunctuation = trimPunctuations(content);
-        if(isCompoundWord(contentWithoutPunctuation)){
+        if(containsHyphen(contentWithoutPunctuation)){
+            //step 1: check original word
             let checkWordResult = checkWord(contentWithoutPunctuation);            
             if(checkWordResult){
                 part.content = checkWordResult;
                 parts2.push(part);
             } else {
-                const regexp2 = /([-])|([^-]+)/g;
-                let subParts = _splitTextByRegex(content, regexp2, part.offset);
-                for(const subPart of subParts){
-                    parts2.push(subPart);
+                //step 2: eliminate hyphen then check word
+                const contentWithoutPunctuationAndHyphen = contentWithoutPunctuation.replaceAll(/[-]/g, '');
+                checkWordResult = checkWord(contentWithoutPunctuationAndHyphen);  
+                if(checkWordResult){
+                    part.content = checkWordResult;
+                    parts2.push(part);
+                } else {
+                    //step 3: split compound word by hyphen
+                    const regexp2 = /([-])|([^-]+)/g;
+                    let subParts = _splitTextByRegex(content, regexp2, part.offset);
+                    for(const subPart of subParts){
+                        parts2.push(subPart);
+                    }
                 }
+
             }                
         
         } else {
-            if(contentWithoutPunctuation.endsWith("'s") && !checkWord(contentWithoutPunctuation)){
-                //console.log(contentWithoutPunctuation);
-                let contentWithoutS = contentWithoutPunctuation.slice(0, -2);
-                //console.log(contentWithoutS);
-                part.content = contentWithoutS;                
-            }
-
             parts2.push(part);
         }
     }
+
+    return parts2;
+}
+
+
+function trimWords(checkWord, parts){
+    let parts2 = [];
+    for(const part of parts){
+        let content = part.content;        
+        let contentWithoutPunctuation = trimPunctuations(content);
+
+        if((contentWithoutPunctuation.endsWith("'s") 
+            || contentWithoutPunctuation.endsWith("'t")
+            ) && !checkWord(contentWithoutPunctuation)){
+            let trimResult = contentWithoutPunctuation.slice(0, -2);
+            part.content = trimResult;                
+        }
+
+        parts2.push(part);
+    
+    }
+
     return parts2;
 }
 
@@ -120,12 +153,12 @@ function _findPartPositionIndexes(part, positions, startPositionIndex){
     return positionIndexes;
 }
 
-function isCompoundWord(word) {
-    var isCompounding = false;
+function containsHyphen(word) {
+    var result = false;
     if(word){
-        isCompounding = word.match(/[a-zA-Z]+-[a-zA-Z]+/);
+        result = word.includes('-');
     }
-    return isCompounding;    
+    return result;    
 }
 
 

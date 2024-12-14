@@ -48,6 +48,28 @@ describe('tokenizer', function () {
       
     });
 
+    it('wrong hyphenation: unecessary hyphen', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['hello', 'world'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "Hello, wor-ld", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[1].content, " ");
+      assert.equal(tokens[2].content, "world");
+      
+      
+    });
+
     it('end of line hyphenation: compoud word of 2 words', async function () {
       
       let tokens = tokenize((text)=> {
@@ -89,6 +111,26 @@ describe('tokenizer', function () {
       assert.equal(tokens[1].content, " ");
       assert.equal(tokens[2].content, "son-in-law");
             
+    });
+
+    it('Apostrophe', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['he'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "He's", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "He");
+      
+      
     });
 
     it('Spanish word', async function () {
