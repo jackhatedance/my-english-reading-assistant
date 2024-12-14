@@ -134,7 +134,7 @@ describe('tokenizer', function () {
       
     });
 
-    it('Apostrophe', async function () {
+    it('Apostrophe possesion', async function () {
       
       let tokens = tokenize((text)=> {
         //console.log('checkWord:'+text);
@@ -145,6 +145,26 @@ describe('tokenizer', function () {
           return null;
         }
       }, "He's", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "He");
+      
+      
+    });
+
+    it('Apostrophe will', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['he'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "He'll", 0 , []);
       
       
       assert(tokens.length, 2);

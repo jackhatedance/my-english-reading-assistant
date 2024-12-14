@@ -95,9 +95,10 @@ function trimWords(checkWord, parts){
         let contentWithoutPunctuation = trimPunctuations(content);
 
         if((contentWithoutPunctuation.endsWith("'s") 
-            || contentWithoutPunctuation.endsWith("'t")
+        || contentWithoutPunctuation.endsWith("'ll")
             ) && !checkWord(contentWithoutPunctuation)){
-            let trimResult = contentWithoutPunctuation.slice(0, -2);
+                let lastIndex = contentWithoutPunctuation.lastIndexOf("'");
+            let trimResult = contentWithoutPunctuation.substring(0, lastIndex);
             part.content = trimResult;                
         }
 
