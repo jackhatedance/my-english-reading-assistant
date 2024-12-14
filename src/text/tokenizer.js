@@ -5,13 +5,48 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0);
 
-    let parts1 = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
+    parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
     //console.log(parts1);
-    let parts2 = splitCompoundWord(checkWord, parts1);
+    parts = splitCompoundWord(checkWord, parts);
 
-    let parts3 = trimWords(checkWord, parts2);
+    parts = splitCamelWords(checkWord, parts);
 
-    return parts3;
+    parts = trimWords(checkWord, parts);
+
+    return parts;
+}
+
+function splitCamelWords(checkWord, parts){
+    let parts2 = [];
+    for(const part of parts){
+        let content = part.content;
+        //console.log(content);        
+        let contentWithoutPunctuation = trimPunctuations(content);
+        if(isCamelWord(contentWithoutPunctuation)){
+            //console.log('camel world')
+            //step 1: check original word
+            let checkWordResult = checkWord(contentWithoutPunctuation);            
+            if(checkWordResult){
+                part.content = checkWordResult;
+                parts2.push(part);
+            } else {
+                
+                //step 2: split compound word
+                const regexp2 = /([A-Z][^A-Z\s]+)/g;
+                let subParts = _splitTextByRegex(content, regexp2, part.offset);
+                for(const subPart of subParts){
+                    parts2.push(subPart);
+                }
+            
+
+            }                
+        
+        } else {
+            parts2.push(part);
+        }
+    }
+
+    return parts2;
 }
 
 function splitCompoundWord(checkWord, parts){
@@ -151,6 +186,13 @@ function _findPartPositionIndexes(part, positions, startPositionIndex){
     }
 
     return positionIndexes;
+}
+
+function isCamelWord(word){
+    if(word && word.match(/([A-Z][^A-Z\s]+){2,}/)){
+        return true;
+    }
+    return false;
 }
 
 function containsHyphen(word) {

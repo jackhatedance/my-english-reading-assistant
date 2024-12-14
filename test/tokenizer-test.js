@@ -113,6 +113,27 @@ describe('tokenizer', function () {
             
     });
 
+    it('camel word', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['Hello','World'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "HelloWorld", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[1].content, "World");
+      
+      
+    });
+
     it('Apostrophe', async function () {
       
       let tokens = tokenize((text)=> {
