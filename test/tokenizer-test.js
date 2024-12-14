@@ -108,7 +108,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "Buendía.");
+      assert.equal(tokens[2].content, "Buendía");
             
     });
 

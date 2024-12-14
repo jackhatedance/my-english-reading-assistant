@@ -7,7 +7,7 @@ import {getOptionsFromCache} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
-import { trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
+import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
 
 var gPrefixes, gSuffixes;
 
@@ -59,16 +59,6 @@ function searchWordEndsWithDot(request){
         }
     }
     
-    return result;
-}
-
-function endsWithDot(text){
-    var result = false;
-    if(text){
-        if(text.match(/.+[.]/)){
-            result = true;
-        }
-    }
     return result;
 }
 

@@ -36,6 +36,13 @@ describe('textUtils', function () {
       assert.equal(trimPunctuations("did................"), "did.");
     });
 
+    it('word ends with dot and length is less than 6', async function () {
+      assert.equal(trimPunctuations("did."), "did.");
+    });
+
+    it('word ends with dot and length is more than 6', async function () {
+      assert.equal(trimPunctuations("interesting."), "interesting");
+    });
 
 
   });

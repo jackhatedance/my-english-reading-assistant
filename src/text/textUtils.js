@@ -1,5 +1,16 @@
 'use strict';
 
+
+function endsWithDot(text){
+    var result = false;
+    if(text){
+        if(text.match(/.+[.]/)){
+            result = true;
+        }
+    }
+    return result;
+}
+
 function trimPunctuations(text){
     var result = text;
     // no "'", or "'" in between 
@@ -8,6 +19,12 @@ function trimPunctuations(text){
     if(array){
         result = array[0];
     }
+
+    //if ends with dot, length must less than n
+    if(endsWithDot(result) && result.length > 6){
+        result = result.slice(0, -1); 
+    }
+
     return result;
 }
 
@@ -34,4 +51,4 @@ function variableLengthStandardizeCharacters(text){
 
 
 
-export { trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters };
