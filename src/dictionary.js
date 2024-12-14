@@ -32,7 +32,7 @@ function lookup(word, dicts) {
 }
 
 function getDict(name){
-    if(name==='#small#'){
+    if(name==='#small'){
         return dictSmall;
     }else if(name==='#large'){
         return dictLarge;
