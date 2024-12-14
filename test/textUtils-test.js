@@ -58,6 +58,9 @@ describe('textUtils', function () {
       assert.equal(sameLengthStandardizeCharacters("did∗"), "did*");
     });
 
+    it('dash', async function () {
+      assert.equal(sameLengthStandardizeCharacters("did\u2013"), "did\u2014");
+    });
     
     
   });

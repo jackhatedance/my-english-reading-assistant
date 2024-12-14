@@ -33,6 +33,7 @@ function sameLengthStandardizeCharacters(text){
         .replaceAll(/[“”]/g, '"')
         .replaceAll(/[∗]/g, '*')    
            
+        .replaceAll(/[–]/g, '—')//u2013 to u2014
         ;
     
 }
