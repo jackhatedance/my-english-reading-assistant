@@ -183,10 +183,12 @@ function searchWordWithDict(request, dicts){
         if(request.allowLemma){
             transformResult = transformLemmatize(input, dicts);
 
-            word = transformResult.word;
-            definition = transformResult.definition;
+            if(transformResult) {
+                word = transformResult.word;
+                definition = transformResult.definition;
 
-            searchType='lemma';
+                searchType='lemma';
+            }
         }
     }
 
@@ -250,7 +252,7 @@ function searchWordWithDict(request, dicts){
                     transformResult = transformLemmatize(input, dicts);
                     
                     //found base form
-                    if(transformResult.word){
+                    if(transformResult){
                         word = transformResult.word;
                         definition = transformResult.definition;
                         
@@ -295,8 +297,10 @@ function searchWordWithDict(request, dicts){
                     if(!definition){
                         transformResult = transformLemmatize(word, dicts);
 
-                        word = transformResult.word;
-                        definition = transformResult.definition; 
+                        if(transformResult) {
+                            word = transformResult.word;
+                            definition = transformResult.definition; 
+                        }                        
                     }
                 }
 
@@ -390,10 +394,15 @@ function transformLemmatize(input, dicts){
         }
     }
 
-    return {
-        word,
-        definition,
+    let result = null;
+    if(definition) {
+        result = {
+            word,
+            definition,
+        }
     }
+    return result;
+    
 }
 
 function transformRemovePrefix(input, dicts){
