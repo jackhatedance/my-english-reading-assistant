@@ -283,17 +283,51 @@ function _splitPartByNewLines(checkWord, part, positions) {
 function getContent(checkWord, originalContent, subtext){
     let content;
     //sometimes the hyphen at the end of a line is required. 
+    
+    let cleanContent;
+    let cleanContentWithoutPunctuation;
+    //try to remove the unnecessary hyphen
     if(containsUnnecessaryChars(subtext)){
-        let cleanContent = removeUnnecessaryChars(subtext);
-        let cleanContentWithoutPunctuation = trimPunctuations(cleanContent);
+        
+        cleanContent = removeUnnecessaryChars(subtext);
+        cleanContentWithoutPunctuation = trimPunctuations(cleanContent);
         let checkWordResult = checkWord(cleanContentWithoutPunctuation); 
         
         if(checkWordResult){
             content = cleanContent;
-        }else{
-            content = originalContent;
         }
-    }else {
+    }
+
+    //try not to remove the "unnecessary" hyphen
+    if(!content){
+        let contentWithoutPunctuation = trimPunctuations(originalContent);
+        let checkWordResult = checkWord(contentWithoutPunctuation); 
+        
+        if(checkWordResult){
+            content = contentWithoutPunctuation;
+        }
+    }
+
+    //try to split compound word and check each sub-word
+    if(!content && cleanContentWithoutPunctuation){
+        if(containsHyphen(cleanContentWithoutPunctuation)){
+            let words = cleanContentWithoutPunctuation.split('-');
+            let validWordCount = 0;
+            for(let word of words){
+                let checkWordResult = checkWord(word);
+                if(checkWordResult){
+                    validWordCount++;
+                }
+            }
+
+            if(words.length === validWordCount){
+                content = cleanContent;
+            }
+        }
+    }    
+    
+    //fallback
+    if(!content){
         content = originalContent;
     }
     return content;

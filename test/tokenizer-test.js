@@ -92,6 +92,27 @@ describe('tokenizer', function () {
       
     });
 
+    it('end of line hyphenation: compoud word of 2 words with newline hyphen', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['national', 'secu', 'security'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "national-secu-rity", 0 , [14]);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "national");
+      assert.equal(tokens[1].content, "-");
+      assert.equal(tokens[2].content, "security");
+            
+    });
+
     it('end of line hyphenation: compoud word of 3 words', async function () {
       
       let tokens = tokenize((text)=> {
