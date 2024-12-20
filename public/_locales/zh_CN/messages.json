@@ -1,18 +1,18 @@
 {
     "extensionName":{
-        "message":"我的英文阅读助手"
+        "message":"黑猫 | 我的英文阅读助手"
     },
     "extensionDescription":{
         "message":"根据个人词汇表自动显示生词含义，改善英文阅读体验。"
     },
     "extensionDefaultTitle":{
-        "message":"我的英文阅读助手"
+        "message":"黑猫 | 我的英文阅读助手"
     },
     "popupReport":{
-        "message":"报告"
+        "message":"阅读报告"
     },
     "popupHelp":{
-        "message":"帮助"
+        "message":"指南"
     },
     "popupFaq":{
         "message":"常见问题"
@@ -422,5 +422,13 @@
     },
     "reportVocabularyChartLabel":{
         "message":"词汇量"
+    },
+
+    "guidePageTitle":{
+        "message":"用户说明书"
+    },
+
+    "faqPageTitle":{
+        "message":"常见问题"
     }
 }
