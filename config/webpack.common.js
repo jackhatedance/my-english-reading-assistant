@@ -52,14 +52,9 @@ const common = {
         test: /\.md$/,
         use: [
           {
-            loader: "html-loader",
-          },
-          {
-            loader: "markdown-loader",
-            options: {
-              
-            },
-          },
+            loader: "raw-loader",
+          }
+          
         ],
       },
       {
@@ -76,6 +71,11 @@ const common = {
           from: '**/*',
           context: 'public',
         },
+        {
+          from: '**/*',
+          to: 'screenshots',
+          context: 'src/screenshots',
+        }
       ],
     }),
     // Extract CSS into separate files

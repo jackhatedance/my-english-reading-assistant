@@ -514,3 +514,17 @@ html {
 .markdown-body .footnotes .data-footnote-backref g-emoji {
   font-family: monospace
 }
+
+#left {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+
+  li {
+    list-style-type: none;
+  }
+
+  * {
+    padding: 4px;
+  }
+}
