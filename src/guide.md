@@ -291,4 +291,3 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.10.1
 修复一些分词问题；
 ## 0.10.2
-给软件取了个霸气的名字叫“任我读”
