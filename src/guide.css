@@ -19,6 +19,9 @@ html {
   color: #222;
 }
 
+body {
+  min-width: 1024px;
+}
 
 .markdown-body {
   max-width: 800px;

@@ -1,9 +1,10 @@
 # toc
 
-# 意见反馈
+# 交流与反馈
 
 * [github](https://github.com/jackhatedance/my-english-reading-assistant/issues)，可以看源码，提交Bug, PR。
 * [电子邮件](mailto:mera@dingjianghao.com)
+* [贴吧](https://tieba.baidu.com/f?ie=utf-8&kw=%E6%88%91%E7%9A%84%E8%8B%B1%E6%96%87%E9%98%85%E8%AF%BB%E5%8A%A9%E6%89%8B&fr=search)
 * [知乎](https://www.zhihu.com/people/ding-jack-94)，可以评论，私信
     * [大量阅读英文原著后有什么质的改变](https://www.zhihu.com/question/289069988/answer/3557780808)
     * [假如一个英语不太好的人，去读原版英文小说，并逐字逐句的查字典翻译，请问对提升英语水平有帮助吗？](https://www.zhihu.com/question/388052922/answer/3428408535)
