@@ -30,12 +30,12 @@
 
 如果有软件开发基础的，有可能从github下载源码，自行打包，然后打开浏览器开发者模式，就可以本地安装。
 
-<img src="screenshots/en/chrome web store.png" height="200">
+![height=200](screenshots/en/chrome web store.png "")
 
 # 个人词汇表
 插件安装好以后，第一步是要初始化个人词汇表。因为软件是根据词汇表来确定某个单词是否认识。在弹窗上有一个按钮可以打开设置页面。
 
-<img src="screenshots/cn/options-vocabulary.png" height="400">
+![height=400](screenshots/cn/options-vocabulary.png "")
 
 系统默认是选用“常用8000”来初始化个人词汇表的。大部分用户都需要重新选择适合自己的词汇表进行初始化。
 
@@ -52,7 +52,8 @@
 
 ## 词根词缀模式
 
-<img src="screenshots/cn/options-root-and-affix.png" weight="400">
+![{width=400}](screenshots/cn/options-root-and-affix.png "")
+
 许多单词是可以拆分为词根词缀的，只要我们认识词根词缀，那么这个单词的意思就大概率是理解的。比如单词hopeless是可以拆分为hope和less.那么如果这两个单词我们都认识，就可以猜测出这个hopeless的意思。
 
 打开词根词缀模式，软件判断某个单词是否认识的逻辑如下：
@@ -69,7 +70,7 @@
 ## 报告
 设置是否启用报告功能。如果启用的话，则阅读活动会被记录下来，并可以查看相关的报告。
 
-<img src="screenshots/cn/options-report.png" weight="400">
+![{width=400}](screenshots/cn/options-report.png "")
 
 ## 词典
 用户可以添加词典，比如各种专业词典，比如计算机专业词典，化学专业词典等。也可以添加书籍相关的词典，比如哈利波特词典，可以包含一些小说特有的词汇。词典就是一个文本文件，导入即可使用。
@@ -88,7 +89,7 @@
 # 弹窗
 点击浏览器右上角的插件按钮，就会出现弹窗。
 
-<img src="screenshots/cn/popup.png" height="300">
+![{height=300}](screenshots/cn/popup.png "")
 
 点击显示就可以让当前网页展示生词的释义。
 
@@ -124,13 +125,13 @@
 # 对话框
 
 ## 操作
-<img src="screenshots/cn/dialog-actions.png" width="200">
+![{width=200}](screenshots/cn/dialog-actions.png "")
 
 在内容页任意单词处点击鼠标左键，弹出对话框，可以对当前光标所在位置的单词或笔记（如果有的话）进行操作。
 选择一段文本，弹出对话框，可以添加笔记。
 
 ## 词汇表
-<img src="screenshots/cn/dialog-vocabulary.png" width="200">
+![{width=200}](screenshots/cn/dialog-vocabulary.png "")
 
 词汇表显示当前页面的所有生词。
 
@@ -145,7 +146,7 @@
 如果不确定某个单词自己是否认识，可以移除标记。在开启词根词缀的模式下，这个操作是有意义的。
 
 ## 书
-<img src="screenshots/cn/dialog-book.png" width="200">
+![{width=200}](screenshots/cn/dialog-book.png "")
 
 为了在阅读报告里正确的看到书籍的阅读记录，需要设置一下书的相关信息。不设置该信息不会影响其他功能。
 
@@ -208,25 +209,25 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 词汇量变化图
 可以看到过去一段时间个人词汇量的进步情况。
 
-<img src="screenshots/cn/report-vocabulary-chart.png" width="400">
+![{width=400}](screenshots/cn/report-vocabulary-chart.png "")
 
 ## 网站统计
 可以看到平时常去的英文网站，所花的时间和词汇量的增长。
-<img src="screenshots/cn/report-site-summaries.png" width="400">
+![{width=400}](screenshots/cn/report-site-summaries.png "")
 
 ## 页面统计
 可以看到具体页面的阅读时间和词汇量的变化。
-<img src="screenshots/cn/report-page-summaries.png" width="600">
+![{width=600}](screenshots/cn/report-page-summaries.png "")
 
 ## 阅读详情
 可以看到阅读的流水账。还可以点击重新打开某个页面。
-<img src="screenshots/cn/report-activities.png" width="600">
+![{width=600}](screenshots/cn/report-activities.png "")
 
 # 电子书
 
 大部分英文小说和报刊都是以电子书的形式存在的。该插件也可以用于阅读电子书。前提是电子书必须在浏览器里打开。
 
-<img src="screenshots/cn/epub-book.png" width="800">
+![{width=800}](screenshots/cn/epub-book.png "")
 
 已知的一些电子书的阅读器网址及其支持的格式：
 |网址|格式|
