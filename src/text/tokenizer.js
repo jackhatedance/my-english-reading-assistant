@@ -212,25 +212,29 @@ function setCharAt(str,index,chr) {
 }
 
 function markUnnecessaryChars(str, index){
-    return setCharAt(str, index, ' ');
+    return setCharAt(str, index, '#');
 }
 
-function restoreUnnecessaryChars(str){
-    return str.replaceAll(/[ ]/g, "-");
-}
-
-function removeUnnecessaryChars(str){
-    return str.replaceAll(/[ ]/g, "");
+function removeUnnecessaryChars(str, mask){
+    let result ='';
+    for(let i=0;i<str.length;i++){
+        if(mask[i] !== '#'){
+            result = result + str[i];
+        }
+    }
+    return result;
 }
 
 function containsUnnecessaryChars(str){
-    return str && str.includes(' ');
+    return str && str.includes('#');
 }
 
 function _splitPartByNewLines(checkWord, part, positions) {
     let parts2 = [];
 
     let text = sameLengthStandardizeCharacters(part.originalContent);
+    //line end hyphen mask, either ' ' or '#'
+    let mask = " ".repeat(text.length);
 
     let startTextIndex =0;
     for(let i=0;i<positions.length;i++){
@@ -241,15 +245,16 @@ function _splitPartByNewLines(checkWord, part, positions) {
         //do not split when previous character is '-'
         if(endTextIndex>0 && text.charAt(endTextIndex-1) === '-') {
             //console.log('hyphen:'+ text);
-            text = markUnnecessaryChars(text, endTextIndex-1);
+            mask = markUnnecessaryChars(mask, endTextIndex-1);
 
             continue;
         }
         
         let subtext = text.substring(startTextIndex, endTextIndex);
+        let submask = mask.substring(startTextIndex, endTextIndex);
 
-        let originalContent = restoreUnnecessaryChars(subtext);
-        let content = getContent(checkWord, originalContent, subtext);
+        let originalContent = subtext;
+        let content = getContent(checkWord, originalContent, submask);
 
         let subpart = {
             originalContent: originalContent,
@@ -265,9 +270,10 @@ function _splitPartByNewLines(checkWord, part, positions) {
 
     //last subpart
     let subtext = text.substring(startTextIndex);
+    let submask = mask.substring(startTextIndex);
 
-    let originalContent = restoreUnnecessaryChars(subtext);
-    let content = getContent(checkWord, originalContent, subtext);
+    let originalContent = subtext;
+    let content = getContent(checkWord, originalContent, submask);
     
     let subpart = {
         originalContent: originalContent,
@@ -280,16 +286,16 @@ function _splitPartByNewLines(checkWord, part, positions) {
     return parts2;
 }
 
-function getContent(checkWord, originalContent, subtext){
+function getContent(checkWord, originalContent, submask){
     let content;
     //sometimes the hyphen at the end of a line is required. 
     
     let cleanContent;
     let cleanContentWithoutPunctuation;
     //try to remove the unnecessary hyphen
-    if(containsUnnecessaryChars(subtext)){
+    if(containsUnnecessaryChars(submask)){
         
-        cleanContent = removeUnnecessaryChars(subtext);
+        cleanContent = removeUnnecessaryChars(originalContent, submask);
         cleanContentWithoutPunctuation = trimPunctuations(cleanContent);
         let checkWordResult = checkWord(cleanContentWithoutPunctuation); 
         
