@@ -1,4 +1,5 @@
 import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
+import { identifyWord } from './identify-word.js';
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
@@ -215,19 +216,6 @@ function markUnnecessaryChars(str, index){
     return setCharAt(str, index, '#');
 }
 
-function removeUnnecessaryChars(str, mask){
-    let result ='';
-    for(let i=0;i<str.length;i++){
-        if(mask[i] !== '#'){
-            result = result + str[i];
-        }
-    }
-    return result;
-}
-
-function containsUnnecessaryChars(str){
-    return str && str.includes('#');
-}
 
 function _splitPartByNewLines(checkWord, part, positions) {
     let parts2 = [];
@@ -288,49 +276,19 @@ function _splitPartByNewLines(checkWord, part, positions) {
 
 function getContent(checkWord, originalContent, submask){
     let content;
-    //sometimes the hyphen at the end of a line is required. 
+
+    let options = {
+        lineEndHyphenMask : submask,
+    };
+
+    let transforms = ['punctuation', 'line-end-hyphen', 'compound', 'apostrophe'];
+
+    let guessResult = identifyWord(originalContent, options, checkWord, transforms);
+    if(guessResult){
+        content = guessResult.content;
+    }
     
-    let cleanContent;
-    let cleanContentWithoutPunctuation;
-    //try to remove the unnecessary hyphen
-    if(containsUnnecessaryChars(submask)){
-        
-        cleanContent = removeUnnecessaryChars(originalContent, submask);
-        cleanContentWithoutPunctuation = trimPunctuations(cleanContent);
-        let checkWordResult = checkWord(cleanContentWithoutPunctuation); 
-        
-        if(checkWordResult){
-            content = cleanContent;
-        }
-    }
-
-    //try not to remove the "unnecessary" hyphen
-    if(!content){
-        let contentWithoutPunctuation = trimPunctuations(originalContent);
-        let checkWordResult = checkWord(contentWithoutPunctuation); 
-        
-        if(checkWordResult){
-            content = contentWithoutPunctuation;
-        }
-    }
-
-    //try to split compound word and check each sub-word
-    if(!content && cleanContentWithoutPunctuation){
-        if(containsHyphen(cleanContentWithoutPunctuation)){
-            let words = cleanContentWithoutPunctuation.split('-');
-            let validWordCount = 0;
-            for(let word of words){
-                let checkWordResult = checkWord(word);
-                if(checkWordResult){
-                    validWordCount++;
-                }
-            }
-
-            if(words.length === validWordCount){
-                content = cleanContent;
-            }
-        }
-    }    
+    //console.log('guess result:'+ JSON.stringify(guessResult));
     
     //fallback
     if(!content){

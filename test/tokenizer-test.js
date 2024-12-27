@@ -155,6 +155,27 @@ describe('tokenizer', function () {
       
     });
 
+    it('end of line hyphenation: normal word with Apostrophe', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['Russia'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "Rus-sia's", 0 , [4]);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Russia");
+      
+      
+    });
+		
+
     it('Apostrophe possesion', async function () {
       
       let tokens = tokenize((text)=> {
