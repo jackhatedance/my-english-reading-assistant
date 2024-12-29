@@ -30,12 +30,12 @@
 
 如果有软件开发基础的，有可能从github下载源码，自行打包，然后打开浏览器开发者模式，就可以本地安装。
 
-![height=200](screenshots/en/chrome web store.png "")
+![{height=200}](screenshots/en/chrome-web-store.png "")
 
 # 个人词汇表
 插件安装好以后，第一步是要初始化个人词汇表。因为软件是根据词汇表来确定某个单词是否认识。在弹窗上有一个按钮可以打开设置页面。
 
-![height=400](screenshots/cn/options-vocabulary.png "")
+![{height=400}](screenshots/cn/options-vocabulary.png "")
 
 系统默认是选用“常用8000”来初始化个人词汇表的。大部分用户都需要重新选择适合自己的词汇表进行初始化。
 
@@ -293,3 +293,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.10.1
 修复一些分词问题；
 ## 0.10.2
+修复分词的问题；软件改名；
