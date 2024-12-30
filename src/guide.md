@@ -293,4 +293,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.10.1
 修复一些分词问题；
 ## 0.10.2
-修复分词的问题；软件改名；
+修复分词的问题；
