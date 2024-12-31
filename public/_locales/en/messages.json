@@ -66,6 +66,19 @@
         "message":"Save As Default"
     },
 
+    "popupNothingToDoTitle":{
+        "message":"Nothing to do on this page"
+    },
+    "popupNothingToDoQuickActionsTitle":{
+        "message":"Quick Actions"
+    },
+    "popupNothingToDoQuickActionsEpubReader":{
+        "message":"Open epub reader"
+    },
+    "popupNothingToDoQuickActionsPdfReader":{
+        "message":"Open PDF reader"
+    },    
+
     "optionsPageTitle":{
         "message":"Options"
     },

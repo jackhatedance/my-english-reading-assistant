@@ -20,11 +20,16 @@ body {
 
 .app {
   height: 100%;
+  min-height: 300px;
   display: flex;
   align-items: center;
   flex-direction: column;
   text-align: center;
   padding: 20px;
+  
+  >div{
+    width: 100%;
+  }
 }
 
 .title {
@@ -185,4 +190,21 @@ input:checked + .slider:before {
 
 #additionalDictionaries {
   width: 45%;
+}
+
+#nothing-to-do {
+  
+  .quick-actions {
+    .title {
+      text-align: left;
+    }
+    .actions {
+      li {
+        list-style: none;
+        font-size: medium;
+        margin: 4px;
+        text-align: left;
+      }
+    }
+  }
 }
