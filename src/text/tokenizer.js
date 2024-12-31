@@ -12,6 +12,8 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
 
     parts = splitCamelWords(checkWord, parts);
 
+    parts = splitSlashWords(checkWord, parts);
+
     parts = trimWords(checkWord, parts);
 
     return parts;
@@ -39,6 +41,37 @@ function splitCamelWords(checkWord, parts){
                     parts2.push(subPart);
                 }
             
+
+            }                
+        
+        } else {
+            parts2.push(part);
+        }
+    }
+
+    return parts2;
+}
+
+function splitSlashWords(checkWord, parts){
+    let parts2 = [];
+    for(const part of parts){
+        let content = part.content;
+        let contentWithoutPunctuation = trimPunctuations(content);
+        if(containsSlash(contentWithoutPunctuation)){
+            //console.log('camel world')
+            //step 1: check original word
+            let checkWordResult = checkWord(contentWithoutPunctuation);            
+            if(checkWordResult){
+                part.content = checkWordResult;
+                parts2.push(part);
+            } else {
+                
+                //step 2: split compound word
+                const regexp2 = /([/])|([^/]+)/g;
+                let subParts = _splitTextByRegex(content, regexp2, part.offset);
+                for(const subPart of subParts){
+                    parts2.push(subPart);
+                }
 
             }                
         
@@ -205,7 +238,13 @@ function containsHyphen(word) {
     return result;    
 }
 
-
+function containsSlash(word) {
+    var result = false;
+    if(word){
+        result = word.includes('/');
+    }
+    return result;    
+}
 
 function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;

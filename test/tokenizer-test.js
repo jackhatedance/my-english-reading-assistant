@@ -155,6 +155,28 @@ describe('tokenizer', function () {
       
     });
 
+    it('slash words', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['yes','no'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "Yes/No", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Yes");
+      assert.equal(tokens[1].content, "/");
+      assert.equal(tokens[2].content, "No");
+      
+      
+    });
+
     it('end of line hyphenation: normal word with Apostrophe', async function () {
       
       let tokens = tokenize((text)=> {

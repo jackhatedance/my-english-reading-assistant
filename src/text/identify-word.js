@@ -68,9 +68,6 @@ function buildChain(transforms){
 }
 
 function process(transformer, token, options, checkWord){
-    if(token.content === "Russia's"){
-        console.log(token.content);
-    }
 
     let transformedTokens = transformer.transform(token, options);
     
