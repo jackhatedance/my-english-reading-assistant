@@ -8,8 +8,9 @@
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
     "build": "webpack --mode=production --config config/webpack.config.js",
     "pack": "node pack.cjs",
+    "clean": "rm -rf build/*",
     "test": "mocha",
-    "repack": "rm -rf build/* && npm run build && npm run pack",
+    "repack": "npm run clean && npm run build && npm run pack",
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
   },
   "devDependencies": {
