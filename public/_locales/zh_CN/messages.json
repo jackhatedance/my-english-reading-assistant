@@ -77,7 +77,7 @@
     },  
 
     "optionsPageTitle":{
-        "message":"任我读英文阅读助手设置"
+        "message":"设置"
     },
     "optionsTitle":{
         "message":"设置"
@@ -228,7 +228,7 @@
     },
 
     "sidepanelPageTitle":{
-        "message":"任我读英文阅读助手侧栏"
+        "message":"侧栏"
     },
     "sidepanelNotAvailable":{
         "message":"不可用"
