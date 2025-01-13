@@ -16,6 +16,8 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
 
     parts = trimWords(checkWord, parts);
 
+    parts = detectAbbreviationWords(checkWord, parts);
+
     return parts;
 }
 
@@ -132,7 +134,32 @@ function trimWords(checkWord, parts){
         //console.log("originalContent:"+originalContent);
         
         let options = { };
-        let transforms = ['punctuation', 'apostrophe', 'abbreviation'];
+        let transforms = ['punctuation', 'apostrophe'];
+
+        let guessResult = identifyWord(originalContent, options, checkWord, transforms);
+        //console.log("guessResult:"+JSON.stringify(guessResult));
+        if(guessResult){
+            part.content = guessResult.content;
+        }        
+
+        parts2.push(part);
+    
+    }
+
+    return parts2;
+}
+
+function detectAbbreviationWords(checkWord, parts){
+    let parts2 = [];
+    for(const part of parts){
+            
+        
+        let originalContent = part.content;
+        
+        //console.log("originalContent:"+originalContent);
+        
+        let options = { };
+        let transforms = ['abbreviation'];
 
         let guessResult = identifyWord(originalContent, options, checkWord, transforms);
         //console.log("guessResult:"+JSON.stringify(guessResult));
