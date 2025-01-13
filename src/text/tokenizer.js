@@ -125,16 +125,20 @@ function splitCompoundWord(checkWord, parts){
 function trimWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
-        let content = part.content;        
-        let contentWithoutPunctuation = trimPunctuations(content);
+            
+        
+        let originalContent = part.content;
+        
+        //console.log("originalContent:"+originalContent);
+        
+        let options = { };
+        let transforms = ['punctuation', 'apostrophe', 'abbreviation'];
 
-        if((contentWithoutPunctuation.endsWith("'s") 
-        || contentWithoutPunctuation.endsWith("'ll")
-            ) && !checkWord(contentWithoutPunctuation)){
-                let lastIndex = contentWithoutPunctuation.lastIndexOf("'");
-            let trimResult = contentWithoutPunctuation.substring(0, lastIndex);
-            part.content = trimResult;                
-        }
+        let guessResult = identifyWord(originalContent, options, checkWord, transforms);
+        //console.log("guessResult:"+JSON.stringify(guessResult));
+        if(guessResult){
+            part.content = guessResult.content;
+        }        
 
         parts2.push(part);
     

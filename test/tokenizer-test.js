@@ -208,12 +208,12 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "He's", 0 , []);
+      }, "he's", 0 , []);
       
       
       assert(tokens.length, 2);
       
-      assert.equal(tokens[0].content, "He");
+      assert.equal(tokens[0].content, "he");
       
       
     });
@@ -228,12 +228,12 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "He'll", 0 , []);
+      }, "he'll", 0 , []);
       
       
       assert(tokens.length, 2);
       
-      assert.equal(tokens[0].content, "He");
+      assert.equal(tokens[0].content, "he");
       
       
     });
@@ -279,6 +279,26 @@ describe('tokenizer', function () {
       assert.equal(tokens[2].content, "Hu¨yu¨k");
       assert.equal(tokens[3].content, " ");
       assert.equal(tokens[4].content, "Çatalhöyük");
+            
+    });
+
+
+    it('CEOs', async function () {
+      
+      let tokens = tokenize((text)=> {
+        console.log('checkWord:'+text);
+        let words = ['CEO'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "CEOs", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "CEO");     
             
     });
 

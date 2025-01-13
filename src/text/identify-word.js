@@ -4,6 +4,7 @@ import lineEndHyphen from "./transforms/line-end-hyphen.js";
 import apostrophe from "./transforms/apostrophe.js";
 import punctuation from "./transforms/punctuation.js";
 import compound from "./transforms/compound.js";
+import abbreviation from "./transforms/abbreviation.js";
 
 /**
  * identify word by a sequence of transforms
@@ -16,7 +17,7 @@ import compound from "./transforms/compound.js";
 function identifyWord(content, options, checkWord, transforms){
 
     if(!transforms){
-        transforms= ['punctuation', 'lineEndHyphen', 'apostrophe'];
+        transforms= ['punctuation', 'lineEndHyphen', 'apostrophe', 'abbreviation'];
     }
 
     let headTransformer = buildChain(transforms);
@@ -37,6 +38,8 @@ function getTransform(name){
         return punctuation();
     } else if(name === 'compound'){
         return compound();
+    } else if(name === 'abbreviation'){
+        return abbreviation();
     }
     
     throw new Error('invalid transform:'+name);    
