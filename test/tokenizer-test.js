@@ -155,6 +155,26 @@ describe('tokenizer', function () {
       
     });
 
+    it('camel word in dictionary', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['TikTok', 'Tik', 'Tok'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "TikTok", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "TikTok");
+      
+      
+    });
+
     it('slash words', async function () {
       
       let tokens = tokenize((text)=> {
