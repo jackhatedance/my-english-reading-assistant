@@ -286,8 +286,8 @@ describe('tokenizer', function () {
     it('CEOs', async function () {
       
       let tokens = tokenize((text)=> {
-        console.log('checkWord:'+text);
-        let words = ['CEO'];
+        //console.log('checkWord:'+text);
+        let words = ['CEO', 'CEOs'];
         if(words.includes(text)){
           return text;
         }else {
@@ -302,8 +302,29 @@ describe('tokenizer', function () {
             
     });
 
+    it('D.C.', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['D.C.'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "D.C.", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "D.C.");     
+            
+    });
+
 
   });
+
+  
 
   
   
