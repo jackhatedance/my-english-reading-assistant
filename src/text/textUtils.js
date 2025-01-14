@@ -54,7 +54,7 @@ function createBlankMask(str) {
     return " ".repeat(str.length);
 }
 
-function containsUnnecessaryChars(str){
+function containsMaskedChars(str){
     return str && str.includes('#');
 }
 
@@ -70,9 +70,9 @@ function replaceMaskedChars(str, mask, char){
     return result;
 }
 
-function removeUnnecessaryChars(str, mask){
+function removeMaskedChars(str, mask){
     return replaceMaskedChars(str, mask, '')
 }
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsUnnecessaryChars, replaceMaskedChars, removeUnnecessaryChars };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars };

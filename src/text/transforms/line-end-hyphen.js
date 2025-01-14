@@ -1,14 +1,14 @@
 'use strict';
 
-import { containsUnnecessaryChars, removeUnnecessaryChars } from '../textUtils.js';
+import { containsMaskedChars, removeMaskedChars } from '../textUtils.js';
 
 function guess(token, options){
     let candicates = [];
 
     
     //try to remove the unnecessary hyphen
-    if(options.lineEndHyphenMask && containsUnnecessaryChars(options.lineEndHyphenMask)){        
-        let cleanContent = removeUnnecessaryChars(token.content, options.lineEndHyphenMask);
+    if(options.lineEndHyphenMask && containsMaskedChars(options.lineEndHyphenMask)){        
+        let cleanContent = removeMaskedChars(token.content, options.lineEndHyphenMask);
         let token2 = {
             content: cleanContent,
             checkType: 'content',

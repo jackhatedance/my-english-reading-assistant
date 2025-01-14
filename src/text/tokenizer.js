@@ -1,6 +1,6 @@
 import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
 import { identifyWord } from './identify-word.js';
-import { createBlankMask, replaceMaskedChars, removeUnnecessaryChars } from './textUtils.js';
+import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
@@ -201,7 +201,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
         
         //console.log('originalContent:'+originalContent);
-        let cleanContent = removeUnnecessaryChars(originalContent, submask)
+        let cleanContent = removeMaskedChars(originalContent, submask)
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let part = {
