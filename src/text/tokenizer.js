@@ -1,5 +1,6 @@
 import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
 import { identifyWord } from './identify-word.js';
+import { createBlankMask, replaceMaskedChars, removeUnnecessaryChars } from './textUtils.js';
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
@@ -107,7 +108,11 @@ function splitCompoundWord(checkWord, parts){
                 } else {
                     //step 3: split compound word by hyphen
                     const regexp2 = /([-])|([^-]+)/g;
-                    let subParts = _splitTextByRegex(content, regexp2, part.offset);
+
+                    //replace '-' to any other letter
+                    let originalContent = replaceMaskedChars(part.originalContent, part.mask, 'x');
+                    let originalMaskedChar = '-';
+                    let subParts = _splitTextByRegex(originalContent, regexp2, part.offset, part.mask, originalMaskedChar);
                     for(const subPart of subParts){
                         parts2.push(subPart);
                     }
@@ -174,9 +179,15 @@ function detectAbbreviationWords(checkWord, parts){
     return parts2;
 }
 
-function _splitTextByRegex(originalSentence, regexp, baseIndex) {
+function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMaskedChar) {
     let parts = [];
 
+    if(!mask){
+        mask = createBlankMask(originalSentence);
+    }
+    if(!originalMaskedChar){
+        originalMaskedChar = '-';
+    }
    
     let sentence = sameLengthStandardizeCharacters(originalSentence);
     
@@ -184,11 +195,18 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex) {
     const matches = str.matchAll(regexp);
 
     for (const match of matches) {
-        let contentWithoutPunctuation = trimPunctuations(match[0]);
+        let submask = mask.substring(match.index, match.index + match[0].length);
+
         let originalContent = originalSentence.substring(match.index, match.index + match[0].length);
+        originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
+        
+        //console.log('originalContent:'+originalContent);
+        let cleanContent = removeUnnecessaryChars(originalContent, submask)
+        let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let part = {
             originalContent: originalContent,
+            mask: submask,
             content:contentWithoutPunctuation,
             //relative to sentence
             offset: match.index + baseIndex,
@@ -292,7 +310,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
 
     let text = sameLengthStandardizeCharacters(part.originalContent);
     //line end hyphen mask, either ' ' or '#'
-    let mask = " ".repeat(text.length);
+    let mask = createBlankMask(text);
 
     let startTextIndex =0;
     for(let i=0;i<positions.length;i++){
@@ -312,10 +330,11 @@ function _splitPartByNewLines(checkWord, part, positions) {
         let submask = mask.substring(startTextIndex, endTextIndex);
 
         let originalContent = subtext;
-        let content = getContent(checkWord, originalContent, submask);
+                let content = getContent(checkWord, originalContent, submask);
 
         let subpart = {
             originalContent: originalContent,
+            mask: submask,
             content: content,
             offset: startTextIndex + part.offset,
             length: subtext.length,
@@ -335,6 +354,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
     
     let subpart = {
         originalContent: originalContent,
+        mask: submask,
         content: content,
         offset: startTextIndex + part.offset,
         length: subtext.length,

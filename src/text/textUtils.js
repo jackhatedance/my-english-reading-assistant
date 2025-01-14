@@ -50,6 +50,29 @@ function variableLengthStandardizeCharacters(text){
 }
 
 
+function createBlankMask(str) {
+    return " ".repeat(str.length);
+}
+
+function containsUnnecessaryChars(str){
+    return str && str.includes('#');
+}
+
+function replaceMaskedChars(str, mask, char){
+    let result ='';
+    for(let i=0;i<str.length;i++){
+        if(mask[i] !== '#'){
+            result = result + str[i];
+        } else {
+            result = result + char;
+        }
+    }
+    return result;
+}
+
+function removeUnnecessaryChars(str, mask){
+    return replaceMaskedChars(str, mask, '')
+}
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsUnnecessaryChars, replaceMaskedChars, removeUnnecessaryChars };

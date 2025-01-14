@@ -1,6 +1,6 @@
 'use strict';
 
-
+import { containsUnnecessaryChars, removeUnnecessaryChars } from '../textUtils.js';
 
 function guess(token, options){
     let candicates = [];
@@ -29,20 +29,5 @@ function lineEndHyphen(){
     return guess;
 }
 
-
-function containsUnnecessaryChars(str){
-    return str && str.includes('#');
-}
-
-
-function removeUnnecessaryChars(str, mask){
-    let result ='';
-    for(let i=0;i<str.length;i++){
-        if(mask[i] !== '#'){
-            result = result + str[i];
-        }
-    }
-    return result;
-}
 
 export default lineEndHyphen;

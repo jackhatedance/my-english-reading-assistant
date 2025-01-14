@@ -17,7 +17,7 @@ describe('tokenizer', function () {
       }, "Hello, world!", 0 , []);
       //console.log(tokens);
       //assert(tokens.length === 2,"test");
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, " ");
@@ -39,7 +39,7 @@ describe('tokenizer', function () {
       }, "Hello, wor-ld", 0 , [11]);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, " ");
@@ -61,7 +61,7 @@ describe('tokenizer', function () {
       }, "Hello, wor-ld", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, " ");
@@ -83,7 +83,7 @@ describe('tokenizer', function () {
       }, "good-bye, world!", 0 , [5]);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "good-bye");
       assert.equal(tokens[1].content, " ");
@@ -105,7 +105,7 @@ describe('tokenizer', function () {
       }, "national-secu-rity", 0 , [14]);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "national");
       assert.equal(tokens[1].content, "-");
@@ -117,7 +117,7 @@ describe('tokenizer', function () {
       
       let tokens = tokenize((text)=> {
         //console.log('checkWord:'+text);
-        let words = ['his', 'son-in-law'];
+        let words = ['his', 'son-in-law', 'son', 'in', 'law'];
         if(words.includes(text)){
           return text;
         }else {
@@ -126,11 +126,34 @@ describe('tokenizer', function () {
       }, "his son-in-law", 0 , [11]);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "his");
       assert.equal(tokens[1].content, " ");
       assert.equal(tokens[2].content, "son-in-law");
+            
+    });
+
+    it('end of line hyphenation: public-in-formation', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['public', 'in', 'formation', 'information'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "public-in-formation", 0 , [10]);
+      
+      
+      assert.equal(tokens.length, 3);
+      
+      assert.equal(tokens[0].content, "public");
+      assert.equal(tokens[1].content, "-");
+
+      assert.equal(tokens[2].content, "information");
+      assert.equal(tokens[2].originalContent, "in-formation");
             
     });
 
@@ -147,7 +170,7 @@ describe('tokenizer', function () {
       }, "HelloWorld", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 2);
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, "World");
@@ -168,7 +191,7 @@ describe('tokenizer', function () {
       }, "TikTok", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "TikTok");
       
@@ -188,7 +211,7 @@ describe('tokenizer', function () {
       }, "Yes/No", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "Yes");
       assert.equal(tokens[1].content, "/");
@@ -210,7 +233,7 @@ describe('tokenizer', function () {
       }, "Rus-sia's", 0 , [4]);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "Russia");
       
@@ -231,7 +254,7 @@ describe('tokenizer', function () {
       }, "he's", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "he");
       
@@ -251,7 +274,7 @@ describe('tokenizer', function () {
       }, "he'll", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "he");
       
@@ -271,7 +294,7 @@ describe('tokenizer', function () {
       }, "Hello, Buendía.", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "Hello");
       assert.equal(tokens[1].content, " ");
@@ -292,7 +315,7 @@ describe('tokenizer', function () {
       }, "C¸atal Hu¨yu¨k, Çatalhöyük", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 5);
       
       assert.equal(tokens[0].content, "C¸atal");
       assert.equal(tokens[1].content, " ");
@@ -316,7 +339,7 @@ describe('tokenizer', function () {
       }, "CEOs", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "CEO");     
             
@@ -335,7 +358,7 @@ describe('tokenizer', function () {
       }, "D.C.", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 1);
       
       assert.equal(tokens[0].content, "D.C.");     
             
@@ -354,11 +377,11 @@ describe('tokenizer', function () {
       }, "U.S.-designated", 0 , []);
       
       
-      assert(tokens.length, 2);
+      assert.equal(tokens.length, 3);
       
       assert.equal(tokens[0].content, "U.S.");     
       assert.equal(tokens[1].content, "-");     
-      assert.equal(tokens[2].content, "designate");     
+      assert.equal(tokens[2].content, "designated");     
             
     });
 
