@@ -341,6 +341,27 @@ describe('tokenizer', function () {
             
     });
 
+    it('U.S.-designated', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['U.S.', 'designated'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "U.S.-designated", 0 , []);
+      
+      
+      assert(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "U.S.");     
+      assert.equal(tokens[1].content, "-");     
+      assert.equal(tokens[2].content, "designate");     
+            
+    });
+
 
   });
 

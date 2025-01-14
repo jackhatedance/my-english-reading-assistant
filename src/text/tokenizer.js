@@ -7,7 +7,7 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     let parts = _splitTextByRegex(sentence, regexp, 0);
 
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
-    //console.log(parts1);
+    //console.log(parts);
     parts = splitCompoundWord(checkWord, parts);
 
     parts = splitCamelWords(checkWord, parts);
@@ -60,7 +60,7 @@ function splitSlashWords(checkWord, parts){
         let content = part.content;
         let contentWithoutPunctuation = trimPunctuations(content);
         if(containsSlash(contentWithoutPunctuation)){
-            //console.log('camel world')
+            //console.log('slash world')
             //step 1: check original word
             let checkWordResult = checkWord(contentWithoutPunctuation);            
             if(checkWordResult){
@@ -68,7 +68,7 @@ function splitSlashWords(checkWord, parts){
                 parts2.push(part);
             } else {
                 
-                //step 2: split compound word
+                //step 2: split word
                 const regexp2 = /([/])|([^/]+)/g;
                 let subParts = _splitTextByRegex(content, regexp2, part.offset);
                 for(const subPart of subParts){
@@ -255,7 +255,7 @@ function _findPartPositionIndexes(part, positions, startPositionIndex){
 }
 
 function isCamelWord(word){
-    if(word && word.match(/([A-Z][^A-Z\s]+){2,}/)){
+    if(word && word.match(/([A-Z][a-z]+){2,}/)){
         return true;
     }
     return false;

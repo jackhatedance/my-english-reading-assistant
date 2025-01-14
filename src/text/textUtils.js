@@ -13,8 +13,8 @@ function endsWithDot(text){
 
 function trimPunctuations(text){
     var result = text;
-    // no "'", or "'" in between 
-    let array = text.match(/(([^,.…!?()[\]{};:'"*#+=]+['.][^,.…!?()[\]{};:'"*#+=]+)|([^,.…!?()[\]{};:'"*#+=]+))\.?/);
+    // first or last char cannot be punctuation, some punctuations ('.-) allowed in between
+    let array = text.match(/(([^,.…!?()[\]{};:'"*#+-=][^,…!?()[\]{};:"*#+=]+[^,.…!?()[\]{};:'"*#+-=])|([^,.…!?()[\]{};:'"*#+-=]+))\.?/);
     
     if(array){
         result = array[0];
