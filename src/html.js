@@ -43,6 +43,7 @@ const TEXT_TAGS =[
     'U',
     'BODY',
     'UL',
+    'FIGCAPTION'
 ];
 
 function isTextTag(tag){
