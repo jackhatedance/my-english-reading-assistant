@@ -201,7 +201,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
 
         let content = sentence.substring(match.index, match.index + match[0].length);
         
-        console.log('originalContent:'+originalContent);
+        //console.log('originalContent:'+originalContent);
         let cleanContent = removeMaskedChars(content, submask)
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
