@@ -191,17 +191,18 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
    
     let sentence = sameLengthStandardizeCharacters(originalSentence);
     
-    const str = sentence;
-    const matches = str.matchAll(regexp);
+    const matches = sentence.matchAll(regexp);
 
     for (const match of matches) {
         let submask = mask.substring(match.index, match.index + match[0].length);
 
         let originalContent = originalSentence.substring(match.index, match.index + match[0].length);
         originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
+
+        let content = sentence.substring(match.index, match.index + match[0].length);
         
-        //console.log('originalContent:'+originalContent);
-        let cleanContent = removeMaskedChars(originalContent, submask)
+        console.log('originalContent:'+originalContent);
+        let cleanContent = removeMaskedChars(content, submask)
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let part = {

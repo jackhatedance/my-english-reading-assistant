@@ -386,6 +386,26 @@ describe('tokenizer', function () {
     });
 
 
+    it('start with non-standard quotaion mark', async function () {
+      
+      let tokens = tokenize((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['the'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "’The", 0 , []);
+      
+      
+      assert.equal(tokens.length, 1);
+      
+      assert.equal(tokens[0].content, "The");     
+            
+    });
+
+
   });
 
   
