@@ -41,6 +41,9 @@
     "popupOpacityLabel":{
         "message":"Opacity"
     },
+    "popupInterlacedLabel":{
+        "message":"Interlaced"
+    },
     "popupMaxMeaningNumberLabel":{
         "message":"Max Meaning Number"
     },

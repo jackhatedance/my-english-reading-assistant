@@ -11,11 +11,12 @@ function findStyleSheet(document) {
     return null;
 }
 
-function indexOfMeaAnnotation(styleSheet) {
+
+function indexOfRule(styleSheet, selector) {
     try {
         for (let i = 0; i < styleSheet.cssRules.length; i++) {
             let rule = styleSheet.cssRules[i];
-            if (rule.selectorText === '.mea-highlight::after') {
+            if (rule.selectorText === selector) {
                 return i;
             }
         }
@@ -27,6 +28,10 @@ function indexOfMeaAnnotation(styleSheet) {
     }
 
     return -1;
+}
+
+function indexOfMeaAnnotation(styleSheet) {
+    return indexOfRule(styleSheet, '.mea-highlight::after')
 }
 
 function generateCssRuleOfAnnotation(options) {
@@ -52,15 +57,13 @@ function generateCssRuleOfAnnotation(options) {
     return rule;
 }
 
+function generateCssRuleOfSubAnnotation(options, selector) {
+    let top = `${options.position * -1}em`;
 
-function indexOfMeaHighlight(styleSheet) {
-    for (let i = 0; i < styleSheet.cssRules.length; i++) {
-        let rule = styleSheet.cssRules[i];
-        if (rule.selectorText === '.mea-highlight') {
-            return i;
-        }
-    }
-    return -1;
+    let rule = `${selector} {
+      top: ${top};
+    }`;
+    return rule;
 }
 
 function generateCssRuleOfHighlight(options, extraStyle) {
@@ -100,26 +103,45 @@ function generateCssRuleOfHighlight(options, extraStyle) {
     return rule;
 }
 
+function deleteStyleRule(styleSheet, selector){
+    let index = indexOfRule(styleSheet, selector);
+    //console.log('changed style, index:' + index);
+    if (index >= 0) {
+        styleSheet.deleteRule(index);
+        //console.log('changed style, delete rule');
+    }    
+}
+
 function changeStyle(document, options, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
-        //annotation
-        let index = indexOfMeaAnnotation(styleSheet);
-        //console.log('changed style, index:' + index);
-        if (index >= 0) {
-            styleSheet.deleteRule(index);
-            //console.log('changed style, delete rule');
-        }
+        deleteStyleRule(styleSheet, '.mea-highlight::after');
         let rule = generateCssRuleOfAnnotation(options.annotation);
         styleSheet.insertRule(rule, 0);
+
+        let selectors = ['mea-token:nth-child(2n+1 of .mea-word)::after',
+            'mea-token:nth-child(2n of .mea-word)::after'];
+
+        deleteStyleRule(styleSheet, selectors[0]);
+        deleteStyleRule(styleSheet, selectors[1]);
+        
+        
+        let ruleOdd = generateCssRuleOfSubAnnotation(options.annotation, selectors[0]);
+        styleSheet.insertRule(ruleOdd, 0);
+
+        if(options.annotation.interlaced){
+            let numPosition = Number(options.annotation.position)
+            options.annotation.position = (numPosition + 1).toString();
+        }
+        
+        let ruleEven = generateCssRuleOfSubAnnotation(options.annotation, selectors[1]);
+        styleSheet.insertRule(ruleEven, 0);
+        
         //console.log('changed style, insert rule');
 
         //highlight, aka. text
-        index = indexOfMeaHighlight(styleSheet);
-        if (index >= 0) {
-            styleSheet.deleteRule(index);
-        }
-
+        deleteStyleRule(styleSheet, '.mea-highlight');
+        
         if(siteProfile.generateCssRuleOfHighlight){
             rule = siteProfile.generateCssRuleOfHighlight(options);
         }else{

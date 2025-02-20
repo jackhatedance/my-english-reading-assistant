@@ -158,14 +158,19 @@ function addStyle(document) {
         
         white-space: nowrap;
         left: 0;
-        top: -1.5em;
         font-size: 0.5em;
         color: grey;
         opacity: 0.5;
         visibility: hidden;
       }
 
-
+      mea-token:nth-child(2n+1 of .mea-word)::after {        
+        top: -1.5em;        
+      }
+      
+      mea-token:nth-child(2n of .mea-word)::after {        
+        top: -2.5em;        
+      }
 
 
       .mea-toolbar {

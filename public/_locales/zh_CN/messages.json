@@ -41,6 +41,9 @@
     "popupOpacityLabel":{
         "message":"不透明度"
     },
+    "popupInterlacedLabel":{
+        "message":"交错显示"
+    },
     "popupMaxMeaningNumberLabel":{
         "message":"最大词义数量"
     },

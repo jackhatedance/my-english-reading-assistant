@@ -20,6 +20,7 @@ async function getDefaultSiteOptions(){
                 color: '#0000ff',
                 maxMeaningNumber: 3,
                 hideWordClass: false,
+                interlaced: false,
             },
             content: {
                 enabled: false,

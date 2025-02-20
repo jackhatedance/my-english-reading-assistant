@@ -24,4 +24,11 @@ function patch_v_0_10_1(options){
     }
 }
 
+function patch_v_0_10_4(options){
+    let annotationOptions = options.annotation;
+    if(!annotationOptions.interlaced){
+        annotationOptions.interlaced = false;
+    }
+}
+
 export { patchDefaultSiteOptionValues };

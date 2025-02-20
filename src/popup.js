@@ -154,6 +154,11 @@ localizeHtmlPage();
       applyStyles();
     });
 
+    document.getElementById('interlaced').checked = annotationOptions.interlaced;
+    document.getElementById('interlaced').addEventListener('change', (e) => {
+      applyStyles();
+    });
+
     document.getElementById('maxMeaningNumber').value = annotationOptions.maxMeaningNumber;
     document.getElementById('maxMeaningNumber').addEventListener('change', (e) => {
       applyStyles();
@@ -203,6 +208,7 @@ localizeHtmlPage();
     let color =  document.getElementById('color').value;
     let opacity =  document.getElementById('opacity').value;
 
+    let interlaced =  document.getElementById('interlaced').checked;
     let maxMeaningNumber =  document.getElementById('maxMeaningNumber').value;
     let hideWordClass =  document.getElementById('hideWordClass').checked;
 
@@ -219,9 +225,10 @@ localizeHtmlPage();
         lineHeight: lineHeight,
         position: position,        
         opacity: opacity,
-        color:color,
+        color:color,        
         maxMeaningNumber: maxMeaningNumber,
-        hideWordClass: hideWordClass,
+        hideWordClass: hideWordClass,        
+        interlaced: interlaced,
       },
       content: {
         enabled: contentStyleEnabled,
