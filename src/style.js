@@ -128,13 +128,13 @@ function changeStyle(document, options, siteProfile) {
         
         let ruleOdd = generateCssRuleOfSubAnnotation(options.annotation, selectors[0]);
         styleSheet.insertRule(ruleOdd, 0);
-
+        const options2 = JSON.parse(JSON.stringify(options));
         if(options.annotation.interlaced){
             let numPosition = Number(options.annotation.position)
-            options.annotation.position = (numPosition + 1).toString();
+            options2.annotation.position = (numPosition + 1).toString();
         }
         
-        let ruleEven = generateCssRuleOfSubAnnotation(options.annotation, selectors[1]);
+        let ruleEven = generateCssRuleOfSubAnnotation(options2.annotation, selectors[1]);
         styleSheet.insertRule(ruleEven, 0);
         
         //console.log('changed style, insert rule');
