@@ -296,3 +296,5 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 支持斜杠分词；弹窗添加快速操作；
 ## 0.10.4
 支持交错显示生词含义; 添加支持的文本HTML Tag; 识别缩写;
+## 0.10.5
+修复交错显示的相关问题;
