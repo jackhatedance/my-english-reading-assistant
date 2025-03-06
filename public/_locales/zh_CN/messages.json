@@ -189,16 +189,13 @@
         "message":"添加/删除附加词典"
     },    
     "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"启用此功能，你能在阅读时选择附加词典"
+        "message":"启用此功能，你能在阅读时临时附加词典。适合的场景举例：您在阅读哈利波特系列作品时，临时附加一本包含哈利波特相关词汇的字典，并且这个字典平时默认不启用。"
     },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"启用附加字典"
     },
-    "optionsAdditionalDictionaryLabel":{
-        "message":"附加词典"
-    },
-    "optionsAdditionalDictionaryLabelDesc":{
-        "message":"附加字典适用于某类书籍或者专业，比如计算机专业词典或者哈利波特系列词典"
+    "optionsImportDictionaryDesc": {
+        "message": "支持格式：.txt, .zip(mdx)"
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"导入"

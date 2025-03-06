@@ -190,16 +190,13 @@
         "message":"add/delete additional dictionaries"
     },
     "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"by enabling it, you can choose additional dictionaries while reading"
+        "message":"Enable this feature, and you can temporarily attach a dictionary while reading. Suitable scenario example: When you are reading the Harry Potter series, you temporarily attach a dictionary containing Harry Potter-related vocabulary, and this dictionary is not enabled by default."
     },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"Enable additional dictionary"
-    },    
-    "optionsAdditionalDictionaryLabel":{
-        "message":"additional dictionaries"
     },
-    "optionsAdditionalDictionaryLabelDesc":{
-        "message":"Additional dictionaries are available for certain types of books or professions, such as computer science dictionaries or Harry Potter series dictionaries."
+    "optionsImportDictionaryDesc": {
+        "message": "formats：.txt, .zip(mdx)"
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"Import"
