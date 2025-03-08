@@ -10,7 +10,7 @@
     "128": "icons/icon_128.png"
   },
   "default_locale":"en",
-  "options_page": "options.html",
+  "options_page": "options2.html",
   "background": {
     "service_worker": "background.js"
   },

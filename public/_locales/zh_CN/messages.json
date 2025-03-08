@@ -208,13 +208,13 @@
         "message":"不识别的单词"
     },
     "optionsUnrecognizedWordsLabelDesc":{
-        "message":"不在词典里的单词，可以用于制作附加词典"
+        "message":"不在词典里的单词，可以用于制作词典"
     },
     "optionsUnrecognizedWordsTotal":{
         "message":"总数:"
     },
     "optionsUnrecognizedWordsToggleDesc":{
-        "message":"只有当需要制作附加词典时才开启"
+        "message":"只有当需要制作词典时才开启"
     },
     "optionsUnrecognizedWordsToggleLabel":{
         "message":"开启捕捉不识别的单词"

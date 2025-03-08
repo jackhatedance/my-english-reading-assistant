@@ -209,13 +209,13 @@
         "message":"Unrecognized words"
     },
     "optionsUnrecognizedWordsLabelDesc":{
-        "message":"words not in existing dictionaries, can be used to create additional dictionary"
+        "message":"words not in existing dictionaries, can be used to create dictionary"
     },
     "optionsUnrecognizedWordsTotal":{
         "message":"total:"
     },
     "optionsUnrecognizedWordsToggleDesc":{
-        "message":"enable it only when you want to make additional dictionary"
+        "message":"enable it only when you want to make dictionary"
     },
     "optionsUnrecognizedWordsToggleLabel":{
         "message":"Enable capturing unrecognized words"

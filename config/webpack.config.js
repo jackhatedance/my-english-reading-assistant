@@ -11,6 +11,7 @@ const config = (env, argv) =>
     entry: {
       popup: PATHS.src + '/popup.js',
       options: PATHS.src + '/options.js',
+      options2: PATHS.src + '/options2.js',
       contentScript: PATHS.src + '/contentScript.js',
       background: PATHS.src + '/background.js',
       sidePanel: PATHS.src + '/side-panel-iframe.js',

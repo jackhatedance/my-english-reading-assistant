@@ -1,4 +1,4 @@
-import {chunkedRead, chunkedWrite} from '../chunk.js';
+import {chunkedRead, chunkedWrite, chunkedDelete} from '../chunk.js';
 
 async function loadDictionary(name){
     let chunkKey = getChunkKey(name);
@@ -16,7 +16,7 @@ async function saveDictionary(name, data){
 
 async function deleteDictionary(name){
     let chunkKey = getChunkKey(name);
-    return  await chunkedDelete(chunkKey, data);
+    return  await chunkedDelete(chunkKey);
 }
 
 function getChunkKey(name){

@@ -133,6 +133,12 @@ function setOptions(options){
     });    
 }
 
+async function updateOptions(newOptions) {
+    let current = await getOptions();
+    const merged = Object.assign(current, newOptions);
+    await setOptions(merged);
+}
+
 
 function setSiteOptionsAsDefault(options){
     setSiteOptions('default', options);
@@ -214,4 +220,4 @@ function getSimplifyDefinitionOptions(siteOptions){
     return simplifyDefinitionOptions;
 }
 
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions};
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions};
