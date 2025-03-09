@@ -94,8 +94,26 @@ function splitWordMeanings(meaningsStr){
     return meanings;
 }
 
+function parseTextDefinition(definition) {
+    const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
+    let phoneticSymbols = '';
+    if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
+        phoneticSymbols = phoneticSymbolsArray[1];
+    }
+    if(phoneticSymbols){
+        definition = definition.replace(/(\[.*\]|\/.*\/)\s/, '');
+    }
+    let classes = splitWordClasses(definition);
+    
+    let result = { phoneticSymbols, classes};
+    console.log(result);
+    return result;
+}
+
 function simplifyDefinition(definition, options){
     let { maxMeaningNumber, hideWordClass } = options;
+    //hardcode temporarily
+    const hidePhoneticSymbol = true;
 
     //console.log('simplify definition:'+ JSON.stringify(definition));
 
@@ -103,7 +121,8 @@ function simplifyDefinition(definition, options){
         return definition;
     }
 
-    let classes = splitWordClasses(definition);
+    const { phoneticSymbols, classes } = parseTextDefinition(definition);
+
 
     let totalMeaningNumber = 0;
     let definitions = [];
@@ -189,4 +208,4 @@ function getVisitedMeanings(definition){
     return visitedMeanings.join(',');    
 }
 
-export { lookup, splitWordClasses, parseWordClass, splitWordMeanings, simplifyDefinition };
+export { lookup, parseTextDefinition, splitWordClasses, parseWordClass, splitWordMeanings, simplifyDefinition };

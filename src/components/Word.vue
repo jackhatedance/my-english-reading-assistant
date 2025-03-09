@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
-import { lookup } from '../dictionary.js';
+import { lookup, parseTextDefinition } from '../dictionary.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
@@ -33,7 +33,12 @@ const definition = computed(() => {
     if(!def){
         def = '';
     }
-    def = def.replaceAll(';', '\n');
+    const { phoneticSymbols, classes } = parseTextDefinition(def);
+    def = '';
+    if(phoneticSymbols){
+        def += phoneticSymbols + '\n';
+    }
+    def += classes.join('\n');
     return def;
 });
 
