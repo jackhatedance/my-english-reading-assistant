@@ -4,12 +4,14 @@ refer to [message file](./public/_locales/en/messages.json), key: extensionDescr
 
 ### Long Description
 
-English beginners often have trouble reading English articles because of their insufficient vocabulary. This software can save readers from the pain of constantly looking up dictionaries and overcome reading difficulties caused by insufficient vocabulary. As long as you can keep reading novels and newspapers regularly, even if you don't deliberately memorize words, you can improve your English level unconsciously.
+English beginners often cannot persist in reading English articles because of insufficient vocabulary. This software can save readers from the pain of constantly looking up dictionaries and overcome the reading difficulties caused by insufficient vocabulary. If you see a new word many times, you will remember its meaning unconsciously, and words in context are less likely to be forgotten. Let readers enjoy the content of the article as much as possible.
 
 The main functions are as follows:
+
 1. Initialize/import/export personal vocabulary.
-2. Automatically display the meaning of new words on the web page according to the personal vocabulary.
-3. During the reading process, mark words as known/unknown, so as to update the personal vocabulary.
-4. View reading history.
-5. Highlight web page content and take notes.
-6. Support epub/pdf format e-books (novels, foreign magazines, etc.), news, forums and most other English websites.
+2. According to the personal vocabulary, the meaning of new words is automatically displayed on the web page.
+3. Mark words as known/unknown during reading, so as to update the personal vocabulary.
+4. Support root affix memory method
+5. View reading history.
+6. Highlight and take notes on web page content.
+7. Support epub/pdf format e-books (novels, foreign magazines, etc.), as well as most English websites.
