@@ -158,7 +158,7 @@
         "message":"Root and Affix"
     },
     "optionsRootAndAffixLabelDesc":{
-        "message":"When you turn on the root and affix mode, as long as you know the root and affix of a word, it will be assumed that you also know the word by default. Not only can it greatly reduce the work of marking words, it is also considered to be an efficient way of memorization."
+        "message":"When you turn on the root and affix mode, as long as you know the root and affix of a word, it will be assumed that you also know the word by default. Not only can it greatly reduce the work of marking words, it is also considered to be a learning method that is in line with human brain thinking."
     },
     "optionsRootAndAffixModeLabel":{
         "message":"root and affix mode"
