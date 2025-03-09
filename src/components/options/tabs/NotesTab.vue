@@ -2,13 +2,28 @@
 import { ref } from 'vue';
 import { getNotes, setNotes } from '../../../service/noteService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
+import * as XBBCODE from 'xbbcode-parser';
+import { htmlToText } from 'html-to-text'
 
 const notes = ref();
 const noteCount = ref();
 const file = ref();
 
 function updateNotes(noteArray){
-    notes.value = JSON.stringify(noteArray);
+    
+    let contentArray = [];
+    for(let item of noteArray){
+        var processResult = XBBCODE.process({
+            text: item.content,
+            removeMisalignedTags: false,
+            addInLineBreaks: false
+            });
+        const html = processResult.html;
+        const text = htmlToText(html);
+        //console.log(text);
+        contentArray.push(text);
+    }
+    notes.value = contentArray.join("\n");
     noteCount.value = noteArray.length;
 }
 
@@ -38,9 +53,11 @@ function onImport() {
 
 }
 
-function onExport() {
-    
-    saveTextAsFile(notes.value, 'notes');
+async function onExport() {
+    let notes  = await getNotes();
+    let json = JSON.stringify(notes);
+
+    saveTextAsFile(json, 'notes');
 }
 
 const init = async () => {
@@ -64,7 +81,7 @@ init();
                 <p>{{ t('optionsEditNotesLabelDesc') }}</p>
             </div>
             <div class="input">
-                <textarea v-model="notes" rows="10" maxlength="500000"></textarea>
+                <textarea class="notes" v-model="notes" rows="10" maxlength="500000" readonly></textarea>
                 <p>{{ t('optionsEditNotesTotal') }}<span>{{ noteCount }}</span></p>
             </div>
             <div class="action">
@@ -97,3 +114,9 @@ init();
     </div>
 
 </template>
+<style>
+
+.notes {
+    width: 100%;
+}
+</style>
