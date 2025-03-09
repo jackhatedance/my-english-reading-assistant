@@ -14,7 +14,7 @@ init();
 
 <template>
     <div :class="{'tab-content': true, active: isActive}">
-        <slot></slot>>
+        <slot></slot>
     </div>
 </template>
 <style>
