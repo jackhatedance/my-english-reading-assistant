@@ -105,8 +105,7 @@ function parseTextDefinition(definition) {
     }
     let classes = splitWordClasses(definition);
     
-    let result = { phoneticSymbols, classes};
-    console.log(result);
+    let result = { phoneticSymbols, classes};    
     return result;
 }
 

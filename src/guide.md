@@ -299,4 +299,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.10.5
 修复交错显示的相关问题;
 ## 0.11.0
-Vue重做设置页面;支持音标;
+Vue重做设置页面;支持音标;改进设置>笔记的内容预览;
