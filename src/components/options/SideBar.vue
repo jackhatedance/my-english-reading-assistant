@@ -15,9 +15,14 @@ init();
             <h1>{{ t('optionsTitle') }}</h1>
         </div>
         <div class="sidebar-middle">
-            <ul>
-                <slot></slot>    
-            </ul>
+            <nav>
+                <RouterLink to="/vocabulary">{{ t('optionsSectionVocabularyTitle') }}</RouterLink>
+                <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
+                <RouterLink to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>
+                <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
+                <RouterLink to="/dictionary">{{ t('optionsSectionDictionaryTitle') }}</RouterLink>
+                <RouterLink to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>
+            </nav>              
         </div>
 
         <div class="sidebar-bottom"></div>
@@ -35,11 +40,22 @@ init();
 .sidebar-middle {
     text-align: left;
 
-    ul {
-        list-style-type: none; 
-        padding-left: 0; 
+}
+
+nav {
+    display: grid;
+    a {
         font-size: large;
-    }  
+        padding: 5px 0 5px 10px;
+        border-radius: 8px 0 0 8px;
+
+        text-decoration: none;
+        color: #666666;
+
+        &.active {
+            background-color: white;
+        }
+    }
 }
 
 .sidebar-bottom {
