@@ -47,9 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await initializeOptionService();
 
-
-    let options = getOptionsFromCache();
-    await loadCustomDictionariesToCache(options.dictionary.additionalDictionaries);
+    await loadCustomDictionariesToCache();
    
 
 });

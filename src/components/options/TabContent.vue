@@ -39,11 +39,11 @@ init();
                 padding: 5px;
             }
             .input {
-                width: 40%;  
+                width: 50%;  
                 padding: 5px;      
             }
             .action {
-                width: 30%;  
+                width: 20%;  
                 padding: 5px;      
             }
         }

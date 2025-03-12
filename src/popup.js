@@ -4,7 +4,8 @@ import './popup.css';
 import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
 import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
- 
+import { getAllDictionaryMetas } from './dictionary/customDictionary.js'
+
 localizeHtmlPage();
 
 (function () {
@@ -353,8 +354,10 @@ localizeHtmlPage();
     
     var additionalDictionariesElement = document.getElementById('additionalDictionaries');
     
-    let dictionaryNames = options.dictionary.additionalDictionaries;    
-    for(let name of dictionaryNames) {
+    let dictionaryMetas = await getAllDictionaryMetas();
+    for(let meta of dictionaryMetas) {
+      let name = meta.name;
+
       const opt1 = document.createElement("option");
       
       opt1.value = name;

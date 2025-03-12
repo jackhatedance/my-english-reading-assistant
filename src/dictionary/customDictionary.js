@@ -1,4 +1,4 @@
-import { loadDictionary, saveDictionary, deleteDictionary } from '../store/dictionaryStore.js'
+import { loadDictionary, saveDictionary, deleteDictionary, loadDictionaryInfos, saveDictionaryInfos } from '../store/dictionaryStore.js'
 
 //memory copies of dictionary from store
 var gCustomDictionaries = {};
@@ -21,8 +21,79 @@ async function loadCustomDictionary(name){
     return dict;
 }
 
-async function loadCustomDictionariesToCache(names){
-    for(let name of names) {
+
+function getCleanMeta(meta){
+    return {
+        name: meta.name,
+        type: meta.type,
+        format: meta.format,
+        size: meta.size,
+        fromLanguage: meta.fromLanguage,
+        toLanguage: meta.toLanguage,
+        enabled: meta.enabled,
+    };
+}
+
+async function saveDictionaryMeta(dictionaryMeta){
+    
+    let metas = await getAllDictionaryMetas();
+    if(!metas){
+        metas = [];
+    }
+
+    let newMetas = [];
+
+    //remove exsiting same name meta
+    for(let meta of metas){
+        if(meta.name !== dictionaryMeta.name){
+            newMetas.push(meta);
+        }
+    }    
+    
+    let cleanMeta = getCleanMeta(dictionaryMeta);    
+    newMetas.push(cleanMeta);
+    await setAllDictionaryMetas(newMetas);
+}
+
+
+async function getAllDictionaryMetas(){
+    return await loadDictionaryInfos();
+}
+
+async function getDictionaryMeta(name){
+    let metas = await loadDictionaryInfos();
+    for(let meta of metas){
+        if(meta.name == name){
+            return meta;
+        }
+    } 
+    return null;
+}
+
+async function setAllDictionaryMetas(dictionaryMetas){
+    await saveDictionaryInfos(dictionaryMetas);
+}
+
+async function deleteDictionaryMeta(name){
+    let metas = await getAllDictionaryMetas();
+    if(!metas){
+        metas = [];
+    }
+
+    let newMetas = [];
+    //remove exsiting same name meta
+    for(let meta of metas){
+        if(meta.name !== name){
+            newMetas.push(meta);
+        }
+    }  
+    await setAllDictionaryMetas(newMetas);
+}
+
+async function loadCustomDictionariesToCache(){
+    let metas = await getAllDictionaryMetas();
+    for(let meta of metas) {
+        let name = meta.name;
         await loadCustomDictionaryToCache(name);
     }    
 }
@@ -46,4 +117,4 @@ async function addCustomDictionary(name, data){
     saveDictionary(name, data);
 }
 
-export { loadCustomDictionariesToCache, getCustomDictionary, addCustomDictionary, deleteCustomDictionary };
+export { loadCustomDictionariesToCache, getCustomDictionary, addCustomDictionary, deleteCustomDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta, deleteDictionaryMeta };
