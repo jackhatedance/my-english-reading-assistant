@@ -1,10 +1,10 @@
-import { loadDictionary, saveDictionary, deleteDictionary, loadDictionaryInfos, saveDictionaryInfos } from '../store/dictionaryStore.js'
+import { loadDictionaryData, saveDictionaryData, deleteDictionaryData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 
 //memory copies of dictionary from store
 var gCustomDictionaries = {};
 
 async function loadCustomDictionary(name){
-    let lines = await loadDictionary(name);
+    let lines = await loadDictionaryData(name);
     let dict = {};
     for(let line of lines){
         try{
@@ -57,11 +57,11 @@ async function saveDictionaryMeta(dictionaryMeta){
 
 
 async function getAllDictionaryMetas(){
-    return await loadDictionaryInfos();
+    return await loadDictionaryMetas();
 }
 
 async function getDictionaryMeta(name){
-    let metas = await loadDictionaryInfos();
+    let metas = await loadDictionaryMetas();
     for(let meta of metas){
         if(meta.name == name){
             return meta;
@@ -71,7 +71,7 @@ async function getDictionaryMeta(name){
 }
 
 async function setAllDictionaryMetas(dictionaryMetas){
-    await saveDictionaryInfos(dictionaryMetas);
+    await saveDictionaryMetas(dictionaryMetas);
 }
 
 async function deleteDictionaryMeta(name){
@@ -109,12 +109,27 @@ function getCustomDictionary(name){
 
 async function deleteCustomDictionary(name){
     delete gCustomDictionaries.name;
-    deleteDictionary(name);
+    deleteDictionaryData(name);
+}
+
+async function deleteDictionary(name){
+    delete gCustomDictionaries.name;
+    deleteDictionaryData(name);
+    deleteDictionaryMeta(name);
 }
 
 async function addCustomDictionary(name, data){
     gCustomDictionaries[name] = data;
-    saveDictionary(name, data);
+    saveDictionaryData(name, data);
 }
 
-export { loadCustomDictionariesToCache, getCustomDictionary, addCustomDictionary, deleteCustomDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta, deleteDictionaryMeta };
+async function saveDictionary(dictionary){
+    let name = dictionary.name;
+    let data = dictionary.data;
+
+    gCustomDictionaries[name] = data;
+    saveDictionaryMeta(dictionary);
+    saveDictionaryData(name, data);
+}
+
+export { loadCustomDictionariesToCache, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta, deleteDictionaryMeta };

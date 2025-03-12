@@ -1,14 +1,14 @@
 <script setup>
 import { ref, toRaw } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
-import { addCustomDictionary, deleteCustomDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta, deleteDictionaryMeta } from '../../../dictionary/customDictionary.js';
+import { saveDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta } from '../../../dictionary/customDictionary.js';
 import DictionaryDetail from './DictionaryDetail.vue';
 
 const dictionaries = ref([]);
 const selectedDictionary = ref();
 const selectedDictionaryEnabled = ref(false);
 
-const selectedDictionaryObject = ref({});
+const selectedDictionaryObject = ref();
 
 const file = ref();
 const enableAdditionalDictionary = ref(false);
@@ -18,11 +18,9 @@ async function onChangeEnable() {
 }
 
 async function onDelete() {
-  //let array = toRaw(dictionaries.value);
   //console.log(array);
 
-  await deleteCustomDictionary(selectedDictionary.value);
-
+  await deleteDictionary(selectedDictionary.value);
 
   let array = dictionaries.value;
   var index = array.indexOf(selectedDictionary.value);
@@ -30,8 +28,8 @@ async function onDelete() {
       array.splice(index, 1);
   }
 
-
-  await deleteDictionaryMeta(selectedDictionary.value);
+  //trigger event
+  selectedDictionaryObject.value = null;
 }
 
 async function updateAdditionalDictionaryEnabled(value) {
@@ -59,56 +57,13 @@ async function onImport() {
     name = name.slice(0, -4);
   }
 
-  var reader = new FileReader();
-  reader.onload = function (e) {
-    //console.log(e.target.result);
-    let array = e.target.result.split(/\r*\n/);
-    //save dict data to memory temporarily
-    //gNewDictionaryMap[name] = array;
-    addCustomDictionary(name, array);
-  }
-  reader.readAsText(_file);
-
-  //add dictionary name to select element
-  if (!dictionaries.value.includes(name)) {
-    dictionaries.value.push(name)
-  }
-
-  
-}
-
-
-async function onImport2() {
-
-  const files = file.value.files;
-  if (files.length == 0) {
-    alert('pick file first.');
-    return;
-  }
-
-  const _file = files[0];
-
-
-  let name = _file.name;
-  if (name.endsWith('.txt')) {
-    name = name.slice(0, -4);
-  }
-
   let size = 0;
   var reader = new FileReader();
   reader.onload = async function (e) {
     //console.log(e.target.result);
     let array = e.target.result.split(/\r*\n/);
     size = array.length;
-    //save dict data to memory temporarily
-    //gNewDictionaryMap[name] = array;
-    await addCustomDictionary(name, array);
-
-    //add dictionary name to select element
-    if (!dictionaries.value.includes(name)) {
-      dictionaries.value.push(name)
-    }
-
+    
     const newDictionary = {
       name: name,
       type: 'user',
@@ -118,7 +73,13 @@ async function onImport2() {
       toLanguage: 'chinese',
       data: array,
     };
-    saveDictionaryMeta(newDictionary);
+    saveDictionary(newDictionary);
+
+    //add dictionary name to select element
+    if (!dictionaries.value.includes(name)) {
+      dictionaries.value.push(name)
+    }
+    
   }
   reader.readAsText(_file);
 
@@ -126,7 +87,7 @@ async function onImport2() {
 }
 
 async function onChangeSelectedDictionary() {
-  //console.log(selectedDictionary.value);
+  console.log(selectedDictionary.value);
 
   let dictMeta = await getDictionaryMeta(selectedDictionary.value);
   selectedDictionaryObject.value = dictMeta;
@@ -180,11 +141,11 @@ init();
       </div>
       <div class="input dictionary">
         <div class="list">
-          <select v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
+          <select class="dictionaries" v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
             <option v-for="(name, index) in dictionaries" :key="name" :value="name">{{ name }}</option>
           </select>
         </div>
-        <DictionaryDetail v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
+        <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
 
       </div>
       <div class="action">
@@ -199,7 +160,7 @@ init();
         <input type="file" ref="file">
       </div>
       <div class="action">
-        <button @click="onImport2">{{ t('optionsImportAdditionalDictionaryAction') }}</button>
+        <button @click="onImport">{{ t('optionsImportAdditionalDictionaryAction') }}</button>
       </div>
     </div>
     <div class="section">
@@ -224,7 +185,9 @@ init();
     margin-left: 5px;
   }
 
-
+  .dictionaries{
+    min-width: 100px;
+  }
 
 }
 </style>

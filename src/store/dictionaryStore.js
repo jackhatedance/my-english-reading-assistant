@@ -1,20 +1,20 @@
 import {chunkedRead, chunkedWrite, chunkedDelete} from '../chunk.js';
 
 const KEY_DICTIONARIES = 'dictionaries';
-async function loadDictionaryInfos(){
+async function loadDictionaryMetas(){
     
     let result = await chrome.storage.local.get([KEY_DICTIONARIES]);
     return result[KEY_DICTIONARIES];
 }
 
-async function saveDictionaryInfos(dictionaries){
+async function saveDictionaryMetas(dictionaries){
     let object = { };
     object[KEY_DICTIONARIES] = dictionaries;
     
     await chrome.storage.local.set(object);
 }
 
-async function loadDictionary(name){
+async function loadDictionaryData(name){
     let chunkKey = getChunkKey(name);
     let entries = await chunkedRead(chunkKey);
     if(!entries){
@@ -23,12 +23,12 @@ async function loadDictionary(name){
     return entries;
 }
 
-async function saveDictionary(name, data){
+async function saveDictionaryData(name, data){
     let chunkKey = getChunkKey(name);
     return  await chunkedWrite(chunkKey, data);
 }
 
-async function deleteDictionary(name){
+async function deleteDictionaryData(name){
     let chunkKey = getChunkKey(name);
     return  await chunkedDelete(chunkKey);
 }
@@ -37,4 +37,4 @@ function getChunkKey(name){
     return 'dictionary-' + name;
 }
 
-export {loadDictionary, saveDictionary, deleteDictionary, loadDictionaryInfos, saveDictionaryInfos };
+export {loadDictionaryData, saveDictionaryData, deleteDictionaryData, loadDictionaryMetas, saveDictionaryMetas };
