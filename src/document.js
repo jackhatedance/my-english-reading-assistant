@@ -275,11 +275,11 @@ function getAllDocuments(siteProfile) {
     return documents;
   }
 
-  function changeStyleForAllDocuments(siteProfile, options) {
+  function changeStyleForAllDocuments(siteProfile, siteOptions) {
     let documents = getAllDocuments(siteProfile);
     
     for (let document of documents) {
-      changeStyle(document, options, siteProfile);
+      changeStyle(document, siteOptions, siteProfile);
     }
   }
 

@@ -15,6 +15,7 @@ function patchDefaultSiteOptionValues(options) {
 
 function patchAll(options) {
     patch_v_0_10_1(options);
+    patch_v_0_10_4(options);
 }
 
 function patch_v_0_10_1(options){

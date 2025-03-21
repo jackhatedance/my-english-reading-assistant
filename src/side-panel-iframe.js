@@ -3,8 +3,8 @@ import './side-panel-component.css';
 import { createApp } from 'vue';
 import SidePanel from './components/SidePanel.vue'
 import { AppModes } from './components/types.js';
-import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
-import { loadCustomDictionariesToCache } from './dictionary/customDictionary.js';
+import { initializeOptionService, getSiteOptions } from './service/optionService.js';
+import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 
 import {localizeHtmlPage} from './locale.js';
 localizeHtmlPage();
@@ -46,9 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     //console.log('DOMContentLoaded');
 
     await initializeOptionService();
-
-    await loadCustomDictionariesToCache();
-   
+    //let siteDomain = document.location.hostname;
+    
+    //let siteOptions = await getSiteOptions(siteDomain);    
+    
+    //let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
+    //await initializeCustomDictionaryService(additionalDictionaryNames);   
 
 });
 

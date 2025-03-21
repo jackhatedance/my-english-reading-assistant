@@ -8,6 +8,9 @@ import {localizeHtmlPage} from './locale.js';
 import {deleteAllReadingHistory} from './service/activityService.js';
 import { getNotes, setNotes } from './service/noteService.js';
 import { getUnrecognizedWords, updateUnrecognizedWords } from './service/dictionaryService.js';
+import { ZipReader, BlobReader, BlobWriter } from '@zip.js/zip.js'
+import { MDX, BufferedFile } from '@jackhatedance/js-mdict'
+import { Buffer } from 'safe-buffer'
 
 localizeHtmlPage();
 
@@ -222,20 +225,15 @@ var gNewDictionaryMap = {};
         return;
     }
 
-    let name = file.name;
-    if(name.endsWith('.txt')){
-      name = name.slice(0, -4);
+    let fileName = file.name;
+    let name = fileName.slice(0, -4);
+    if(fileName.endsWith('.txt')){
+      
+      processTextDictionary(name, file);
+    } else if(fileName.endsWith('.zip')){
+      processZipDictionary(name, file);
     }
-
-    var reader = new FileReader();
-    reader.onload = function(e){
-      //console.log(e.target.result);
-      let array = e.target.result.split(/\r*\n/);
-      //save dict data to memory temporarily
-      gNewDictionaryMap[name] = array;
-    }
-    reader.readAsText(file);
-
+    
     //add dictionary name to select element
     var dictionaries = document.getElementById('dictionaries');
     const optionExists = Array.from(dictionaries.options).some(option => option.value === name);
@@ -247,6 +245,40 @@ var gNewDictionaryMap = {};
       dictionaries.add(opt1);
     }
   };
+
+  function processTextDictionary(name, file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      //console.log(e.target.result);
+      let array = e.target.result.split(/\r*\n/);
+      //save dict data to memory temporarily
+      gNewDictionaryMap[name] = array;
+    }
+    reader.readAsText(file);
+  }
+
+  async function processZipDictionary(name, file){
+    const options = {"filenameEncoding":"gbk"}
+    var entries = await (new ZipReader(new BlobReader(file))).getEntries(options);
+    for(let entry of entries){
+      
+      if(!entry.directory){
+        console.log(entry.filename);
+        //const file = BufferedFile()
+        if(entry.filename.endsWith('.mdx')){
+          const blob = await entry.getData(new BlobWriter());          
+          const arrayBuffer = await blob.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const  bufferedFile = new BufferedFile(entry.filename, buffer);
+          const mdx = new MDX(bufferedFile);
+          const def = mdx.lookup("ask");
+          console.log(def.definition);
+        }
+        
+      }
+    }
+    
+  }
 
   function updateVocabulary(wordArray){
     document.getElementById('knownWords').value = wordArray.join('\n');

@@ -183,6 +183,51 @@
     "optionsSectionDictionaryTitle":{
         "message":"Dictionary"
     },
+    "optionsEditDictionaryTips": {
+        "message": "* Lookup from top to bottom\n* Dictionaries without indexes cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require rebuilding the index"
+    },
+    "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
+        "message": "At least enable one dictionary"
+    },
+    "optionsEditDictionaryIndexColorTipsTooManyDictionariesEnabled": {
+        "message": "Warning: Enabling too many big dictionaries can result in large memory usage and slow processing"
+    },
+    "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
+        "message": "Please do not close your browser while the index is being created."
+    },
+    "optionsEditDictionaryIndexColorTipsGreen": {
+        "message": "index is OK"
+    },
+    "optionsEditDictionaryIndexColorTipsOrange": {
+        "message": "Indexes need to be (re)built"
+    },
+    "optionsEditDictionaryIndexColorTipsBlue": {
+        "message": "index is not supported"
+    },
+    "options_dictionary_detail": {
+        "message": "Detail"
+    },
+    "options_dictionary_detail_name": {
+        "message": "Name"
+    },
+    "options_dictionary_detail_type": {
+        "message": "Type"
+    },
+    "options_dictionary_detail_format": {
+        "message": "Format"
+    },
+    "options_dictionary_detail_entryNumber": {
+        "message": "Number of Entries"
+    },
+    "options_dictionary_detail_language": {
+        "message": "Language"
+    },
+    "options_dictionary_detail_enabled": {
+        "message": "Enabled"
+    },
+    "options_dictionary_detail_index": {
+        "message": "Index"
+    },
     "optionsEditAdditionalDictionaryLabel":{
         "message":"Additional Dictionary"
     },
@@ -196,14 +241,26 @@
         "message":"Enable additional dictionary"
     },
     "optionsImportDictionaryDesc": {
-        "message": "formats：.txt, .zip(mdx)"
+        "message": "formats：.txt, .zip(mdict)"
+    },
+    "options_dictionary_find_tips": {
+        "message": "Where to find dictionary？"
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"Import"
     },
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"Delete"
+    },
+    "optionsBuildDictionaryIndexAction":{
+        "message":"Build Index"
     },  
+    "optionsDictionaryMoveUpAction":{
+        "message":"Move Up"
+    },
+    "optionsDictionaryMoveDownAction":{
+        "message":"Move Down"
+    },
 
     "optionsUnrecognizedWordsLabel":{
         "message":"Unrecognized words"
@@ -440,5 +497,15 @@
 
     "faqPageTitle":{
         "message":"FAQ"
-    }
+    },
+
+    "dictionary_system_small_alias":{
+        "message":"SystemDict1"
+    },
+    "dictionary_system_large_alias":{
+        "message":"SystemDict2"
+    },
+    "dictionary_system_affix_alias":{
+        "message":"SystemAffixDict"
+    }    
 }

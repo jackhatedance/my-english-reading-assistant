@@ -112,11 +112,11 @@ function deleteStyleRule(styleSheet, selector){
     }    
 }
 
-function changeStyle(document, options, siteProfile) {
+function changeStyle(document, siteOptions, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
         deleteStyleRule(styleSheet, '.mea-highlight::after');
-        let rule = generateCssRuleOfAnnotation(options.annotation);
+        let rule = generateCssRuleOfAnnotation(siteOptions.annotation);
         styleSheet.insertRule(rule, 0);
 
         let selectors = ['mea-token:nth-child(2n+1 of .mea-word)::after',
@@ -126,15 +126,15 @@ function changeStyle(document, options, siteProfile) {
         deleteStyleRule(styleSheet, selectors[1]);
         
         
-        let ruleOdd = generateCssRuleOfSubAnnotation(options.annotation, selectors[0]);
+        let ruleOdd = generateCssRuleOfSubAnnotation(siteOptions.annotation, selectors[0]);
         styleSheet.insertRule(ruleOdd, 0);
-        const options2 = JSON.parse(JSON.stringify(options));
-        if(options.annotation.interlaced){
-            let numPosition = Number(options.annotation.position)
-            options2.annotation.position = (numPosition + 1).toString();
+        const siteOptions2 = JSON.parse(JSON.stringify(siteOptions));
+        if(siteOptions.annotation.interlaced){
+            let numPosition = Number(siteOptions.annotation.position)
+            siteOptions2.annotation.position = (numPosition + 1).toString();
         }
         
-        let ruleEven = generateCssRuleOfSubAnnotation(options2.annotation, selectors[1]);
+        let ruleEven = generateCssRuleOfSubAnnotation(siteOptions2.annotation, selectors[1]);
         styleSheet.insertRule(ruleEven, 0);
         
         //console.log('changed style, insert rule');
@@ -143,9 +143,9 @@ function changeStyle(document, options, siteProfile) {
         deleteStyleRule(styleSheet, '.mea-highlight');
         
         if(siteProfile.generateCssRuleOfHighlight){
-            rule = siteProfile.generateCssRuleOfHighlight(options);
+            rule = siteProfile.generateCssRuleOfHighlight(siteOptions);
         }else{
-            rule = generateCssRuleOfHighlight(options);
+            rule = generateCssRuleOfHighlight(siteOptions);
         }
         
         styleSheet.insertRule(rule, 0);

@@ -182,6 +182,51 @@
     "optionsSectionDictionaryTitle":{
         "message":"词典"
     },
+    "optionsEditDictionaryTips": {
+        "message": "* 从上到下查询\n* 缺少索引的字典无法为正文提供快速且简明的生词含义，但是可以作为普通字典使用\n* 新增字典或软件升级均可能导致需要重建索引"
+    },
+    "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
+        "message": "建议至少启用一本字典"
+    },
+    "optionsEditDictionaryIndexColorTipsTooManyDictionariesEnabled": {
+        "message": "警告：启用过多大字典会导致占用大量内存且降低处理速度"
+    },
+    "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
+        "message": "创建索引时请不要关闭浏览器"
+    },
+    "optionsEditDictionaryIndexColorTipsGreen": {
+        "message": "索引正常"
+    },
+    "optionsEditDictionaryIndexColorTipsOrange": {
+        "message": "索引需要（重新）创建"
+    },
+    "optionsEditDictionaryIndexColorTipsBlue": {
+        "message": "不支持索引"
+    },
+    "options_dictionary_detail": {
+        "message": "详情"
+    },
+    "options_dictionary_detail_name": {
+        "message": "名字"
+    },
+    "options_dictionary_detail_type": {
+        "message": "类型"
+    },
+    "options_dictionary_detail_format": {
+        "message": "格式"
+    },
+    "options_dictionary_detail_entryNumber": {
+        "message": "词条数"
+    },
+    "options_dictionary_detail_language": {
+        "message": "语言"
+    },
+    "options_dictionary_detail_enabled": {
+        "message": "启用"
+    },
+    "options_dictionary_detail_index": {
+        "message": "索引"
+    },
     "optionsEditAdditionalDictionaryLabel":{
         "message":"附加词典"
     },
@@ -195,7 +240,10 @@
         "message":"启用附加字典"
     },
     "optionsImportDictionaryDesc": {
-        "message": "支持格式：.txt, .zip(mdx)"
+        "message": "支持格式：.txt, .zip(mdict)"
+    },
+    "options_dictionary_find_tips": {
+        "message": "哪里可以找到字典？"
     },
     "optionsImportAdditionalDictionaryAction":{
         "message":"导入"
@@ -203,6 +251,15 @@
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"删除"
     },  
+    "optionsBuildDictionaryIndexAction":{
+        "message":"创建索引"
+    },
+    "optionsDictionaryMoveUpAction":{
+        "message":"上移"
+    },
+    "optionsDictionaryMoveDownAction":{
+        "message":"下移"
+    },
 
     "optionsUnrecognizedWordsLabel":{
         "message":"不识别的单词"
@@ -440,5 +497,15 @@
 
     "faqPageTitle":{
         "message":"常见问题"
+    },
+
+    "dictionary_system_small_alias":{
+        "message":"系统字典1"
+    },
+    "dictionary_system_large_alias":{
+        "message":"系统字典2"
+    },
+    "dictionary_system_affix_alias":{
+        "message":"系统词缀字典"
     }
 }

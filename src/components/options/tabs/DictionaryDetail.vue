@@ -1,16 +1,36 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, computed, watch } from 'vue'
+import { humanRemain } from '../../../utils/dateUtils.js'
 
-defineEmits(['value-changed']);
+const emits = defineEmits(['value-changed']);
 
 const props = defineProps({
     dict: Object,
 });
 
 const enabled = defineModel('enabled');
-
+const indexBuildingProgress = inject('indexBuildingProgress');
 
 const t = chrome.i18n.getMessage;
+
+
+const indexBuildingStatus = computed(() => {    
+    if(indexBuildingProgress.value && indexBuildingProgress.value.name == props.dict.name){
+        if(props.dict.data.index.status == 'OK'){
+            return '';
+        }
+
+        if(indexBuildingProgress.value.progress.rate < 1){
+            let pct = (indexBuildingProgress.value.progress.rate * 100).toFixed(0);
+
+            let eta = humanRemain(indexBuildingProgress.value.progress.remain);
+
+            return `, building (${pct}% ETA: ${eta}) `;
+        }else{
+            return '';
+        }        
+    }   
+});
 
 
 const init = async () => {
@@ -24,23 +44,26 @@ init();
     <div class="detail">
         <h3>Detail</h3>
         <div class="fields">
-            <label>Name</label>
+            <label>{{ t('options_dictionary_detail_name') }}</label>
             <span>{{ props.dict.name }}</span>
 
-            <label>Type</label>
+            <label>{{ t('options_dictionary_detail_type') }}</label>
             <span>{{ props.dict.type }}</span>
                 
-            <label>Format</label>
+            <label>{{ t('options_dictionary_detail_format') }}</label>
             <span>{{ props.dict.format }}</span>
                 
-            <label>size</label>
+            <label>{{ t('options_dictionary_detail_entryNumber') }}</label>
             <span>{{ props.dict.size }}</span>
 
-            <label>language</label>
+            <label>{{ t('options_dictionary_detail_language') }}</label>
             <span>{{ props.dict.fromLanguage }} - {{ props.dict.toLanguage }}</span>
-               
-            <label>Enabled</label>
-            <input type="checkbox" v-model="enabled" @change="$emit('value-changed')">
+
+            <label>{{ t('options_dictionary_detail_enabled') }}</label>
+            <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
+            
+            <label>{{ t('options_dictionary_detail_index') }}</label>
+            <span>{{ props.dict.data?.index?.status }} {{ indexBuildingStatus }}</span>
         </div>
     </div>
 </template>

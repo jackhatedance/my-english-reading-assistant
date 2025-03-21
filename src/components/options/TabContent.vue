@@ -23,7 +23,6 @@ init();
     height: 100%;
 
     .sections {
-        width: 80%;
         padding: 10px;
         margin-left: auto;
         margin-right: auto;
@@ -34,16 +33,18 @@ init();
             padding: 10px;
 
             .label {
-                width: 30%;
+                width: 250px;
                 vertical-align: middle;
                 padding: 5px;
             }
             .input {
-                width: 50%;  
-                padding: 5px;      
+                flex-grow: 1;
+                padding: 5px;   
+                min-width: 450px;  
+                max-width: 550px;   
             }
             .action {
-                width: 20%;  
+                width: 150px;  
                 padding: 5px;      
             }
         }

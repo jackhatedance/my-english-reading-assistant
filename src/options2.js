@@ -1,5 +1,5 @@
 
-import { createApp } from 'vue';
+import { createApp, ref } from 'vue';
 import { createWebHashHistory, createRouter } from 'vue-router'
 import Options from './components/options/Options.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
@@ -12,6 +12,8 @@ import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab
 import { localizeHtmlPage} from './locale.js'
 
 localizeHtmlPage();
+
+const indexBuildingProgress = ref();
 
 const routes = [
     { path: '/', redirect: '/vocabulary' },
@@ -29,7 +31,7 @@ const router = createRouter({
     routes,
 })
 
-createApp(Options)
+createApp(Options, { indexBuildingProgress })
     .use(router)
     .mount('#app');
 
@@ -38,4 +40,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     //console.log('DOMContentLoaded');
 
 
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //console.log(`rcv msg: ${request.type}`);
+    if(request.type == 'DICTIONARY_INDEX_BUILDING_PROGRESS'){
+        const { name, progress } = request.payload;
+        //console.log(`dictinary ${name} index building progress: ${rate}`);
+        indexBuildingProgress.value = { name, progress };
+    }
+
+    sendResponse({});
 });

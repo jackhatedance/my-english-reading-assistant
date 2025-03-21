@@ -13,3 +13,5 @@ npm-debug.log*
 
 # packed files
 /release
+
+/test/mdict/zips

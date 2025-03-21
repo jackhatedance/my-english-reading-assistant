@@ -1,5 +1,5 @@
 
-import {parseWordClass} from '../src/dictionary.js';
+import {parseWordClass} from '../src/dictionary/text/textDefinitionUtils.js';
 import { strict as assert } from 'assert';
 
 

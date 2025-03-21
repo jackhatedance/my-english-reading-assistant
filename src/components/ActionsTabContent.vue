@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
+import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import Word from './Word.vue';
 import Notes from './Notes.vue';
 
@@ -24,7 +24,7 @@ init();
 </script>
 
 <template>
-    <Word v-if="props.word" :siteOptions="page.siteOptions" :word="props.word"></Word>
+    <Word v-if="props.word" :siteOptions="toRaw(page.siteOptions)" :word="props.word"></Word>
 
 
     <Notes v-if="!isNotesEmpty" :items="props.notes">

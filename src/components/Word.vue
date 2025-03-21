@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
-import { lookup, parseTextDefinition } from '../dictionary.js';
+import { lookup } from '../dictionary.js';
+import { parseTextDefinition } from '../dictionary/text/textDefinitionUtils.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
+import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 
 const props = defineProps({
     word: String,
@@ -19,7 +21,10 @@ let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const definition = computed(() => {
-    let dicts = ['#large', '#small', '#affix'];
+    
+    let dicts = getEnabledDictionaryNamesFromCache();
+    //use default dicts
+
     //console.log(props.siteOptions);
     let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
     for(let additionalDictionary of additionalDictionaries){

@@ -1,6 +1,7 @@
 'use strict';
 
-import {lookup, simplifyDefinition, splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary.js';
+import {lookup, simplifyDefinition, } from './dictionary.js';
+import { splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary/text/textDefinitionUtils.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache} from './service/optionService.js';
@@ -8,6 +9,7 @@ import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
 import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
+import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 
 var gPrefixes, gSuffixes;
 
@@ -68,7 +70,8 @@ function searchWordBase(request){
     requestOfDefault.allowRemoveSuffixOrPrefix = false;
     let dicts = request.dicts;
     if(!dicts) {
-        dicts = ['#small', '#affix'];
+        //console.log(`no dicts specified`);
+        dicts = getEnabledDictionaryNamesFromCache();
     }
 
     if(request.dictionaryOptions){

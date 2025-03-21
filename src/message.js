@@ -17,6 +17,23 @@ function sendMessageMarkWordToBackground(wordChanges) {
     );
 }
 
+function sendMessageDictionaryChangeToBackground(name, type) {
+    //send to background
+    //console.log('send mark word message to runtime(background)');
+    chrome.runtime.sendMessage(
+        {
+            type: 'DICTIONARY_CHANGE',
+            payload: {
+                dictionaryName: name,
+                changeType: type,
+            },
+        },
+        (response) => {
+            //console.log('recieve message:'+ response);
+        }
+    );
+}
+
 async function sendMessageToBackground(siteProfile, type, getPageInfo, documentArticleMap) {
     //console.log('send message to background, type:' + type);
 
@@ -54,4 +71,4 @@ async function sendMessageToBackground(siteProfile, type, getPageInfo, documentA
     );
 }
 
-export { sendMessageMarkWordToBackground, sendMessageToBackground };
+export { sendMessageMarkWordToBackground, sendMessageDictionaryChangeToBackground, sendMessageToBackground };

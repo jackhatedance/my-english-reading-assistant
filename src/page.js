@@ -1,7 +1,7 @@
 'use strict';
 
 import { getSiteOptions, } from './service/optionService.js';
-import { loadCustomDictionariesToCache } from './dictionary/customDictionary.js';
+import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 import { tokenizeTextNode, parseDocument, } from './article.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
@@ -128,7 +128,13 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     //console.log('initPageAnnotations');
     await initializeOptionService();
     let options = getOptionsFromCache();
-    await loadCustomDictionariesToCache();
+
+    let siteOptions = await getCurrentSiteOptions();
+    //console.log(`get site options:`+ JSON.stringify(siteOptions));
+    let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
+        
+    await initializeCustomDictionaryService(additionalDictionaryNames);
+    
     await initializeDictionaryService(options.unrecognizedWords.enabled);
 
     let documentArticleMap = new Map();

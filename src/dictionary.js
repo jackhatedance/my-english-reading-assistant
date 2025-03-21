@@ -1,12 +1,12 @@
-import {dict as dictLarge} from './dicts/dict-large.js'
-import {dict as dictSmall} from './dicts/dict-small.js'
-import {dict as dictAffix} from './dicts/dict-affix.js'
-import { getCustomDictionary } from './dictionary/customDictionary.js'
+
+import { getSystemDictionary } from './dictionary/systemDictionary.js'
+import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
+import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictionary/text/textDefinitionUtils.js'
                                              
 function lookup(word, dicts) {
-    //console.log(dict);
+    //console.log(word);
     if(!dicts){
-        dicts = ['#affix', '#small','#large'];
+        dicts = getEnabledDictionaryNamesFromCache();
     }
 
     //replace single quotation
@@ -20,8 +20,17 @@ function lookup(word, dicts) {
     for(let name of dicts){
         let dict = getDict(name);
         
-        if(dict && dict.hasOwnProperty(word)){
-            def = dict[word];
+        if(dict){
+            let lookupResult = dict.lookup(word, { outputFormats:['text']});
+            
+            if(lookupResult){
+                if(typeof lookupResult == 'string'){
+                    def = lookupResult;
+                } else {
+                    def = lookupResult.text;
+                }
+                console.log(`found ${word} in ${name}: ${def}`);
+            }
         }
         if(def){
            break; 
@@ -32,81 +41,13 @@ function lookup(word, dicts) {
 }
 
 function getDict(name){
-    if(name==='#small'){
-        return dictSmall;
-    }else if(name==='#large'){
-        return dictLarge;
-    }else if(name==='#affix'){
-        return dictAffix;
-    }else if(name !=='' && !name.startsWith('#')){
-        return getCustomDictionary(name);
-    }else{
-        return null;
-    }
-}
+    let dict = getSystemDictionary(name);
+    if(!dict){
+        dict = getCustomDictionary(name);
+    } 
 
-function parseWordClass(def){
-    if(def){
-        def = def.trim();
-    }
-
-    let result = {
-        wordClass: '',
-        meanings: def,
-    };    
-
-    if(def){
-
-        var rx = /^((\w{1,6}\.)+ )?(.+)$/;
-        var arr = rx.exec(def);
-        //console.log(arr)
-
-        result = {
-            wordClass: arr[2] ? arr[2] : '',
-            meanings: arr[3].trim(),
-        };
-    }
+    return dict;
     
-
-    return result;
-}
-
-function firstMeaning(meanings){
-    if(meanings){
-        let arr = meanings.split(',');
-        return arr[0];
-    }
-
-    return meanings;
-}
-
-function splitWordClasses(definition){
-    return definition.split(';');
-}
-
-function splitWordMeanings(meaningsStr){
-    let meanings;
-    if(meaningsStr === ''){
-        meanings = [];
-    }else {
-        meanings = meaningsStr.split(',');
-    }
-    return meanings;
-}
-
-function parseTextDefinition(definition) {
-    const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
-    let phoneticSymbols = '';
-    if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
-        phoneticSymbols = phoneticSymbolsArray[1];
-    }
-    if(phoneticSymbols){
-        definition = definition.replace(/(\[.*\]|\/.*\/)\s/, '');
-    }
-    let classes = splitWordClasses(definition);
-    
-    let result = { phoneticSymbols, classes};    
-    return result;
 }
 
 function simplifyDefinition(definition, options){
@@ -207,4 +148,4 @@ function getVisitedMeanings(definition){
     return visitedMeanings.join(',');    
 }
 
-export { lookup, parseTextDefinition, splitWordClasses, parseWordClass, splitWordMeanings, simplifyDefinition };
+export { lookup, simplifyDefinition };

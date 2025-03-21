@@ -1,11 +1,11 @@
 <script setup>
-import { ref, onMounted, onBeforeUpdate, provide } from 'vue';
+import { ref, onMounted, onBeforeUpdate, provide, toRaw } from 'vue';
 import Unavailable from './Unavailable.vue';
 import Tabs from './Tabs.vue';
 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { getNote } from '../service/noteService.js';
-
+import { initializeCustomDictionaryService } from '../dictionary/customDictionary.js';
 
 import { isPageAnnotationVisible } from '../page.js';
 
@@ -54,15 +54,22 @@ async function getPageInfo() {
 
 }
 
-function updatePageInfo(pageInfo) {
+async function updatePageInfo(pageInfo) {
+  //console.log('update page info, title:' + pageInfo?.title);
   let response = {
     pageInfo
   };
 
   if (response && response.pageInfo) {
+    
     let pageInfo = response.pageInfo;
     if (pageInfo.visible) {
       page.value = response.pageInfo;
+
+      let siteOptions = response.pageInfo.siteOptions;
+      //console.log(`update info: ${JSON.stringify(siteOptions)}`);
+      let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
+      await initializeCustomDictionaryService(additionalDictionaryNames);
 
       isShowUnavailable.value = false;
       isShowTabs.value = true;
@@ -81,8 +88,8 @@ function updatePageInfo(pageInfo) {
 
 async function messageListener(request, sender, sendResponse) {
 
-  //console.log('recieve message:'+request.type);
-
+  console.log('recieve message:'+request.type);
+  let response = {};
   if (request.type === 'LOAD') {
     getPageInfo();
   } else if (request.type === 'UPDATE_PAGE_INFO') {
@@ -98,9 +105,7 @@ async function messageListener(request, sender, sendResponse) {
     // Log message coming from the `request` parameter
     //console.log(request.payload.message);
     // Send a response message
-    sendResponse({
-
-    });
+    
   } else if (request.type === 'SELECTION_CHANGE') {
     let { type, selectedText, paragraphSelection } = request.payload;
 
@@ -139,7 +144,8 @@ async function messageListener(request, sender, sendResponse) {
 
     changeToggle.value = !(changeToggle.value);
   }
-
+  
+  sendResponse(response);
 }
 
 //chrome.runtime.onMessage.addListener(messageListener);
@@ -215,7 +221,7 @@ function onClickCloseButton() {
   <div class="header">
     <button @click="onClickCloseButton">X</button>
   </div>
-  <Tabs v-show="isShowTabs" :word="word" :notes="notes" :page="page" :menuItems="menuItems" :activeTabId="activeTabId"
+  <Tabs v-if="isShowTabs" :word="word" :notes="notes" :page="page" :menuItems="menuItems" :activeTabId="activeTabId"
     :changeToggle="changeToggle" @markWord="onMarkWord" @vocabulary="onVocabulary" @note="onNote"></Tabs>
 </template>
 

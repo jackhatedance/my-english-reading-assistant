@@ -17,6 +17,7 @@ import { isAllDocumentsAnnotationInitialized, changeStyleForAllDocuments } from 
 import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
 import { MenuItems } from './menu.js';
 import { MEA_TAG_PREFIX } from './html.js';
+import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
 
 
 //used to check if title changed
@@ -56,7 +57,7 @@ function myMain() {
 }
 
 function messageListener(request, sender, sendResponse) {
-  //console.log(`request type: ${request.type}`);
+  console.log(`request type: ${request.type}`);
   let response = {};
   if (request.type === 'IS_PAGE_ANNOTATION_INITIALIZED') {
     let initialized = isPageAnnotationInitialized()
@@ -160,7 +161,7 @@ function messageListener(request, sender, sendResponse) {
         }
        
       });
-      
+      //don't return true. the response of this message return immediately. another message will be send. 
     
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
@@ -173,20 +174,20 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
     resizeVueApp(width, height);
-  } else if (request.type === 'CHANGE_STYLE') {
-    //console.log(`change style`);
-    if (request.payload) {
+  } else if (request.type === 'CHANGE_SITE_OPTIONS') {
+    //console.log(`change site options`);
+    if (request.payload) {      
       //annotationOptions = request.payload;
-      getCurrentSiteOptions().then(options => {
-        changeStyleForAllDocuments(gSiteProfile, options);
+      getCurrentSiteOptions().then(async (siteOptions) => {
+        await updateAdditionalDictionariesInCache(siteOptions.other.additionalDictionaries);
+        changeStyleForAllDocuments(gSiteProfile, siteOptions);
       });
     }
 
   }
 
-
+  //default sync return, for async result either return true or Promise
   sendResponse(response);
-  return;
 }
 // Listen for message
 chrome.runtime.onMessage.addListener(messageListener);

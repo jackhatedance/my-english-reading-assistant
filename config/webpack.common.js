@@ -1,9 +1,10 @@
 'use strict';
 
 
-
+import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import { VueLoaderPlugin } from 'vue-loader';
 
 import PATHS from './paths.cjs';
@@ -83,6 +84,15 @@ const common = {
       filename: '[name].css',
     }),
     new VueLoaderPlugin(),
+    new NodePolyfillPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_DEBUG': false
+      }
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
 };
 

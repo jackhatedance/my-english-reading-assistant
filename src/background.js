@@ -4,6 +4,8 @@ import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
+import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
+
 import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} from './service/tabInfoService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
@@ -55,6 +57,11 @@ chrome.runtime.onInstalled.addListener(async function () {
   });
   */
   
+  let options = await getOptions();
+  if(options.dictionary.automigration == true){
+    console.log('check dictionary indexes');
+    migrateAllDictionaries((name, progress) => sendMsgOfIndexBuildingProgress(name, progress));        
+  }
 });
 
 chrome.contextMenus.onClicked.addListener(async(item, tab) => {
@@ -137,6 +144,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let wordChanges = request.payload.wordChanges;
     
     onMarkWord(tabId, wordChanges);
+  } else if(request.type === 'DICTIONARY_CHANGE'){
+    
+    //console.log('DICTIONARY_CHANGE event:' + JSON.stringify(request.payload));
+    let dictionaryName = request.payload.dictionaryName;
+    //dictionary migration
+    migrateDictionary(dictionaryName, (progress) => sendMsgOfIndexBuildingProgress(dictionaryName, progress));        
   }
 
   sendResponse({
@@ -295,4 +308,27 @@ function refresh(){
       }
     );
   });
+}
+
+
+function sendMsgOfIndexBuildingProgress(name, progress){
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if(tabs.length>0){
+      const tab = tabs[0];
+      chrome.tabs.sendMessage(
+        tab.id,
+        {
+          type: 'DICTIONARY_INDEX_BUILDING_PROGRESS',
+          payload: {      
+            "name": name,
+            "progress": progress,
+          },
+        },
+        (response) => {
+          //console.log('refresh page response');
+          //resolve(response);
+        }
+      );
+    }
+  });  
 }

@@ -4,7 +4,7 @@ import './popup.css';
 import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from './service/optionService.js';
 import {localizeHtmlPage} from './locale.js';
 import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
-import { getAllDictionaryMetas } from './dictionary/customDictionary.js'
+import { getAdditionalDictionaryMetas } from './dictionary/customDictionary.js'
 
 localizeHtmlPage();
 
@@ -257,7 +257,7 @@ localizeHtmlPage();
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: 'CHANGE_STYLE',
+          type: 'CHANGE_SITE_OPTIONS',
           payload: {}
         },
         (response) => {
@@ -354,14 +354,15 @@ localizeHtmlPage();
     
     var additionalDictionariesElement = document.getElementById('additionalDictionaries');
     
-    let dictionaryMetas = await getAllDictionaryMetas();
+    let dictionaryMetas = await getAdditionalDictionaryMetas();
     for(let meta of dictionaryMetas) {
       let name = meta.name;
+      let displayName = meta.displayName;
 
       const opt1 = document.createElement("option");
       
       opt1.value = name;
-      opt1.text = name;
+      opt1.text = displayName;
       additionalDictionariesElement.add(opt1);
     }
 

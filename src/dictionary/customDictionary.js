@@ -1,73 +1,147 @@
-import { loadDictionaryData, saveDictionaryData, deleteDictionaryData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { MapDictionary } from './MapDictionary.js'
+import { TextDictionary } from './text/TextDictionary.js'
+import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
+import { generateIndex } from './index.js'
+import { createSystemDictionaryMeta, loadSystemDictionariesToCache } from './systemDictionary.js'
 
 //memory copies of dictionary from store
 var gCustomDictionaries = {};
+var gIndexBuildingJobs = [];
+var gAllDictionaryMetas = [];
 
-async function loadCustomDictionary(name){
-    let lines = await loadDictionaryData(name);
-    let dict = {};
-    for(let line of lines){
-        try{
-            const firstSpaceIndex = line.indexOf(" ");
-            let word = line.substring(0, firstSpaceIndex);
-            let definition = line.substring(firstSpaceIndex+1);
-            dict[word] = definition;
-        } catch(e){
-            console.warn('failed to parse dictionary line:'+line);
-        }
-        
+
+async function initializeCustomDictionaryService(additionalDictionaryNames){
+    await loadSystemDictionariesToCache();
+    
+    await loadCustomDictionariesToCache(additionalDictionaryNames);
+}
+
+async function loadCustomDictionary(dictionaryMeta, indexDataOnly){
+    let name = dictionaryMeta.name;
+    
+    let data;
+    if(indexDataOnly){
+        let indexData = await loadDictionaryIndexData(name);  
+        data = { index: indexData};    
+    } else {
+        data = await loadDictionaryData(name);
     }
-    //console.log(dict);
-    return dict;
+    
+    let dictionary;
+    if(dictionaryMeta.format == 'text'){
+        if(Array.isArray(data)){
+            dictionary = new TextDictionary(data, name);
+        }else {
+            dictionary = new TextDictionary(data, name);
+        }
+    }else if(dictionaryMeta.format == 'mdict'){
+        dictionary = createDictionaryInstance(dictionaryMeta, data, name, true);
+    }
+    
+    return dictionary;
 }
 
 
 function getCleanMeta(meta){
     return {
         name: meta.name,
+        alias: meta.alias,
         type: meta.type,
         format: meta.format,
         size: meta.size,
         fromLanguage: meta.fromLanguage,
         toLanguage: meta.toLanguage,
         enabled: meta.enabled,
+        data: {
+            raw:{
+                headers: meta.data.raw?.headers,
+                
+            },
+            index:{
+                version: meta.data.index?.version,
+            },
+
+        },
     };
 }
 
 async function saveDictionaryMeta(dictionaryMeta){
-    
+    let cleanMeta = getCleanMeta(dictionaryMeta);    
+
     let metas = await getAllDictionaryMetas();
+    
+    //remove exsiting same name meta
+    let index = metas.findIndex(item => item.name == dictionaryMeta.name);
+    if(index >=0 ){        
+        metas[index] = cleanMeta;        
+    }else{
+        metas.push(cleanMeta);
+    }
+    
+    await setAllDictionaryMetas(metas);
+}
+
+async function getAllDictionaryMetas(){
+    let metas = await loadDictionaryMetas();
     if(!metas){
         metas = [];
     }
 
-    let newMetas = [];
+    //add system dictionaries if missing
+    const systemDictionaryNames = ['#small', '#large', '#affix'];
+    for(let name of systemDictionaryNames.reverse()) {
 
-    //remove exsiting same name meta
-    for(let meta of metas){
-        if(meta.name !== dictionaryMeta.name){
-            newMetas.push(meta);
+        let meta = metas.find((item) => item.name == name);        
+        if(!meta){
+            meta = createSystemDictionaryMeta(name);
+
+            metas.unshift(meta);
         }
+    }
+
+    for(let meta of metas){        
+        
+        meta.displayName = meta.alias? meta.alias : meta.name; 
+        
+        //computed property
+        let bCanBeParsed = canBeParsed(meta);
+        meta.data.index.support = bCanBeParsed;
+
+        let indexStatus = getIndexStatus(meta);
+        meta.data.index.status = indexStatus;        
     }    
-    
-    let cleanMeta = getCleanMeta(dictionaryMeta);    
-    newMetas.push(cleanMeta);
-    await setAllDictionaryMetas(newMetas);
+
+    return metas;    
 }
 
+function getEnabledDictionaryNamesFromCache(){
+    return gAllDictionaryMetas.filter(item => item.enabled).map(item => item.name);      
+}
 
-async function getAllDictionaryMetas(){
-    return await loadDictionaryMetas();
+async function getAdditionalDictionaryMetas(){
+    let metas = await getAllDictionaryMetas();
+    return metas.filter(meta => meta.data.index.status == 'OK' && meta.enabled != true);      
+}
+
+async function changeOrder(names){
+    let metas = await getAllDictionaryMetas();
+
+    metas.sort((a,b)=> names.indexOf(a.name) - names.indexOf(b.name));
+    await setAllDictionaryMetas(metas);
 }
 
 async function getDictionaryMeta(name){
-    let metas = await loadDictionaryMetas();
+    let metas = await getAllDictionaryMetas();
+    let result = null;
     for(let meta of metas){
         if(meta.name == name){
-            return meta;
+             result = meta;
+             break;
         }
-    } 
-    return null;
+    }
+    
+    return result;
 }
 
 async function setAllDictionaryMetas(dictionaryMetas){
@@ -90,16 +164,50 @@ async function deleteDictionaryMeta(name){
     await setAllDictionaryMetas(newMetas);
 }
 
-async function loadCustomDictionariesToCache(){
+async function loadCustomDictionariesToCache(additionalDictionaryNames){
     let metas = await getAllDictionaryMetas();
+    gAllDictionaryMetas = metas;
+
     for(let meta of metas) {
-        let name = meta.name;
-        await loadCustomDictionaryToCache(name);
+        if(meta.enabled || additionalDictionaryNames.includes(meta.name)){
+            await loadCustomDictionaryToCache(meta);
+        }        
     }    
 }
 
-async function loadCustomDictionaryToCache(name){
-    gCustomDictionaries[name] = await loadCustomDictionary(name);
+async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames){
+    for(let meta of gAllDictionaryMetas){
+        let name = meta.name;
+        let isAdditional = meta.enabled != true && meta.data.index.status == 'OK';
+        if(isAdditional){
+            if(activeAdditionalDictionaryNames.includes(name)){
+                await loadCustomDictionaryToCache(meta);
+            }else{
+                removeCustomDictionaryFromCache(name);
+            
+            }
+        }
+    }
+}
+
+async function loadCustomDictionaryToCache(meta){
+    const name = meta.name;
+    
+    let dict = await loadCustomDictionary(meta, true);
+    if(dict){
+        gCustomDictionaries[name] = dict;
+        //console.log(`load dictionary to cache ${name}`);
+    } else{
+        removeCustomDictionaryFromCache(name);
+        //console.log(`failed to load dictionary to cache: ${name}`);
+    }
+}
+
+function removeCustomDictionaryFromCache(name) {
+    if(gCustomDictionaries.hasOwnProperty(name)){
+        delete gCustomDictionaries[name];
+        console.log(`remove dictionary from cache: ${name}`);
+    }
 }
 
 //sync function, get from memory.
@@ -124,12 +232,82 @@ async function addCustomDictionary(name, data){
 }
 
 async function saveDictionary(dictionary){
-    let name = dictionary.name;
-    let data = dictionary.data;
-
+    const { meta, data } = dictionary;
+    let name = meta.name;
+    
     gCustomDictionaries[name] = data;
-    saveDictionaryMeta(dictionary);
+    saveDictionaryMeta(meta);
     saveDictionaryData(name, data);
 }
 
-export { loadCustomDictionariesToCache, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, saveDictionaryMeta, deleteDictionaryMeta };
+async function migrateAllDictionaries(updateProgress){
+    let dictionaryMetas = await getAllDictionaryMetas();
+    let count=0;
+    for(let meta of dictionaryMetas){
+        let upgraded = await migrateDictionary(meta.name, (progress) => updateProgress(meta.name, progress));
+        if(upgraded){
+            count++;
+        }
+    }
+    console.log(`${count} dictionary has been upgraded.`);
+}
+
+//run in background
+async function migrateDictionary(name, updateProgress){
+    //console.log('check if index need upgrade: '+ name);
+
+    let needUpgrade = false;
+
+    let meta = await getDictionaryMeta(name);    
+    if(meta && meta.type != 'system' && meta.data.index.support){
+        let index = await loadDictionaryIndexData(name);
+        let isValid = isIndexValid(meta, index);
+        if(!isValid){
+            needUpgrade = true;
+
+            if(gIndexBuildingJobs.includes(name)){
+                console.log(`an index job is working on ${name}`);
+                return;
+            }
+            gIndexBuildingJobs.push(name)
+
+            console.log('start upgrade: '+ name);
+            try {
+                let raw = await loadDictionaryRawData(name);            
+                let dictionaryInstance = createDictionaryInstance(meta, { raw }, '', false);
+
+                let index = await generateIndex(dictionaryInstance, updateProgress);
+                
+                await saveDictionaryIndexData(name, index);
+
+                meta.data.index = {
+                    version: index.version,
+                };
+                await saveDictionaryMeta(meta);
+
+                updateProgress({rate:1, remain: 0});
+                console.log('complete upgrade: '+ name);
+            } catch(error) {
+                console.log('build index failed', error);
+            } finally {
+                index = gIndexBuildingJobs.indexOf(name);
+                if (index > -1) {
+                    gIndexBuildingJobs.splice(index, 1); // Removes 1 element at the index
+                }
+            }
+        }
+    }
+    
+    return needUpgrade;
+}
+
+async function deleteDictionaryIndex(name){
+
+    let meta = await getDictionaryMeta(name);
+    meta.data.index = {};
+    await saveDictionaryMeta(meta);
+    
+    await deleteDictionaryIndexData(name);
+}
+
+export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder };
