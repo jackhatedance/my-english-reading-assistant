@@ -29,7 +29,7 @@ function lookup(word, dicts) {
                 } else {
                     def = lookupResult.text;
                 }
-                console.log(`found ${word} in ${name}: ${def}`);
+                //console.log(`found ${word} in ${name}: ${def}`);
             }
         }
         if(def){

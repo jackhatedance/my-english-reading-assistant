@@ -36,7 +36,7 @@ async function getPageInfo() {
   let sender = null;
   //console.log('get pageInfo');
   props.sendMessageToContentPage({
-    type: 'GET_PAGE_INFO_AS_MESSAGE',
+    type: 'GET_PAGE_INFO',
     payload: {
       src: 'side_panel',
     },
@@ -46,7 +46,7 @@ async function getPageInfo() {
 
       //console.log('get pageInfo response:' + JSON.stringify(response));
       if (response && response.pageInfo) {
-        //updatePageInfo(response.pageInfo);  
+        updatePageInfo(response.pageInfo);  
       }
 
 
@@ -86,7 +86,7 @@ async function updatePageInfo(pageInfo) {
 
 }
 
-async function messageListener(request, sender, sendResponse) {
+function messageListener(request, sender, sendResponse) {
 
   console.log('recieve message:'+request.type);
   let response = {};
@@ -107,36 +107,7 @@ async function messageListener(request, sender, sendResponse) {
     // Send a response message
     
   } else if (request.type === 'SELECTION_CHANGE') {
-    let { type, selectedText, paragraphSelection } = request.payload;
-
-    word.value = request.payload.word;
-
-    let noteArray = request.payload.notes;
-
-    //console.log('payload:' + JSON.stringify(request.payload));
-    if (type === 'select-text') {
-      let note = {
-        selectedText: selectedText,
-        selection: paragraphSelection,
-        content: '',
-        persisted: false,
-      };
-
-      let noteEntity = await getNote(paragraphSelection);
-      if (noteEntity) {
-        note.content = noteEntity.content;
-        note.persisted = true;
-      }
-      noteArray = [note];
-    } else {
-      for (let note of noteArray) {
-        note.persisted = true;
-      }
-    }
-
-    notes.value = noteArray;
-    //console.log('SELECTION_CHANGE, update notes:' + JSON.stringify(notes.value));
-
+    onSelectionChange(request.payload);
 
   } else if (request.type === 'ACTIVE_APP_TAB') {
     activeTabId.value = request.payload.activeAppTabId;
@@ -150,7 +121,38 @@ async function messageListener(request, sender, sendResponse) {
 
 //chrome.runtime.onMessage.addListener(messageListener);
 
+async function onSelectionChange(payload){
+  let { type, selectedText, paragraphSelection } = payload;
 
+  word.value = payload.word;
+
+  let noteArray = payload.notes;
+
+  //console.log('payload:' + JSON.stringify(request.payload));
+  if (type === 'select-text') {
+    let note = {
+      selectedText: selectedText,
+      selection: paragraphSelection,
+      content: '',
+      persisted: false,
+    };
+
+    let noteEntity = await getNote(paragraphSelection);
+    if (noteEntity) {
+      note.content = noteEntity.content;
+      note.persisted = true;
+    }
+    noteArray = [note];
+  } else {
+    for (let note of noteArray) {
+      note.persisted = true;
+    }
+  }
+
+  notes.value = noteArray;
+  //console.log('SELECTION_CHANGE, update notes:' + JSON.stringify(notes.value));
+
+}
 
 async function onMarkWord(type) {
   //console.log(`mark word:${type}`);

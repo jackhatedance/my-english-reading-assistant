@@ -18,7 +18,7 @@ let setSendMessageToApp = (sendMessageToApp)=>{
 
 function sendMessageToContentPage(message, sender, resolve){
 
-    //console.log('send message to content page,chrome tab id:'+gChromeTabId + ',message:' + JSON.stringify(message));
+    console.log('send message to content page,chrome tab id:'+gChromeTabId + ',message:' + JSON.stringify(message));
 
     if(gChromeTabId) {
         chrome.tabs.sendMessage(
