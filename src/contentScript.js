@@ -201,14 +201,8 @@ async function domMonitor() {
     gSiteProfile = findSiteProfile(document);
   }
  
-
-  if (gSiteProfile.needRefreshPageAnnotation(document)) {
-    //console.log('needRefreshPageAnnotation');
-    initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
-      gDocumentArticleMap = documentArticleMap;
-      resetPageAnnotationVisibilityAndNotify(true);
-    });
-  }
+  //check body attribute flag.  
+  let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
 
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
@@ -218,25 +212,24 @@ async function domMonitor() {
       
       //reset
       gDomChanges =0;
-
+      
       clearPagePreprocessMark(gSiteProfile);
-      
-      //console.log('begin');
 
-      gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
-      
-      let startTime = new Date().getTime();
-      await resetPageAnnotationVisibilityAndNotify(true);
-
-      //console.log('end');
-      let endTime = new Date().getTime();
-
-      let elapseTime = endTime - startTime;
-      //console.log('elapseTime：'+ elapseTime);    
-
+      needRefresh = true;
     } else {
       gDomChangesMonitored = gDomChanges;
+      needRefresh = false;
     } 
+  }
+  
+  if(needRefresh) {
+    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
+
+    let startTime = new Date().getTime();
+    await resetPageAnnotationVisibilityAndNotify(true);
+    let endTime = new Date().getTime();
+    let elapseTime = endTime - startTime;
+    //console.log('elapseTime：'+ elapseTime);
   }
 
   let url = gSiteProfile.getUrl(document);

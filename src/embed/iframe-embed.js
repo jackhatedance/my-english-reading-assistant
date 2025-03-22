@@ -31,6 +31,7 @@ function addVueApp() {
 
 function sendMessageToEmbeddedApp(request, sender, resolve) {
   //console.log('send message to iframe:'+JSON.stringify(request));
+  //console.log('send message to iframe:' + request.type);
   let iframe = document.getElementById('mea-vueapp-iframe');
 
   let url = chrome.runtime.getURL('');
