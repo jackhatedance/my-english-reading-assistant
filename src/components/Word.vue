@@ -37,15 +37,16 @@ const lookupResult = computed(() => {
     
     //console.log(dicts);
     let lookupResult = lookup(props.word, dicts);
+    if(lookupResult) {
+        lookupResult.formattedText = jsonToText(lookupResult.json);
 
-    lookupResult.formattedText = jsonToText(lookupResult.json);
 
-    
-    if(isSystemDictionary(lookupResult.dictionary)){
-        lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionary);
-    }else{
-        lookupResult.alias = lookupResult.dictionary;
-    }
+        if(isSystemDictionary(lookupResult.dictionary)){
+            lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionary);
+        }else{
+            lookupResult.alias = lookupResult.dictionary;
+        }
+    }    
 
     return lookupResult;
 });
