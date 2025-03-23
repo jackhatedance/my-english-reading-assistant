@@ -193,8 +193,7 @@ async function onClearMark() {
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <span>[{{ lookupResult?.alias }}]</span>
-            <h2>{{ props.word }}</h2>
+            <p><span class="word">{{ props.word }}</span> <span class="dictionary">[{{ lookupResult?.alias }}]</span></p>
             <p class="word-definition-content">{{ lookupResult?.formattedText }}</p>
         </div>
         <div class="word-mark-actions">
@@ -212,6 +211,12 @@ async function onClearMark() {
 .word-definition {
     border: solid black 1px;
 
+    .word {
+        font-size: large;
+    }
+    .dictionary {
+        font-size: smaller;
+    }
     .word-definition-content {
         white-space: pre-line;
     }
