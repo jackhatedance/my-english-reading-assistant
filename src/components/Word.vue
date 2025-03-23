@@ -6,6 +6,8 @@ import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } fr
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
+import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
+
 
 const props = defineProps({
     word: String,
@@ -37,13 +39,16 @@ const lookupResult = computed(() => {
     let lookupResult = lookup(props.word, dicts);
 
     lookupResult.formattedText = jsonToText(lookupResult.json);
+
     
+    if(isSystemDictionary(lookupResult.dictionary)){
+        lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionary);
+    }else{
+        lookupResult.alias = lookupResult.dictionary;
+    }
+
     return lookupResult;
 });
-
-function format(lookupResult){
-    return lookupResult.text.replaceAll(/[;]/g, '\n');
-}
 
 function mergeEntries(entries) {
     let mergedPronunciations = [];
@@ -188,7 +193,7 @@ async function onClearMark() {
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <span>{{ lookupResult?.dictionary }}</span>
+            <span>[{{ lookupResult?.alias }}]</span>
             <h2>{{ props.word }}</h2>
             <p class="word-definition-content">{{ lookupResult?.formattedText }}</p>
         </div>

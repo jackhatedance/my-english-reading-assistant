@@ -20,6 +20,20 @@ async function loadSystemDictionariesToCache(){
     gSystemDictionaryMap['#affix'] = affixDictionary;
 }
 
+function isSystemDictionary(name){
+    return name.startsWith('#');
+}
+function getSystemDictionaryAlias(name){
+    if(name==='#small'){
+        return chrome.i18n.getMessage('dictionary_system_small_alias');
+    }else if(name==='#large'){
+        return chrome.i18n.getMessage('dictionary_system_large_alias');
+    }else if(name==='#affix'){
+        return chrome.i18n.getMessage('dictionary_system_affix_alias');
+    }
+    throw new Error(`invliad system dictionary name ${name}`);
+}
+
 function getSystemDictionary(name){
     if(name==='#small'){
         return smallDictionary;
@@ -46,7 +60,7 @@ function createSystemDictionaryMeta(name){
 function createDictionaryMetaSmall(){
     return {
         name: '#small',
-        alias: chrome.i18n.getMessage('dictionary_system_small_alias'),
+        alias: getSystemDictionaryAlias('#small'),
         type: 'system',
         format: 'text',
         size: 60780,
@@ -62,7 +76,7 @@ function createDictionaryMetaSmall(){
 function createDictionaryMetaLarge(){
     return {
         name: '#large',
-        alias: chrome.i18n.getMessage('dictionary_system_large_alias'),
+        alias: getSystemDictionaryAlias('#large'),
         type: 'system',
         format: 'text',
         size: 402426,
@@ -78,7 +92,7 @@ function createDictionaryMetaLarge(){
 function createDictionaryMetaAffix(){
     return {
         name: '#affix',
-        alias: chrome.i18n.getMessage('dictionary_system_affix_alias'),
+        alias: getSystemDictionaryAlias('#affix'),
         type: 'system',
         format: 'text',
         size: 272,
@@ -91,4 +105,4 @@ function createDictionaryMetaAffix(){
     };
 }
 
-export { loadSystemDictionariesToCache, getSystemDictionary, createSystemDictionaryMeta }
+export { loadSystemDictionariesToCache, getSystemDictionary, createSystemDictionaryMeta, getSystemDictionaryAlias, isSystemDictionary }
