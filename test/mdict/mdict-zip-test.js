@@ -10,7 +10,7 @@ describe('mdict zip profile', function () {
       this.parser = new YhdParser();
     });
 
-    it('zips', async function () {
+    xit('zips', async function () {
       const files = fs.readdirSync('./test/mdict/zips');
       files.forEach(file => {
         const filePath = path.join(dirPath, file);

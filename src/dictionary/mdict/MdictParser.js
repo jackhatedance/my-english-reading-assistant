@@ -13,7 +13,9 @@ class MdictParser {
         let pronunciation = '';
         let definitionGroups = [ definitionGroup ];
         
-        let entry = { pronunciation, definitionGroups };
+        let type = 'link';
+        
+        let entry = { type, link, pronunciation, definitionGroups };
         return entry;
     }
 

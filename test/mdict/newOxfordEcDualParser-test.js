@@ -17,6 +17,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].pronunciation, "/gʊd/");
+      assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0], "合意的, 满意的");      
       
     });

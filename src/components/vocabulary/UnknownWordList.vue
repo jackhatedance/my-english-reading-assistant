@@ -30,7 +30,7 @@ async function buildTargetWords(words) {
             for (let part of parts) {
                 target = part.dictEntry;
 
-                let definition = lookup(target);
+                let definition = lookup(target)?.text;
 
                 if (definition && !isKnown(target, knownWords)) {
                     expandedWords.push({ target, from });

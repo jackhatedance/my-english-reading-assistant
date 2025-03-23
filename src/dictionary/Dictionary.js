@@ -24,7 +24,7 @@ class Dictionary {
     generateDefaultOptions(){
         return {
             fromRaw: false,
-            autoJumpLink: true,
+            autoJumpLink: false,
             maxJumpingTimes: 3,
             jumpingTimes: 0,
             outputFormats:['text', 'json']

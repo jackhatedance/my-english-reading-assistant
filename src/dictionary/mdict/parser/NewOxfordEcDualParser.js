@@ -56,9 +56,12 @@ class NewOxfordEcDualParser extends MdictParser {
             let contentListElements = $('.content .cont-list');
             let definitionGroups = [];
             for (let contentElement of contentListElements) {
-                let group = $(contentElement).find('.pos').first().contents().filter(function () {
-                    return this.type == 'text';
-                }).text();
+                let pos = $(contentElement).find('.pos').text();
+                let inflection = $(contentElement).find('.pos .inflection').text();
+                let group = pos;
+                if(pos.includes(inflection)){
+                    group = pos.replace(inflection, '');
+                }
 
                 let itemElements = $(contentElement).find('.item');
                 let definitions = [];

@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition, } from './dictionary.js';
+import {lookup, simplifyDefinition, isLink, getLink } from './dictionary.js';
 import { splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary/text/textDefinitionUtils.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
@@ -12,6 +12,25 @@ import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } fr
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 
 var gPrefixes, gSuffixes;
+
+function createDefaultSearchWordOptions(){
+    return {
+        allowLemma: true,
+        allowRemoveSuffixOrPrefix: false,
+        allowRemoveEndingDot: true,
+        simplifyDefinition: simplifyDefinitionOptions,
+        dictionaryOptions: {},
+        allowCompounding: false,
+        allowRemoveHyphen: false,
+        anonymous: true,
+        autoJumping: false,       
+    };
+}
+
+function patchSearchOptionDefaultValues(options){
+    let defaultOptions = createDefaultOptions();
+    return Object.assign(defaultOptions, options);
+}
 
 function searchWord(request){
     let result;
@@ -161,9 +180,22 @@ function searchWordWithDict(request, dicts){
     }
 
     let word = input;
-    let definition = lookup(word, dicts);
+    let lookupResult = lookup(word, dicts);
+    let definition = lookupResult?.text;
 
     let transformResult;
+
+    if(lookupResult){
+        if(isLink(lookupResult)){
+            
+            let link = getLink(lookupResult);            
+            console.log(`isLink ${word}`);
+            if(lookupResult){
+                word = link;
+                definition = lookupResult.text;
+            }            
+        }
+    }
 
     //try lower case
     if(!definition) {
@@ -178,7 +210,7 @@ function searchWordWithDict(request, dicts){
     //try captialize, such god -> God
     if(!definition && input.length > 1){
         word = input[0].toUpperCase() + input.substring(1);
-        definition = lookup(word, dicts);
+        definition = lookup(word, dicts)?.text;
     }
 
 
@@ -207,7 +239,7 @@ function searchWordWithDict(request, dicts){
             //console.log('match result 1:'+result);   
             if(result != null){
                 word = result[1];
-                definition = lookup(word, dicts);
+                definition = lookup(word, dicts)?.text;
                 
                 lemmaType = 'irregular';
                 done = true;
@@ -219,7 +251,7 @@ function searchWordWithDict(request, dicts){
                 let result = definition.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
                 if(result != null){
                     word = result[1];
-                    let def = lookup(word, dicts);
+                    let def = lookup(word, dicts)?.text;
                     if(definition.includes(def)){
                         definition = def;
 
@@ -238,7 +270,7 @@ function searchWordWithDict(request, dicts){
                         let result = meanings[0].match('^([a-zA-Z]+)的((变形))');
                         if(result != null){
                             word = result[1];
-                            let def = lookup(word, dicts);
+                            let def = lookup(word, dicts)?.text;
                             if(def){
                                 definition = def;
 
@@ -293,7 +325,7 @@ function searchWordWithDict(request, dicts){
                 word = removeSuffix(word);
                 if(word.length > 2){
                     if(word!==input){
-                        definition = lookup(word, dicts);
+                        definition = lookup(word, dicts)?.text;
                     }
                     
                     //lemma
@@ -341,7 +373,7 @@ function transformLowercase(input, dicts){
     let word = input.toLowerCase();
     let definition;
     if(word !== input){
-        definition = lookup(word, dicts);
+        definition = lookup(word, dicts)?.text;
     }
     return {
         word,
@@ -357,14 +389,14 @@ function transformLemmatize(input, dicts){
     if(!definition) {
         word = getBaseFromPossessive(input);
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
     if(!definition) {
         word = singularize(input);
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
@@ -372,28 +404,28 @@ function transformLemmatize(input, dicts){
     if(!definition) {
         word = getBaseFromWordParts(input)
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
     if(!definition) {
         word = lemmatize.adjective(input);
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
     if(!definition) {
         word = lemmatize.noun(input);
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }                
     }
 
     if(!definition) {
         word = lemmatize.verb(input);
         if(word !== input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
@@ -413,7 +445,7 @@ function transformRemovePrefix(input, dicts){
     let word = removePrefix(input);
     if(word.length > 2){
         if(word!==input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
 
@@ -429,7 +461,7 @@ function transformRemoveSuffix(input, dicts){
     let word = removeSuffix(input);
     if(word.length > 2){
         if(word!==input){
-            definition = lookup(word, dicts);
+            definition = lookup(word, dicts)?.text;
         }
     }
     return {

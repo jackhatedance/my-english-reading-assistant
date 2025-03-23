@@ -15,29 +15,23 @@ function lookup(word, dicts) {
     }    
 
     //try small dict first, hits 90%
-    let def;
+    let lookupResult;
 
     for(let name of dicts){
         let dict = getDict(name);
         
         if(dict){
-            let lookupResult = dict.lookup(word, { outputFormats:['text']});
+            lookupResult = dict.lookup(word, { outputFormats:['text', 'json']});
             
             if(lookupResult){
-                if(typeof lookupResult == 'string'){
-                    def = lookupResult;
-                } else {
-                    def = lookupResult.text;
-                }
-                //console.log(`found ${word} in ${name}: ${def}`);
+                lookupResult.dictionary = name;
+                //console.log(`found ${word} in ${name}: ${JSON.stringify(lookupResult)}`);
+                break;                
             }
-        }
-        if(def){
-           break; 
-        }
+        }        
     }    
 
-    return def;
+    return lookupResult;
 }
 
 function getDict(name){
@@ -148,4 +142,22 @@ function getVisitedMeanings(definition){
     return visitedMeanings.join(',');    
 }
 
-export { lookup, simplifyDefinition };
+function isLink(lookupResult){
+    let entries = lookupResult.json;
+    if(entries.length == 1 && entries[0].type == 'link'){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getLink(lookupResult){
+    let entries = lookupResult.json;
+    if(entries.length == 1 && entries[0].type == 'link'){
+        let entry = entries[0];
+        let link = entry.link;
+        return link;
+    }
+}
+
+export { lookup, simplifyDefinition, isLink, getLink };

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { lookup } from '../dictionary.js';
-import { parseTextDefinition } from '../dictionary/text/textDefinitionUtils.js';
+import { getWordClassAbbreviation } from '../dictionary/wordClass.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
@@ -20,7 +20,7 @@ const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
-const definition = computed(() => {
+const lookupResult = computed(() => {
     
     let dicts = getEnabledDictionaryNamesFromCache();
     //use default dicts
@@ -34,18 +34,75 @@ const definition = computed(() => {
     }
     
     //console.log(dicts);
-    let def = lookup(props.word, dicts);
-    if(!def){
-        def = '';
-    }
-    const { phoneticSymbols, classes } = parseTextDefinition(def);
-    def = '';
-    if(phoneticSymbols){
-        def += phoneticSymbols + '\n';
-    }
-    def += classes.join('\n');
-    return def;
+    let lookupResult = lookup(props.word, dicts);
+
+    lookupResult.formattedText = jsonToText(lookupResult.json);
+    
+    return lookupResult;
 });
+
+function format(lookupResult){
+    return lookupResult.text.replaceAll(/[;]/g, '\n');
+}
+
+function mergeEntries(entries) {
+    let mergedPronunciations = [];
+    let mergedDefinitionGroupMap = {};
+
+    for(let entry of entries){
+        mergedPronunciations.push(entry.pronunciation);
+        
+        for(let definitionGroup of entry.definitionGroups){
+            const { name, definitions} = definitionGroup;
+            
+            let mergedGroupDefinitions;
+            if(mergedDefinitionGroupMap.hasOwnProperty(name)){
+                mergedGroupDefinitions = mergedDefinitionGroupMap[name];
+            } else {
+                mergedGroupDefinitions = [];                    
+            }
+
+            mergedDefinitionGroupMap[name] = mergedGroupDefinitions.concat(definitions);
+        }
+    }
+
+    let mergedPronunciation = mergedPronunciations.join(',');
+    let mergedDefinitionGroups = [];
+    for(let name in mergedDefinitionGroupMap){
+        let definitions = mergedDefinitionGroupMap[name];
+        mergedDefinitionGroups.push({name, definitions});
+    }
+    let mergedEntry = {
+        pronunciation: mergedPronunciation,
+        definitionGroups : mergedDefinitionGroups,
+    };
+    return mergedEntry;
+}
+
+function jsonToText(entries){
+    if(!entries || entries.length == 0){
+        return '';
+    }
+
+    let entry = mergeEntries(entries);
+
+    let definitionObj = entry;
+
+    let groupTexts = [];
+    for(let definitionGroup of definitionObj.definitionGroups){
+        const { name, definitions} = definitionGroup;
+        let wordClass = getWordClassAbbreviation(name);
+
+        let definitionsText = definitions.join(',');
+        let groupText = `${wordClass} ${definitionsText}`;
+        groupTexts.push(groupText);
+    }
+    let groupsText = groupTexts.join('\n');
+    let text = `${definitionObj.pronunciation}\n${groupsText}`;
+
+    //console.log(text);
+    return text;
+}
 
 const knownRef = new ref(false);
 watch(() => props.word, (newValue) => {
@@ -131,8 +188,9 @@ async function onClearMark() {
 <template>
     <div class="word-container">
         <div class="word-definition">
+            <span>{{ lookupResult?.dictionary }}</span>
             <h2>{{ props.word }}</h2>
-            <p class="word-definition-content">{{ definition }}</p>
+            <p class="word-definition-content">{{ lookupResult?.formattedText }}</p>
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
