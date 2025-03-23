@@ -158,7 +158,7 @@
         "message":"词根与词缀"
     },
     "optionsRootAndAffixLabelDesc":{
-        "message":"打开词根与词缀模式时，只要你认识单词的词根和词缀，那么默认就认为你也认识该单词了。它不仅可以极大地减少单词的标记工作，也被认为是一种符合人脑思维的学习方法。"
+        "message":"打开词根与词缀模式时，只要你认识单词的词根和词缀，那么默认就认为你也认识该单词了。它不仅可以极大地减少单词的标记工作，也是一种自然的单词学习方法。"
     },
     "optionsRootAndAffixModeLabel":{
         "message":"词根与词缀模式"
@@ -183,7 +183,7 @@
         "message":"词典"
     },
     "optionsEditDictionaryTips": {
-        "message": "* 从上到下查询\n* 缺少索引的字典无法为正文提供快速且简明的生词含义，但是可以作为普通字典使用\n* 新增字典或软件升级均可能导致需要重建索引"
+        "message": "* 从上到下的顺序查询已启用的词典\n* 缺少索引的字典无法为正文提供快速且简明的生词含义，但是可以作为普通字典使用\n* 新增字典或软件升级均可能导致需要重建索引"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "建议至少启用一本字典"
@@ -234,7 +234,7 @@
         "message":"添加/删除附加词典"
     },    
     "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"启用此功能，你能在阅读时临时附加词典。适合的场景举例：您在阅读哈利波特系列作品时，临时附加一本包含哈利波特相关词汇的字典，并且这个字典平时默认不启用。"
+        "message":"启用此功能，你能在阅读时临时附加词典。临时附加的词典比默认启用的词典具有更高的优先级。"
     },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"启用附加字典"

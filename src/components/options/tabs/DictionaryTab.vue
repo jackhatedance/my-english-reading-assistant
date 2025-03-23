@@ -9,6 +9,7 @@ import { MdictDictionary } from '../../../dictionary/mdict/MdictDictionary.js'
 import { TextDictionary } from '../../../dictionary/text/TextDictionary.js'
 import { sendMessageDictionaryChangeToBackground } from '../../../message.js';
 import { markdown2Html } from '../../../utils/markdownUtils.js'
+import HelpLink from '../../HelpLink.vue'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -24,7 +25,6 @@ const indexBuildingProgress = inject('indexBuildingProgress');
 const optionsEditDictionaryTips = ref('');
 const options_dictionary_detail_enabled = ref('');
 const optionalTips = ref({});
-const dictionaryFormatHelpLink = ref('#');
 const howToFindDictionaryLink = ref('#');
 
 async function onChangeEnableAdditionalDictionary() {
@@ -298,7 +298,6 @@ const init = async () => {
   optionsEditDictionaryTips.value = await markdown2Html(t('optionsEditDictionaryTips'));
   options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');
   options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');
-  dictionaryFormatHelpLink.value = chrome.runtime.getURL('guide.html#词典格式');
   howToFindDictionaryLink.value = chrome.runtime.getURL('faq.html#词典哪里找');
 };
 
@@ -340,7 +339,7 @@ init();
     </div>
     <div class="section">
       <div class="label">
-        <p>{{ t('optionsImportDictionaryDesc') }} <a target=_blank :href="dictionaryFormatHelpLink">?</a></p>
+        <p>{{ t('optionsImportDictionaryDesc') }} <HelpLink type="guide" keyword="词典格式"/></p>
         <a :href="howToFindDictionaryLink">{{ t('options_dictionary_find_tips') }}</a>
       </div>
       <div class="input">
@@ -352,7 +351,7 @@ init();
     </div>
     <div class="section">
       <div class="label">
-        <p>{{ t('optionsAdditionalDictionaryEnableDictionaryDesc') }}</p>
+        <p>{{ t('optionsAdditionalDictionaryEnableDictionaryDesc') }}<HelpLink type="guide" keyword="附加词典" ></HelpLink></p>
       </div>
       <div class="input">
         <label>{{ t('optionsAdditionalDictionaryEnableDictionaryLabel') }}</label>

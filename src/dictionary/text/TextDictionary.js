@@ -50,57 +50,18 @@ class TextDictionary extends Dictionary {
     lookupFromMap(map, query){
         if(map && map.hasOwnProperty(query)){
             let definition = map[query];
-            return { definition };
+            return definition;
         }
     }
-
-    parse(definition){
+    
+    lookupRaw(query) {
+        return this.lookupFromMap(this.map, query);
+    }
+    
+    rawToJson(definition){
         return parseTextDefinitionV2(definition);
     }
-
-    lookupFromRaw(query, options){        
-        let result = null;        
-    
-        let entries = [];
-
-        let rawLookupResult = this.lookupFromMap(this.map, query);
-        if(rawLookupResult){
-            result = {};
-
-            let rawDefinition = rawLookupResult.definition;
-
-            if(options.outputFormats.includes('raw')){            
-                result['raw'] = rawDefinition;
-            }                
-
-            let needParsing = options.outputFormats.length > 0;
-            if(needParsing && rawDefinition){
-                entries = this.parse(rawDefinition);
-                
-                //only auto jump when there is only one entry and it is a link
-                if(entries.length == 1 && entries[0].type == 'link' 
-                    && options.autoJumpLink && options.jumpingTimes < options.maxJumpingTimes){
-                    options.jumpingTimes ++;
-    
-                    let entry = entries[0];
-                    let link = entry.link;
-                    console.log(`autojump to: ${link}`);
-                    entries = this.lookup(link, options);
-                }
-
-                if(options.outputFormats.includes('json')){            
-                    result['json'] = entries;
-                }
         
-                if(options.outputFormats.includes('text')){
-                    let textDefinition = this.toTextDefinition(entries);
-                    result['text'] = textDefinition;
-                }
-            }
-        }            
-    
-        return result;
-    }
 }
 
 export { TextDictionary }

@@ -60,54 +60,17 @@ class MdictDictionary extends Dictionary {
     getKeys(){
         return this.mdx.keywordList.map( (item => item.keyText))
     }
-
-    lookupFromRaw(query, options) {
-        let result = null;
-        
-        let entries = [];
-
-        let rawLookupResult = this.mdx.lookup(query);
-        if(rawLookupResult) {
-            result = {};
-
-            let rawDefinition = rawLookupResult.definition;
-
-            if(options.outputFormats.includes('raw')){            
-                result['raw'] = rawDefinition;
-            }                
-
-            let needParsing = options.outputFormats.length > 0;
-            if(needParsing && rawDefinition) {
-
-                if(!this.mdictParser){
-                    throw new Error(`no parser found`);
-                }
-
-                entries = this.mdictParser.parse(rawDefinition);
-                
-                //only auto jump when there is only one entry and it is a link
-                if(entries.length == 1 && entries[0].type == 'link' 
-                    && options.autoJumpLink && options.jumpingTimes < options.maxJumpingTimes){
-                    options.jumpingTimes ++;
     
-                    let entry = entries[0];
-                    let link = entry.link;
-                    console.log(`autojump to: ${link}`);
-                    result = this.lookup(link, options);
-                }
+    lookupRaw(query) {
+        return this.mdx.lookup(query)?.definition;
+    }    
 
-                if(options.outputFormats.includes('json')){            
-                    result['json'] = entries;
-                }
-        
-                if(options.outputFormats.includes('text')){
-                    let textDefinition = this.toTextDefinition(entries);
-                    result['text'] = textDefinition;
-                }
-            }
-        }            
-    
-        return result;
+    rawToJson(definition){
+        if(!this.mdictParser){
+            throw new Error(`no parser found`);
+        }
+
+        return this.mdictParser.parse(definition);
     }
    
 }

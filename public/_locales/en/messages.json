@@ -158,7 +158,7 @@
         "message":"Root and Affix"
     },
     "optionsRootAndAffixLabelDesc":{
-        "message":"When you turn on the root and affix mode, as long as you know the root and affix of a word, it will be assumed that you also know the word by default. Not only can it greatly reduce the work of marking words, it is also considered to be a learning method that is in line with human brain thinking."
+        "message":"When you turn on the root and affix mode, as long as you know the root and affix of a word, it will be assumed that you also know the word by default. Not only can it greatly reduce the work of marking words, it is also a natural way of learning words."
     },
     "optionsRootAndAffixModeLabel":{
         "message":"root and affix mode"
@@ -184,7 +184,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* Lookup from top to bottom\n* Dictionaries without indexes cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require rebuilding the index"
+        "message": "* Lookup enabled dictionaries from top to bottom\n* Dictionaries without indexes cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require rebuilding the index"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"
@@ -235,7 +235,7 @@
         "message":"add/delete additional dictionaries"
     },
     "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"Enable this feature, and you can temporarily attach a dictionary while reading. Suitable scenario example: When you are reading the Harry Potter series, you temporarily attach a dictionary containing Harry Potter-related vocabulary, and this dictionary is not enabled by default."
+        "message":"Enable this feature, and you can temporarily attach a dictionary while reading. Additional dictionaries have higher priority than enabled dictionaries."
     },
     "optionsAdditionalDictionaryEnableDictionaryLabel":{
         "message":"Enable additional dictionary"

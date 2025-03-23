@@ -1,5 +1,5 @@
 // index data version should always match below program version. any change to index building should increase it.
-export const INDEX_VERSION = 4;
+export const INDEX_VERSION = 5;
 
 //sleepWorkRatio: sleep time / work time. the larger the slower
 async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
@@ -13,7 +13,7 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
     let keys = dictionary.getKeys();
     let total = keys.length;
     for (let key of keys) {
-        let result = dictionary.lookup(key, { fromRaw: true, autoJumpLink: false, outputFormats: ['text', 'json'] });
+        let result = dictionary.lookup(key, { fromRaw: true, autoJumpLink: false, outputFormats: ['json'] });
         map[key] = result;
 
         if (i % 100 == 0) {

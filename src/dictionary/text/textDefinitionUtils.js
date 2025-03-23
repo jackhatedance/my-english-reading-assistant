@@ -55,6 +55,10 @@ function parseWordClass(def){
 }
 
 function parseTextDefinitionV2(definition) {
+    if(!definition){
+        return [];
+    }
+    
     const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
     let pronunciation = '';
     if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){

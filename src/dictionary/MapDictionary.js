@@ -1,4 +1,5 @@
 import {Dictionary} from './Dictionary.js'
+import {parseTextDefinitionV2} from './text/textDefinitionUtils.js'
 
 class MapDictionary extends Dictionary {
     constructor(data, name) {
@@ -7,12 +8,23 @@ class MapDictionary extends Dictionary {
         this.size = Object.keys(data.raw).length;;
     }
 
-    lookup(query){
-        const map = this.data.raw;
+    lookupFromMap(map, query){
         if(map && map.hasOwnProperty(query)){
-            let def = map[query];
-            return def;
+            return map[query];
         }
+    }
+
+    lookupRaw(query) {
+        const map = this.data.raw;
+        return this.lookupFromMap(map, query);
+    }
+    
+    rawToJson(definition){
+        return parseTextDefinitionV2(definition);
+    }
+
+    lookupFromIndex(query, options){
+        return this.lookupFromRaw(query, options);
     }
 }
 
