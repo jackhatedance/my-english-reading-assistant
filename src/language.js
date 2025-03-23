@@ -189,7 +189,8 @@ function searchWordWithDict(request, dicts){
         if(isLink(lookupResult)){
             
             let link = getLink(lookupResult);            
-            console.log(`isLink ${word}`);
+            //console.log(`isLink ${word}`);
+            lookupResult = lookup(link, [lookupResult.dictionary]);
             if(lookupResult){
                 word = link;
                 definition = lookupResult.text;
