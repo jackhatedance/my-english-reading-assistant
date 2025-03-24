@@ -48,8 +48,9 @@ function searchWord(query, options){
         return result;
     }
     
-    if(!result) {
-        result = searchWordBase(request);
+    if(!result) {        
+        let dicts = getDicts(request);
+        result = searchWordWithDict(request, dicts);
     }
 
     if(!result && !request.anonymous) {
@@ -60,9 +61,7 @@ function searchWord(query, options){
     return result;
 }
 
-function searchWordBase(request){
-    
-    let requestOfDefault = {...request};
+function getDicts(request){
     
     let dicts = request.dicts;
     if(!dicts) {
@@ -79,13 +78,7 @@ function searchWordBase(request){
         }        
     }
     
-    let result = searchWordWithDict(requestOfDefault, dicts);
-    //console.log(result);
-    if(!result && !dicts.includes('#large')){
-        result = searchWordWithDict(request, ['#large']);
-    }
-    
-    return result;
+    return dicts;
 }
 
 function searchWordWithDict(request, dicts){
