@@ -42,12 +42,14 @@ function parseWordClass(def){
 
         var rx = /^((\w{1,6}\.)+ )?(.+)$/;
         var arr = rx.exec(def);
-        //console.log(arr)
+        //console.log(arr);
 
-        result = {
-            wordClass: arr[2] ? arr[2] : '',
-            meanings: arr[3].trim(),
-        };
+        if(arr && arr.length >=4 ){
+            result = {
+                wordClass: arr[2] ? arr[2] : '',
+                meanings: arr[3].trim(),
+            };
+        }
     }
     
 
@@ -83,5 +85,6 @@ function parseTextDefinitionV2(definition) {
     let entries = [entry];
     return entries;
 }
+
 
 export { splitWordClasses, splitWordMeanings, parseWordClass, parseTextDefinition, parseTextDefinitionV2 }
