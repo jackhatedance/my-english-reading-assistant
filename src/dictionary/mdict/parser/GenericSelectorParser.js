@@ -7,6 +7,7 @@ class GenericSelectorParser extends MdictParser {
     PRONUNCIATION = 'pronunciation';
     DEFINITION_GROUP = 'definitionGroup';
     GROUP_NAME = 'groupName';
+    INFLECTION = "inflection";
     DEFINITION = 'definition';
     
 
@@ -14,6 +15,14 @@ class GenericSelectorParser extends MdictParser {
         return this.selectors[name];
     }
 
+    find($, element, selectors){
+        if(typeof selectors === 'string'){
+            return selectors;
+        }
+
+        return selectors.find(selector => $(element).find(selector).length>0);        
+    }
+        
     parseEntries($){
         let entries = [];
 
@@ -51,24 +60,54 @@ class GenericSelectorParser extends MdictParser {
     parseDefinitionGroup($, element){
         let name = $(element).find(this.selector(this.GROUP_NAME)).text();
         name=name.trim();
-        
+        let inflection = $(element).find(this.selector(this.INFLECTION)).text();
+
         let definitions = [];
 
-        let definitionElements = $(element).find(this.selector(this.DEFINITION));
+        let selector = this.find($, element, this.selector(this.DEFINITION))
+        let definitionElements = $(element).find(selector);
         for(let definitionElement of definitionElements){
             let definition = $(definitionElement).text();
-            definition = definition.replaceAll(/[;]/g, ',')
-            definition = definition.trim();
+            if(!definition){
+                definition = '';
+            }
+            definition = this.trimDefinition(definition);            
             definitions.push(definition);
         }
-        return {name, definitions};
+        let definitionGroup = {name, inflection, definitions};
+        this.afterParseDefinitionGroup(definitionGroup);
+        return definitionGroup;
+    }
+    
+    afterParseDefinitionGroup(){
+
+    }
+
+    beforeParse(rawDefinition){
+        //subclass can modify rawDefinition here
+        return rawDefinition;
     }
 
     parse(rawDefinition) {
+        rawDefinition = this.beforeParse(rawDefinition);
+
         let html = rawDefinition;
 
         const $ = cheerio.load(html);
-        return this.parseEntries($);
+        let entries = this.parseEntries($);
+
+        this.afterParse(entries);
+
+        return entries; 
+    }
+
+    afterParse(entries){
+        //subclass can process entries here
+    }
+
+    trimDefinition(text){
+        text = text.replaceAll(/[;]/g, ',')
+        return text.trim();
     }
 }
 
