@@ -63,7 +63,6 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
-                    allowRemoveEndingDot: true,
                     simplifyDefinition: simplifyDefinitionOptions,
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
@@ -290,7 +289,6 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 function checkWord(siteOptions, text){
     let searchResult = searchWord(text, {
         allowLemma: true,
-        allowRemoveEndingDot: true,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });
@@ -350,7 +348,6 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        allowRemoveEndingDot: true,
                         simplifyDefinition: simplifyDefinitionOptions,
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });

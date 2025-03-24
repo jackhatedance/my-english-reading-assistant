@@ -16,7 +16,6 @@ var gPrefixes, gSuffixes;
 function createDefaultSearchWordOptions(){
     return {
         allowLemma: true,
-        allowRemoveEndingDot: true,
         simplifyDefinition: {},
         dictionaryOptions: {},
         anonymous: true,
@@ -48,11 +47,6 @@ function searchWord(query, options){
     if(query.match(/^[^a-zA-Z]+$/)){
         return result;
     }
-
-    let isEndWithDot = endsWithDot(request.query);
-    if(isEndWithDot) {
-        result = searchWordEndsWithDot(request);
-    }
     
     if(!result) {
         result = searchWordBase(request);
@@ -63,23 +57,6 @@ function searchWord(query, options){
         addUnrecognizedWord(query);
     }
 
-    return result;
-}
-
-function searchWordEndsWithDot(request){
-    let result = null;
-
-    if(request.allowRemoveEndingDot){
-        let oldQuery = request.query; 
-        let newQuery = oldQuery.slice(0, -1); 
-
-        request.query = newQuery;
-        result = searchWordBase(request);
-        if(!result){//restore
-            request.query = oldQuery;
-        }
-    }
-    
     return result;
 }
 

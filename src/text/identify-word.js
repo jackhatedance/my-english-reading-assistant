@@ -5,19 +5,20 @@ import apostrophe from "./transforms/apostrophe.js";
 import punctuation from "./transforms/punctuation.js";
 import compound from "./transforms/compound.js";
 import abbreviation from "./transforms/abbreviation.js";
+import endingDot from "./transforms/ending-dot.js";
 
 /**
- * identify word by a sequence of transforms
+ * guess word by a sequence of transforms
  * @param {*} content 
  * @param {*} options 
  * @param {*} checkWord 
  * @param {*} transforms 
  * @returns 
  */
-function identifyWord(content, options, checkWord, transforms){
+function guessWord(content, options, checkWord, transforms){
 
     if(!transforms){
-        transforms= ['punctuation', 'lineEndHyphen', 'apostrophe', 'abbreviation'];
+        transforms= ['punctuation', 'endingDot', 'lineEndHyphen', 'apostrophe', 'abbreviation'];
     }
 
     let headTransformer = buildChain(transforms);
@@ -40,6 +41,8 @@ function getTransform(name){
         return compound();
     } else if(name === 'abbreviation'){
         return abbreviation();
+    } else if(name === 'endingDot'){
+        return endingDot();
     }
     
     throw new Error('invalid transform:'+name);    
@@ -123,4 +126,4 @@ function checkWords(checkWord, words){
     return result;
 }
 
-export { identifyWord };
+export { guessWord };
