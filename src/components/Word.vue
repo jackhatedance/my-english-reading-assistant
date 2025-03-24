@@ -99,12 +99,20 @@ function jsonToText(entries){
         const { name, definitions} = definitionGroup;
         let wordClass = getWordClassAbbreviation(name);
 
-        let definitionsText = definitions.join(',');
+        let definitionTexts = definitions.map(item => item.text );
+        let definitionsText = definitionTexts.join(',');
         let groupText = `${wordClass} ${definitionsText}`;
         groupTexts.push(groupText);
     }
     let groupsText = groupTexts.join('\n');
-    let text = `${definitionObj.pronunciation}\n${groupsText}`;
+    
+    let pronunciation = definitionObj.pronunciation;    
+    if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
+        pronunciation = '';
+    }else {
+        pronunciation = `/${definitionObj.pronunciation}/`;
+    }
+    let text = `${pronunciation}\n${groupsText}`;
 
     //console.log(text);
     return text;

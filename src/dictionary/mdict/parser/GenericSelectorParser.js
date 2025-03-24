@@ -67,19 +67,32 @@ class GenericSelectorParser extends MdictParser {
         let selector = this.find($, element, this.selector(this.DEFINITION))
         let definitionElements = $(element).find(selector);
         for(let definitionElement of definitionElements){
-            let definition = $(definitionElement).text();
-            if(!definition){
-                definition = '';
-            }
-            definition = this.trimDefinition(definition);            
+            let definition = this.parseDefinition($, definitionElement);
             definitions.push(definition);
         }
         let definitionGroup = {name, inflection, definitions};
         this.afterParseDefinitionGroup(definitionGroup);
         return definitionGroup;
     }
-    
+
     afterParseDefinitionGroup(){
+
+    }
+
+    parseDefinition($, element){
+        let text = $(element).text();
+        if(!text){
+            text = '';
+        }
+        text = this.trimDefinition(text);            
+        let definition = { text };
+
+        this.afterParseDefinition(definition)
+
+        return definition;
+    }
+    
+    afterParseDefinition(definition){
 
     }
 

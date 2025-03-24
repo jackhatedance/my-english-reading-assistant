@@ -58,7 +58,7 @@ function parseTextDefinitionV2(definition) {
     if(!definition){
         return [];
     }
-    
+
     const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
     let pronunciation = '';
     if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
@@ -73,8 +73,8 @@ function parseTextDefinitionV2(definition) {
     for(let cls of classes){
         let wordClassResult = parseWordClass(cls);
         let group = wordClassResult.wordClass;    
-        let definitions = splitWordMeanings(wordClassResult.meanings);    
-        
+        let definitionTexts = splitWordMeanings(wordClassResult.meanings);    
+        let definitions = definitionTexts.map(item => { return { text: item } });
         let definitionGroup = { "name":group, "definitions": definitions };
         definitionGroups.push(definitionGroup);
     }

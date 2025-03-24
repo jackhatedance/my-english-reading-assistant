@@ -150,7 +150,8 @@ class Dictionary {
             const { name, definitions} = definitionGroup;
             let wordClass = getWordClassAbbreviation(name);
 
-            let definitionsText = definitions.join(',');
+            let definitionTexts = definitions.map(item => item.text );
+            let definitionsText = definitionTexts.join(',');
             let groupText = `${wordClass} ${definitionsText}`;
             groupTexts.push(groupText);
         }

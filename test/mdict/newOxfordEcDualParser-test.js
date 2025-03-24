@@ -18,7 +18,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "gʊd");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "合意的, 满意的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的, 满意的");      
       
     });
 
@@ -31,7 +31,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈdrægl");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "拖脏, 拖湿");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏, 拖湿");      
       
     });
 
@@ -44,7 +44,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈtɪtə(r)");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "窃笑, 咯咯笑");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑, 咯咯笑");      
       
     });
 
@@ -57,7 +57,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].pronunciation, "ɪt");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "构成原为指小词的名词");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "构成原为指小词的名词");      
       
     });
 
@@ -82,7 +82,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "twelv");
       assert.equal(parseResult[0].definitionGroups[0].name, "cardinal number");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "12十二, 十二个");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二, 十二个");
       
     });
 
@@ -96,10 +96,25 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].pronunciation, "ˈmʌstɪ");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].inflection, "mustier, mustiest");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0], "有霉味的, 有潮气的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的, 有潮气的");      
       
     });
 
+    it('these - plual', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/these.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].pronunciation, "ðiːz");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "this的复数");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].form, "plural");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "this");      
+      
+      
+    });
   });
   
 });

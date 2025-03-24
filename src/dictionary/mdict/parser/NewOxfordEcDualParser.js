@@ -1,5 +1,6 @@
 import { GenericSelectorParser } from './GenericSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_FORM_PLURAL } from '../../dictConstants.js'
 
 class NewOxfordEcDualParser extends GenericSelectorParser {
     constructor(data, name){
@@ -43,7 +44,21 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
         if(name.includes(inflection)){
             definitionGroup.name = name.replace(inflection, '');
         }
+    }
 
+    afterParseDefinition(definition){
+        let text = definition.text;
+        let result = text.match('([a-zA-Z]+) ?的复数');
+        if(result != null){
+            let base = result[1];
+            definition.type= DICTIONARY_DEFINITION_TYPE_FORM;
+            definition.form=DICTIONARY_DEFINITION_TYPE_FORM_PLURAL;
+            
+            let lowerCaseBase = base.toLowerCase();
+            definition.base=lowerCaseBase;
+
+            definition.text = text.replace(base, lowerCaseBase);
+        }
     }
 
     trimDefinition(text){        
