@@ -61,8 +61,7 @@ function tokenizeTextNode(document, siteOptions) {
                 query = trimPunctuations(query);
                 //console.log('after trim punctuation:'+query);
                 
-                let searchResult = searchWord({
-                    query: query,
+                let searchResult = searchWord(query, {                    
                     allowLemma: true,
                     allowRemoveSuffixOrPrefix: false,
                     allowRemoveEndingDot: true,
@@ -290,8 +289,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 }
 
 function checkWord(siteOptions, text){
-    let searchResult = searchWord({
-        query: text,
+    let searchResult = searchWord(text, {
         allowLemma: true,
         allowRemoveSuffixOrPrefix: false,
         allowRemoveEndingDot: true,
@@ -354,8 +352,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                 if(token.content && token.content.trim().length > 0) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
                     //console.log(contentWithoutPunctuation);
-                    let searchResult = searchWord({
-                        query: contentWithoutPunctuation,
+                    let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
                         allowRemoveSuffixOrPrefix: false,
                         allowRemoveEndingDot: true,

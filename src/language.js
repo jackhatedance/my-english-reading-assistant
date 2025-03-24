@@ -18,7 +18,7 @@ function createDefaultSearchWordOptions(){
         allowLemma: true,
         allowRemoveSuffixOrPrefix: false,
         allowRemoveEndingDot: true,
-        simplifyDefinition: simplifyDefinitionOptions,
+        simplifyDefinition: {},
         dictionaryOptions: {},
         allowCompounding: false,
         allowRemoveHyphen: false,
@@ -28,16 +28,19 @@ function createDefaultSearchWordOptions(){
 }
 
 function patchSearchOptionDefaultValues(options){
-    let defaultOptions = createDefaultOptions();
+    let defaultOptions = createDefaultSearchWordOptions();
     return Object.assign(defaultOptions, options);
 }
 
-function searchWord(request){
-    let result;
-    
-    request.query = variableLengthStandardizeCharacters(request.query);
+function searchWord(query, options){
+    options = patchSearchOptionDefaultValues(options);
 
-    let query = request.query;
+    let result;
+        
+    let request = Object.assign({}, options);
+    request.query = variableLengthStandardizeCharacters(query);
+
+    query = request.query;
 
     //too long
     if(query.length > 45){

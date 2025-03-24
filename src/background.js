@@ -69,8 +69,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
   let word = item.selectionText;
   //console.log("select word: " + word);
   if(item.menuItemId === 'toggle') {
-    let searchResult = searchWord({
-      query: word,
+    let searchResult = searchWord(word, {
       allowLemma: true,
       allowRemoveSuffixOrPrefix: false,
     });

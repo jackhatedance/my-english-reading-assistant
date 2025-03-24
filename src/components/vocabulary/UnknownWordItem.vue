@@ -41,8 +41,7 @@ const definition = computed(() => {
     }    
 
     //query root word
-    let searchResult = searchWord({
-      query: word,
+    let searchResult = searchWord(word, {
       allowLemma: true,
       allowRemoveSuffixOrPrefix: false,    
       dictionaryOptions: dictionaryOptions,  
