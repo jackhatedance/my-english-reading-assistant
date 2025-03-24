@@ -2,7 +2,8 @@
 import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictionary/text/textDefinitionUtils.js'
-                                             
+import { removeParentheses } from './text/textUtils.js'                                             
+
 function lookup(word, dicts) {
     //console.log(word);
     if(!dicts){
@@ -48,7 +49,7 @@ function simplifyDefinition(definition, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
     const hidePhoneticSymbol = true;
-
+    const hideParentheses = true;
     //console.log('simplify definition:'+ JSON.stringify(definition));
 
     if(!definition){
@@ -113,7 +114,9 @@ function simplifyDefinition(definition, options){
 
         let visiteMeanings = getVisitedMeanings(def);
         
-        
+        if(hideParentheses){
+            visiteMeanings = removeParentheses(visiteMeanings);
+        }
 
         definitionStr = definitionStr + visiteMeanings;
 

@@ -1,5 +1,5 @@
 
-import {trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters} from '../src/text/textUtils.js';
+import {trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, removeParentheses} from '../src/text/textUtils.js';
 import { strict as assert } from 'assert';
 
 describe('textUtils', function () {
@@ -88,5 +88,15 @@ describe('textUtils', function () {
     });
     
   });
+
+
+  describe('#removeParentheses()', function () {
+    
+    it('aurochs', async function () {
+      assert.equal(removeParentheses("原牛（现代家牛之祖, 可能于青铜器时代在英国灭绝, 最后一头1627年在波兰被杀）。亦称 URUS."), "原牛。亦称 URUS.");
+    });
+
+    
+  });  
   
 });

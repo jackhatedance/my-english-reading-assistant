@@ -74,5 +74,14 @@ function removeMaskedChars(str, mask){
     return replaceMaskedChars(str, mask, '')
 }
 
+function removeParentheses(text){
+    if(!text){
+        return text;
+    }
+    text = text.replace(/（/, '(');
+    text = text.replace(/）/, ')');
+    return text.replaceAll(/(\(.*\))/g, '');
+}
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars };
+
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, removeParentheses };
