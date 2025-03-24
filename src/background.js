@@ -70,8 +70,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
   //console.log("select word: " + word);
   if(item.menuItemId === 'toggle') {
     let searchResult = searchWord(word, {
-      allowLemma: true,
-      allowRemoveSuffixOrPrefix: false,
+      allowLemma: true,      
     });
     if(searchResult){
       let baseForm = searchResult.word;

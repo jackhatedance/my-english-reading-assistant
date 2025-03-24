@@ -16,12 +16,9 @@ var gPrefixes, gSuffixes;
 function createDefaultSearchWordOptions(){
     return {
         allowLemma: true,
-        allowRemoveSuffixOrPrefix: false,
         allowRemoveEndingDot: true,
         simplifyDefinition: {},
         dictionaryOptions: {},
-        allowCompounding: false,
-        allowRemoveHyphen: false,
         anonymous: true,
         autoJumping: false,       
     };
@@ -89,7 +86,7 @@ function searchWordEndsWithDot(request){
 function searchWordBase(request){
     
     let requestOfDefault = {...request};
-    requestOfDefault.allowRemoveSuffixOrPrefix = false;
+    
     let dicts = request.dicts;
     if(!dicts) {
         //console.log(`no dicts specified`);
@@ -111,61 +108,8 @@ function searchWordBase(request){
         result = searchWordWithDict(request, ['#large']);
     }
     
-    if(!result){
-        let containsHyphen = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
-        if(containsHyphen && request.allowRemoveHyphen){
-            let oldQuery = request.query;
-
-            let queryWithoutHyphen = request.query.replaceAll(/[-]/g, "");
-            queryWithoutHyphen = trimPunctuations(queryWithoutHyphen);
-
-            //try new query
-            request.query = queryWithoutHyphen;
-            result = searchWordWithDict(request, ['#large']);    
-
-            //restore old query
-            request.query = oldQuery;
-        }        
-    }
-
-    if(!result){
-        let isCompounding = request.query.match(/[a-zA-Z]+-[a-zA-Z]+/);
-        if(isCompounding && request.allowCompounding){
-            result = searchCompounding(request, ['#large']);    
-        }        
-    }
-
     return result;
 }
-
-
-function searchCompounding(request, dicts){
-    let query = request.query;
-
-    let wordParts = query.split('-');
-  
-    let definitions = [];
-    
-    let requestOfSubword = {...request};
-    for(let subword of wordParts){
-        requestOfSubword.query = subword;
-        let searchResult = searchWordWithDict(requestOfSubword, dicts);
-  
-        if(searchResult) {
-            let str = `${subword}:${searchResult.definition}`;
-            definitions.push(str);      
-        }        
-    }
-  
-    let searchResult = {
-      query: query,
-      searchType: 'compounding',
-      lemmaType: null,
-      word: query,
-      definition: definitions.join(';'),
-    };
-    return searchResult;
-  }
 
 function searchWordWithDict(request, dicts){
     //console.log('request:' + JSON.stringify(request)+', dicts:' + JSON.stringify(dicts));
@@ -305,46 +249,6 @@ function searchWordWithDict(request, dicts){
                 searchType='lemma';
             }
         
-        }
-    }
-
-
-    //prefix, suffix, lemma
-    if(!definition) {
-        if(request.allowRemoveSuffixOrPrefix){
-            if(!definition) {
-                transformResult = transformRemoveSuffix(input, dicts);
-
-                word = transformResult.word;
-                definition = transformResult.definition;
-            }
-            if(!definition) {
-                transformResult = transformRemovePrefix(input, dicts);
-
-                word = transformResult.word;
-                definition = transformResult.definition;
-            }
-            if(!definition) {
-                word = removePrefix(input);
-                word = removeSuffix(word);
-                if(word.length > 2){
-                    if(word!==input){
-                        definition = lookup(word, dicts)?.text;
-                    }
-                    
-                    //lemma
-                    if(!definition){
-                        transformResult = transformLemmatize(word, dicts);
-
-                        if(transformResult) {
-                            word = transformResult.word;
-                            definition = transformResult.definition; 
-                        }                        
-                    }
-                }
-
-            }
-            searchType='removeSuffixOrPrefix';
         }
     }
 
