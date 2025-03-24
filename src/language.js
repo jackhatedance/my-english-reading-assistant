@@ -461,27 +461,6 @@ function singularize(word) {
     );
 }
 
-
-function getTargetWord(baseWord, roots, prefix, suffix, rootMode){
-
-    let targetWord = baseWord;
-
-    if(rootMode && roots) {
-
-        let validPrefix = getPrefixes().includes(prefix);
-        let validSuffix = getSuffixes().includes(suffix);
-
-        let rootArray = roots.split(',');
-      if(rootArray.length==1
-        && validPrefix
-        && validSuffix){
-        targetWord = rootArray[0];
-      }
-      
-    }
-    return targetWord;
-}
-
 function isKnown(baseWord, vocabulary){
     //console.log('isKnow:'+baseWord);
     
