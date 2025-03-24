@@ -29,15 +29,15 @@ function patchSearchOptionDefaultValues(options){
 }
 
 function searchWord(query, options){
+    if(!query){
+        return;
+    }
+
+    query = variableLengthStandardizeCharacters(query);
     options = patchSearchOptionDefaultValues(options);
 
     let result;
-        
-    let request = Object.assign({}, options);
-    request.query = variableLengthStandardizeCharacters(query);
-
-    query = request.query;
-
+    
     //too long
     if(query.length > 45){
         return;
@@ -49,28 +49,28 @@ function searchWord(query, options){
     }
     
     if(!result) {        
-        let dicts = getDicts(request);
-        result = searchWordWithDict(request, dicts);
+        let dicts = getDicts(options);
+        result = searchWordWithDict(query, options, dicts);
     }
 
-    if(!result && !request.anonymous) {
-        //console.log('word not in dictionary: '+request.query);
+    if(!result && !options.anonymous) {
+        //console.log('word not in dictionary: '+options.query);
         addUnrecognizedWord(query);
     }
 
     return result;
 }
 
-function getDicts(request){
+function getDicts(options){
     
-    let dicts = request.dicts;
+    let dicts = options.dicts;
     if(!dicts) {
         //console.log(`no dicts specified`);
         dicts = getEnabledDictionaryNamesFromCache();
     }
 
-    if(request.dictionaryOptions){
-        let dictionaryOptions = request.dictionaryOptions;
+    if(options.dictionaryOptions){
+        let dictionaryOptions = options.dictionaryOptions;
         for(let ad of dictionaryOptions.additionalDictionaries){
             if(ad && !dicts.includes(ad)){
                 dicts.unshift(ad);
@@ -81,10 +81,10 @@ function getDicts(request){
     return dicts;
 }
 
-function searchWordWithDict(request, dicts){
-    //console.log('request:' + JSON.stringify(request)+', dicts:' + JSON.stringify(dicts));
+function searchWordWithDict(query, options, dicts){
+    //console.log('options:' + JSON.stringify(options)+', dicts:' + JSON.stringify(dicts));
     
-    let input = request.query;
+    let input = query;
     let searchType = 'raw';
     let lemmaType = 'regular';
     //console.log('input:'+input);
@@ -133,7 +133,7 @@ function searchWordWithDict(request, dicts){
 
 
     if(!definition) {
-        if(request.allowLemma){
+        if(options.allowLemma){
             transformResult = transformLemmatize(input, dicts);
 
             if(transformResult) {
@@ -148,7 +148,7 @@ function searchWordWithDict(request, dicts){
     if(definition) {
         
         //lemma
-        if(request.allowLemma){
+        if(options.allowLemma){
             let done = false;
 
             //console.log(input);
@@ -226,12 +226,12 @@ function searchWordWithDict(request, dicts){
     if(definition){// find the correct form which has definition in dictionary
 
         let shortDefinition = definition;
-        if(request.simplifyDefinition){
-            shortDefinition = simplifyDefinition(definition, request.simplifyDefinition);
+        if(options.simplifyDefinition){
+            shortDefinition = simplifyDefinition(definition, options.simplifyDefinition);
         }
 
         let result = {
-            query : request.query,
+            query : query,
             searchType: searchType,
             lemmaType: lemmaType,
             word: word,
