@@ -156,7 +156,14 @@ class Dictionary {
             groupTexts.push(groupText);
         }
         let groupsText = groupTexts.join('; ');
-        let text = `${definitionObj.pronunciation} ${groupsText}`;
+
+        let pronunciation = definitionObj.pronunciation;    
+        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
+            pronunciation = '';
+        }else {
+            pronunciation = `/${definitionObj.pronunciation}/`;
+        }
+        let text = `${pronunciation}\n${groupsText}`;
     
         //console.log(text);
         return text;
