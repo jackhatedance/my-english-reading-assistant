@@ -1,17 +1,18 @@
 
 const wordClassMap = {
-    "noun": "n",
-    "verb": "v",
-    "auxiliary verb": "aux",
-    "adjective": "adj",
-    "adverb": "adv",
-    "pronoun": "pron",
-    "preposition": "prep",
-    "conjunction": "conj",
-    "determiner": "det",
-    "possessive determiner": "det",
-    "interjection": "int",
-    "cardinal number": "num",
+    "noun": "n.",
+    "verb": "v.",
+    "auxiliary verb": "aux.",
+    "adjective": "adj.",
+    "adverb": "adv.",
+    "interrogative adverb":"int-adv.",
+    "pronoun": "pron.",
+    "preposition": "prep.",
+    "conjunction": "conj.",
+    "determiner": "det.",
+    "possessive determiner": "pos-det.",
+    "interjection": "int.",
+    "cardinal number": "num.",
 };
 
 function getWordClassAbbreviation(wordClass) {
@@ -19,7 +20,7 @@ function getWordClassAbbreviation(wordClass) {
         var abbreviation = wordClassMap[wordClass];
     }
 
-    let result = abbreviation ? abbreviation + '.' : wordClass;
+    let result = abbreviation ? abbreviation : wordClass;
     return result;
 }
 

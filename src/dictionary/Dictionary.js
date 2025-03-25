@@ -147,10 +147,17 @@ class Dictionary {
 
         let groupTexts = [];
         for(let definitionGroup of definitionObj.definitionGroups){
-            const { name, definitions} = definitionGroup;
+            const { name } = definitionGroup;
             let wordClass = getWordClassAbbreviation(name);
 
-            let definitionTexts = definitions.filter(item => item.text != '').map(item => item.text );
+            let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+
+            let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
+            if(shortDefinitions.length >= 3){
+                definitions = shortDefinitions;
+            }
+            let definitionTexts = definitions.map(item => item.text );
+            
             let definitionsText = definitionTexts.join(',');
             let groupText = `${wordClass} ${definitionsText}`;
             groupTexts.push(groupText);
