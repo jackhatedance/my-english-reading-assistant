@@ -220,4 +220,12 @@ function getSimplifyDefinitionOptions(siteOptions){
     return simplifyDefinitionOptions;
 }
 
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions};
+function createSimplifyDefinitionOptions(maxMeaningNumber = 6, hideWordClass = false){
+    let simplifyDefinitionOptions = {
+        hideWordClass: hideWordClass,
+        maxMeaningNumber: maxMeaningNumber,
+    };
+    return simplifyDefinitionOptions;
+}
+
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions};

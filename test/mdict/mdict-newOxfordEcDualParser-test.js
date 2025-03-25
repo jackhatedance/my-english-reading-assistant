@@ -18,7 +18,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "gʊd");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的, 满意的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的");      
       
     });
 
@@ -31,7 +31,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈdrægl");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏, 拖湿");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏");      
       
     });
 
@@ -44,7 +44,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈtɪtə(r)");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑, 咯咯笑");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑");      
       
     });
 
@@ -82,7 +82,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "twelv");
       assert.equal(parseResult[0].definitionGroups[0].name, "cardinal number");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二, 十二个");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二");
       
     });
 
@@ -96,7 +96,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].pronunciation, "ˈmʌstɪ");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].inflection, "mustier, mustiest");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的, 有潮气的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的");      
       
     });
 

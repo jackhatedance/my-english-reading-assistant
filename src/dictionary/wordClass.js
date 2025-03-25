@@ -2,6 +2,7 @@
 const wordClassMap = {
     "noun": "n",
     "verb": "v",
+    "auxiliary verb": "aux",
     "adjective": "adj",
     "adverb": "adv",
     "pronoun": "pron",

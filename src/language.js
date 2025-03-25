@@ -4,7 +4,7 @@ import {lookup, simplifyDefinition, isLink, getLink } from './dictionary.js';
 import { splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary/text/textDefinitionUtils.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
-import {getOptionsFromCache} from './service/optionService.js';
+import {getOptionsFromCache, createSimplifyDefinitionOptions} from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
@@ -226,10 +226,12 @@ function searchWordWithDict(query, options, dicts){
     if(definition){// find the correct form which has definition in dictionary
 
         let shortDefinition = definition;
+        let middleDefinition = definition;
         if(options.simplifyDefinition){
             shortDefinition = simplifyDefinition(definition, options.simplifyDefinition);
+            middleDefinition = simplifyDefinition(definition, createSimplifyDefinitionOptions(6, false));
         }
-
+        
         let result = {
             query : query,
             searchType: searchType,
@@ -237,6 +239,7 @@ function searchWordWithDict(query, options, dicts){
             word: word,
             definition: definition,
             shortDefinition: shortDefinition,
+            middleDefinition: middleDefinition,
         };
 
         //console.log('search result:'+JSON.stringify(result));

@@ -8,6 +8,7 @@ function buildAnnotationParameters(searchResult) {
     let baseWord = searchResult.word;
     let definition = searchResult.definition;
     let shortDefinition = searchResult.shortDefinition;
+    let middleDefinition = searchResult.middleDefinition;
 
     if (searchResult.searchType === 'stem') {
         definition = '根' + searchResult.word + ':' + definition;
@@ -33,15 +34,15 @@ function buildAnnotationParameters(searchResult) {
     }
 
     let annotationParameters = {
-        definition, shortDefinition, baseWord, parts
+        definition, shortDefinition, middleDefinition, baseWord, parts
     };
     return annotationParameters;
 }
 
 function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber) {
     let annotationParameters = buildAnnotationParameters(searchResult);
-    let { definition, shortDefinition, baseWord, parts } = annotationParameters;
-    let formatted = format(token, definition, shortDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+    let { definition, shortDefinition, middleDefinition, baseWord, parts } = annotationParameters;
+    let formatted = format(token, definition, shortDefinition, middleDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
     //console.log('formatted:'+formatted);
 
     return formatted;
@@ -49,7 +50,7 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
 
 function updateWordAnnotation(textElement, searchResult, showShortDefinition){
     let annotationParameters = buildAnnotationParameters(searchResult);
-    let { definition, shortDefinition, baseWord, parts } = annotationParameters;
+    let { definition, shortDefinition, middleDefinition, baseWord, parts } = annotationParameters;
 
     let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
 
@@ -58,7 +59,7 @@ function updateWordAnnotation(textElement, searchResult, showShortDefinition){
 
     textElement.setAttribute('data-base-word', escapedBaseWord);
     textElement.setAttribute('data-parts', `${parts}`);
-    textElement.setAttribute('data-footnote', definition);
+    textElement.setAttribute('data-footnote', middleDefinition);
 
     if(!showShortDefinition){
         shortDefinition = '';
@@ -77,13 +78,13 @@ function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
     return result;
 }
 
-function format(word, definition, shortDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
+function format(word, definition, shortDefinition, middleDefinition, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
     let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
     let escapedWord = word.replace(/&/g, "&amp;");
 
     let type = baseWord ? 'mea-word' : 'mea-nonword';
 
-    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${definition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</${TOKEN_TAG}>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</${TOKEN_TAG}>`;
     return s;
 }
 
