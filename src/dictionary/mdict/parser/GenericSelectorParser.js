@@ -1,6 +1,7 @@
 import { MdictParser } from '../MdictParser.js'
 import * as cheerio from 'cheerio';
 import { trimByCharacters } from '../../../utils/stringUtils.js'
+import { removeParentheses } from '../../../text/textUtils.js'
 
 class GenericSelectorParser extends MdictParser {
     ENTRY = 'entry';
@@ -84,7 +85,10 @@ class GenericSelectorParser extends MdictParser {
         if(!text){
             text = '';
         }
-        text = this.trimDefinition(text);            
+        text = this.trimDefinition(text);    
+
+        text = removeParentheses(text);
+        text = text.split(',')[0];        
         let definition = { text };
 
         this.afterParseDefinition(definition)
