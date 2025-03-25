@@ -507,5 +507,12 @@
     },
     "dictionary_system_affix_alias":{
         "message":"系统词缀字典"
+    },
+    
+    "notification_build_index_title":{
+        "message":"创建词典索引"
+    },
+    "notification_build_index_message":{
+        "message":"通常需要几分钟时间，请保持浏览器打开"
     }
 }

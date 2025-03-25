@@ -241,64 +241,76 @@ async function saveDictionary(dictionary){
 }
 
 async function migrateAllDictionaries(updateProgress){
-    let dictionaryMetas = await getAllDictionaryMetas();
-    let count=0;
-    for(let meta of dictionaryMetas){
-        let upgraded = await migrateDictionary(meta.name, (progress) => updateProgress(meta.name, progress));
-        if(upgraded){
-            count++;
+    let metas = await getDictionaryWithInvalidIndexes();
+    
+    let count = metas.length;
+    if(count > 0){
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/icon_128.png',
+            title: chrome.i18n.getMessage('notification_build_index_title'),
+            message: chrome.i18n.getMessage('notification_build_index_message'),
+            priority: 0
+        });  
+
+        for(let meta of metas){
+            await migrateDictionary(meta, (progress) => updateProgress(meta.name, progress));        
         }
     }
     console.log(`${count} dictionary has been upgraded.`);
 }
 
-//run in background
-async function migrateDictionary(name, updateProgress){
-    //console.log('check if index need upgrade: '+ name);
-
-    let needUpgrade = false;
-
-    let meta = await getDictionaryMeta(name);    
-    if(meta && meta.type != 'system' && meta.data.index.support){
-        let index = await loadDictionaryIndexData(name);
-        let isValid = isIndexValid(meta, index);
-        if(!isValid){
-            needUpgrade = true;
-
-            if(gIndexBuildingJobs.includes(name)){
-                console.log(`an index job is working on ${name}`);
-                return;
-            }
-            gIndexBuildingJobs.push(name)
-
-            console.log('start upgrade: '+ name);
-            try {
-                let raw = await loadDictionaryRawData(name);            
-                let dictionaryInstance = createDictionaryInstance(meta, { raw }, '', false);
-
-                let index = await generateIndex(dictionaryInstance, updateProgress);
-                
-                await saveDictionaryIndexData(name, index);
-
-                meta.data.index = {
-                    version: index.version,
-                };
-                await saveDictionaryMeta(meta);
-
-                updateProgress({rate:1, remain: 0});
-                console.log('complete upgrade: '+ name);
-            } catch(error) {
-                console.log('build index failed', error);
-            } finally {
-                index = gIndexBuildingJobs.indexOf(name);
-                if (index > -1) {
-                    gIndexBuildingJobs.splice(index, 1); // Removes 1 element at the index
-                }
+async function getDictionaryWithInvalidIndexes(){
+    let dictionaryMetas = await getAllDictionaryMetas();
+    let dictionaryMetasOfInvalidIndexes = [];
+    for(let meta of dictionaryMetas){
+        let name = meta.name;
+        if(meta && meta.type != 'system' && meta.data.index.support){
+            let index = await loadDictionaryIndexData(name);
+            let isValid = isIndexValid(meta, index);
+            if(!isValid){
+                dictionaryMetasOfInvalidIndexes.push(meta);
             }
         }
     }
-    
-    return needUpgrade;
+    return dictionaryMetasOfInvalidIndexes;
+}
+//run in background
+async function migrateDictionary(meta, updateProgress){
+    //console.log('check if index need upgrade: '+ name);
+
+    let name = meta.name;
+    if(gIndexBuildingJobs.includes(name)){
+        console.log(`an index job is working on ${name}`);
+        return;
+    }
+    gIndexBuildingJobs.push(name)
+
+    console.log('start upgrade: '+ name);
+    try {
+        let raw = await loadDictionaryRawData(name);            
+        let dictionaryInstance = createDictionaryInstance(meta, { raw }, '', false);
+
+        let index = await generateIndex(dictionaryInstance, updateProgress);
+        
+        await saveDictionaryIndexData(name, index);
+
+        meta.data.index = {
+            version: index.version,
+        };
+        await saveDictionaryMeta(meta);
+
+        updateProgress({rate:1, remain: 0});
+        console.log('complete upgrade: '+ name);
+    } catch(error) {
+        console.log('build index failed', error);
+    } finally {
+        let index = gIndexBuildingJobs.indexOf(name);
+        if (index > -1) {
+            gIndexBuildingJobs.splice(index, 1); // Removes 1 element at the index
+        }
+    }
+
 }
 
 async function deleteDictionaryIndex(name){
@@ -310,4 +322,4 @@ async function deleteDictionaryIndex(name){
     await deleteDictionaryIndexData(name);
 }
 
-export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder };
+export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder }

@@ -507,5 +507,12 @@
     },
     "dictionary_system_affix_alias":{
         "message":"SystemAffixDict"
-    }    
+    },
+
+    "notification_build_index_title":{
+        "message":"Build dictionary indexes"
+    },
+    "notification_build_index_message":{
+        "message":"Usually it takes a few minutes, keep the browser open while building"
+    }
 }
