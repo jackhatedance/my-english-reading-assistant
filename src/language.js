@@ -101,18 +101,6 @@ function searchWordWithDict(query, options, dicts){
     
     let transformResult;
 
-    if(lookupResult){
-        if(isLink(lookupResult)){
-            
-            let link = getLink(lookupResult);            
-            //console.log(`isLink ${word}`);
-            lookupResult = lookup(link, [lookupResult.dictionary]);
-            if(lookupResult){
-                word = link;
-            }            
-        }
-    }
-
     //try lower case
     if(!lookupResult) {
         transformResult = transformLowercase(input, dicts);
@@ -144,6 +132,16 @@ function searchWordWithDict(query, options, dicts){
     }
 
     if(lookupResult) {
+        
+        if(isLink(lookupResult)){
+            
+            let link = getLink(lookupResult);            
+            //console.log(`isLink ${word}`);
+            lookupResult = lookup(link, [lookupResult.dictionary]);
+            if(lookupResult){
+                word = link;
+            }            
+        };
         
         //lemma
         if(options.allowLemma){
