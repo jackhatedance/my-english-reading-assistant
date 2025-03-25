@@ -98,8 +98,7 @@ function searchWordWithDict(query, options, dicts){
 
     let word = input;
     let lookupResult = lookup(word, dicts);
-    let definition = lookupResult?.text;
-
+    
     let transformResult;
 
     if(lookupResult){
@@ -110,54 +109,53 @@ function searchWordWithDict(query, options, dicts){
             lookupResult = lookup(link, [lookupResult.dictionary]);
             if(lookupResult){
                 word = link;
-                definition = lookupResult.text;
             }            
         }
     }
 
     //try lower case
-    if(!definition) {
+    if(!lookupResult) {
         transformResult = transformLowercase(input, dicts);
         word = transformResult.word;
-        definition = transformResult.definition;
+        lookupResult = transformResult.lookupResult;
     }
 
     //use lowercase word from here
     input = word;
 
     //try captialize, such god -> God
-    if(!definition && input.length > 1){
+    if(!lookupResult && input.length > 1){
         word = input[0].toUpperCase() + input.substring(1);
-        definition = lookup(word, dicts)?.text;
+        lookupResult = lookup(word, dicts);
     }
 
 
-    if(!definition) {
+    if(!lookupResult) {
         if(options.allowLemma){
             transformResult = transformLemmatize(input, dicts);
 
             if(transformResult) {
                 word = transformResult.word;
-                definition = transformResult.definition;
+                lookupResult = transformResult.lookupResult;
 
                 searchType='lemma';
             }
         }
     }
 
-    if(definition) {
+    if(lookupResult) {
         
         //lemma
         if(options.allowLemma){
             let done = false;
 
             //console.log(input);
-            let result = definition.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
+            let result = lookupResult.text.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
             
             //console.log('match result 1:'+result);   
             if(result != null){
                 word = result[1];
-                definition = lookup(word, dicts)?.text;
+                lookupResult = lookup(word, dicts);
                 
                 lemmaType = 'irregular';
                 done = true;
@@ -166,12 +164,12 @@ function searchWordWithDict(query, options, dicts){
 
             if(!done){
                 
-                let result = definition.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
+                let result = lookupResult.text.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
                 if(result != null){
                     word = result[1];
-                    let def = lookup(word, dicts)?.text;
-                    if(definition.includes(def)){
-                        definition = def;
+                    let lookupResult2 = lookup(word, dicts);
+                    if(lookupResult2){
+                        lookupResult = lookupResult2;
 
                         lemmaType = 'plural';
                         done = true;
@@ -180,7 +178,7 @@ function searchWordWithDict(query, options, dicts){
             }
 
             if(!done){
-                let wordClasses = splitWordClasses(definition);
+                let wordClasses = splitWordClasses(lookupResult.text);
                 if(wordClasses.length === 1) {
                     let wordClassResult = parseWordClass(wordClasses[0]);
                     let meanings = splitWordMeanings(wordClassResult.meanings);
@@ -188,9 +186,9 @@ function searchWordWithDict(query, options, dicts){
                         let result = meanings[0].match('^([a-zA-Z]+)的((变形))');
                         if(result != null){
                             word = result[1];
-                            let def = lookup(word, dicts)?.text;
-                            if(def){
-                                definition = def;
+                            let lookupResult2 = lookup(word, dicts);
+                            if(lookupResult2){
+                                lookupResult = lookupResult2;
 
                                 lemmaType = 'morph';
                                 done = true;
@@ -201,13 +199,13 @@ function searchWordWithDict(query, options, dicts){
             }
 
             if(!done){
-                if(definition.startsWith('pl\.')){
+                if(lookupResult.text.startsWith('pl\.')){
                     transformResult = transformLemmatize(input, dicts);
                     
                     //found base form
                     if(transformResult){
                         word = transformResult.word;
-                        definition = transformResult.definition;
+                        lookupResult = transformResult.lookupResult;
                         
                         lemmaType = 'plural';
                         done = true;
@@ -223,8 +221,9 @@ function searchWordWithDict(query, options, dicts){
     }
 
     //finally,
-    if(definition){// find the correct form which has definition in dictionary
+    if(lookupResult){// find the correct form which has definition in dictionary
 
+        let definition = lookupResult.text;
         let shortDefinition = definition;
         let middleDefinition = definition;
         if(options.simplifyDefinition){
@@ -252,69 +251,69 @@ function searchWordWithDict(query, options, dicts){
 
 function transformLowercase(input, dicts){
     let word = input.toLowerCase();
-    let definition;
+    let lookupResult;
     if(word !== input){
-        definition = lookup(word, dicts)?.text;
+        lookupResult = lookup(word, dicts);
     }
     return {
         word,
-        definition,
+        lookupResult,
     }
 }
 
 function transformLemmatize(input, dicts){
     let word;
-    let definition;
+    let lookupResult;
     
     //possessive, such as Jack's -> Jack
-    if(!definition) {
+    if(!lookupResult) {
         word = getBaseFromPossessive(input);
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
-    if(!definition) {
+    if(!lookupResult) {
         word = singularize(input);
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
     //word-parts dictionary has higher priority than lemmatize lib
-    if(!definition) {
+    if(!lookupResult) {
         word = getBaseFromWordParts(input)
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
-    if(!definition) {
+    if(!lookupResult) {
         word = lemmatize.adjective(input);
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
-    if(!definition) {
+    if(!lookupResult) {
         word = lemmatize.noun(input);
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }                
     }
 
-    if(!definition) {
+    if(!lookupResult) {
         word = lemmatize.verb(input);
         if(word !== input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
     let result = null;
-    if(definition) {
+    if(lookupResult) {
         result = {
             word,
-            definition,
+            lookupResult,
         }
     }
     return result;
@@ -322,32 +321,32 @@ function transformLemmatize(input, dicts){
 }
 
 function transformRemovePrefix(input, dicts){
-    let definition;
+    let lookupResult;
     let word = removePrefix(input);
     if(word.length > 2){
         if(word!==input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
 
     return {
         word,
-        definition,
+        lookupResult,
     }
 }
 
 
 function transformRemoveSuffix(input, dicts){
-    let definition;
+    let lookupResult;
     let word = removeSuffix(input);
     if(word.length > 2){
         if(word!==input){
-            definition = lookup(word, dicts)?.text;
+            lookupResult = lookup(word, dicts);
         }
     }
     return {
         word,
-        definition,
+        lookupResult,
     }
 }
 
