@@ -1,6 +1,6 @@
 import { GenericSelectorParser } from './GenericSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_FORM_PLURAL, DICTIONARY_DEFINITION_TYPE_FORM_THIRD_PERSON_SINGULAR_PRESENT, DICTIONARY_DEFINITION_TYPE_FORM_PAST_AND_PAST_PARTICIPLE } from '../../dictConstants.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_FORM_PLURAL, DICTIONARY_DEFINITION_TYPE_FORM_THIRD_PERSON_SINGULAR_PRESENT, DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE } from '../../dictConstants.js'
 
 const formMatchers = [
     {
@@ -12,12 +12,8 @@ const formMatchers = [
         suffix: '第三人称单数现在时',
     },
     {   
-        form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_AND_PAST_PARTICIPLE,
-        suffix: '过去式和过去分词',
-    },
-    {   
-        form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_AND_PAST_PARTICIPLE,
-        suffix: '过去式',
+        form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,
+        suffix: '.*((过去式)|(过去分词))',
     }              
 ];
 class NewOxfordEcDualParser extends GenericSelectorParser {

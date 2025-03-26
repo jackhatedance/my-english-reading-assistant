@@ -3,7 +3,7 @@ import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictionary/text/textDefinitionUtils.js'
 import { removeParentheses } from './text/textUtils.js' 
-import { DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
+import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
 
 function lookup(word, dicts) {
     //console.log(word);
@@ -45,7 +45,12 @@ function getDict(name){
     return dict;
     
 }
-
+/**
+ * TODO remove this function
+ * @param {*} definition 
+ * @param {*} options 
+ * @returns 
+ */
 function simplifyDefinition(definition, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
@@ -131,6 +136,101 @@ function simplifyDefinition(definition, options){
     return definitionStrList.join('; ');    
 }
 
+function simplifyDefinitionV2(originalLookupResult, deepLookupResult, options){
+    let { maxMeaningNumber, hideWordClass } = options;
+    //hardcode temporarily
+    const hidePhoneticSymbol = true;
+    const hideParentheses = true;
+    //console.log('simplify definition:'+ JSON.stringify(definition));
+
+    if(!originalLookupResult){
+        return '';
+    }
+
+    let lookupResult = originalLookupResult;
+    let prefix = '';
+    if(deepLookupResult){
+        lookupResult = deepLookupResult.lookupResult;
+        //prefix = `${deepLookupResult.lookupResult.query}:`;
+    }
+
+    let entries = lookupResult.json;
+    if(entries.length == 0){
+        return '';
+    }
+
+    let entry = entries[0];
+    const { pronunciation, definitionGroups } = entry;
+
+    let totalMeaningNumber = 0;
+    let definitions = [];
+    for(let definitionGroup of definitionGroups){
+        //console.log('parse word class:'+ JSON.stringify(wordClassResult));
+        let wordClass = definitionGroup.name;
+
+        let meanings = definitionGroup.definitions.map(item => item.text);
+
+        let definition = {
+            wordClass: wordClass,
+            meanings: meanings,
+            size: meanings.length,
+            currentIndex: 0,//for later use
+        }
+
+        totalMeaningNumber += meanings.length;
+
+        definitions.push(definition);        
+    }
+
+    //visit meanings one by one
+    let definitionSize = definitions.length;
+    let i =0;
+    let definitionIndex;
+    let meaningCounter=0;
+    while(meaningCounter < maxMeaningNumber && meaningCounter < totalMeaningNumber && i < 100){
+        definitionIndex = i % definitionSize; 
+        let definition = definitions[definitionIndex];
+
+        let available = nextMeaning(definition);
+        if(available){
+            meaningCounter++;
+        }
+
+        i++;
+    }
+
+    //concat definition
+    let definitionStrList = [];
+    for(let def of definitions){
+        if(def.currentIndex == 0){
+            continue;
+        }
+
+        let definitionStr = '';
+
+        if(!hideWordClass){
+            definitionStr = def.wordClass;
+        }
+
+        let visiteMeanings = getVisitedMeanings(def);
+        
+        if(hideParentheses){
+            visiteMeanings = removeParentheses(visiteMeanings);
+        }
+
+        definitionStr = definitionStr + visiteMeanings;
+
+        definitionStrList.push(definitionStr);
+    }
+
+    if(meaningCounter < totalMeaningNumber){
+        definitionStrList.push('...');
+    }
+
+    let definitionStr = definitionStrList.join('; ');   
+    return prefix + definitionStr;
+}
+
 function nextMeaning(definition){
     if(definition.currentIndex < definition.size){
         definition.currentIndex = definition.currentIndex + 1;
@@ -146,25 +246,35 @@ function getVisitedMeanings(definition){
     return visitedMeanings.join(',');    
 }
 
-function isLink(lookupResult){
+function isOnlyLink(lookupResult){
     let entries = lookupResult.json;
-    if(entries.length == 1 && entries[0].type == 'link'){
-        return true;
-    } else {
-        return false;
+    try{
+        let definitions = entries[0].definitionGroups[0].definitions;
+        if(definitions.length ==1){
+            let definition = definitions[0];
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+                return true;                
+            }
+        }        
+    }catch(error){
+        //do nothing
     }
+
+    return false;
 }
 
-function getLink(lookupResult){
+function getTheOnlyLink(lookupResult){
     let entries = lookupResult.json;
-    if(entries.length == 1 && entries[0].type == 'link'){
-        let entry = entries[0];
-        let link = entry.link;
-        return link;
-    }
+    let definitions = entries[0].definitionGroups[0].definitions;
+    if(definitions.length ==1){
+        let definition = definitions[0];
+        if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+            return definition.link;                
+        }
+    }  
 }
 
-function isTransformOnly(lookupResult, form){
+function isOnlyTransform(lookupResult, form){
     let entries = lookupResult.json;
     try{
         let definitions = entries[0].definitionGroups[0].definitions;
@@ -185,7 +295,7 @@ function isTransformOnly(lookupResult, form){
     return false;
 }
 
-function getBaseForm(lookupResult){
+function getTheOnlyBaseForm(lookupResult){
     let entries = lookupResult.json;
     try{
         let definitions = entries[0].definitionGroups[0].definitions;
@@ -200,4 +310,4 @@ function getBaseForm(lookupResult){
     }
 }
 
-export { lookup, simplifyDefinition, isLink, getLink, isTransformOnly, getBaseForm };
+export { lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, isOnlyTransform, getTheOnlyBaseForm };

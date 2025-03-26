@@ -1,7 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition, isLink, getLink, isTransformOnly, getBaseForm } from './dictionary.js';
-import { splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary/text/textDefinitionUtils.js';
+import {lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, } from './dictionary.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache, createSimplifyDefinitionOptions} from './service/optionService.js';
@@ -10,6 +9,8 @@ import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
 import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
+import { deepLookup } from './deep-lookup.js'
+
 
 var gPrefixes, gSuffixes;
 
@@ -99,7 +100,7 @@ function searchWordWithDict(query, options, dicts){
     let word = input;
     let lookupResult = lookup(word, dicts);
     
-    let transformResult;
+    let transformResult, deepLookupResult;
 
     //try lower case
     if(!lookupResult) {
@@ -132,95 +133,24 @@ function searchWordWithDict(query, options, dicts){
     }
 
     if(lookupResult) {
+        if(isOnlyLink(lookupResult)){            
+            let link = getTheOnlyLink(lookupResult);        
+            let linkLookupResult = lookup(link, dicts);                  
+            
+            if(linkLookupResult) {
+                //replace
+                lookupResult = linkLookupResult;
+                word = link;        
+            }        
+        }    
         
         //lemma
         if(options.allowLemma){
-            let done = false;
+            deepLookupResult = deepLookup(lookupResult);
 
-            if(isLink(lookupResult)){
-            
-                let link = getLink(lookupResult);            
-                //console.log(`isLink ${word}`);
-                lookupResult = lookup(link, [lookupResult.dictionary]);
-                if(lookupResult) {
-                    word = link;
-                }            
-            }else if(isTransformOnly(lookupResult)){
-                let base = getBaseForm(lookupResult);
-                lookupResult = lookup(base, [lookupResult.dictionary]);
-                if(lookupResult) {
-                    word = base;
-                }
-            }
-
-            //console.log(input);
-            let result = lookupResult.text.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
-            
-            //console.log('match result 1:'+result);   
-            if(result != null){
-                word = result[1];
-                lookupResult = lookup(word, dicts);
-                
-                lemmaType = 'irregular';
-                done = true;
-
-            }
-
-            if(!done){
-                
-                let result = lookupResult.text.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
-                if(result != null){
-                    word = result[1];
-                    let lookupResult2 = lookup(word, dicts);
-                    if(lookupResult2){
-                        lookupResult = lookupResult2;
-
-                        lemmaType = 'plural';
-                        done = true;
-                    }
-                }
-            }
-
-            if(!done){
-                let wordClasses = splitWordClasses(lookupResult.text);
-                if(wordClasses.length === 1) {
-                    let wordClassResult = parseWordClass(wordClasses[0]);
-                    let meanings = splitWordMeanings(wordClassResult.meanings);
-                    if(meanings.length === 1) {
-                        let result = meanings[0].match('^([a-zA-Z]+)的((变形))');
-                        if(result != null){
-                            word = result[1];
-                            let lookupResult2 = lookup(word, dicts);
-                            if(lookupResult2){
-                                lookupResult = lookupResult2;
-
-                                lemmaType = 'morph';
-                                done = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(!done){
-                if(lookupResult.text.startsWith('pl\.')){
-                    transformResult = transformLemmatize(input, dicts);
-                    
-                    //found base form
-                    if(transformResult){
-                        word = transformResult.word;
-                        lookupResult = transformResult.lookupResult;
-                        
-                        lemmaType = 'plural';
-                        done = true;
-                    }
-                }
-            }
-
-            if(done){
+            if(deepLookupResult){
                 searchType='lemma';
-            }
-        
+            }        
         }
     }
 
@@ -231,8 +161,11 @@ function searchWordWithDict(query, options, dicts){
         let shortDefinition = definition;
         let middleDefinition = definition;
         if(options.simplifyDefinition){
-            shortDefinition = simplifyDefinition(definition, options.simplifyDefinition);
-            middleDefinition = simplifyDefinition(definition, createSimplifyDefinitionOptions(6, false));
+            //shortDefinition = simplifyDefinition(definition, options.simplifyDefinition);
+            //middleDefinition = simplifyDefinition(definition, createSimplifyDefinitionOptions(6, false));
+
+            shortDefinition = simplifyDefinitionV2(lookupResult, deepLookupResult, options.simplifyDefinition);
+            middleDefinition = simplifyDefinitionV2(lookupResult, deepLookupResult, createSimplifyDefinitionOptions(6, false));
         }
         
         let result = {

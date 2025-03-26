@@ -66,6 +66,8 @@ class Dictionary {
 
             this.convertOutputFormat(result, options);
             this.cleanOutputFormat(result, options);
+
+            result.query = query;
         }
 
         return result;
