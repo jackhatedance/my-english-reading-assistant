@@ -509,10 +509,16 @@
         "message":"系统词缀字典"
     },
     
-    "notification_build_index_title":{
-        "message":"创建词典索引"
+    "notification_build_index_title_start":{
+        "message":"开始创建词典索引"
     },
-    "notification_build_index_message":{
-        "message":"通常需要几分钟时间，请保持浏览器打开"
+    "notification_build_index_message_start":{
+        "message":"创建期间部分词典无法正常使用，请保持浏览器运行。"
+    },
+    "notification_build_index_title_end":{
+        "message":"结束创建词典索引"
+    },
+    "notification_build_index_message_end":{
+        "message":"词典都可以正常使用了"
     }
 }

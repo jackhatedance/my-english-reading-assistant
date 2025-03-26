@@ -252,14 +252,22 @@ async function migrateAllDictionaries(updateProgress){
         chrome.notifications.create({
             type: 'basic',
             iconUrl: 'icons/icon_128.png',
-            title: chrome.i18n.getMessage('notification_build_index_title'),
-            message: chrome.i18n.getMessage('notification_build_index_message'),
+            title: chrome.i18n.getMessage('notification_build_index_title_start'),
+            message: chrome.i18n.getMessage('notification_build_index_message_start'),
             priority: 0
         });  
 
         for(let meta of metas){
             await migrateDictionary(meta, (progress) => updateProgress(meta.name, progress));        
         }
+
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/icon_128.png',
+            title: chrome.i18n.getMessage('notification_build_index_title_end'),
+            message: chrome.i18n.getMessage('notification_build_index_message_end'),
+            priority: 0
+        }); 
     }
     console.log(`${count} dictionary has been upgraded.`);
 }

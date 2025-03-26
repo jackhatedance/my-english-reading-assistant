@@ -509,10 +509,16 @@
         "message":"SystemAffixDict"
     },
 
-    "notification_build_index_title":{
-        "message":"Build dictionary indexes"
+    "notification_build_index_title_start":{
+        "message":"start build dictionary indexes"
     },
-    "notification_build_index_message":{
-        "message":"Usually it takes a few minutes, keep the browser open while building"
+    "notification_build_index_message_start":{
+        "message":"Dictionaries can not be used before building is completed. Please keep the browser running."
+    },
+    "notification_build_index_title_end":{
+        "message":"finish build dictionary indexes"
+    },
+    "notification_build_index_message_end":{
+        "message":"All dictionaries are back to normal"
     }
 }
