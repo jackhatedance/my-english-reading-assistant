@@ -1,4 +1,6 @@
 import { getWordClassAbbreviation } from './wordClass.js'
+import { mergeEntries } from './entry-utils.js'
+
 class Dictionary {
     size = 0;
     name = null;
@@ -104,46 +106,12 @@ class Dictionary {
         return this.lookupIndex(query);
     }
 
-    mergeEntries(entries){
-        let mergedPronunciations = [];
-        let mergedDefinitionGroupMap = {};
-        
-        for(let entry of entries){
-            mergedPronunciations.push(entry.pronunciation);
-            
-            for(let definitionGroup of entry.definitionGroups){
-                const { name, definitions} = definitionGroup;
-                
-                let mergedGroupDefinitions;
-                if(mergedDefinitionGroupMap.hasOwnProperty(name)){
-                    mergedGroupDefinitions = mergedDefinitionGroupMap[name];
-                } else {
-                    mergedGroupDefinitions = [];                    
-                }
-
-                mergedDefinitionGroupMap[name] = mergedGroupDefinitions.concat(definitions);
-            }
-        }
-
-        let mergedPronunciation = mergedPronunciations.join(',');
-        let mergedDefinitionGroups = [];
-        for(let name in mergedDefinitionGroupMap){
-            let definitions = mergedDefinitionGroupMap[name];
-            mergedDefinitionGroups.push({name, definitions});
-        }
-        let mergedEntry = {
-            pronunciation: mergedPronunciation,
-            definitionGroups : mergedDefinitionGroups,
-        };
-        return mergedEntry;
-    }
-
     jsonToText(entries){
         if(!entries || entries.length == 0){
             return '';
         }
 
-        let entry = this.mergeEntries(entries);
+        let entry = mergeEntries(entries);
         
         let definitionObj = entry;
 

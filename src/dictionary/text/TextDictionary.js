@@ -1,6 +1,6 @@
 import {Dictionary} from '../Dictionary.js'
 import { dataURItoText } from '../../utils/fileUtils.js'
-import { parseTextDefinitionV2 } from './textDefinitionUtils.js'
+import { TextDefinitionParser } from './TextDefinitionParser.js'
 
 class TextDictionary extends Dictionary {
     constructor(data, name) {
@@ -17,6 +17,8 @@ class TextDictionary extends Dictionary {
             this.size = array.length;
 
             this.map = this.generateMap(array);
+
+            this.definitionParser = new TextDefinitionParser();
         }        
     }
 
@@ -59,7 +61,7 @@ class TextDictionary extends Dictionary {
     }
     
     rawToJson(definition){
-        return parseTextDefinitionV2(definition);
+        return this.definitionParser.parse(definition);
     }
         
 }

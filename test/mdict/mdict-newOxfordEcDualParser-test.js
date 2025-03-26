@@ -68,8 +68,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].type, "link");
-      assert.equal(parseResult[0].link, "feather");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "feather");      
       
     });
 
@@ -140,6 +140,19 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "强bʌt, 弱bət");
       assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是");
+      
+      
+    });
+
+    it('rode - merge pronunciations', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].pronunciation, "rəʊd");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "ride的过去式");
       
       
     });

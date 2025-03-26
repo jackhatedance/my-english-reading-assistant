@@ -1,6 +1,9 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
 function splitWordClasses(definition){
+    if(!definition){
+        return [];
+    }
     return definition.split(';');
 }
 

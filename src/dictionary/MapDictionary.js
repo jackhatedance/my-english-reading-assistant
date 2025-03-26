@@ -1,11 +1,12 @@
 import {Dictionary} from './Dictionary.js'
-import {parseTextDefinitionV2} from './text/textDefinitionUtils.js'
+import { TextDefinitionParser } from './text/TextDefinitionParser.js'
 
 class MapDictionary extends Dictionary {
     constructor(data, name) {
         super(data, name);
 
-        this.size = Object.keys(data.raw).length;;
+        this.size = Object.keys(data.raw).length;
+        this.definitionParser = new TextDefinitionParser();
     }
 
     lookupFromMap(map, query){
@@ -20,7 +21,7 @@ class MapDictionary extends Dictionary {
     }
     
     rawToJson(definition){
-        return parseTextDefinitionV2(definition);
+        return this.definitionParser.parse(definition);
     }
 
     lookupFromIndex(query, options){

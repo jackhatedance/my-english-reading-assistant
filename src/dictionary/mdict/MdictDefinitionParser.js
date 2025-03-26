@@ -1,9 +1,5 @@
-class MdictParser {
-    
-
-    parse() {
-        throw new Error('not implemented');
-    }
+import { DefinitionParser } from '../DefinitionParser.js'
+class MdictDefinitionParser extends DefinitionParser {
 
     createEntryForLink(link){
         let definition = {
@@ -24,4 +20,4 @@ class MdictParser {
 
 }
 
-export { MdictParser }
+export { MdictDefinitionParser }

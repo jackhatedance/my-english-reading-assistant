@@ -1,9 +1,9 @@
-import { MdictParser } from '../MdictParser.js'
+import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 import { trimByCharacters } from '../../../utils/stringUtils.js'
 import { removeParentheses } from '../../../text/textUtils.js'
 
-class GenericSelectorParser extends MdictParser {
+class GenericSelectorParser extends MdictDefinitionParser {
     ENTRY = 'entry';
     PRONUNCIATION = 'pronunciation';
     DEFINITION_GROUP = 'definitionGroup';
@@ -76,9 +76,7 @@ class GenericSelectorParser extends MdictParser {
         return definitionGroup;
     }
 
-    afterParseDefinitionGroup(){
-
-    }
+    
 
     parseDefinition($, element){
         let text = $(element).text();
@@ -96,14 +94,7 @@ class GenericSelectorParser extends MdictParser {
         return definition;
     }
     
-    afterParseDefinition(definition){
 
-    }
-
-    beforeParse(rawDefinition){
-        //subclass can modify rawDefinition here
-        return rawDefinition;
-    }
 
     parse(rawDefinition) {
         rawDefinition = this.beforeParse(rawDefinition);
@@ -118,13 +109,10 @@ class GenericSelectorParser extends MdictParser {
         return entries; 
     }
 
-    afterParse(entries){
-        //subclass can process entries here
-    }
 
     trimDefinition(text){
         text = text.replaceAll(/[;]/g, ',')
-        return text.trim();
+        return super.trimDefinition(text);
     }
 }
 

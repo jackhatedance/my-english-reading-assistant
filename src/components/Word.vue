@@ -7,7 +7,7 @@ import { sendMessageMarkWordToBackground } from '../message.js';
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-
+import { mergeEntries } from '../dictionary/entry-utils.js'
 
 const props = defineProps({
     word: String,
@@ -50,40 +50,6 @@ const lookupResult = computed(() => {
 
     return lookupResult;
 });
-
-function mergeEntries(entries) {
-    let mergedPronunciations = [];
-    let mergedDefinitionGroupMap = {};
-
-    for(let entry of entries){
-        mergedPronunciations.push(entry.pronunciation);
-        
-        for(let definitionGroup of entry.definitionGroups){
-            const { name, definitions} = definitionGroup;
-            
-            let mergedGroupDefinitions;
-            if(mergedDefinitionGroupMap.hasOwnProperty(name)){
-                mergedGroupDefinitions = mergedDefinitionGroupMap[name];
-            } else {
-                mergedGroupDefinitions = [];                    
-            }
-
-            mergedDefinitionGroupMap[name] = mergedGroupDefinitions.concat(definitions);
-        }
-    }
-
-    let mergedPronunciation = mergedPronunciations.join(',');
-    let mergedDefinitionGroups = [];
-    for(let name in mergedDefinitionGroupMap){
-        let definitions = mergedDefinitionGroupMap[name];
-        mergedDefinitionGroups.push({name, definitions});
-    }
-    let mergedEntry = {
-        pronunciation: mergedPronunciation,
-        definitionGroups : mergedDefinitionGroups,
-    };
-    return mergedEntry;
-}
 
 function jsonToText(entries){
     if(!entries || entries.length == 0){
