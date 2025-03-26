@@ -111,7 +111,22 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "this的复数");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].form, "plural");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "this");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "this");            
+    });
+
+
+    it('is - third person singular', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/is.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].pronunciation, "强ɪz, 弱z");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "be的第三人称单数现在时");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].form, "third person singular present");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "be");      
       
       
     });

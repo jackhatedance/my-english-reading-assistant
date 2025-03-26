@@ -1,5 +1,5 @@
 // index data version should always match below program version. any change to index building should increase it.
-export const INDEX_VERSION = 12;
+export const INDEX_VERSION = 15;
 
 //sleepWorkRatio: sleep time / work time. the larger the slower
 async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {

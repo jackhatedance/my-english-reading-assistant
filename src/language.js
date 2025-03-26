@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition, isLink, getLink } from './dictionary.js';
+import {lookup, simplifyDefinition, isLink, getLink, isTransformOnly, getBaseForm } from './dictionary.js';
 import { splitWordClasses, parseWordClass, splitWordMeanings} from './dictionary/text/textDefinitionUtils.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
@@ -133,19 +133,25 @@ function searchWordWithDict(query, options, dicts){
 
     if(lookupResult) {
         
-        if(isLink(lookupResult)){
-            
-            let link = getLink(lookupResult);            
-            //console.log(`isLink ${word}`);
-            lookupResult = lookup(link, [lookupResult.dictionary]);
-            if(lookupResult){
-                word = link;
-            }            
-        };
-        
         //lemma
         if(options.allowLemma){
             let done = false;
+
+            if(isLink(lookupResult)){
+            
+                let link = getLink(lookupResult);            
+                //console.log(`isLink ${word}`);
+                lookupResult = lookup(link, [lookupResult.dictionary]);
+                if(lookupResult) {
+                    word = link;
+                }            
+            }else if(isTransformOnly(lookupResult)){
+                let base = getBaseForm(lookupResult);
+                lookupResult = lookup(base, [lookupResult.dictionary]);
+                if(lookupResult) {
+                    word = base;
+                }
+            }
 
             //console.log(input);
             let result = lookupResult.text.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 

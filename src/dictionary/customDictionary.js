@@ -10,7 +10,11 @@ var gCustomDictionaries = {};
 var gIndexBuildingJobs = [];
 var gAllDictionaryMetas = [];
 
-
+/**
+ * only call this when a page is enabled.
+ * it use lot of memory.
+ * @param {*} additionalDictionaryNames 
+ */
 async function initializeCustomDictionaryService(additionalDictionaryNames){
     await loadSystemDictionariesToCache();
     

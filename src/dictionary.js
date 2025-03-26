@@ -2,7 +2,8 @@
 import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictionary/text/textDefinitionUtils.js'
-import { removeParentheses } from './text/textUtils.js'                                             
+import { removeParentheses } from './text/textUtils.js' 
+import { DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
 
 function lookup(word, dicts) {
     //console.log(word);
@@ -169,7 +170,7 @@ function isTransformOnly(lookupResult, form){
         let definitions = entries[0].definitionGroups[0].definitions;
         if(definitions.length ==1){
             let definition = definitions[0];
-            if(definition.type= DICTIONARY_DEFINITION_TYPE_FORM){
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
                 if(!form){
                     return true;
                 } else if(definition.form == form) {
@@ -190,7 +191,7 @@ function getBaseForm(lookupResult){
         let definitions = entries[0].definitionGroups[0].definitions;
         if(definitions.length ==1){
             let definition = definitions[0];
-            if(definition.type= DICTIONARY_DEFINITION_TYPE_FORM){
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
                 return definition.base;
             }
         }        
