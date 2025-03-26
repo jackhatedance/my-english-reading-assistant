@@ -1,3 +1,4 @@
+import { trimByCharacters } from '../../utils/stringUtils.js'
 
 function splitWordClasses(definition){
     return definition.split(';');
@@ -65,6 +66,7 @@ function parseTextDefinitionV2(definition) {
     let pronunciation = '';
     if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
         pronunciation = phoneticSymbolsArray[1];
+        pronunciation = trimByCharacters(pronunciation, '/');
     }
     if(pronunciation){
         definition = definition.replace(/(\[.*\]|\/.*\/)\s/, '');

@@ -500,13 +500,13 @@
     },
 
     "dictionary_system_small_alias":{
-        "message":"SystemDict1"
+        "message":"System Concise EC Dictionary(S)"
     },
     "dictionary_system_large_alias":{
-        "message":"SystemDict2"
+        "message":"System Concise EC Dictionary(L)"
     },
     "dictionary_system_affix_alias":{
-        "message":"SystemAffixDict"
+        "message":"System Affix Dictionary"
     },
 
     "notification_build_index_title_start":{

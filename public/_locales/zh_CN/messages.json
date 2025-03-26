@@ -500,13 +500,13 @@
     },
 
     "dictionary_system_small_alias":{
-        "message":"系统字典1"
+        "message":"系统简明英汉词典（小）"
     },
     "dictionary_system_large_alias":{
-        "message":"系统字典2"
+        "message":"系统简明英汉词典（大）"
     },
     "dictionary_system_affix_alias":{
-        "message":"系统词缀字典"
+        "message":"系统词缀词典"
     },
     
     "notification_build_index_title_start":{
