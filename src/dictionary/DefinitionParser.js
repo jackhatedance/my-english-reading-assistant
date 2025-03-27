@@ -6,6 +6,14 @@ class DefinitionParser {
         throw new Error('not implemented');
     }
 
+    toJson(rawDefinition) {
+        return this.parse(rawDefinition);
+    }
+
+    toHtml(rawDefinition, getResource) {
+        throw new Error('not implemented');
+    }
+
 
     beforeParse(rawDefinition){
         //subclass can modify rawDefinition here

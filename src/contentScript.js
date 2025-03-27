@@ -179,7 +179,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload) {      
       //annotationOptions = request.payload;
       getCurrentSiteOptions().then(async (siteOptions) => {
-        await updateAdditionalDictionariesInCache(siteOptions.other.additionalDictionaries);
+        await updateAdditionalDictionariesInCache(siteOptions.other.additionalDictionaries, ['index']);
         changeStyleForAllDocuments(gSiteProfile, siteOptions);
       });
     }

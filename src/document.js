@@ -219,7 +219,7 @@ function addStyle(document) {
         height: fit-content;
         padding: 0px;
         #mea-vueapp-iframe {
-          width: 400px;
+          width: 500px;
           height: 610px;
           border: none;
         }

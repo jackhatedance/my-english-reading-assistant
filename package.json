@@ -43,6 +43,7 @@
     "js-md5": "^0.8.3",
     "lancaster-stemmer": "^2.1.0",
     "markdown-loader": "^8.0.0",
+    "mime-types": "^3.0.1",
     "node-polyfill-webpack-plugin": "^4.1.0",
     "rehype-slug": "^6.0.0",
     "rehype-stringify": "^10.0.1",

@@ -7,7 +7,7 @@ import { sendMessageMarkWordToBackground } from '../message.js';
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-import { mergeEntries } from '../dictionary/entry-utils.js'
+import { textToBase64 } from '../utils/fileUtils.js'
 
 const props = defineProps({
     word: String,
@@ -36,7 +36,7 @@ const lookupResult = computed(() => {
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(props.word, dicts, { outputFormats: ['html'] });
+    let lookupResult = lookup(props.word, dicts, { fromRaw: true, outputFormats: ['html'] });
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionary)){
@@ -44,6 +44,11 @@ const lookupResult = computed(() => {
         }else{
             lookupResult.alias = lookupResult.dictionary;
         }
+
+        let html = lookupResult.html;
+        //console.log(html);
+        //let html = '<body>Foo</body>';
+        lookupResult.iframeSrc = 'data:text/html;charset=utf-8;base64,' + textToBase64(html);        
     }    
 
     return lookupResult;
@@ -133,8 +138,9 @@ async function onClearMark() {
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span> <span class="dictionary">[{{ lookupResult?.alias }}]</span></p>
-            <div v-html="lookupResult?.html"></div>
+            <p><span class="dictionary">[{{ lookupResult?.alias }}]</span></p>
+            
+            <iframe class="content-iframe" :src="lookupResult?.iframeSrc"></iframe>
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
@@ -148,9 +154,13 @@ async function onClearMark() {
 </template>
 
 <style>
+.word-container {
+    height: 400px;
+}
+
 .word-definition {
     border: solid black 1px;
-
+    height: 85%;
     .word {
         font-size: large;
     }
@@ -159,6 +169,11 @@ async function onClearMark() {
     }
     .word-definition-content {
         white-space: pre-line;
+    }
+
+    .content-iframe {
+        width: 100%;
+        height: 80%;
     }
 }
 

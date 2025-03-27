@@ -57,6 +57,7 @@ class Dictionary {
         
 
         if(result){
+            result.query = query;
 
             let entries = result.json;
             if(entries){
@@ -73,9 +74,7 @@ class Dictionary {
             }
 
             this.convertOutputFormat(result, options);
-            this.cleanOutputFormat(result, options);
-
-            result.query = query;
+            this.cleanOutputFormat(result, options);           
         }
 
         return result;
@@ -152,7 +151,10 @@ class Dictionary {
         return text;
     }
 
-    jsonToHtml(entries){
+    jsonToHtml(result){
+        const query = result.query;
+        const entries = result.json;
+
         if(!entries || entries.length == 0){
             return '';
         }
@@ -179,38 +181,46 @@ class Dictionary {
         }else {
             pronunciation = `/${definitionObj.pronunciation}/`;
         }
-        let text = `${pronunciation}<br>${groupsText}`;
+        let text = `${query} ${pronunciation}<br>${groupsText}`;
     
         //console.log(text);
         return `${text}`;
     }
 
+    createJson(result){        
+        if(result.raw){
+            result.json = this.rawToJson(result.raw);                    
+        } else {
+            throw new Error(`need raw but no raw`); 
+        }
+    }
+
+    createText(result){
+        //either from raw or json
+        this.createJsonIfNotExist(result);
+        result.text = this.jsonToText(result.json);   
+    }
+
     createHtml(result){
         //either from raw or json
         this.createJsonIfNotExist(result);
-        result.html = this.jsonToHtml(result.json);   
+        result.html = this.jsonToHtml(result);   
     }
 
     createJsonIfNotExist(result){
         if(!result.json){
-            if(result.raw){
-                result.json = this.rawToJson(result.raw);                    
-            }
-        }
-        if(!result.json){
-            throw new Error(`need JSON but no JSON`); 
+            this.createJson(result);
         }
     }
 
     convertOutputFormat(result, options){
 
         if(options.outputFormats.includes('json') && !result.json){
-            this.createJsonIfNotExist(result);                      
+            this.createJson(result);                      
         }        
 
         if(options.outputFormats.includes('text') && !result.text){
-            this.createJsonIfNotExist(result);
-            result.text = this.jsonToText(result.json);            
+            this.createText(result);           
         }
 
         if(options.outputFormats.includes('html') && !result.html){

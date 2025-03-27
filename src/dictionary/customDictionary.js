@@ -15,22 +15,26 @@ var gAllDictionaryMetas = [];
  * it use lot of memory.
  * @param {*} additionalDictionaryNames 
  */
-async function initializeCustomDictionaryService(additionalDictionaryNames){
+async function initializeCustomDictionaryService(additionalDictionaryNames, dataTypes = ['index']){
+
     await loadSystemDictionariesToCache();
     
-    await loadCustomDictionariesToCache(additionalDictionaryNames);
+    await loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes);
 }
 
-async function loadCustomDictionary(dictionaryMeta, indexDataOnly){
+async function loadCustomDictionary(dictionaryMeta, dataTypes){
     let name = dictionaryMeta.name;
     
-    let data;
-    if(indexDataOnly){
-        let indexData = await loadDictionaryIndexData(name);  
-        data = { index: indexData};    
-    } else {
-        data = await loadDictionaryData(name);
+    let raw, index;
+    if(dataTypes.includes('raw')){
+        raw = await loadDictionaryRawData(name);
     }
+
+    if(dataTypes.includes('index')){
+        index = await loadDictionaryIndexData(name);          
+    }
+    
+    let data = { raw, index };    
     
     let dictionary;
     if(dictionaryMeta.format == 'text'){
@@ -40,7 +44,8 @@ async function loadCustomDictionary(dictionaryMeta, indexDataOnly){
             dictionary = new TextDictionary(data, name);
         }
     }else if(dictionaryMeta.format == 'mdict'){
-        dictionary = createDictionaryInstance(dictionaryMeta, data, name, true);
+        let checkIndex = dataTypes.includes('index');
+        dictionary = createDictionaryInstance(dictionaryMeta, data, name, checkIndex);
     }
     
     return dictionary;
@@ -168,24 +173,24 @@ async function deleteDictionaryMeta(name){
     await setAllDictionaryMetas(newMetas);
 }
 
-async function loadCustomDictionariesToCache(additionalDictionaryNames){
+async function loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes){
     let metas = await getAllDictionaryMetas();
     gAllDictionaryMetas = metas;
 
     for(let meta of metas) {
         if(meta.enabled || additionalDictionaryNames.includes(meta.name)){
-            await loadCustomDictionaryToCache(meta);
+            await loadCustomDictionaryToCache(meta, dataTypes);
         }        
     }    
 }
 
-async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames){
+async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames, dataTypes){
     for(let meta of gAllDictionaryMetas){
         let name = meta.name;
         let isAdditional = meta.enabled != true && meta.data.index.status == 'OK';
         if(isAdditional){
             if(activeAdditionalDictionaryNames.includes(name)){
-                await loadCustomDictionaryToCache(meta);
+                await loadCustomDictionaryToCache(meta, dataTypes);
             }else{
                 removeCustomDictionaryFromCache(name);
             
@@ -194,10 +199,10 @@ async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNam
     }
 }
 
-async function loadCustomDictionaryToCache(meta){
+async function loadCustomDictionaryToCache(meta, dataTypes){
     const name = meta.name;
     
-    let dict = await loadCustomDictionary(meta, true);
+    let dict = await loadCustomDictionary(meta, dataTypes);
     if(dict){
         gCustomDictionaries[name] = dict;
         //console.log(`load dictionary to cache ${name}`);
@@ -288,7 +293,11 @@ async function getDictionaryWithInvalidIndexes(){
     return dictionaryMetasOfInvalidIndexes;
 }
 //run in background
-async function migrateDictionary(meta, updateProgress){
+async function migrateDictionary(dictionary, updateProgress){
+    let meta = dictionary;
+    if(typeof dictionary === 'string'){
+        meta = getDictionaryMeta(dictionary);
+    }
     //console.log('check if index need upgrade: '+ name);
 
     let name = meta.name;

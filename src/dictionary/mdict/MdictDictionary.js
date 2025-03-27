@@ -46,6 +46,20 @@ class MdictDictionary extends Dictionary {
         
     }
 
+    getMddResource(key){
+        if(!key){
+            return null;
+        }
+
+        key = key.replaceAll(/\//g, '\\');
+        if(!key.startsWith('\\')){
+            key = '\\' + key;
+        }
+
+        let result = this.mdd.locate(key);
+        return result?.definition;
+    }
+
     getBufferedFile(file){
         let arrayBuffer = dataURItoArrayBuffer(file.dataUri);
         const buffer = Buffer.from(arrayBuffer);
@@ -70,7 +84,23 @@ class MdictDictionary extends Dictionary {
             throw new Error(`no parser found`);
         }
 
-        return this.mdictParser.parse(definition);
+        return this.mdictParser.toJson(definition);
+    }
+
+    rawToHtml(rawDefinition){
+        if(!this.mdictParser){
+            throw new Error(`no parser found`);
+        }
+
+        return this.mdictParser.toHtml(rawDefinition, (key) => this.getMddResource(key));
+    }
+
+    createHtml(result){
+        if(!result.raw){
+            result.raw = this.lookupRaw(result.query);
+        }
+       
+        result.html = this.rawToHtml(result.raw);   
     }
    
 }
