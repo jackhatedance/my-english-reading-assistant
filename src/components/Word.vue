@@ -36,11 +36,9 @@ const lookupResult = computed(() => {
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(props.word, dicts);
+    let lookupResult = lookup(props.word, dicts, { outputFormats: ['html'] });
     if(lookupResult) {
-        lookupResult.formattedText = jsonToText(lookupResult.json);
-
-
+        
         if(isSystemDictionary(lookupResult.dictionary)){
             lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionary);
         }else{
@@ -50,39 +48,6 @@ const lookupResult = computed(() => {
 
     return lookupResult;
 });
-
-function jsonToText(entries){
-    if(!entries || entries.length == 0){
-        return '';
-    }
-
-    let entry = mergeEntries(entries);
-
-    let definitionObj = entry;
-
-    let groupTexts = [];
-    for(let definitionGroup of definitionObj.definitionGroups){
-        const { name, definitions} = definitionGroup;
-        let wordClass = getWordClassAbbreviation(name);
-
-        let definitionTexts = definitions.filter(item => item.text != '').map(item => item.text );
-        let definitionsText = definitionTexts.join(',');
-        let groupText = `${wordClass} ${definitionsText}`;
-        groupTexts.push(groupText);
-    }
-    let groupsText = groupTexts.join('\n');
-    
-    let pronunciation = definitionObj.pronunciation;    
-    if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
-        pronunciation = '';
-    }else {
-        pronunciation = `/${definitionObj.pronunciation}/`;
-    }
-    let text = `${pronunciation}\n${groupsText}`;
-
-    //console.log(text);
-    return text;
-}
 
 const knownRef = new ref(false);
 watch(() => props.word, (newValue) => {
@@ -169,7 +134,7 @@ async function onClearMark() {
     <div class="word-container">
         <div class="word-definition">
             <p><span class="word">{{ props.word }}</span> <span class="dictionary">[{{ lookupResult?.alias }}]</span></p>
-            <p class="word-definition-content">{{ lookupResult?.formattedText }}</p>
+            <div v-html="lookupResult?.html"></div>
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>

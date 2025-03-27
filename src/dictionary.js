@@ -5,7 +5,16 @@ import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictio
 import { removeParentheses } from './text/textUtils.js' 
 import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
 
-function lookup(word, dicts) {
+function createDefaultOptions(){
+    return { outputFormats:['text', 'json']};
+}
+
+function patchOptions(options){
+    return Object.assign(createDefaultOptions(), options);
+}
+
+function lookup(word, dicts, options) {
+    options = patchOptions(options);
     //console.log(word);
     if(!dicts){
         dicts = getEnabledDictionaryNamesFromCache();
@@ -23,7 +32,7 @@ function lookup(word, dicts) {
         let dict = getDict(name);
         
         if(dict){
-            lookupResult = dict.lookup(word, { outputFormats:['text', 'json']});
+            lookupResult = dict.lookup(word, options);
             
             if(lookupResult){
                 lookupResult.dictionary = name;

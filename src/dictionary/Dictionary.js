@@ -44,9 +44,15 @@ class Dictionary {
         let result = null;
         
         if(options.fromRaw){
-            result = this.lookupFromRaw(query, options);
+            let rawResult = this.lookupFromRaw(query, options);
+            if(rawResult){
+                result = Object.assign({}, rawResult);
+            }            
         } else {
-            result = this.lookupFromIndex(query, options);
+            let indexResult = this.lookupFromIndex(query, options);
+            if(indexResult){
+                result = Object.assign({}, indexResult);
+            }            
         }
         
 
@@ -146,6 +152,45 @@ class Dictionary {
         return text;
     }
 
+    jsonToHtml(entries){
+        if(!entries || entries.length == 0){
+            return '';
+        }
+    
+        let entry = mergeEntries(entries);
+    
+        let definitionObj = entry;
+    
+        let groupTexts = [];
+        for(let definitionGroup of definitionObj.definitionGroups){
+            const { name, definitions} = definitionGroup;
+            let wordClass = getWordClassAbbreviation(name);
+    
+            let definitionTexts = definitions.filter(item => item.text != '').map(item => item.text );
+            let definitionsText = definitionTexts.join(',');
+            let groupText = `${wordClass} ${definitionsText}`;
+            groupTexts.push(groupText);
+        }
+        let groupsText = groupTexts.join('<br>');
+        
+        let pronunciation = definitionObj.pronunciation;    
+        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
+            pronunciation = '';
+        }else {
+            pronunciation = `/${definitionObj.pronunciation}/`;
+        }
+        let text = `${pronunciation}<br>${groupsText}`;
+    
+        //console.log(text);
+        return `${text}`;
+    }
+
+    createHtml(result){
+        //either from raw or json
+        this.createJsonIfNotExist(result);
+        result.html = this.jsonToHtml(result.json);   
+    }
+
     createJsonIfNotExist(result){
         if(!result.json){
             if(result.raw){
@@ -166,7 +211,11 @@ class Dictionary {
         if(options.outputFormats.includes('text') && !result.text){
             this.createJsonIfNotExist(result);
             result.text = this.jsonToText(result.json);            
-        }    
+        }
+
+        if(options.outputFormats.includes('html') && !result.html){
+            this.createHtml(result);
+        }
     }
 
     cleanOutputFormat(result, options){
@@ -180,6 +229,10 @@ class Dictionary {
 
         if(!options.outputFormats.includes('text')){
             delete result.text;
+        }
+
+        if(!options.outputFormats.includes('html')){
+            delete result.html;
         }
     }
 }
