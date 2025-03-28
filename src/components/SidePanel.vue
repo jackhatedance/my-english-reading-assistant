@@ -69,7 +69,7 @@ async function updatePageInfo(pageInfo) {
       let siteOptions = response.pageInfo.siteOptions;
       //console.log(`update info: ${JSON.stringify(siteOptions)}`);
       let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
-      await initializeCustomDictionaryService(additionalDictionaryNames, ['raw']);
+      await initializeCustomDictionaryService(additionalDictionaryNames, ['raw', 'index']);
 
       isShowUnavailable.value = false;
       isShowTabs.value = true;
@@ -114,6 +114,13 @@ function messageListener(request, sender, sendResponse) {
     menuItems.value = request.payload.menuItems;
 
     changeToggle.value = !(changeToggle.value);
+  } else if (request.type === 'DICTIONARY_LINK') {
+    const href = request.data;
+    let matchResult = href.match(/.*:\/\/(.*)/);
+    if(matchResult && matchResult.length>1){
+      let entry = matchResult[1];
+      word.value = entry.toLowerCase();
+    }    
   }
   
   sendResponse(response);

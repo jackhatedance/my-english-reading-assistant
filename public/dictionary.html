@@ -1,0 +1,38 @@
+<html>
+
+<head>
+
+    <script>
+
+        window.addEventListener(
+        "message",
+        (event) => {
+            
+            document.body.innerHTML = event.data.html;
+            
+            const anchors = document.querySelectorAll('a');
+
+            anchors.forEach(anchor => {
+                anchor.addEventListener('click', function(event) {
+                    let href = anchor.href;
+                    if(href && href.startsWith('entry://')){
+                        event.preventDefault(); // Prevents the default link behavior
+                        // Add your custom logic here
+                        //console.log('Anchor clicked:', href);
+                        window.parent.postMessage({ type: 'DICTIONARY_LINK', data: href}, '*');
+                    }                        
+                });
+            });
+        },
+        false,
+        );
+        //console.log('message listener added');
+    </script>
+</head>
+<body>
+
+    
+
+    
+</body>
+</html>

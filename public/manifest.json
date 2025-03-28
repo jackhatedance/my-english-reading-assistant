@@ -18,6 +18,9 @@
     "default_title": "__MSG_extensionName__",
     "default_popup": "popup.html"
   },
+  "content_security_policy": {
+    "sandbox": "sandbox allow-scripts;"
+  },
   "permissions": [
     "storage","contextMenus","unlimitedStorage", "notifications"
   ],
@@ -33,6 +36,11 @@
       "css": []
     }
   ],
+  "sandbox": {
+    "pages": [
+      "dictionary.html"
+    ]
+  },
   "web_accessible_resources": [
     {
       "resources": [ "contentScript.css", "svg/*", "icons/*", "images/*", "*.html" ],

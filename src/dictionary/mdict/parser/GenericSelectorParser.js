@@ -118,7 +118,7 @@ class GenericSelectorParser extends MdictDefinitionParser {
     }
 
     toHtml(rawDefinition, getResource) {
-        const $ = cheerio.load(rawDefinition);
+        const $ = cheerio.load(rawDefinition, null, false);
                 
         let stylesheetElements = $('link[rel="stylesheet"]');
         for(let element of stylesheetElements){

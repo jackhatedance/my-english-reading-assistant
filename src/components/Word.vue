@@ -22,8 +22,15 @@ const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
-const lookupResult = computed(() => {
-    
+const dictionaryIframe = ref(null);
+
+const lookupResultRef = ref(null);
+watch(() => props.word, (newValue) => {
+      
+    _lookup(newValue);
+});
+
+function _lookup(query){
     let dicts = getEnabledDictionaryNamesFromCache();
     //use default dicts
 
@@ -36,7 +43,7 @@ const lookupResult = computed(() => {
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(props.word, dicts, { fromRaw: true, outputFormats: ['html'] });
+    let lookupResult = lookup(query, dicts, { fromRaw: true, outputFormats: ['html'] });
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionary)){
@@ -48,11 +55,15 @@ const lookupResult = computed(() => {
         let html = lookupResult.html;
         //console.log(html);
         //let html = '<body>Foo</body>';
-        lookupResult.iframeSrc = 'data:text/html;charset=utf-8;base64,' + textToBase64(html);        
-    }    
-
-    return lookupResult;
-});
+        const iframe = dictionaryIframe.value;
+        let request = { html };
+        if(iframe){
+            iframe.contentWindow.postMessage(request, '*');    
+            //console.log('message posted');
+        }        
+    } 
+    lookupResultRef.value = lookupResult; 
+}
 
 const knownRef = new ref(false);
 watch(() => props.word, (newValue) => {
@@ -133,14 +144,19 @@ async function onClearMark() {
     sendMessageMarkWordToBackground(wordChanges);
 }
 
+function onIframeLoad(){
+    //console.log('onIframeLoad');
+    _lookup(props.word);
+}
 </script>
 
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="dictionary">[{{ lookupResult?.alias }}]</span></p>
+            <p><span class="dictionary">[{{ lookupResultRef?.alias }}]</span></p>
             
-            <iframe class="content-iframe" :src="lookupResult?.iframeSrc"></iframe>
+            <iframe @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="dictionary.html" ></iframe>
+            
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
