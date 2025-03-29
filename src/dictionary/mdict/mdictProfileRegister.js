@@ -5,6 +5,9 @@ import { profile as yhd } from './profiles/yhdProfile.js'
 const profiles = [newOxfordEcDual, yhd];
 
 function compareMap(expectedMap, actualMap) {
+    expectedMap = toLowerCaseKeyMap(expectedMap);
+    actualMap = toLowerCaseKeyMap(actualMap);
+
     let result = true;
     for(let key in expectedMap){
         let expectedValue = expectedMap[key];
@@ -23,6 +26,16 @@ function compareMap(expectedMap, actualMap) {
     return result;
 }
 
+function toLowerCaseKeyMap(map){
+    let newMap = {};
+    for(let key in map){
+        let value = map[key];
+        let lowerCaseKey = key.toLowerCase();
+        newMap[lowerCaseKey] = value;
+    }
+    return newMap;
+}
+
 function findMdictProfile(mdxDictMeta) {
     let headers = mdxDictMeta.headers;
     if(!headers){
@@ -37,4 +50,4 @@ function findMdictProfile(mdxDictMeta) {
     return null;
 }
 
-export { findMdictProfile }
+export { compareMap, findMdictProfile }
