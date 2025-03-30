@@ -77,7 +77,9 @@ class GenericSelectorParser extends MdictDefinitionParser {
         
         let pronunciation = '';
         if(elements.length>0){
-            pronunciation = $(elements[0]).text();
+            let textArray = elements.toArray().map(item => this.trimPronounciation($(item).text()));
+
+            pronunciation = textArray.join(',');
         }
         
         return this.trimPronounciation(pronunciation);

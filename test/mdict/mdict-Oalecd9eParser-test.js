@@ -57,16 +57,35 @@ describe('mdict oalecd9e parser', function () {
 
     });
 
-    it('rode-oaldec9e', async function () {
+    it('rode', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/rode.html', 'utf8');
       let parseResult = this.parser.parse(html);
       console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "BrE rəʊd NAmE roʊd");
+      assert.equal(parseResult[0].pronunciation, "BrE rəʊd,NAmE roʊd");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past tense of ride");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");
 
+    });
+
+    it('make-oalecd9e', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/make.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].pronunciation, "BrE meɪk,NAmE meɪk");
+      assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "制造");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "床");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "使出现／发生／成为／做");
+
+      assert.equal(parseResult[1].pronunciation, "BrE meɪk,NAmE meɪk");
+      assert.equal(parseResult[1].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "品牌，型号");
+      
     });
 
   });
