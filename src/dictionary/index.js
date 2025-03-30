@@ -45,10 +45,4 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
     };
 }
 
-function lookup(map, query) {
-    if (map && map.hasOwnProperty(query)) {
-        return map[query];
-    }
-}
-
 export { generateIndex }

@@ -46,6 +46,31 @@ class MdictDictionary extends Dictionary {
         
     }
 
+    extractData(){
+        let rawFileMap = {};
+        
+        for(let fileName in this.data.raw){
+            let fileData = this.data.raw[fileName];
+
+            if(!fileName.endsWith('.mdd')){                
+                rawFileMap[fileName] = fileData;
+            }            
+        }
+        
+        let mddFileMap = {};
+        for(let keyword of this.mdd.keywordList){
+            let key = keyword.keyText;
+            let resource = this.mdd.locate(key);
+
+            mddFileMap[key]= resource;
+        }
+
+        return {
+            raw: rawFileMap,
+            resource: mddFileMap
+        };
+    }
+
     getMddResource(key){
         if(!key){
             return null;

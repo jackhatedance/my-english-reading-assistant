@@ -3,6 +3,10 @@ import {chunkedRead, chunkedWrite, chunkedDelete} from '../chunk.js';
 const KEY_DICTIONARIES = 'dictionaries';
 const TYPE_RAW = 'raw';
 const TYPE_INDEX = 'index';
+const TYPE_EXTRACTED_RAW_DIR = 'extracted_raw_dir';
+const TYPE_EXTRACTED_RAW_FILE = 'extracted_raw_file';
+const TYPE_EXTRACTED_RESOURCE_DIR = 'extracted_resource_dir';
+const TYPE_EXTRACTED_RESOURCE_FILE = 'extracted_resource_file';
 
 async function loadDictionaryMetas(){
     
@@ -55,6 +59,39 @@ async function saveDictionaryIndexData(name, indexData){
     await chunkedWrite(chunkKey, indexData);    
 }
 
+async function saveDictionaryExtractedData(name, extractedData){
+    await saveDictionaryExtractedRawData(name, extractedData.raw);
+    await saveDictionaryExtractedResourceData(name, extractedData.resource);
+}
+
+async function saveDictionaryExtractedRawData(name, extractedRawData){
+    const fileMap = extractedRawData;
+    
+    let dir = [];
+    for (const [key, value] of Object.entries(fileMap)) {
+        dir.push(key);
+        let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RAW_FILE, key);
+        await chunkedWrite(chunkKey, value);
+    }
+    
+    let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RAW_DIR);
+    await chunkedWrite(chunkKey, dir);
+}
+
+async function saveDictionaryExtractedResourceData(name, extractedResourceData){
+    const fileMap = extractedResourceData;
+    
+    let dir = [];
+    for (const [key, value] of Object.entries(fileMap)) {
+        dir.push(key);
+        let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RESOURCE_FILE, key);
+        await chunkedWrite(chunkKey, value);
+    }
+
+    let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RESOURCE_DIR);
+    await chunkedWrite(chunkKey, dir);
+}
+
 async function deleteDictionaryData(name){
     await deleteDictionaryRawData(name);
 
@@ -71,9 +108,13 @@ async function deleteDictionaryIndexData(name){
     await chunkedDelete(chunkKeyOfIndex);
 }
 
-function getChunkKey(name, type){
-    return `dictionary-${name}-${type}`;
+function getChunkKey(name, type, type2){
+    if(type2){
+        return `dictionary-${name}-${type}-${type2}`;
+    } else {
+        return `dictionary-${name}-${type}`;
+    }    
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
