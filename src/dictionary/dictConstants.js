@@ -11,3 +11,5 @@ export const DICTIONARY_DEFINITION_TYPE_FORM = 'form';
 export const DICTIONARY_DEFINITION_TYPE_FORM_PLURAL = 'plural';
 export const DICTIONARY_DEFINITION_TYPE_FORM_THIRD_PERSON_SINGULAR_PRESENT = 'third person singular present';
 export const DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE = 'past or past participle';
+
+export const MAX_SUBDEFINITION_NUMBER = 6;

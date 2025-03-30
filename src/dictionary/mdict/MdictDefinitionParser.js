@@ -1,6 +1,16 @@
 import { DefinitionParser } from '../DefinitionParser.js'
 class MdictDefinitionParser extends DefinitionParser {
 
+    getLink(html){
+        if(html){
+            let matchResult = html.trim().match(/^@@@LINK=(.*)\r*\n*\u0000*$/);
+            if(matchResult){
+                return matchResult[1];
+            }
+        }
+        return null;    
+    }
+
     createEntryForLink(link){
         let definition = {
             text: `见${link}`,

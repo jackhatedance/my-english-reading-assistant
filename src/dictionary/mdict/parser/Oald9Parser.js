@@ -1,7 +1,7 @@
 import { GenericSelectorParser } from './GenericSelectorParser.js'
 
 
-class YhdParser extends GenericSelectorParser {
+class Oald9Parser extends GenericSelectorParser {
     constructor(data, name){
         super(data, name);
 
@@ -16,4 +16,4 @@ class YhdParser extends GenericSelectorParser {
     }
 }
 
-export { YhdParser }
+export { Oald9Parser }

@@ -1,6 +1,6 @@
 import { GenericSelectorParser } from './GenericSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
-
+import { findBaseForm } from '../../base-forms.js' 
 
 class NewOxfordEcDualParser extends GenericSelectorParser {
     constructor(data, name){
@@ -17,26 +17,17 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
         this.selectors = selectors;
     }
 
-    getLink(html){
-        if(html){
-            let matchResult = html.trim().match(/^@@@LINK=(\w*)\r*\n*\u0000*$/);
-            if(matchResult){
-                return matchResult[1];
-            }
-        }
-        return null;    
-    }
-
-    parse(rawDefinition) {
-        let html = rawDefinition;
+    beforeParseDefinition(text){
         
-        let link = this.getLink(html);
-        if (link) {
-            let linkEntry = this.createEntryForLink(link);
-            return [ linkEntry ];
-        }
+        let baseForm = findBaseForm(text);
+        if(baseForm){
+            const { base, form } = baseForm;            
+            let lowerCaseBase = base.toLowerCase();
+        
+            text = text.replace(base, lowerCaseBase);
+        }   
 
-        return super.parse(rawDefinition);
+        return super.beforeParseDefinition(text);        
     }
 
     afterParseDefinitionGroup(definitionGroup){
@@ -44,6 +35,7 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
         if(name.includes(inflection)){
             definitionGroup.name = name.replace(inflection, '');
         }
+        super.afterParseDefinitionGroup(definitionGroup);
     }
 
     trimDefinition(text){        

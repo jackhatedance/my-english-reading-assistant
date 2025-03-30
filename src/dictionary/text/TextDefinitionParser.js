@@ -74,8 +74,9 @@ class TextDefinitionParser extends DefinitionParser {
         text = this.trimDefinition(text);    
 
         text = removeParentheses(text);
-        text = text.split(',')[0];        
-        let definition = { text };
+        text = text.split(',')[0];
+        let subdefinitions = [ text ];       
+        let definition = { text, subdefinitions };
 
         this.afterParseDefinition(definition)
 

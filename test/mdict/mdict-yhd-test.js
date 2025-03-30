@@ -10,7 +10,7 @@ describe('mdict yhd parser', function () {
       this.parser = new YhdParser();
     });
 
-    it('good', async function () {
+    it('goodyhd', async function () {
       let html = fs.readFileSync('./test/mdict/yhd/good.html', 'utf8');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);

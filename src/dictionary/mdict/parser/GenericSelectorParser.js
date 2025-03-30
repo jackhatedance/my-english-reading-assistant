@@ -1,11 +1,12 @@
 import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
-import { trimByCharacters } from '../../../utils/stringUtils.js'
-import { removeParentheses } from '../../../text/textUtils.js'
-import { eliminateFontFaces } from '../css/css.js'
+
+import { eliminateFontFaces, createDataUrl } from '../css/css.js'
 import { base64toText } from '../../../utils/fileUtils.js'
 
+
 class GenericSelectorParser extends MdictDefinitionParser {
+    ROOT = 'root';
     ENTRY = 'entry';
     PRONUNCIATION = 'pronunciation';
     DEFINITION_GROUP = 'definitionGroup';
@@ -17,60 +18,95 @@ class GenericSelectorParser extends MdictDefinitionParser {
     selector(name){
         return this.selectors[name];
     }
+    
+    findElementsByOneSelector($, baseElement, selector, context){        
+        if(selector.includes(':')){
+            let array = selector.split(':');
+            let elementName = array[0];
+            selector = array[1];
 
-    find($, element, selectors){
-        if(typeof selectors === 'string'){
-            return selectors;
+            baseElement = context[elementName];                        
         }
 
-        return selectors.find(selector => $(element).find(selector).length>0);        
+        if(baseElement){
+            return $(baseElement).find(selector);        
+        }else{
+            return $(selector);        
+        }
+    }
+
+    findElements($, containerElement, selectors, context){        
+        let selectorArray;
+        if(Array.isArray(selectors)){
+            selectorArray = selectors;            
+        } else {
+            selectorArray = [ selectors ];
+        }
+
+        for(let selector of selectorArray){
+            let elements = this.findElementsByOneSelector($, containerElement, selector, context);
+            if(elements.length>0){
+                return elements;
+            }
+        }        
+
+        return [];
     }
         
-    parseEntries($){
+    parseEntries($, context){
         let entries = [];
 
-        let entryElements = $(this.selector(this.ENTRY));
-        for(let entryElement of entryElements){
-            let entry = this.parseEntry($, entryElement);
+        let entryElements = this.findElements($, null, this.selector(this.ENTRY), context);
+        for(let entryElement of entryElements){            
+            let entry = this.parseEntry($, entryElement, context);
             entries.push(entry);
         }
         return entries;        
     }
 
-    parseEntry($, element){
-        let pronunciation = this.parsePronunciation($, element);    
-        let definitionGroups = this.parseDefinitionGroups($, element);
+    parseEntry($, element, context){
+        context[this.ENTRY] = element;
+
+        let pronunciation = this.parsePronunciation($, element, context);    
+        let definitionGroups = this.parseDefinitionGroups($, element, context);
         return { pronunciation, definitionGroups };
     }
 
-    parsePronunciation($, element){
-        let pronunciation = $(element).find(this.selector(this.PRONUNCIATION)).text();
-        return trimByCharacters(pronunciation, '/');
+    parsePronunciation($, element, context){
+        let elements = this.findElements($, element, this.selector(this.PRONUNCIATION), context);
+        
+        let pronunciation = '';
+        if(elements.length>0){
+            pronunciation = $(elements[0]).text();
+        }
+        
+        return this.trimPronounciation(pronunciation);
     }
 
-    parseDefinitionGroups($, element){
+    parseDefinitionGroups($, element, context){
         let definitionGroups = [];
 
-        let groupElements = $(element).find(this.selector(this.DEFINITION_GROUP));
+        let groupElements = this.findElements($, element, this.selector(this.DEFINITION_GROUP), context);
         for(let groupElement of groupElements){
-            let definitionGroup = this.parseDefinitionGroup($, groupElement);
+            let definitionGroup = this.parseDefinitionGroup($, groupElement, context);
             definitionGroups.push(definitionGroup);
         }
 
         return definitionGroups;
     }
 
-    parseDefinitionGroup($, element){
+    parseDefinitionGroup($, element, context){
+        context[this.DEFINITION_GROUP] = element;
+
         let name = $(element).find(this.selector(this.GROUP_NAME)).text();
         name=name.trim();
         let inflection = $(element).find(this.selector(this.INFLECTION)).text();
 
         let definitions = [];
 
-        let selector = this.find($, element, this.selector(this.DEFINITION))
-        let definitionElements = $(element).find(selector);
+        let definitionElements = this.findElements($, element, this.selector(this.DEFINITION), context);
         for(let definitionElement of definitionElements){
-            let definition = this.parseDefinition($, definitionElement);
+            let definition = this.parseDefinition($, definitionElement, context);
             definitions.push(definition);
         }
         let definitionGroup = {name, inflection, definitions};
@@ -80,31 +116,37 @@ class GenericSelectorParser extends MdictDefinitionParser {
 
     
 
-    parseDefinition($, element){
+    parseDefinition($, element, context){
         let text = $(element).text();
-        if(!text){
-            text = '';
-        }
-        text = this.trimDefinition(text);    
-
-        text = removeParentheses(text);
-        text = text.split(',')[0];        
-        let definition = { text };
+        
+        text = this.beforeParseDefinition(text);    
+       
+        let subdefinitions = text.split(',');    
+        subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));    
+        let definition = { text, subdefinitions };
 
         this.afterParseDefinition(definition)
 
         return definition;
     }
     
-
-
     parse(rawDefinition) {
         rawDefinition = this.beforeParse(rawDefinition);
 
         let html = rawDefinition;
 
+        let link = this.getLink(html);
+        if (link) {
+            let linkEntry = this.createEntryForLink(link);
+            return [ linkEntry ];
+        }
+
         const $ = cheerio.load(html);
-        let entries = this.parseEntries($);
+        
+        let context = {};
+        context[this.ROOT] = null;
+
+        let entries = this.parseEntries($, context);
 
         this.afterParse(entries);
 
@@ -112,10 +154,7 @@ class GenericSelectorParser extends MdictDefinitionParser {
     }
 
 
-    trimDefinition(text){
-        text = text.replaceAll(/[;]/g, ',')
-        return super.trimDefinition(text);
-    }
+    
 
     toHtml(rawDefinition, getResource) {
         const $ = cheerio.load(rawDefinition, null, false);
@@ -139,9 +178,19 @@ class GenericSelectorParser extends MdictDefinitionParser {
         for(let element of scriptElements){
             let src = $(element).prop('src');
             let key = `\\${src}`;
-            let resource = getResouce(key);
+            let resource = getResource(key);
 
             $(element).prop('src', resource);            
+        }
+
+        let imgElements = $('img');
+        for(let element of imgElements){
+            let src = $(element).prop('src');
+            
+            let dataUrl = createDataUrl(src, getResource);
+            
+
+            $(element).prop('src', dataUrl);            
         }
 
         return $.html();

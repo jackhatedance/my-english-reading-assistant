@@ -296,7 +296,7 @@ async function getDictionaryWithInvalidIndexes(){
 async function migrateDictionary(dictionary, updateProgress){
     let meta = dictionary;
     if(typeof dictionary === 'string'){
-        meta = getDictionaryMeta(dictionary);
+        meta = await getDictionaryMeta(dictionary);
     }
     //console.log('check if index need upgrade: '+ name);
 

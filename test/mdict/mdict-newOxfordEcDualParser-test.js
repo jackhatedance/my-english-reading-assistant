@@ -31,7 +31,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈdrægl");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏,拖湿");      
       
     });
 
@@ -44,7 +44,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "ˈtɪtə(r)");
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑,咯咯笑");      
       
     });
 
@@ -82,7 +82,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].pronunciation, "twelv");
       assert.equal(parseResult[0].definitionGroups[0].name, "cardinal number");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二,十二个");
       
     });
 
@@ -96,7 +96,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].pronunciation, "ˈmʌstɪ");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].inflection, "mustier, mustiest");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的,有潮气的");      
       
     });
 
@@ -139,12 +139,12 @@ describe('mdict new-oxford-ec-dual parser', function () {
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].pronunciation, "强bʌt, 弱bət");
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是,然而");
       
       
     });
 
-    it('rode - merge pronunciations', async function () {
+    it('rode-ox - merge pronunciations', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
 
       let parseResult = this.parser.parse(html);

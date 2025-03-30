@@ -39,6 +39,7 @@ class Dictionary {
     }
 
     lookup(query, options){
+        //console.log(`lookup ${query}`);
         options = this.patchDefaultValues(options);
 
         let result = null;

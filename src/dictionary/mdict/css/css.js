@@ -25,4 +25,12 @@ function eliminateFontFaces(css){
     return css.replaceAll(/@font-face\s*\{[^}]*}/g, '');
 }
 
-export { replaceFontFaceSrcUrlWithDataUrl, eliminateFontFaces }
+function createDataUrl(path, getResource){    
+    let mimeType = lookup(path);
+    let base64 = getResource(path);
+
+    let result = `data:${mimeType}; base64,${base64}`;
+    return result;
+}
+
+export { replaceFontFaceSrcUrlWithDataUrl, eliminateFontFaces, createDataUrl }

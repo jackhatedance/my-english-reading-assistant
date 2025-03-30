@@ -84,6 +84,8 @@ class MdictDictionary extends Dictionary {
             throw new Error(`no parser found`);
         }
 
+        //console.log(definition);
+
         return this.mdictParser.toJson(definition);
     }
 
