@@ -59,9 +59,27 @@ async function saveDictionaryIndexData(name, indexData){
     await chunkedWrite(chunkKey, indexData);    
 }
 
+async function loadDictionaryExtractedRawData(name, fileName){
+    let chunkKey = getExtractedRawFileKey(name, fileName);
+    return await chunkedRead(chunkKey);    
+}
+
+async function loadDictionaryExtractedResourceData(name, fileName){
+    let chunkKey = getExtractedResourceFileKey(name, fileName);
+    return await chunkedRead(chunkKey);    
+}
+
 async function saveDictionaryExtractedData(name, extractedData){
     await saveDictionaryExtractedRawData(name, extractedData.raw);
     await saveDictionaryExtractedResourceData(name, extractedData.resource);
+}
+
+function getExtractedRawFileKey(dictionaryName, fileName){ 
+    return getChunkKey(dictionaryName, TYPE_EXTRACTED_RAW_FILE, fileName);
+}
+
+function getExtractedResourceFileKey(dictionaryName, fileName){ 
+    return getChunkKey(dictionaryName, TYPE_EXTRACTED_RESOURCE_FILE, fileName);
 }
 
 async function saveDictionaryExtractedRawData(name, extractedRawData){
@@ -70,12 +88,21 @@ async function saveDictionaryExtractedRawData(name, extractedRawData){
     let dir = [];
     for (const [key, value] of Object.entries(fileMap)) {
         dir.push(key);
-        let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RAW_FILE, key);
+        let chunkKey = getExtractedRawFileKey(name, key);
         await chunkedWrite(chunkKey, value);
     }
     
-    let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RAW_DIR);
+    let chunkKey = getDictionaryExtractedRawDirKey();
     await chunkedWrite(chunkKey, dir);
+}
+
+function getDictionaryExtractedRawDirKey(name){
+    return getChunkKey(name, TYPE_EXTRACTED_RAW_DIR);
+}
+
+async function loadDictionaryExtractedRawDir(name){
+    let chunkKey = getDictionaryExtractedRawDirKey(name);
+    return await chunkedRead(chunkKey);    
 }
 
 async function saveDictionaryExtractedResourceData(name, extractedResourceData){
@@ -84,12 +111,21 @@ async function saveDictionaryExtractedResourceData(name, extractedResourceData){
     let dir = [];
     for (const [key, value] of Object.entries(fileMap)) {
         dir.push(key);
-        let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RESOURCE_FILE, key);
+        let chunkKey = getExtractedResourceFileKey(name, key);
         await chunkedWrite(chunkKey, value);
     }
 
-    let chunkKey = getChunkKey(name, TYPE_EXTRACTED_RESOURCE_DIR);
+    let chunkKey = getDictionaryExtractedResourceDirKey(name);
     await chunkedWrite(chunkKey, dir);
+}
+
+function getDictionaryExtractedResourceDirKey(name){
+    return getChunkKey(name, TYPE_EXTRACTED_RESOURCE_DIR);
+}
+
+async function loadDictionaryExtractResourceDir(name){
+    let chunkKey = getDictionaryExtractedResourceDirKey(name);
+    return await chunkedRead(chunkKey);
 }
 
 async function deleteDictionaryData(name){
@@ -117,4 +153,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };

@@ -1,4 +1,4 @@
-import { loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { loadDictionaryData, loadDictionaryRawData, loadDictionaryExtractedRawDir, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 import { MapDictionary } from './MapDictionary.js'
 import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
@@ -25,7 +25,7 @@ async function initializeCustomDictionaryService(additionalDictionaryNames, data
 async function loadCustomDictionary(dictionaryMeta, dataTypes){
     let name = dictionaryMeta.name;
     
-    let raw, index;
+    let raw, index, extracted;
     if(dataTypes.includes('raw')){
         raw = await loadDictionaryRawData(name);
     }
@@ -33,8 +33,16 @@ async function loadCustomDictionary(dictionaryMeta, dataTypes){
     if(dataTypes.includes('index')){
         index = await loadDictionaryIndexData(name);          
     }
+
+    if(dataTypes.includes('extracted')){
+        extracted = {
+            loadRawDataDir: () => loadDictionaryExtractedRawDir(name),
+            loadRawData: (fileName) => loadDictionaryExtractedRawData(name, fileName),
+            loadResourceData: (fileName) => loadDictionaryExtractedResourceData(name, fileName),
+        };          
+    }
     
-    let data = { raw, index };    
+    let data = { raw, index, extracted };    
     
     let dictionary;
     if(dictionaryMeta.format == 'text'){

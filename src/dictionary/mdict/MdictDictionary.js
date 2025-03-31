@@ -11,7 +11,7 @@ class MdictDictionary extends Dictionary {
     constructor(data, name) {
         super(data, name);
 
-        const { raw, index } = data;
+        const { raw, index, extracted } = data;
 
         if(raw){
             const fileMap = raw;
