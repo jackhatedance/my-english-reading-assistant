@@ -1,10 +1,6 @@
 import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 
-import { eliminateFontFaces, createDataUrl } from '../css/css.js'
-import { base64toText } from '../../../utils/fileUtils.js'
-
-
 class GenericSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
@@ -154,49 +150,7 @@ class GenericSelectorParser extends MdictDefinitionParser {
 
         return entries; 
     }
-
-
     
-
-    toHtml(rawDefinition, getResource) {
-        const $ = cheerio.load(rawDefinition, null, false);
-                
-        let stylesheetElements = $('link[rel="stylesheet"]');
-        for(let element of stylesheetElements){
-            let href = $(element).attr('href');
-            let key = `\\${href}`;
-            let resource = getResource(key);
-            //console.log(resource);
-            const css = base64toText(resource);
-            //let css2 = replaceFontFaceSrcUrlWithDataUrl(css, getResource);
-            let css2 = eliminateFontFaces(css)
-            //console.log(css2);
-            let style = `<style>${css2}</style>`;
-            var styleElement = $(style);
-            $(element).replaceWith(styleElement);
-        }
-
-        let scriptElements = $('script[type="text/javascript"]');
-        for(let element of scriptElements){
-            let src = $(element).prop('src');
-            let key = `\\${src}`;
-            let resource = getResource(key);
-
-            $(element).prop('src', resource);            
-        }
-
-        let imgElements = $('img');
-        for(let element of imgElements){
-            let src = $(element).prop('src');
-            
-            let dataUrl = createDataUrl(src, getResource);
-            
-
-            $(element).prop('src', dataUrl);            
-        }
-
-        return $.html();
-    }
 }
 
 export { GenericSelectorParser }

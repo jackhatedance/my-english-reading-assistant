@@ -6,9 +6,15 @@ class Dictionary {
     name = null;
     data = null;
 
-    constructor(data, name){
+    constructor(data, name, options){
+
+        if(!options){
+            options = {};
+        }
+
         this.data = data;
         this.name = name;
+        this.options = options;
     }
     
     getDataUriFile(dataUriMap, ext) {

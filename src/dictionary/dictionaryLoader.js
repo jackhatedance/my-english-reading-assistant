@@ -17,7 +17,7 @@ function createDictionaryInstance(meta, data, name, checkIndex){
     }
 
     if(format == DICTIONARY_FORMAT_MDICT){        
-        return new MdictDictionary(data, name);
+        return new MdictDictionary(data, name, { rawType: 'extracted'});
     } else if(format == DICTIONARY_FORMAT_TEXT){        
         return new TextDictionary(data, name);
     } 

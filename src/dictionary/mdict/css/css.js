@@ -25,9 +25,9 @@ function eliminateFontFaces(css){
     return css.replaceAll(/@font-face\s*\{[^}]*}/g, '');
 }
 
-function createDataUrl(path, getResource){    
+function createDataUrl(path, resource){    
     let mimeType = lookup(path);
-    let base64 = getResource(path);
+    let base64 = resource;
 
     let result = `data:${mimeType}; base64,${base64}`;
     return result;

@@ -3,8 +3,8 @@ import { dataURItoText } from '../../utils/fileUtils.js'
 import { TextDefinitionParser } from './TextDefinitionParser.js'
 
 class TextDictionary extends Dictionary {
-    constructor(data, name) {
-        super(data, name);
+    constructor(data, name, options) {
+        super(data, name, options);
 
         const { raw, index } = data;
         

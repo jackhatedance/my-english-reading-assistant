@@ -2,8 +2,8 @@ import {Dictionary} from './Dictionary.js'
 import { TextDefinitionParser } from './text/TextDefinitionParser.js'
 
 class MapDictionary extends Dictionary {
-    constructor(data, name) {
-        super(data, name);
+    constructor(data, name, options) {
+        super(data, name, options);
 
         this.size = Object.keys(data.raw).length;
         this.definitionParser = new TextDefinitionParser();

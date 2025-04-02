@@ -1,5 +1,4 @@
-import { loadDictionaryData, loadDictionaryRawData, loadDictionaryExtractedRawDir, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
-import { MapDictionary } from './MapDictionary.js'
+import { loadDictionaryData, loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawDir, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
@@ -15,34 +14,34 @@ var gAllDictionaryMetas = [];
  * it use lot of memory.
  * @param {*} additionalDictionaryNames 
  */
-async function initializeCustomDictionaryService(additionalDictionaryNames, dataTypes = ['index']){
+async function initializeCustomDictionaryService(additionalDictionaryNames, dataTypes, options){
 
     await loadSystemDictionariesToCache();
     
-    await loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes);
+    await loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes, options);
 }
 
-async function loadCustomDictionary(dictionaryMeta, dataTypes){
+async function loadCustomDictionary(dictionaryMeta, dataTypes, options){
     let name = dictionaryMeta.name;
     
-    let raw, index, extracted;
+    let raw, index;
     if(dataTypes.includes('raw')){
-        raw = await loadDictionaryRawData(name);
+        if(dictionaryMeta.format == 'mdict'){
+            if(options?.rawType == 'extracted'){
+                raw = await loadAllDictionaryExtractedRawData(name);
+            }else{            
+                raw = await loadDictionaryRawData(name);
+            }
+        }else{
+            raw = await loadDictionaryRawData(name);
+        }    
     }
 
     if(dataTypes.includes('index')){
         index = await loadDictionaryIndexData(name);          
     }
-
-    if(dataTypes.includes('extracted')){
-        extracted = {
-            loadRawDataDir: () => loadDictionaryExtractedRawDir(name),
-            loadRawData: (fileName) => loadDictionaryExtractedRawData(name, fileName),
-            loadResourceData: (fileName) => loadDictionaryExtractedResourceData(name, fileName),
-        };          
-    }
     
-    let data = { raw, index, extracted };    
+    let data = { raw, index };    
     
     let dictionary;
     if(dictionaryMeta.format == 'text'){
@@ -66,6 +65,8 @@ function getCleanMeta(meta){
         alias: meta.alias,
         type: meta.type,
         format: meta.format,
+        rawType: meta.rawType,
+        package: meta.package,
         size: meta.size,
         fromLanguage: meta.fromLanguage,
         toLanguage: meta.toLanguage,
@@ -181,24 +182,24 @@ async function deleteDictionaryMeta(name){
     await setAllDictionaryMetas(newMetas);
 }
 
-async function loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes){
+async function loadCustomDictionariesToCache(additionalDictionaryNames, dataTypes, options){
     let metas = await getAllDictionaryMetas();
     gAllDictionaryMetas = metas;
 
     for(let meta of metas) {
         if(meta.enabled || additionalDictionaryNames.includes(meta.name)){
-            await loadCustomDictionaryToCache(meta, dataTypes);
+            await loadCustomDictionaryToCache(meta, dataTypes, options);
         }        
     }    
 }
 
-async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames, dataTypes){
+async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames, dataTypes, options){
     for(let meta of gAllDictionaryMetas){
         let name = meta.name;
         let isAdditional = meta.enabled != true && meta.data.index.status == 'OK';
         if(isAdditional){
             if(activeAdditionalDictionaryNames.includes(name)){
-                await loadCustomDictionaryToCache(meta, dataTypes);
+                await loadCustomDictionaryToCache(meta, dataTypes, options);
             }else{
                 removeCustomDictionaryFromCache(name);
             
@@ -207,10 +208,10 @@ async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNam
     }
 }
 
-async function loadCustomDictionaryToCache(meta, dataTypes){
+async function loadCustomDictionaryToCache(meta, dataTypes, options){
     const name = meta.name;
     
-    let dict = await loadCustomDictionary(meta, dataTypes);
+    let dict = await loadCustomDictionary(meta, dataTypes, options);
     if(dict){
         gCustomDictionaries[name] = dict;
         //console.log(`load dictionary to cache ${name}`);

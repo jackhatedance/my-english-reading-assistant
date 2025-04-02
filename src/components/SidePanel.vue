@@ -69,7 +69,7 @@ async function updatePageInfo(pageInfo) {
       let siteOptions = response.pageInfo.siteOptions;
       //console.log(`update info: ${JSON.stringify(siteOptions)}`);
       let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
-      await initializeCustomDictionaryService(additionalDictionaryNames, ['raw', 'index']);
+      await initializeCustomDictionaryService(additionalDictionaryNames, ['raw', 'index'], { rawType: 'extracted'});
 
       isShowUnavailable.value = false;
       isShowTabs.value = true;

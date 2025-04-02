@@ -133,7 +133,7 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     //console.log(`get site options:`+ JSON.stringify(siteOptions));
     let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
         
-    await initializeCustomDictionaryService(additionalDictionaryNames, ['index']);
+    await initializeCustomDictionaryService(additionalDictionaryNames, ['index'], {});
     
     await initializeDictionaryService(options.unrecognizedWords.enabled);
 

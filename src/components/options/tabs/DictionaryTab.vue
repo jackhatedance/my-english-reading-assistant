@@ -157,6 +157,8 @@ async function getTextDictionary(fileName, name, file){
     name: name,
     type: 'user',
     format: 'text',
+    package: false,
+    rawType: 'text',
     'size': size,
     fromLanguage: 'en',
     toLanguage: 'cn',        
@@ -189,7 +191,7 @@ async function getZipDictionary(fileName, name, file){
     raw: fileMap,
   };
 
-  let dictionary =  new MdictDictionary(data, '');
+  let dictionary =  new MdictDictionary(data, '', { rawType: 'package'});
 
   if(dictionary){
     //const def1 = mdictDictionary.lookup("ask");
@@ -202,6 +204,8 @@ async function getZipDictionary(fileName, name, file){
       name: title,
       type: 'user',
       format: 'mdict',
+      package: true,
+      rawType: 'html',
       size: size,
       fromLanguage: 'en',
       toLanguage: 'cn',    

@@ -25,12 +25,12 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 const dictionaryIframe = ref(null);
 
 const lookupResultRef = ref(null);
-watch(() => props.word, (newValue) => {
+watch(() => props.word, async (newValue) => {
       
-    _lookup(newValue);
+    await _lookup(newValue);
 });
 
-function _lookup(query){
+async function _lookup(query){
     let dicts = getEnabledDictionaryNamesFromCache();
     //use default dicts
 
@@ -46,13 +46,17 @@ function _lookup(query){
     let lookupResult = lookup(query, dicts, { fromRaw: true, outputFormats: ['html'] });
     if(lookupResult) {
         
-        if(isSystemDictionary(lookupResult.dictionary)){
-            lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionary);
+        if(isSystemDictionary(lookupResult.dictionaryName)){
+            lookupResult.alias = getSystemDictionaryAlias(lookupResult.dictionaryName);
         }else{
-            lookupResult.alias = lookupResult.dictionary;
+            lookupResult.alias = lookupResult.dictionaryName;
         }
 
         let html = lookupResult.html;
+        if(lookupResult.dictionary?.toEmbeddedHtml){
+            html = await lookupResult.dictionary.toEmbeddedHtml(html);
+        }
+        
         //console.log(html);
         //let html = '<body>Foo</body>';
         const iframe = dictionaryIframe.value;
