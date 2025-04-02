@@ -23,7 +23,7 @@ let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const dictionaryIframe = ref(null);
-
+const definitionFormat = ref('text');
 const lookupResultRef = ref(null);
 watch(() => props.word, async (newValue) => {
       
@@ -43,7 +43,7 @@ async function _lookup(query){
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(query, dicts, { fromRaw: true, outputFormats: ['html'] });
+    let lookupResult = lookup(query, dicts, { fromRaw: true, outputFormats: ['json', 'html'] });
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionaryName)){
@@ -51,6 +51,9 @@ async function _lookup(query){
         }else{
             lookupResult.alias = lookupResult.dictionaryName;
         }
+
+        let json = lookupResult.json;
+        lookupResult.formattedText = jsonToText(json);
 
         let html = lookupResult.html;
         if(lookupResult.dictionary?.toEmbeddedHtml){
@@ -67,6 +70,51 @@ async function _lookup(query){
         }        
     } 
     lookupResultRef.value = lookupResult; 
+}
+
+function jsonToText(entries){
+    if(!entries || entries.length == 0){
+        return '';
+    }
+
+    let texts = [];
+    for(let entry of entries){
+        let definitionObj = entry;
+
+        let groupTexts = [];
+        for(let definitionGroup of definitionObj.definitionGroups){
+            const { name } = definitionGroup;
+            let wordClass = getWordClassAbbreviation(name);
+
+            let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+
+            let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
+            if(shortDefinitions.length >= 3){
+                definitions = shortDefinitions;
+            }
+            let definitionTexts = definitions.map(item => item.text );
+            
+            let definitionsText = definitionTexts.join(',');
+            let groupText = `${wordClass} ${definitionsText}`;
+            groupTexts.push(groupText);
+        }
+        let groupsText = groupTexts.join('<br> ');
+
+        let pronunciation = definitionObj.pronunciation;    
+        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
+            pronunciation = '';
+        }else {
+            pronunciation = `/${definitionObj.pronunciation}/`;
+        }
+
+        let text = `${pronunciation}<br>${groupsText}`;
+
+        texts.push(text);
+    }
+    
+    
+    //console.log(text);
+    return texts.join('<br><br>');
 }
 
 const knownRef = new ref(false);
@@ -122,6 +170,14 @@ async function onMarkAsUnknown() {
     sendMessageMarkWordToBackground(wordChanges);
 }
 
+function switchFormat(){
+    if(definitionFormat.value == 'text'){
+        definitionFormat.value = 'html';
+    }else{
+        definitionFormat.value = 'text';
+    }
+}
+
 async function onMarkAsKnown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsKnown(targetWord);
@@ -152,15 +208,24 @@ function onIframeLoad(){
     //console.log('onIframeLoad');
     _lookup(props.word);
 }
+
+
+function init() {
+    console.log(`watch word, new value: ${props.word}`); 
+    _lookup(props.word);
+}
+
+
+init();
 </script>
 
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="dictionary">[{{ lookupResultRef?.alias }}]</span></p>
+            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchFormat">text<->html</button></p>
             
-            <iframe @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="dictionary.html" ></iframe>
-            
+            <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="dictionary.html" ></iframe>
+            <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
