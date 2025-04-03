@@ -45,7 +45,7 @@ init();
         <h3>Detail</h3>
         <div class="fields">
             <label>{{ t('options_dictionary_detail_name') }}</label>
-            <span>{{ props.dict.name }}</span>
+            <span>{{ props.dict.displayName }}</span>
 
             <label>{{ t('options_dictionary_detail_type') }}</label>
             <span>{{ props.dict.type }}</span>
@@ -58,9 +58,6 @@ init();
                 
             <label>{{ t('options_dictionary_detail_entryNumber') }}</label>
             <span>{{ props.dict.size }}</span>
-
-            <label>{{ t('options_dictionary_detail_language') }}</label>
-            <span>{{ props.dict.fromLanguage }} - {{ props.dict.toLanguage }}</span>
 
             <label>{{ t('options_dictionary_detail_enabled') }}</label>
             <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
