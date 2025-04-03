@@ -55,6 +55,10 @@ class DefinitionParser {
         }
     }
 
+    beforeGetDefinitionText($, element, context){
+        //manipulate DOM
+    }
+
     beforeParseDefinition(text){
         if(!text){
             text = '';
@@ -92,7 +96,7 @@ class DefinitionParser {
     }
 
     trimDefinition(text){
-        text = text.replaceAll(/[;；]/g, ',')        
+        text = text.replaceAll(/[!！;；]/g, ',')        
         return text.trim();
     }
 

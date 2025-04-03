@@ -19,6 +19,19 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].pronunciation, "gʊd");
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "合格的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "善的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "让人高兴的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "彻底的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "天哪");      
+      
+      assert.equal(parseResult[0].definitionGroups[1].name, "noun");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "善,正义");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[1].text, "好处,优势");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "商品,所有物");      
+      
+      assert.equal(parseResult[0].definitionGroups[2].name, "adverb");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "好地");      
       
     });
 

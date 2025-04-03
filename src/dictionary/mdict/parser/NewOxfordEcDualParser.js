@@ -12,11 +12,20 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
         selectors[this.DEFINITION_GROUP] = '.content .cont-list';
         selectors[this.GROUP_NAME] = '.pos';
         selectors[this.INFLECTION] = '.inflection';
-        selectors[this.DEFINITION] = ['.item .defs .def', '.defs .def', '.def'];
+        selectors[this.DEFINITION] = ['.item .defs>dl .def', '.defs>dl .def', '.def'];
         
         this.selectors = selectors;
     }
 
+    beforeGetDefinitionText($, element, context){
+        let text = $(element).text();
+        let parenthesesText = $(element).find('strong').text();        
+        let mainText = text.replace(parenthesesText, '');
+        if(this.trimDefinition(mainText).length>0){
+            $(element).find('strong').remove();        
+        }
+    }
+    
     beforeParseDefinition(text){
         
         let baseForm = findBaseForm(text);
