@@ -170,11 +170,15 @@ async function onMarkAsUnknown() {
     sendMessageMarkWordToBackground(wordChanges);
 }
 
-function switchFormat(){
-    if(definitionFormat.value == 'text'){
-        definitionFormat.value = 'html';
-    }else{
+function switchToText(){
+    if(definitionFormat.value != 'text'){
         definitionFormat.value = 'text';
+    }
+}
+
+function switchToHtml(){
+    if(definitionFormat.value != 'html'){
+        definitionFormat.value = 'html';
     }
 }
 
@@ -222,7 +226,7 @@ init();
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchFormat">text<->html</button></p>
+            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchToText">text</button> <button @click="switchToHtml">html</button></p>
             
             <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="dictionary.html" ></iframe>
             <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>
