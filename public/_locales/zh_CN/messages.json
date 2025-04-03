@@ -215,6 +215,9 @@
     "options_dictionary_detail_format": {
         "message": "格式"
     },
+    "options_dictionary_detail_definition_format": {
+        "message": "含义格式"
+    },
     "options_dictionary_detail_entryNumber": {
         "message": "词条数"
     },

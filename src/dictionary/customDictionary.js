@@ -65,7 +65,7 @@ function getCleanMeta(meta){
         alias: meta.alias,
         type: meta.type,
         format: meta.format,
-        rawType: meta.rawType,
+        definitionFormat: meta.definitionFormat,
         package: meta.package,
         size: meta.size,
         fromLanguage: meta.fromLanguage,

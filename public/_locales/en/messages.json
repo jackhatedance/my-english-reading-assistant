@@ -199,10 +199,10 @@
         "message": "index is OK"
     },
     "optionsEditDictionaryIndexColorTipsOrange": {
-        "message": "Indexes need to be (re)built"
+        "message": "Index need to be (re)built"
     },
     "optionsEditDictionaryIndexColorTipsBlue": {
-        "message": "index is not supported"
+        "message": "index not supported"
     },
     "options_dictionary_detail": {
         "message": "Detail"
@@ -215,6 +215,9 @@
     },
     "options_dictionary_detail_format": {
         "message": "Format"
+    },
+    "options_dictionary_detail_definition_format": {
+        "message": "Definition Format"
     },
     "options_dictionary_detail_entryNumber": {
         "message": "Number of Entries"

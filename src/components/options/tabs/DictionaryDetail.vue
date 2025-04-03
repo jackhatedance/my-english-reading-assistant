@@ -52,6 +52,9 @@ init();
                 
             <label>{{ t('options_dictionary_detail_format') }}</label>
             <span>{{ props.dict.format }}</span>
+
+            <label>{{ t('options_dictionary_detail_definition_format') }}</label>
+            <span>{{ props.dict.definitionFormat }}</span>            
                 
             <label>{{ t('options_dictionary_detail_entryNumber') }}</label>
             <span>{{ props.dict.size }}</span>

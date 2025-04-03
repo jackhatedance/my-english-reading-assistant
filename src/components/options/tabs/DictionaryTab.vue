@@ -154,7 +154,7 @@ async function getTextDictionary(fileName, name, file){
     type: 'user',
     format: 'text',
     package: false,
-    rawType: 'text',
+    definitionFormat: 'text',
     'size': size,
     fromLanguage: 'en',
     toLanguage: 'cn',        
@@ -201,7 +201,7 @@ async function getZipDictionary(fileName, name, file){
       type: 'user',
       format: 'mdict',
       package: true,
-      rawType: 'html',
+      definitionFormat: 'html',
       size: size,
       fromLanguage: 'en',
       toLanguage: 'cn',    
@@ -312,7 +312,7 @@ init();
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
           <li class="orange">{{ t('optionsEditDictionaryIndexColorTipsOrange') }}</li>
-          <li class="blue">{{ t('optionsEditDictionaryIndexColorTipsBlue') }}</li>
+          <li class="blue">{{ t('optionsEditDictionaryIndexColorTipsBlue') }}<HelpLink type="guide" keyword="词典索引"/></li>
         </ul>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
