@@ -1,4 +1,4 @@
-import { loadDictionaryData, loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawDir, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { loadDictionaryData, loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawDir, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
@@ -98,6 +98,7 @@ async function saveDictionaryMeta(dictionaryMeta){
     }
     
     await setAllDictionaryMetas(metas);
+    //console.log(`saved dictionary meta: ${dictionaryMeta.name}`);
 }
 
 async function getAllDictionaryMetas(){
@@ -254,8 +255,8 @@ async function saveDictionary(dictionary){
     let name = meta.name;
     
     gCustomDictionaries[name] = data;
-    saveDictionaryMeta(meta);
-    saveDictionaryData(name, data);
+    await saveDictionaryMeta(meta);
+    await saveDictionaryData(name, data);
 }
 
 async function migrateAllDictionaries(updateProgress){
@@ -323,8 +324,10 @@ async function migrateDictionary(dictionary, updateProgress){
 
         console.log('extract dictionary data: '+ name);
 
-        let extractedData = await dictionaryInstance.extractData();
-        await saveDictionaryExtractedData(name, extractedData);
+        if(meta.package == true){
+            let extractedData = await dictionaryInstance.extractData();
+            await saveDictionaryExtractedData(name, extractedData);            
+        }
         
         let index = await generateIndex(dictionaryInstance, updateProgress);
         

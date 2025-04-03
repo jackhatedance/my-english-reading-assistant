@@ -4,7 +4,7 @@ import { Buffer } from 'safe-buffer'
 import { dataURItoArrayBuffer } from '../../utils/fileUtils.js'
 import { findMdictProfile } from './mdictProfileRegister.js'
 import { findMdictParser } from './mdictParserRegister.js'
-import { loadDictionaryExtractedResourceData } from '../../store/dictionaryStore.js'
+import { loadDictionaryExtractedResourceFile } from '../../store/dictionaryStore.js'
 import * as cheerio from 'cheerio';
 import { eliminateFontFaces, createDataUrl } from './css/css.js'
 import { base64toText } from '../../utils/fileUtils.js'
@@ -90,7 +90,7 @@ class MdictDictionary extends Dictionary {
             key = '\\' + key;
         }
 
-        let result = await loadDictionaryExtractedResourceData(this.name, key)
+        let result = await loadDictionaryExtractedResourceFile(this.name, key)
                 
         return result;
     }

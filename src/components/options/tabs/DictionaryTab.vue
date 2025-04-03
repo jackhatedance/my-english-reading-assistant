@@ -117,13 +117,9 @@ async function onImport() {
     await saveDictionary(newDictionary);
 
     //add dictionary name to select element
-    let metaArray = toRaw(dictionaryMetas.value);
-    let meta = metaArray.find((item) => item.name == selectedDictionary.value);
-    if (!meta) {
-      dictionaryMetas.value.push(newDictionary.meta)
-    }
+    await refreshUI();
 
-    sendMessageDictionaryChangeToBackground(name, 'add');
+    sendMessageDictionaryChangeToBackground(newDictionary.meta.name, 'add');
   }else{
     alert('failed to import');
   }
@@ -131,13 +127,13 @@ async function onImport() {
 }
 
 async function getDictionaryFromFile(fileName, name, file){
-  let meta;
+  let dictionary;
   if(fileName.endsWith('.txt')){    
-    meta = getTextDictionary(fileName, name, file);
+    dictionary = getTextDictionary(fileName, name, file);
   } else if(fileName.endsWith('.zip')){
-    meta = getZipDictionary(fileName, name, file);
+    dictionary = getZipDictionary(fileName, name, file);
   } 
-  return meta;
+  return dictionary;
 }
 
 async function getTextDictionary(fileName, name, file){

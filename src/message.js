@@ -19,7 +19,7 @@ function sendMessageMarkWordToBackground(wordChanges) {
 
 function sendMessageDictionaryChangeToBackground(name, type) {
     //send to background
-    //console.log('send mark word message to runtime(background)');
+    //console.log(`send message to runtime(background), name: ${name}`);
     chrome.runtime.sendMessage(
         {
             type: 'DICTIONARY_CHANGE',

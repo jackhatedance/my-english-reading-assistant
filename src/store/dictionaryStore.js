@@ -63,21 +63,31 @@ async function loadAllDictionaryExtractedRawData(name){
     let dir = await loadDictionaryExtractedRawDir(name);
     let fileMap = {};
     for(let fileName of dir){
-        let data = await loadDictionaryExtractedRawData(name, fileName);
+        let data = await loadDictionaryExtractedRawFile(name, fileName);
         fileMap[fileName] = data;
     }
     
     return fileMap;
 }
 
-async function loadDictionaryExtractedRawData(name, fileName){
+async function loadDictionaryExtractedRawFile(name, fileName){
     let chunkKey = getExtractedRawFileKey(name, fileName);
     return await chunkedRead(chunkKey);    
 }
 
-async function loadDictionaryExtractedResourceData(name, fileName){
+async function deleteDictionaryExtractedRawFile(name, fileName){
+    let chunkKey = getExtractedRawFileKey(name, fileName);
+    return await chunkedDelete(chunkKey);    
+}
+
+async function loadDictionaryExtractedResourceFile(name, fileName){
     let chunkKey = getExtractedResourceFileKey(name, fileName);
     return await chunkedRead(chunkKey);    
+}
+
+async function deleteDictionaryExtractedResourceFile(name, fileName){
+    let chunkKey = getExtractedResourceFileKey(name, fileName);
+    return await chunkedDelete(chunkKey);    
 }
 
 async function saveDictionaryExtractedData(name, extractedData){
@@ -107,6 +117,16 @@ async function saveDictionaryExtractedRawData(name, extractedRawData){
     await chunkedWrite(chunkKey, dir);
 }
 
+async function deleteDictionaryExtractedRawData(name){
+    let dir = await loadDictionaryExtractedRawDir(name);
+    if(dir){    
+        for(let fileName of dir){
+            await deleteDictionaryExtractedRawFile(name, fileName);    
+        }    
+        await deleteDictionaryExtractedRawDir(name);
+    }
+}
+
 function getDictionaryExtractedRawDirKey(name){
     return getChunkKey(name, TYPE_EXTRACTED_RAW_DIR);
 }
@@ -114,6 +134,11 @@ function getDictionaryExtractedRawDirKey(name){
 async function loadDictionaryExtractedRawDir(name){
     let chunkKey = getDictionaryExtractedRawDirKey(name);
     return await chunkedRead(chunkKey);    
+}
+
+async function deleteDictionaryExtractedRawDir(name){
+    let chunkKey = getDictionaryExtractedRawDirKey(name);
+    return await chunkedDelete(chunkKey);    
 }
 
 async function saveDictionaryExtractedResourceData(name, extractedResourceData){
@@ -130,6 +155,16 @@ async function saveDictionaryExtractedResourceData(name, extractedResourceData){
     await chunkedWrite(chunkKey, dir);
 }
 
+async function deleteDictionaryExtractedResourceData(name){
+    let dir = await loadDictionaryExtractResourceDir(name);
+    if(dir){
+        for(let fileName of dir){
+            await deleteDictionaryExtractedResourceFile(name, fileName);
+        }   
+        await deleteDictionaryExtractedResourceDir(name);
+    }
+}
+
 function getDictionaryExtractedResourceDirKey(name){
     return getChunkKey(name, TYPE_EXTRACTED_RESOURCE_DIR);
 }
@@ -139,10 +174,17 @@ async function loadDictionaryExtractResourceDir(name){
     return await chunkedRead(chunkKey);
 }
 
+async function deleteDictionaryExtractedResourceDir(name){
+    let chunkKey = getDictionaryExtractedResourceDirKey(name);
+    return await chunkedDelete(chunkKey);
+}
+
 async function deleteDictionaryData(name){
     await deleteDictionaryRawData(name);
 
     await deleteDictionaryIndexData(name);
+
+    await deleteDictionaryExtractedData(name);
 }
 
 async function deleteDictionaryRawData(name){
@@ -155,6 +197,11 @@ async function deleteDictionaryIndexData(name){
     await chunkedDelete(chunkKeyOfIndex);
 }
 
+async function deleteDictionaryExtractedData(name){
+    await deleteDictionaryExtractedRawData(name);
+    await deleteDictionaryExtractedResourceData(name);
+}
+
 function getChunkKey(name, type, type2){
     if(type2){
         return `dictionary-${name}-${type}-${type2}`;
@@ -164,4 +211,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawData, loadDictionaryExtractedResourceData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
