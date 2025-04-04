@@ -343,7 +343,7 @@ init();
         <a :href="howToFindDictionaryLink">{{ t('options_dictionary_find_tips') }}</a>
       </div>
       <div class="input">
-        <input type="file" ref="file">
+        <input type="file" ref="file" accept=".txt, .zip">
       </div>
       <div class="action">
         <button @click="onImport">{{ t('optionsImportAdditionalDictionaryAction') }}</button>
