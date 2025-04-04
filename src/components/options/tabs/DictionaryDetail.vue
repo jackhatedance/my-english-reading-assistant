@@ -21,11 +21,12 @@ const indexBuildingStatus = computed(() => {
         }
 
         if(indexBuildingProgress.value.progress.rate < 1){
+            let job = indexBuildingProgress.value.progress.job;
             let pct = (indexBuildingProgress.value.progress.rate * 100).toFixed(0);
 
             let eta = humanRemain(indexBuildingProgress.value.progress.remain);
 
-            return `, building (${pct}% ETA: ${eta}) `;
+            return `, ${job} (${pct}% ETA: ${eta}) `;
         }else{
             return '';
         }        

@@ -1,4 +1,5 @@
 import {chunkedRead, chunkedWrite, chunkedDelete} from '../chunk.js';
+import { Progress } from '../dictionary/Progress.js'
 
 const KEY_DICTIONARIES = 'dictionaries';
 const TYPE_RAW = 'raw';
@@ -90,9 +91,9 @@ async function deleteDictionaryExtractedResourceFile(name, fileName){
     return await chunkedDelete(chunkKey);    
 }
 
-async function saveDictionaryExtractedData(name, extractedData){
+async function saveDictionaryExtractedData(name, extractedData, updateProgress){
     await saveDictionaryExtractedRawData(name, extractedData.raw);
-    await saveDictionaryExtractedResourceData(name, extractedData.resource);
+    await saveDictionaryExtractedResourceData(name, extractedData.resource, updateProgress);
 }
 
 function getExtractedRawFileKey(dictionaryName, fileName){ 
@@ -141,14 +142,21 @@ async function deleteDictionaryExtractedRawDir(name){
     return await chunkedDelete(chunkKey);    
 }
 
-async function saveDictionaryExtractedResourceData(name, extractedResourceData){
+async function saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress){
     const fileMap = extractedResourceData;
     
+    let entries = Object.entries(fileMap);
+    let total = entries.length;
+    let progress = new Progress('save extracted files', total, updateProgress);
+    progress.start();
+
     let dir = [];
-    for (const [key, value] of Object.entries(fileMap)) {
+    for (const [key, value] of entries) {
         dir.push(key);
         let chunkKey = getExtractedResourceFileKey(name, key);
         await chunkedWrite(chunkKey, value);
+
+        await progress.count();
     }
 
     let chunkKey = getDictionaryExtractedResourceDirKey(name);

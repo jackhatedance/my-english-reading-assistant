@@ -44,9 +44,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //console.log(`rcv msg: ${request.type}`);
-    if(request.type == 'DICTIONARY_INDEX_BUILDING_PROGRESS'){
+    if(request.type == 'DICTIONARY_JOB_PROGRESS'){
         const { name, progress } = request.payload;
-        //console.log(`dictinary ${name} index building progress: ${rate}`);
+        const { job, rate } = progress;
+        //console.log(`dictinary ${name} ${job} progress: ${rate}`);
         indexBuildingProgress.value = { name, progress };
     }
 

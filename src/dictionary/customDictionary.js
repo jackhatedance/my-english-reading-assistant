@@ -325,8 +325,8 @@ async function migrateDictionary(dictionary, updateProgress){
         console.log('extract dictionary data: '+ name);
 
         if(meta.package == true){
-            let extractedData = await dictionaryInstance.extractData();
-            await saveDictionaryExtractedData(name, extractedData);            
+            let extractedData = await dictionaryInstance.extractData(updateProgress);
+            await saveDictionaryExtractedData(name, extractedData, updateProgress);            
         }
         
         let index = await generateIndex(dictionaryInstance, updateProgress);

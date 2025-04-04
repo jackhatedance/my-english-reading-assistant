@@ -8,6 +8,7 @@ import { loadDictionaryExtractedResourceFile } from '../../store/dictionaryStore
 import * as cheerio from 'cheerio';
 import { eliminateFontFaces, createDataUrl } from './css/css.js'
 import { base64toText } from '../../utils/fileUtils.js'
+import { Progress } from '../Progress.js'
 
 class MdictDictionary extends Dictionary {
     
@@ -55,7 +56,7 @@ class MdictDictionary extends Dictionary {
         }
     }
 
-    extractData(){
+    async extractData(updateProgress){
         let rawFileMap = {};
         
         for(let fileName in this.data.raw){
@@ -67,11 +68,17 @@ class MdictDictionary extends Dictionary {
         }
         
         let mddFileMap = {};
+        let total = this.mdd.keywordList.length;
+        let progress = new Progress('extract-data', total, updateProgress);
+        progress.start();
+
         for(let keyword of this.mdd.keywordList){
             let key = keyword.keyText;
             let resource = this.mdd.locate(key).definition;
 
             mddFileMap[key]= resource;
+
+            await progress.count();
         }
 
         return {

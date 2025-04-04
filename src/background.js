@@ -59,7 +59,7 @@ chrome.runtime.onInstalled.addListener(async function () {
   
   let options = await getOptions();
   if(options.dictionary.automigration == true){
-    console.log('check dictionary indexes');
+    console.log('check dictionaries');
     migrateAllDictionaries((name, progress) => sendMsgOfIndexBuildingProgress(name, progress));        
   }
 });
@@ -316,7 +316,7 @@ function sendMsgOfIndexBuildingProgress(name, progress){
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: 'DICTIONARY_INDEX_BUILDING_PROGRESS',
+          type: 'DICTIONARY_JOB_PROGRESS',
           payload: {      
             "name": name,
             "progress": progress,

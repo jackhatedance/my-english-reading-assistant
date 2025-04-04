@@ -258,7 +258,7 @@ async function refreshUI(){
 
 watch(() => indexBuildingProgress.value, (newValue) => {
     if(newValue.progress.rate == 1){
-      console.log('index build complete');
+      console.log(`dictionary job ${newValue.progress.job} complete`);
       refreshUI();
     }
 });
