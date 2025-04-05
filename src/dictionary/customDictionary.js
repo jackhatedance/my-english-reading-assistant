@@ -322,12 +322,17 @@ async function migrateDictionary(dictionary, updateProgress){
         let raw = await loadDictionaryRawData(name);            
         let dictionaryInstance = createDictionaryInstance(meta, { raw }, '', false);
 
-        console.log('extract dictionary data: '+ name);
+        if(meta.format == 'mdict'){
+            console.log('extract dictionary resource data: '+ name);
 
-        if(meta.package == true){
-            let extractedResourceData = await dictionaryInstance.extractResourceData(updateProgress);
-            await saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress);            
-        }
+            let rawFileMap = raw;
+            let needExtractResourceData = await dictionaryInstance.needExtractResourceData(rawFileMap);
+
+            if(needExtractResourceData){
+                let extractedResourceData = await dictionaryInstance.extractResourceData(updateProgress);
+                await saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress);            
+            }
+        }        
         
         let index = await generateIndex(dictionaryInstance, updateProgress);
         

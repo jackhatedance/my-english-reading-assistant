@@ -155,9 +155,10 @@ async function getTextDictionary(fileName, name, file){
     format: 'text',
     package: false,
     definitionFormat: 'text',
-    'size': size,
+    size: size,
     fromLanguage: 'en',
-    toLanguage: 'cn',        
+    toLanguage: 'cn',
+    enabled: false,        
     data: {
         index:{}
       },
@@ -204,7 +205,8 @@ async function getZipDictionary(fileName, name, file){
       definitionFormat: 'html',
       size: size,
       fromLanguage: 'en',
-      toLanguage: 'cn',    
+      toLanguage: 'cn',
+      enabled: false,    
       data: {
         raw: dictionary.getRawMeta(),
         index:{}

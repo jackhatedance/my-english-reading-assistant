@@ -4,7 +4,7 @@ import { Buffer } from 'safe-buffer'
 import { dataURItoArrayBuffer } from '../../utils/fileUtils.js'
 import { findMdictProfile } from './mdictProfileRegister.js'
 import { findMdictParser } from './mdictParserRegister.js'
-import { loadDictionaryExtractedResourceFile } from '../../store/dictionaryStore.js'
+import { loadDictionaryExtractedResourceFile, loadDictionaryExtractResourceDir } from '../../store/dictionaryStore.js'
 import * as cheerio from 'cheerio';
 import { eliminateFontFaces, createDataUrl } from './css/css.js'
 import { base64toText } from '../../utils/fileUtils.js'
@@ -53,6 +53,16 @@ class MdictDictionary extends Dictionary {
     patchOptions(){
         if(!this.options.rawType){
             this.options.rawType = 'package';
+        }
+    }
+
+    async needExtractResourceData(rawFileMap){
+        let mddDataUriFile = this.getDataUriFile(rawFileMap, '.mdd');
+        let extractedResourceDir = await loadDictionaryExtractResourceDir(this.name);
+        if(mddDataUriFile && !extractedResourceDir){
+            return true;
+        }else{
+            return false;
         }
     }
 
