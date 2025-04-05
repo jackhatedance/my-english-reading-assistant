@@ -33,10 +33,10 @@ class MdictDictionary extends Dictionary {
             if(profile){
                 this.mdictParser = findMdictParser(profile.parser);
                 if(!this.mdictParser){
-                    console.error(`parser not found`);    
+                    //console.error(`parser not found`);    
                 }
             }else{
-                console.error(`profile not found`);
+                //console.error(`profile not found`);
             }            
 
             //mdd is optional
@@ -178,7 +178,16 @@ class MdictDictionary extends Dictionary {
         result.html = result.raw;
         result.dictionary = this;
     }
-   
+
+    supportOutputFormat(format){
+        if(format == 'json' || format == 'text'){
+            if(this.data.raw && !this.mdictParser){
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 export { MdictDictionary }

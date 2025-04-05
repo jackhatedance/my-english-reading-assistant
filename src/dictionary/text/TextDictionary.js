@@ -63,6 +63,10 @@ class TextDictionary extends Dictionary {
     rawToJson(definition){
         return this.definitionParser.parse(definition);
     }
+
+    supportOutputFormat(format){
+        return true;
+    }
         
 }
 

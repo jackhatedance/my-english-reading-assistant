@@ -235,6 +235,10 @@ class Dictionary {
         }
     }
 
+    supportOutputFormat(format){
+        return false;
+    }
+
     cleanOutputFormat(result, options){
         if(!options.outputFormats.includes('raw')){            
             delete result.raw;

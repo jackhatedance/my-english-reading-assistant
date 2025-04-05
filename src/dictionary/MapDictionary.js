@@ -27,6 +27,10 @@ class MapDictionary extends Dictionary {
     lookupFromIndex(query, options){
         return this.lookupFromRaw(query, options);
     }
+
+    supportOutputFormat(format){
+        return true;
+    }
 }
 
 export { MapDictionary }

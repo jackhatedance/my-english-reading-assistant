@@ -334,16 +334,18 @@ async function migrateDictionary(dictionary, updateProgress){
             }
         }        
         
-        let index = await generateIndex(dictionaryInstance, updateProgress);
+        if(dictionaryInstance.supportOutputFormat('json')){
+            let index = await generateIndex(dictionaryInstance, updateProgress);
         
-        await saveDictionaryIndexData(name, index);
-
-        meta.data.index = {
-            version: index.version,
-        };
-        await saveDictionaryMeta(meta);
-
-        updateProgress({rate:1, remain: 0});
+            await saveDictionaryIndexData(name, index);
+    
+            meta.data.index = {
+                version: index.version,
+            };
+            await saveDictionaryMeta(meta);    
+        }
+        
+        updateProgress({job:'upgrade', rate:1, remain: 0});
         console.log('complete upgrade: '+ name);
     } catch(error) {
         console.log('build index failed', error);
