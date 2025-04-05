@@ -1,4 +1,4 @@
-import { loadDictionaryData, loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawDir, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
@@ -325,8 +325,8 @@ async function migrateDictionary(dictionary, updateProgress){
         console.log('extract dictionary data: '+ name);
 
         if(meta.package == true){
-            let extractedData = await dictionaryInstance.extractData(updateProgress);
-            await saveDictionaryExtractedData(name, extractedData, updateProgress);            
+            let extractedResourceData = await dictionaryInstance.extractResourceData(updateProgress);
+            await saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress);            
         }
         
         let index = await generateIndex(dictionaryInstance, updateProgress);

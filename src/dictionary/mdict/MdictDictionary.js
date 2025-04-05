@@ -56,20 +56,11 @@ class MdictDictionary extends Dictionary {
         }
     }
 
-    async extractData(updateProgress){
-        let rawFileMap = {};
-        
-        for(let fileName in this.data.raw){
-            let fileData = this.data.raw[fileName];
-
-            if(!fileName.endsWith('.mdd')){                
-                rawFileMap[fileName] = fileData;
-            }            
-        }
-        
+    async extractResourceData(updateProgress){
+                
         let mddFileMap = {};
         let total = this.mdd.keywordList.length;
-        let progress = new Progress('extract-data', total, updateProgress);
+        let progress = new Progress('extract resource data', total, updateProgress);
         progress.start();
 
         for(let keyword of this.mdd.keywordList){
@@ -81,10 +72,7 @@ class MdictDictionary extends Dictionary {
             await progress.count();
         }
 
-        return {
-            raw: rawFileMap,
-            resource: mddFileMap
-        };
+        return mddFileMap;        
     }
 
     async getResource(key){

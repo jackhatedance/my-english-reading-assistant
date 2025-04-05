@@ -51,6 +51,11 @@ async function saveDictionaryData(name, data){
 }
 
 async function saveDictionaryRawData(name, rawData){
+    await saveDictionaryRawDataAsSinglePiece(name, rawData);
+    await saveDictionaryExtractedRawData(name, rawData);
+}
+
+async function saveDictionaryRawDataAsSinglePiece(name, rawData){
     let chunkKeyOfRaw = getChunkKey(name, TYPE_RAW);
     await chunkedWrite(chunkKeyOfRaw, rawData);
 }
@@ -89,11 +94,6 @@ async function loadDictionaryExtractedResourceFile(name, fileName){
 async function deleteDictionaryExtractedResourceFile(name, fileName){
     let chunkKey = getExtractedResourceFileKey(name, fileName);
     return await chunkedDelete(chunkKey);    
-}
-
-async function saveDictionaryExtractedData(name, extractedData, updateProgress){
-    await saveDictionaryExtractedRawData(name, extractedData.raw);
-    await saveDictionaryExtractedResourceData(name, extractedData.resource, updateProgress);
 }
 
 function getExtractedRawFileKey(dictionaryName, fileName){ 
@@ -219,4 +219,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
