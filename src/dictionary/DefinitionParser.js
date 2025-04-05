@@ -55,10 +55,6 @@ class DefinitionParser {
         }
     }
 
-    beforeGetDefinitionText($, element, context){
-        //manipulate DOM
-    }
-
     beforeParseDefinition(text){
         if(!text){
             text = '';
@@ -70,7 +66,10 @@ class DefinitionParser {
     }
 
     afterParseDefinition(definition){
-        let text = definition.text;
+        const { text, type } = definition;
+        if(type){
+            return;    
+        }
 
         let baseForm = findBaseForm(text);
         if(baseForm){

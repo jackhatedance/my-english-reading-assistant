@@ -88,6 +88,20 @@ describe('mdict oalecd9e parser', function () {
       
     });
 
+    it('was-oalecd9e link', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/was.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].pronunciation, "BrE wəz NAmE wəz BrE strong form wɒz NAmE strong form wʌz");
+      assert.equal(parseResult[0].definitionGroups[0].name, "");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "转be");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "be");
+      
+    });
+
   });
   
 });

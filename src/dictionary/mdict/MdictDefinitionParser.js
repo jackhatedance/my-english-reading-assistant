@@ -11,13 +11,19 @@ class MdictDefinitionParser extends DefinitionParser {
         return null;    
     }
 
-    createEntryForLink(link){
-        let definition = {
-            text: `见${link}`,
+    createLinkDefinition(link){
+        let text = `转${link}`;
+
+        return {
+            text: text,
+            subdefinitions: [text],
             type: 'link',
             link: link,
         };
-        
+    }
+
+    createEntryForLink(link){
+        let definition = this.createLinkDefinition(link);        
         let definitions = [definition];
         let definitionGroup = { type:'link', "name": 'link', "definitions": definitions };        
         

@@ -17,13 +17,15 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
         this.selectors = selectors;
     }
 
-    beforeGetDefinitionText($, element, context){
+    getDefinitionText($, element, context){
         let text = $(element).text();
         let parenthesesText = $(element).find('strong').text();        
         let mainText = text.replace(parenthesesText, '');
         if(this.trimDefinition(mainText).length>0){
             $(element).find('strong').remove();        
         }
+
+        return super.getDefinitionText($, element, context);
     }
     
     beforeParseDefinition(text){
