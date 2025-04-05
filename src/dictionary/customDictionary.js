@@ -28,7 +28,7 @@ async function loadCustomDictionary(dictionaryMeta, dataTypes, options){
     if(dataTypes.includes('raw')){
         if(dictionaryMeta.format == 'mdict'){
             if(options?.rawType == 'extracted'){
-                raw = await loadAllDictionaryExtractedRawData(name);
+                raw = await loadAllDictionaryExtractedRawData(name, ['.mdx']);
             }else{            
                 raw = await loadDictionaryRawData(name);
             }

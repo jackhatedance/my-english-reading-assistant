@@ -65,12 +65,15 @@ async function saveDictionaryIndexData(name, indexData){
     await chunkedWrite(chunkKey, indexData);    
 }
 
-async function loadAllDictionaryExtractedRawData(name){
+async function loadAllDictionaryExtractedRawData(name, extensions){
     let dir = await loadDictionaryExtractedRawDir(name);
     let fileMap = {};
     for(let fileName of dir){
-        let data = await loadDictionaryExtractedRawFile(name, fileName);
-        fileMap[fileName] = data;
+        let matchExtension = extensions.find(item => fileName.endsWith(item));
+        if(matchExtension){
+            let data = await loadDictionaryExtractedRawFile(name, fileName);
+            fileMap[fileName] = data;
+        }
     }
     
     return fileMap;
