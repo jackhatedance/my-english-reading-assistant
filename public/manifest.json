@@ -38,7 +38,7 @@
   ],
   "sandbox": {
     "pages": [
-      "dictionary.html"
+      "definition.html"
     ]
   },
   "web_accessible_resources": [

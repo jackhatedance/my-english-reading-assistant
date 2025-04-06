@@ -228,7 +228,7 @@ init();
         <div class="word-definition">
             <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchToText">text</button> <button @click="switchToHtml">html</button></p>
             
-            <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="dictionary.html" ></iframe>
+            <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="definition.html" ></iframe>
             <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>
         </div>
         <div class="word-mark-actions">
