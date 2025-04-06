@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, } from './dictionary.js';
+import {lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, } from './dictionaries.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache, createSimplifyDefinitionOptions} from './service/optionService.js';

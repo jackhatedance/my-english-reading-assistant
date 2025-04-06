@@ -1,4 +1,4 @@
-import {lookup, isOnlyTransform, getTheOnlyBaseForm } from './dictionary.js';
+import {lookup, isOnlyTransform, getTheOnlyBaseForm } from './dictionaries.js';
 
 function deepLookup(lookupResult){
     let deepLookupResult;

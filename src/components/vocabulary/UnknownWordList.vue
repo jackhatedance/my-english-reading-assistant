@@ -4,7 +4,7 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue'
 import UnknownWordItem from './UnknownWordItem.vue';
 import { loadKnownWords } from '../../vocabularyStore.js';
 import { getWordParts, isKnown } from '../../language.js';
-import { lookup } from '../../dictionary.js';
+import { lookup } from '../../dictionaries.js';
 
 const props = defineProps({
     items: Array,

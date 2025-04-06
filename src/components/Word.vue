@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
-import { lookup } from '../dictionary.js';
+import { lookup } from '../dictionaries.js';
 import { getWordClassAbbreviation } from '../dictionary/wordClass.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
