@@ -526,5 +526,8 @@
     },
     "notification_build_index_message_end":{
         "message":"词典都可以正常使用了"
+    },
+    "dictionaryPageTitle":{
+        "message":"词典"
     }
 }

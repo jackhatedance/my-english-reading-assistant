@@ -526,5 +526,8 @@
     },
     "notification_build_index_message_end":{
         "message":"All dictionaries are back to normal"
+    },
+    "dictionaryPageTitle":{
+        "message":"Dictionary"
     }
 }
