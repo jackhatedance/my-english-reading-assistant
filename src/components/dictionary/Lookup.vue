@@ -56,6 +56,7 @@ const init = async () => {
 //    await doLookup(dictionary, query);
 
     dictionaryMetas.value = await getAllDictionaryMetas();
+    selectedDictionary.value = dictionaryMetas.value[0].name;
 };
 
 
@@ -67,7 +68,7 @@ init();
         <select class="dictionaries" v-model="selectedDictionary" size="1" >
             <option v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
         </select>  
-        <input type="text" v-model="queryRef">
+        <input type="text" v-model="queryRef" @keyup.enter="onLookup">
         <button @click="onLookup">lookup</button>   
         <Definition v-if="lookupResultRef" :query="lookupResultRef?.query" :text="lookupResultRef?.text" :html="lookupResultRef?.html"></Definition>
         <p v-if="!lookupResultRef">no result</p>
