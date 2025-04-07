@@ -10,6 +10,7 @@ import { TextDictionary } from '../../../dictionary/text/TextDictionary.js'
 import { sendMessageDictionaryChangeToBackground } from '../../../message.js';
 import { markdown2Html } from '../../../utils/markdownUtils.js'
 import HelpLink from '../../HelpLink.vue'
+import { chunkedDelete } from '../../../chunk.js'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -31,6 +32,18 @@ async function onChangeEnableAdditionalDictionary() {
   await updateAdditionalDictionaryEnabled(enableAdditionalDictionary.value);
 }
 
+async function onDeleteTrunk() {
+  let prefix = 'dictionary--extracted_';
+  const all = await chrome.storage.local.get();
+  let keys = [];
+  for (const [key, val] of Object.entries(all)) {
+    if(key.startsWith(prefix)){
+      keys.push(key);
+    }
+  }
+  chrome.storage.local.remove(keys, ()=>{});
+}
+
 async function onDelete() {
   //console.log(array);
 
@@ -40,7 +53,7 @@ async function onDelete() {
   let index = metaArray.findIndex((item) => item.name == selectedDictionary.value);
   if (index !== -1) {
       metaArray.splice(index, 1);
-  }
+    }
 
   //trigger event
   selectedDictionaryObject.value = null;

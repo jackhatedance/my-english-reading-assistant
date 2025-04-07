@@ -20,6 +20,13 @@
                         // Add your custom logic here
                         //console.log('Anchor clicked:', href);
                         window.parent.postMessage({ type: 'DICTIONARY_LINK', data: href}, '*');
+                    } 
+                    if(href && href.startsWith('data:audio')){
+                        event.preventDefault(); // Prevents the default link behavior
+                        // Add your custom logic here
+                        //console.log('Anchor clicked:', href);
+                        let audio = new Audio(href);
+                        audio.play();
                     }                        
                 });
             });

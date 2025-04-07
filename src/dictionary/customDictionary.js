@@ -28,7 +28,7 @@ async function loadCustomDictionary(dictionaryMeta, dataTypes, options){
     if(dataTypes.includes('raw')){
         if(dictionaryMeta.format == 'mdict'){
             if(options?.rawType == 'extracted'){
-                raw = await loadAllDictionaryExtractedRawData(name, ['.mdx']);
+                raw = await loadAllDictionaryExtractedRawData(name, ['.mdx', '.css']);
             }else{            
                 raw = await loadDictionaryRawData(name);
             }
@@ -367,4 +367,4 @@ async function deleteDictionaryIndex(name){
     await deleteDictionaryIndexData(name);
 }
 
-export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder }
+export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder, loadCustomDictionary }

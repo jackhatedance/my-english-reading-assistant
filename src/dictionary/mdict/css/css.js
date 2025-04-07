@@ -1,4 +1,3 @@
-import { lookup } from 'mime-types'
 /**
  * url('fonts/ProximaNova-Thin-webfont-v2.woff') format('woff') 
  * -> 
@@ -25,12 +24,4 @@ function eliminateFontFaces(css){
     return css.replaceAll(/@font-face\s*\{[^}]*}/g, '');
 }
 
-function createDataUrl(path, resource){    
-    let mimeType = lookup(path);
-    let base64 = resource;
-
-    let result = `data:${mimeType}; base64,${base64}`;
-    return result;
-}
-
-export { replaceFontFaceSrcUrlWithDataUrl, eliminateFontFaces, createDataUrl }
+export { replaceFontFaceSrcUrlWithDataUrl, eliminateFontFaces }

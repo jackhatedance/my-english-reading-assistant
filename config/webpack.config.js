@@ -18,6 +18,7 @@ const config = (env, argv) =>
       guide: PATHS.src + '/guide.js',
       faq: PATHS.src + '/faq.js',
       report: PATHS.src + '/report.js',
+      dictionary: PATHS.src + '/dictionary.js',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
   });

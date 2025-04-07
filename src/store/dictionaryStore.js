@@ -79,6 +79,16 @@ async function loadAllDictionaryExtractedRawData(name, extensions){
     return fileMap;
 }
 
+async function findDictionaryExtractedRawFile(name, fileName){
+    let dir = await loadDictionaryExtractedRawDir(name);
+    for(let fullFileName of dir){
+        if(fullFileName.includes(fileName)){
+            let data = await loadDictionaryExtractedRawFile(name, fullFileName);
+            return data;        
+        }
+    }    
+}
+
 async function loadDictionaryExtractedRawFile(name, fileName){
     let chunkKey = getExtractedRawFileKey(name, fileName);
     return await chunkedRead(chunkKey);    
@@ -222,4 +232,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };

@@ -4,10 +4,10 @@ import { Buffer } from 'safe-buffer'
 import { dataURItoArrayBuffer } from '../../utils/fileUtils.js'
 import { findMdictProfile } from './mdictProfileRegister.js'
 import { findMdictParser } from './mdictParserRegister.js'
-import { loadDictionaryExtractedResourceFile, loadDictionaryExtractResourceDir } from '../../store/dictionaryStore.js'
+import { loadDictionaryExtractedRawFile, findDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, loadDictionaryExtractResourceDir } from '../../store/dictionaryStore.js'
 import * as cheerio from 'cheerio';
-import { eliminateFontFaces, createDataUrl } from './css/css.js'
-import { base64toText } from '../../utils/fileUtils.js'
+import { eliminateFontFaces } from './css/css.js'
+import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
 
 class MdictDictionary extends Dictionary {
@@ -75,9 +75,10 @@ class MdictDictionary extends Dictionary {
 
         for(let keyword of this.mdd.keywordList){
             let key = keyword.keyText;
-            let resource = this.mdd.locate(key).definition;
+            let base64 = this.mdd.locate(key).definition;
 
-            mddFileMap[key]= resource;
+            let dataUrl = await base64ToDataUrl(key, base64);
+            mddFileMap[key]= dataUrl;
 
             await progress.count();
         }
@@ -90,12 +91,18 @@ class MdictDictionary extends Dictionary {
             return null;
         }
 
-        key = key.replaceAll(/\//g, '\\');
-        if(!key.startsWith('\\')){
-            key = '\\' + key;
+        let result;
+        if(key && key.endsWith('.css')){
+            result = await findDictionaryExtractedRawFile(this.name, key);
         }
 
-        let result = await loadDictionaryExtractedResourceFile(this.name, key)
+        let resourceKey = key.replaceAll(/\//g, '\\');
+        if(!resourceKey.startsWith('\\')){
+            resourceKey = '\\' + resourceKey;
+        }
+        if(!result){
+            result = await loadDictionaryExtractedResourceFile(this.name, resourceKey);
+        }
                 
         return result;
     }
@@ -135,10 +142,10 @@ class MdictDictionary extends Dictionary {
         let stylesheetElements = $('link[rel="stylesheet"]');
         for(let element of stylesheetElements){
             let href = $(element).attr('href');
-            let key = `\\${href}`;
+            let key = `${href}`;
             let resource = await this.getResource(key);
             //console.log(resource);
-            const css = base64toText(resource);
+            const css = dataURItoText(resource);
             //let css2 = replaceFontFaceSrcUrlWithDataUrl(css, getResource);
             let css2 = eliminateFontFaces(css)
             //console.log(css2);
@@ -160,11 +167,21 @@ class MdictDictionary extends Dictionary {
         for(let element of imgElements){
             let src = $(element).prop('src');
             
-            let resource = await this.getResource(src);
-            let dataUrl = await createDataUrl(src, resource);
+            let dataUrl = await this.getResource(src);
             
 
             $(element).prop('src', dataUrl);            
+        }
+
+        let aElements = $('a');
+        for(let element of aElements){
+            let href = $(element).attr('href');
+            if(href.startsWith('sound://')){
+                href = href.replace('sound://', '');
+            }
+            let dataUrl = await this.getResource(href);            
+
+            $(element).attr('href', dataUrl);            
         }
 
         return $.html();    

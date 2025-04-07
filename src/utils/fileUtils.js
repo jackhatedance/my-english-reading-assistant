@@ -1,3 +1,4 @@
+import { lookup } from 'mime-types'
 
 function dataURLtoBlob(dataurl) {
     var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -33,6 +34,13 @@ function dataURItoText(dataURI) {
     return text;
 }
 
+function base64ToDataUrl(path, resource){
+    let mimeType = lookup(path);
+    let base64 = resource;
+
+    let result = `data:${mimeType}; base64,${base64}`;
+    return result;
+}
 
 function base64toText(base64, charset="UTF-8") {
     const binaryString = atob(base64);
@@ -73,4 +81,4 @@ async function readFileAsync(file, type) {
     });
 }
 
-export { dataURLtoBlob, dataURItoArrayBuffer, dataURItoText, base64toText, textToBase64, readFileAsync }
+export { dataURLtoBlob, dataURItoArrayBuffer, dataURItoText, base64toText, base64ToDataUrl, textToBase64, readFileAsync }
