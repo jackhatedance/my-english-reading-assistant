@@ -18,7 +18,9 @@ const router = createRouter({
     routes,
 });
 
-createApp(Dictionary)
+const query = ref('');
+
+createApp(Dictionary, { query: query })
     .use(router)
     .mount('#app');
 
@@ -29,11 +31,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //console.log(`rcv msg: ${request.type}`);
-    if(request.type == 'DICTIONARY_JOB_PROGRESS'){
-        
+window.addEventListener('message', event => {
+    console.log('dictionary page window recieve message:'+ JSON.stringify(event.data));
+    // IMPORTANT: check the origin of the data!
+    /* TODO
+    if (event.origin === 'https://your-first-site.example') {
+        //console.log(event.data);
+    } 
+    */
+   
+    let request = event.data;
+    if (request.type === 'DICTIONARY_LINK') {
+        const href = request.data;
+        let matchResult = href.match(/.*:\/\/(.*)/);
+        if(matchResult && matchResult.length>1){
+            let entry = matchResult[1];
+            query.value = entry.toLowerCase();
+        }    
     }
-
-    sendResponse({});
-});
+}, false);

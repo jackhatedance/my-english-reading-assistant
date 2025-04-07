@@ -1,14 +1,14 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import { loadSystemDictionariesToCache } from '../../dictionary/systemDictionary.js'
 
 const t = chrome.i18n.getMessage;
 
 const props = defineProps({
-   
+   query: Object
 });
 
-
+provide('query', props.query);
 
 const init = async () => {
 

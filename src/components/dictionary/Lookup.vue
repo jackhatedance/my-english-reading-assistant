@@ -9,6 +9,13 @@ const props = defineProps({
     
 });
 
+
+const query = inject('query');
+watch(() => query.value, (newValue) => {
+    queryRef.value = newValue;
+    onLookup();
+});
+
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
 
@@ -34,7 +41,7 @@ async function doLookup(dictionary, query){
     let dictionaryInstance = await getDictionary(meta);
     
     let result = dictionaryInstance.lookup(query, { fromRaw: true, outputFormats:['html']});
-    console.log(result);
+    //console.log(result);
     if(result){
         if(dictionaryInstance.toEmbeddedHtml){
             result.html = await dictionaryInstance.toEmbeddedHtml(result.html);
@@ -46,7 +53,7 @@ async function doLookup(dictionary, query){
 
 
 async function onLookup(){
-    console.log(`lookup dict: ${selectedDictionary.value}, query: ${queryRef.value}`);
+    //console.log(`lookup dict: ${selectedDictionary.value}, query: ${queryRef.value}`);
     await doLookup(selectedDictionary.value, queryRef.value);
 }
 
