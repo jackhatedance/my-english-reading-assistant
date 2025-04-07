@@ -124,6 +124,10 @@ localizeHtmlPage();
     document.getElementById('options').addEventListener('click', (e) => {
       chrome.runtime.openOptionsPage();
     });
+
+    document.getElementById('dictionary').addEventListener('click', (e) => {
+      chrome.tabs.create({url: chrome.runtime.getURL('dictionary.html')});
+    });
   }
 
   function updateOptionsUI(options){
