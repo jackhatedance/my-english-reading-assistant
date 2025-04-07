@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 window.addEventListener('message', event => {
-    console.log('dictionary page window recieve message:'+ JSON.stringify(event.data));
+    //console.log('dictionary page window recieve message:'+ JSON.stringify(event.data));
     // IMPORTANT: check the origin of the data!
     /* TODO
     if (event.origin === 'https://your-first-site.example') {
