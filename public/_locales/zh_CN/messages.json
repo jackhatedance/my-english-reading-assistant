@@ -186,7 +186,7 @@
         "message":"词典"
     },
     "optionsEditDictionaryTips": {
-        "message": "* 从上到下的顺序查询已启用的词典\n* 缺少索引的字典无法为正文提供快速且简明的生词含义，但是可以作为普通字典使用\n* 新增字典或软件升级均可能导致需要重建索引"
+        "message": "* 词典的使用顺序是从上到下\n* 未完成导入的词典无法为正文提供快速且简明的生词含义，但是仍然可以作为普通词典使用\n* 新增字典或软件升级均可能引起需要重新导入"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "建议至少启用一本字典"
@@ -198,13 +198,13 @@
         "message": "创建索引时请不要关闭浏览器"
     },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "索引正常"
+        "message": "导入完成"
     },
     "optionsEditDictionaryIndexColorTipsOrange": {
-        "message": "索引需要（重新）创建"
+        "message": "需要（重新）导入"
     },
     "optionsEditDictionaryIndexColorTipsBlue": {
-        "message": "不支持索引"
+        "message": "无法导入"
     },
     "options_dictionary_detail": {
         "message": "详情"
@@ -257,8 +257,8 @@
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"删除"
     },  
-    "optionsBuildDictionaryIndexAction":{
-        "message":"创建索引"
+    "optionsImportDictionaryAction":{
+        "message":"(重新)导入"
     },
     "optionsDictionaryMoveUpAction":{
         "message":"上移"

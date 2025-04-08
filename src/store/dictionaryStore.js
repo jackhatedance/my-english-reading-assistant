@@ -208,4 +208,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, deleteDictionaryData, deleteDictionaryIndexData, deleteDictionaryExtractedData, loadDictionaryMetas, saveDictionaryMetas };

@@ -187,7 +187,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* Lookup enabled dictionaries from top to bottom\n* Dictionaries without indexes cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require rebuilding the index"
+        "message": "* The order of using the dictionary is from top to bottom\n* dictionaries have not been imported cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require re-import"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"
@@ -199,13 +199,13 @@
         "message": "Please do not close your browser while the index is being created."
     },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "index is OK"
+        "message": "Import complete"
     },
     "optionsEditDictionaryIndexColorTipsOrange": {
-        "message": "Index need to be (re)built"
+        "message": "need to (re)import"
     },
     "optionsEditDictionaryIndexColorTipsBlue": {
-        "message": "index not supported"
+        "message": "unable to import"
     },
     "options_dictionary_detail": {
         "message": "Detail"
@@ -258,8 +258,8 @@
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"Delete"
     },
-    "optionsBuildDictionaryIndexAction":{
-        "message":"Build Index"
+    "optionsImportDictionaryAction":{
+        "message":"(re)Import"
     },  
     "optionsDictionaryMoveUpAction":{
         "message":"Move Up"

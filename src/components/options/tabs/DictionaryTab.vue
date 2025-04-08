@@ -10,7 +10,7 @@ import { TextDictionary } from '../../../dictionary/text/TextDictionary.js'
 import { sendMessageDictionaryChangeToBackground } from '../../../message.js';
 import { markdown2Html } from '../../../utils/markdownUtils.js'
 import HelpLink from '../../HelpLink.vue'
-import { chunkedDelete } from '../../../chunk.js'
+import { deleteDictionaryExtractedData } from '../../../store/dictionaryStore.js'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -59,9 +59,11 @@ async function onDelete() {
   selectedDictionaryObject.value = null;
 }
 
-async function onBuildIndex() {
+async function onImport() {
   let name = selectedDictionary.value;
   await deleteDictionaryIndex(name);
+  await deleteDictionaryExtractedData(name);
+
   refreshUI();
   sendMessageDictionaryChangeToBackground(name, 'build-index');
 }
@@ -333,7 +335,7 @@ init();
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
           <li class="orange">{{ t('optionsEditDictionaryIndexColorTipsOrange') }}</li>
-          <li class="blue">{{ t('optionsEditDictionaryIndexColorTipsBlue') }}<HelpLink type="guide" keyword="词典索引"/></li>
+          <li class="blue">{{ t('optionsEditDictionaryIndexColorTipsBlue') }}<HelpLink type="faq" keyword="为什么有的词典不支持创建索引"/></li>
         </ul>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
@@ -352,7 +354,7 @@ init();
       </div>
       <div class="action">
         <button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system1'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
-        <button @click="onBuildIndex" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsBuildDictionaryIndexAction') }}</button>
+        <button @click="onImport" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsImportDictionaryAction') }}</button>
 
         <button @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</button>
         <button @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</button>
