@@ -186,7 +186,7 @@ class MdictDictionary extends Dictionary {
         let aElements = $('a');
         for(let element of aElements){
             let href = $(element).attr('href');
-            if(href.startsWith('sound://')){
+            if(href && href.startsWith('sound://')){
                 href = href.replace('sound://', '');
 
                 let dataUrl = await this.getResource(href);            
