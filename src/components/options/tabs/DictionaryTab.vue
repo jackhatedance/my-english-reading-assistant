@@ -108,7 +108,7 @@ async function updateAdditionalDictionaryEnabled(value) {
   await updateOptions(newOptions);
 }
 
-async function onImport() {
+async function onAdd() {
   const files = file.value.files;
   if (files.length == 0) {
     alert('pick file first.');
@@ -367,7 +367,7 @@ init();
         <input type="file" ref="file" accept=".txt, .zip">
       </div>
       <div class="action">
-        <button @click="onImport">{{ t('optionsImportAdditionalDictionaryAction') }}</button>
+        <button @click="onAdd">{{ t('optionsAddDictionaryAction') }}</button>
       </div>
     </div>
     <div class="section">

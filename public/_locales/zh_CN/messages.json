@@ -251,8 +251,8 @@
     "options_dictionary_find_tips": {
         "message": "哪里可以找到字典？"
     },
-    "optionsImportAdditionalDictionaryAction":{
-        "message":"导入"
+    "optionsAddDictionaryAction":{
+        "message":"添加"
     },
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"删除"

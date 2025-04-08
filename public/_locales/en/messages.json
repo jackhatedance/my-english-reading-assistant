@@ -252,8 +252,8 @@
     "options_dictionary_find_tips": {
         "message": "Where to find dictionary？"
     },
-    "optionsImportAdditionalDictionaryAction":{
-        "message":"Import"
+    "optionsAddDictionaryAction":{
+        "message":"Add"
     },
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"Delete"
