@@ -140,7 +140,7 @@ function getEnabledDictionaryNamesFromCache(){
 
 async function getAdditionalDictionaryMetas(){
     let metas = await getAllDictionaryMetas();
-    return metas.filter(meta => meta.data.index.status == 'OK' && meta.enabled != true);      
+    return metas.filter(meta => meta.data.index.status == DICTIONARY_INDEX_STATUS_OK && meta.enabled != true);      
 }
 
 async function changeOrder(names){
@@ -197,7 +197,7 @@ async function loadCustomDictionariesToCache(additionalDictionaryNames, dataType
 async function updateAdditionalDictionariesInCache(activeAdditionalDictionaryNames, dataTypes, options){
     for(let meta of gAllDictionaryMetas){
         let name = meta.name;
-        let isAdditional = meta.enabled != true && meta.data.index.status == 'OK';
+        let isAdditional = meta.enabled != true && meta.data.index.status == DICTIONARY_INDEX_STATUS_OK;
         if(isAdditional){
             if(activeAdditionalDictionaryNames.includes(name)){
                 await loadCustomDictionaryToCache(meta, dataTypes, options);

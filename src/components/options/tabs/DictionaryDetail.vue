@@ -1,6 +1,7 @@
 <script setup>
 import { ref, inject, computed, watch } from 'vue'
 import { humanRemain } from '../../../utils/dateUtils.js'
+import { DICTIONARY_INDEX_STATUS_OK } from '../../../dictionary/dictConstants.js'
 
 const emits = defineEmits(['value-changed']);
 
@@ -14,9 +15,9 @@ const indexBuildingProgress = inject('indexBuildingProgress');
 const t = chrome.i18n.getMessage;
 
 
-const indexBuildingStatus = computed(() => {    
+const jobStatus = computed(() => {    
     if(indexBuildingProgress.value && indexBuildingProgress.value.name == props.dict.name){
-        if(props.dict.data.index.status == 'OK'){
+        if(props.dict.data.index.status == DICTIONARY_INDEX_STATUS_OK){
             return '';
         }
 
@@ -26,7 +27,7 @@ const indexBuildingStatus = computed(() => {
 
             let eta = humanRemain(indexBuildingProgress.value.progress.remain);
 
-            return `, ${job} (${pct}% ETA: ${eta}) `;
+            return `${job} (${pct}% ETA: ${eta}) `;
         }else{
             return '';
         }        
@@ -64,7 +65,10 @@ init();
             <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
             
             <label>{{ t('options_dictionary_detail_index') }}</label>
-            <span>{{ props.dict.data?.index?.status }} {{ indexBuildingStatus }}</span>
+            <span>{{ props.dict.data?.index?.status }}</span>
+
+            <label>{{ t('options_dictionary_detail_job') }}</label>
+            <span>{{ jobStatus }}</span>
         </div>
     </div>
 </template>

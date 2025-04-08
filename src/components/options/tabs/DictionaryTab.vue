@@ -11,6 +11,7 @@ import { sendMessageDictionaryChangeToBackground } from '../../../message.js';
 import { markdown2Html } from '../../../utils/markdownUtils.js'
 import HelpLink from '../../HelpLink.vue'
 import { deleteDictionaryExtractedData } from '../../../store/dictionaryStore.js'
+import { DICTIONARY_INDEX_STATUS_OK, DICTIONARY_INDEX_STATUS_NOT_SUPPORT } from '../../../dictionary/dictConstants.js'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -334,8 +335,8 @@ init();
       <div class="label">
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
-          <li class="orange">{{ t('optionsEditDictionaryIndexColorTipsOrange') }}</li>
-          <li class="blue">{{ t('optionsEditDictionaryIndexColorTipsBlue') }}<HelpLink type="faq" keyword="为什么有的词典不支持创建索引"/></li>
+          <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
+          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有的词典不支持创建索引"/></li>
         </ul>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
@@ -346,7 +347,7 @@ init();
       <div class="input dictionary">
         <div class="list">
           <select class="dictionaries" v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
-            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == 'OK', support_invalid: meta.data.index.support && meta.data.index?.status != 'OK', not_support: meta.data.index?.status == 'NOT_SUPPORT'}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
+            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
           </select>          
         </div>
         <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
@@ -402,10 +403,10 @@ init();
         color: green;
       }
       option.support_invalid{
-        color: orange;
+        color: rgb(209, 185, 3);
       }
       option.not_support{
-        color: blue;
+        color: rgba(255, 89, 0, 0.933);
       }
     }
   }
@@ -414,11 +415,11 @@ init();
   .green {
     color: green;
   }
-  .orange {
-    color: orange;
+  .yellow {
+    color: rgb(209, 185, 3);
   }
-  .blue {
-    color: blue;
+  .red {
+    color: rgba(255, 89, 0, 0.933);
   }
 
   .optional-tips {

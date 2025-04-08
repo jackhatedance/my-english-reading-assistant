@@ -201,10 +201,10 @@
     "optionsEditDictionaryIndexColorTipsGreen": {
         "message": "Import complete"
     },
-    "optionsEditDictionaryIndexColorTipsOrange": {
+    "optionsEditDictionaryIndexColorTipsYellow": {
         "message": "need to (re)import"
     },
-    "optionsEditDictionaryIndexColorTipsBlue": {
+    "optionsEditDictionaryIndexColorTipsRed": {
         "message": "unable to import"
     },
     "options_dictionary_detail": {
@@ -233,6 +233,9 @@
     },
     "options_dictionary_detail_index": {
         "message": "Index"
+    },
+    "options_dictionary_detail_job": {
+        "message": "Job"
     },
     "optionsEditAdditionalDictionaryLabel":{
         "message":"Additional Dictionary"

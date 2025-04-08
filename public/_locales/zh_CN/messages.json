@@ -200,10 +200,10 @@
     "optionsEditDictionaryIndexColorTipsGreen": {
         "message": "导入完成"
     },
-    "optionsEditDictionaryIndexColorTipsOrange": {
+    "optionsEditDictionaryIndexColorTipsYellow": {
         "message": "需要（重新）导入"
     },
-    "optionsEditDictionaryIndexColorTipsBlue": {
+    "optionsEditDictionaryIndexColorTipsRed": {
         "message": "无法导入"
     },
     "options_dictionary_detail": {
@@ -232,6 +232,9 @@
     },
     "options_dictionary_detail_index": {
         "message": "索引"
+    },
+    "options_dictionary_detail_job": {
+        "message": "任务"
     },
     "optionsEditAdditionalDictionaryLabel":{
         "message":"附加词典"
