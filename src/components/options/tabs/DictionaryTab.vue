@@ -212,6 +212,9 @@ async function getZipDictionary(fileName, name, file){
 
     let size = dictionary.size;
     let title = dictionary.title;
+    if(!title || title.trim() == ''){
+      title = name;
+    }
     
     const newDictionaryMeta = {
       name: title,
