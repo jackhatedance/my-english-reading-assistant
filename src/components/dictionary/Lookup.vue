@@ -1,5 +1,6 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
+import { useRoute } from 'vue-router'
 import Definition from './Definition.vue'
 import { getAllDictionaryMetas, loadCustomDictionary } from '../../dictionary/customDictionary.js'
 import { getSystemDictionary } from '../../dictionary/systemDictionary.js'
@@ -8,6 +9,8 @@ const props = defineProps({
     
     
 });
+
+const route = useRoute();
 
 
 const query = inject('query');
@@ -58,12 +61,25 @@ async function onLookup(){
 }
 
 const init = async () => {
-    let dictionary = 'route.query.dictionary';
-    let query = 'route.query.query';
+    
 //    await doLookup(dictionary, query);
 
     dictionaryMetas.value = await getAllDictionaryMetas();
-    selectedDictionary.value = dictionaryMetas.value[0].name;
+
+    if(route.query.dictionary){
+        let meta = dictionaryMetas.value.find(item => item.name == route.query.dictionary);
+        selectedDictionary.value = meta?.name;
+    } else {
+        selectedDictionary.value = dictionaryMetas.value[0].name;
+    }
+    
+    if(route.query.query){
+        queryRef.value = route.query.query; 
+    }
+
+    if(selectedDictionary.value && route.query.query){
+        await onLookup();
+    }
 };
 
 

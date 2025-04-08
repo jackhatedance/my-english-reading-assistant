@@ -182,6 +182,18 @@ function switchToHtml(){
     }
 }
 
+function openToDictionaryPage(){
+    let dictionaryValue = encodeURIComponent(lookupResultRef.value?.dictionaryName);
+    let queryValue = encodeURIComponent(props.word);
+
+    let url = chrome.runtime.getURL(`dictionary.html#/?dictionary=${dictionaryValue}&query=${queryValue}`);
+    //chrome.tabs.create({url});
+    let wnd = window.open(url, 'dictionary');
+    //window.open(location.protocol + "/help.aspx" + (hash ? "#" + hash : ""), "helpWindow", "width=750, height=600, resizable=1, scrollbars=1, location=0, directories=0, status=no, menubar=no, toolbar=no");
+    wnd.addEventListener("hashchange", function () { this.location.reload() }, false);
+    //window.open(url);
+}
+
 async function onMarkAsKnown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsKnown(targetWord);
@@ -226,7 +238,7 @@ init();
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchToText">text</button> <button @click="switchToHtml">html</button></p>
+            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchToText">text</button> <button @click="switchToHtml">html</button> <button @click="openToDictionaryPage">open dictionary</button></p>
             
             <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="definition.html" ></iframe>
             <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>
