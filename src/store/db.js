@@ -36,7 +36,8 @@ export async function countDictionaryResourceFile(dictionary) {
 }
 
 export async function deleteDictionaryAllResourceFiles(dictionary){
-  let keys = await (await dbPromise).getAllKeysFromIndex(STORE_DICTIONARY_RESOURCE_FILES, 'dictionary');
+  let keyRange = IDBKeyRange.only(dictionary);
+  let keys = await (await dbPromise).getAllKeysFromIndex(STORE_DICTIONARY_RESOURCE_FILES, 'dictionary', keyRange);
   for(let key of keys){
     let f = await (await dbPromise).get(STORE_DICTIONARY_RESOURCE_FILES, key);
     await (await dbPromise).delete(STORE_DICTIONARY_RESOURCE_FILES, key);

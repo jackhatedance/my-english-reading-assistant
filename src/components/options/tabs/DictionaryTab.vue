@@ -128,8 +128,8 @@ async function onImport() {
     //newDictionary.data = dataUrl;
 
     //clean data anyway
-    await deleteDictionary(newDictionary.name);
-    
+    await deleteDictionary(newDictionary.meta.name);
+
     await saveDictionary(newDictionary);
 
     //add dictionary name to select element

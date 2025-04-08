@@ -147,13 +147,17 @@ class MdictDictionary extends Dictionary {
             let key = `${href}`;
             let resource = await this.getResource(key);
             //console.log(resource);
-            const css = dataURItoText(resource);
-            //let css2 = replaceFontFaceSrcUrlWithDataUrl(css, getResource);
-            let css2 = eliminateFontFaces(css)
-            //console.log(css2);
-            let style = `<style>${css2}</style>`;
-            var styleElement = $(style);
-            $(element).replaceWith(styleElement);
+            if(resource){
+                const css = dataURItoText(resource);
+                //let css2 = replaceFontFaceSrcUrlWithDataUrl(css, getResource);
+                let css2 = eliminateFontFaces(css)
+                //console.log(css2);
+                let style = `<style>${css2}</style>`;
+                var styleElement = $(style);
+                $(element).replaceWith(styleElement);
+            }else{
+                console.warn(`resource not found: ${key}`);
+            }
         }
 
         let scriptElements = $('script[type="text/javascript"]');
@@ -170,9 +174,13 @@ class MdictDictionary extends Dictionary {
             let src = $(element).prop('src');
             
             let dataUrl = await this.getResource(src);
-            
+            if(dataUrl){
+                $(element).prop('src', dataUrl);            
+            } else {
+                console.warn(`resource not found: ${src}`);
+            }            
 
-            $(element).prop('src', dataUrl);            
+            
         }
 
         let aElements = $('a');
@@ -180,10 +188,12 @@ class MdictDictionary extends Dictionary {
             let href = $(element).attr('href');
             if(href.startsWith('sound://')){
                 href = href.replace('sound://', '');
-            }
-            let dataUrl = await this.getResource(href);            
 
-            $(element).attr('href', dataUrl);            
+                let dataUrl = await this.getResource(href);            
+
+                $(element).attr('href', dataUrl);  
+            }
+                      
         }
 
         return $.html();    
