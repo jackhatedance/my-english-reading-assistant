@@ -127,6 +127,9 @@ async function onImport() {
     //let dataUrl = await readFileAsync(_file, 'dataUrl'); 
     //newDictionary.data = dataUrl;
 
+    //clean data anyway
+    await deleteDictionary(newDictionary.name);
+    
     await saveDictionary(newDictionary);
 
     //add dictionary name to select element

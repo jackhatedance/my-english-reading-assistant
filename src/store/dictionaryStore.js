@@ -1,5 +1,6 @@
 import {chunkedRead, chunkedWrite, chunkedDelete} from '../chunk.js';
 import { Progress } from '../dictionary/Progress.js'
+import { saveDictionaryResourceFile, deleteDictionaryAllResourceFiles } from './db.js'
 
 const KEY_DICTIONARIES = 'dictionaries';
 const TYPE_RAW = 'raw';
@@ -99,22 +100,8 @@ async function deleteDictionaryExtractedRawFile(name, fileName){
     return await chunkedDelete(chunkKey);    
 }
 
-async function loadDictionaryExtractedResourceFile(name, fileName){
-    let chunkKey = getExtractedResourceFileKey(name, fileName);
-    return await chunkedRead(chunkKey);    
-}
-
-async function deleteDictionaryExtractedResourceFile(name, fileName){
-    let chunkKey = getExtractedResourceFileKey(name, fileName);
-    return await chunkedDelete(chunkKey);    
-}
-
 function getExtractedRawFileKey(dictionaryName, fileName){ 
     return getChunkKey(dictionaryName, TYPE_EXTRACTED_RAW_FILE, fileName);
-}
-
-function getExtractedResourceFileKey(dictionaryName, fileName){ 
-    return getChunkKey(dictionaryName, TYPE_EXTRACTED_RESOURCE_FILE, fileName);
 }
 
 async function saveDictionaryExtractedRawData(name, extractedRawData){
@@ -166,24 +153,13 @@ async function saveDictionaryExtractedResourceData(name, extractedResourceData, 
     let dir = [];
     for (const [key, value] of entries) {
         dir.push(key);
-        let chunkKey = getExtractedResourceFileKey(name, key);
-        await chunkedWrite(chunkKey, value);
+        await saveDictionaryResourceFile({ dictionary: name, path: key, data: value});
 
         await progress.count();
     }
 
     let chunkKey = getDictionaryExtractedResourceDirKey(name);
     await chunkedWrite(chunkKey, dir);
-}
-
-async function deleteDictionaryExtractedResourceData(name){
-    let dir = await loadDictionaryExtractResourceDir(name);
-    if(dir){
-        for(let fileName of dir){
-            await deleteDictionaryExtractedResourceFile(name, fileName);
-        }   
-        await deleteDictionaryExtractedResourceDir(name);
-    }
 }
 
 function getDictionaryExtractedResourceDirKey(name){
@@ -220,7 +196,7 @@ async function deleteDictionaryIndexData(name){
 
 async function deleteDictionaryExtractedData(name){
     await deleteDictionaryExtractedRawData(name);
-    await deleteDictionaryExtractedResourceData(name);
+    await deleteDictionaryAllResourceFiles(name);
 }
 
 function getChunkKey(name, type, type2){
@@ -232,4 +208,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas };

@@ -40,6 +40,7 @@
     "date-fns": "^3.6.0",
     "html-loader": "^5.0.0",
     "html-to-text": "^9.0.5",
+    "idb": "^8.0.2",
     "js-md5": "^0.8.3",
     "lancaster-stemmer": "^2.1.0",
     "markdown-loader": "^8.0.0",

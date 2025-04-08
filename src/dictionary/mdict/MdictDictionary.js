@@ -4,7 +4,8 @@ import { Buffer } from 'safe-buffer'
 import { dataURItoArrayBuffer } from '../../utils/fileUtils.js'
 import { findMdictProfile } from './mdictProfileRegister.js'
 import { findMdictParser } from './mdictParserRegister.js'
-import { loadDictionaryExtractedRawFile, findDictionaryExtractedRawFile, loadDictionaryExtractedResourceFile, loadDictionaryExtractResourceDir } from '../../store/dictionaryStore.js'
+import { findDictionaryExtractedRawFile } from '../../store/dictionaryStore.js'
+import { loadDictionaryResourceFile, countDictionaryResourceFile } from '../../store/db.js'
 import * as cheerio from 'cheerio';
 import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
@@ -58,8 +59,8 @@ class MdictDictionary extends Dictionary {
 
     async needExtractResourceData(rawFileMap){
         let mddDataUriFile = this.getDataUriFile(rawFileMap, '.mdd');
-        let extractedResourceDir = await loadDictionaryExtractResourceDir(this.name);
-        if(mddDataUriFile && !extractedResourceDir){
+        let resourceFileCount = await countDictionaryResourceFile(this.name);
+        if(mddDataUriFile && resourceFileCount==0){
             return true;
         }else{
             return false;
@@ -101,7 +102,8 @@ class MdictDictionary extends Dictionary {
             resourceKey = '\\' + resourceKey;
         }
         if(!result){
-            result = await loadDictionaryExtractedResourceFile(this.name, resourceKey);
+            let resource = await loadDictionaryResourceFile(this.name, resourceKey);
+            result = resource?.data;
         }
                 
         return result;
