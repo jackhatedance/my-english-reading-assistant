@@ -1,3 +1,4 @@
+import { lookup } from 'mime-types'
 /**
  * url('fonts/ProximaNova-Thin-webfont-v2.woff') format('woff') 
  * -> 
