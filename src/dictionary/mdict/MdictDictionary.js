@@ -11,6 +11,8 @@ import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
 
+const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
+
 class MdictDictionary extends Dictionary {
     
     constructor(data, name, options) {
@@ -71,7 +73,7 @@ class MdictDictionary extends Dictionary {
                 
         let mddFileMap = {};
         let total = this.mdd.keywordList.length;
-        let progress = new Progress('extract resource data', total, updateProgress);
+        let progress = new Progress(jobName, total, updateProgress);
         progress.start();
 
         for(let keyword of this.mdd.keywordList){

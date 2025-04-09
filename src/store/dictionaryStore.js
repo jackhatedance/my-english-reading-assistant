@@ -10,6 +10,8 @@ const TYPE_EXTRACTED_RAW_FILE = 'extracted_raw_file';
 const TYPE_EXTRACTED_RESOURCE_DIR = 'extracted_resource_dir';
 const TYPE_EXTRACTED_RESOURCE_FILE = 'extracted_resource_file';
 
+const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_save_extracted_files');
+
 async function loadDictionaryMetas(){
     
     let result = await chrome.storage.local.get([KEY_DICTIONARIES]);
@@ -147,7 +149,7 @@ async function saveDictionaryExtractedResourceData(name, extractedResourceData, 
     
     let entries = Object.entries(fileMap);
     let total = entries.length;
-    let progress = new Progress('save extracted files', total, updateProgress);
+    let progress = new Progress(jobName, total, updateProgress);
     progress.start();
 
     let dir = [];

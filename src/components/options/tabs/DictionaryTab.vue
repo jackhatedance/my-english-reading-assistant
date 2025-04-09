@@ -66,7 +66,7 @@ async function onImport() {
   await deleteDictionaryAllResourceFiles(name);
 
   refreshUI();
-  sendMessageDictionaryChangeToBackground(name, 'build-index');
+  sendMessageDictionaryChangeToBackground(name, 'parse');
 }
 
 async function onMoveUp() {

@@ -187,7 +187,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* The order of using the dictionary is from top to bottom\n* dictionaries have not been imported cannot provide quick and concise meanings of new words for the text, but can be used as ordinary dictionaries\n* Adding new dictionaries or software upgrades may require re-import"
+        "message": "* Dictionaries are used from top to bottom\n* dictionaries have not been imported cannot be used for text, but can be used as ordinary dictionaries\n* Software upgrades may require re-import"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"
@@ -199,7 +199,7 @@
         "message": "Please do not close your browser while the index is being created."
     },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "Import complete"
+        "message": "Import success"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
         "message": "need to (re)import"
@@ -236,6 +236,15 @@
     },
     "options_dictionary_detail_job": {
         "message": "Job"
+    },
+    "options_dictionary_detail_job_parse": {
+        "message": "Parse"
+    },
+    "options_dictionary_detail_job_extract_resource_data": {
+        "message": "extract resource data"
+    },
+    "options_dictionary_detail_job_save_extracted_files": {
+        "message": "save extracted files"
     },
     "optionsEditAdditionalDictionaryLabel":{
         "message":"Additional Dictionary"
