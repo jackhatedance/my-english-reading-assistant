@@ -3,6 +3,8 @@ import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
 import { createSystemDictionaryMeta, loadSystemDictionariesToCache } from './systemDictionary.js'
+import { DICTIONARY_INDEX_STATUS_OK } from './dictConstants.js'
+
 
 //memory copies of dictionary from store
 var gCustomDictionaries = {};

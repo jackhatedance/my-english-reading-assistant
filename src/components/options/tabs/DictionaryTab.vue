@@ -10,7 +10,7 @@ import { TextDictionary } from '../../../dictionary/text/TextDictionary.js'
 import { sendMessageDictionaryChangeToBackground } from '../../../message.js';
 import { markdown2Html } from '../../../utils/markdownUtils.js'
 import HelpLink from '../../HelpLink.vue'
-import { deleteDictionaryExtractedData } from '../../../store/dictionaryStore.js'
+import { deleteDictionaryAllResourceFiles } from '../../../store/db.js'
 import { DICTIONARY_INDEX_STATUS_OK, DICTIONARY_INDEX_STATUS_NOT_SUPPORT } from '../../../dictionary/dictConstants.js'
 
 const dictionaryMetas = ref([]);
@@ -63,7 +63,7 @@ async function onDelete() {
 async function onImport() {
   let name = selectedDictionary.value;
   await deleteDictionaryIndex(name);
-  await deleteDictionaryExtractedData(name);
+  await deleteDictionaryAllResourceFiles(name);
 
   refreshUI();
   sendMessageDictionaryChangeToBackground(name, 'build-index');
