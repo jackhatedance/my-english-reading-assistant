@@ -1,5 +1,6 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { mergeEntries } from './entry-utils.js'
+import { pronunciationsToText } from './definition-formatter.js'
 
 class Dictionary {
     size = 0;
@@ -146,12 +147,8 @@ class Dictionary {
         }
         let groupsText = groupTexts.join('; ');
 
-        let pronunciation = definitionObj.pronunciation;    
-        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
-            pronunciation = '';
-        }else {
-            pronunciation = `/${definitionObj.pronunciation}/`;
-        }
+        let pronunciation = pronunciationsToText(definitionObj.pronunciations);    
+        
         let text = `${pronunciation}\n${groupsText}`;
     
         //console.log(text);
@@ -182,12 +179,7 @@ class Dictionary {
         }
         let groupsText = groupTexts.join('<br>');
         
-        let pronunciation = definitionObj.pronunciation;    
-        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
-            pronunciation = '';
-        }else {
-            pronunciation = `/${definitionObj.pronunciation}/`;
-        }
+        let pronunciation = pronunciationsToText(definitionObj.pronunciations); 
         let text = `${query} ${pronunciation}<br>${groupsText}`;
     
         //console.log(text);

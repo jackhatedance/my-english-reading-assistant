@@ -10,13 +10,16 @@ describe('mdict new-oxford-ec-dual parser', function () {
       this.parser = new NewOxfordEcDualParser();
     });
 
-    it('good', async function () {
+    it('noecd2e good', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/good.html', 'utf8');
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "gʊd");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "gʊd");
+
+
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "合格的");      
@@ -35,46 +38,52 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
-    it('draggle', async function () {
+    it('noecd2e draggle', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/draggle.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "ˈdrægl");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈdrægl");
+
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏,拖湿");      
       
     });
 
-    it('titter', async function () {
+    it('noecd2e titter', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/titter.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "ˈtɪtə(r)");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈtɪtə(r)");
+
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑,咯咯笑");      
       
     });
 
 
-    it('-et', async function () {
+    it('noecd2e -et', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/-et.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "ɪt");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "ɪt");
+
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "构成原为指小词的名词");      
       
     });
 
-    it('feathers link', async function () {
+    it('noecd2e feathers link', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/feathers.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
@@ -86,41 +95,48 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
-    it('twelve', async function () {
+    it('noecd2e twelve', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/twelve.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "twelv");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "twelv");
+
       assert.equal(parseResult[0].definitionGroups[0].name, "cardinal number");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二,十二个");
       
     });
 
-    it('musty', async function () {
+    it('noecd2e musty', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/musty.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "ˈmʌstɪ");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈmʌstɪ");
+
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].inflection, "mustier, mustiest");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "有霉味的,有潮气的");      
       
     });
 
-    it('these - plual', async function () {
+    it('noecd2e these - plual', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/these.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "ðiːz");
+      
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "ðiːz");
+
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "this的复数");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].form, "plural");      
@@ -128,14 +144,16 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
 
-    it('is - third person singular', async function () {
+    it('noecd2e is - third person singular', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/is.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "强ɪz, 弱z");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "强ɪz, 弱z");
+
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "be的第三人称单数现在时");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].form, "third person singular present");      
@@ -144,27 +162,32 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
-    it('but - parentheses, subdefinitions', async function () {
+    it('noecd2e but - parentheses, subdefinitions', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/but.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "强bʌt, 弱bət");
+      
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "强bʌt, 弱bət");
+
       assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是,然而");
       
       
     });
 
-    it('rode-ox - merge pronunciations', async function () {
+    it('noecd2e rode - merge pronunciations', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciation, "rəʊd");
+      assert.equal(parseResult[0].pronunciations[0].region, "");
+      assert.equal(parseResult[0].pronunciations[0].phonetics, "rəʊd");
+
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "ride的过去式");
       
       

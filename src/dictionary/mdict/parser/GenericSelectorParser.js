@@ -5,6 +5,8 @@ class GenericSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
     PRONUNCIATION = 'pronunciation';
+    PRONUNCIATION_NAME = 'pronunciationName';
+    PRONUNCIATION_PHONETICS = 'pronunciationPhonetics';
     DEFINITION_GROUP = 'definitionGroup';
     GROUP_NAME = 'groupName';
     INFLECTION = "inflection";
@@ -13,6 +15,10 @@ class GenericSelectorParser extends MdictDefinitionParser {
 
     selector(name){
         return this.selectors[name];
+    }
+
+    hasSelector(name){
+        return this.selector(name) != null;
     }
     
     findElementsByOneSelector($, baseElement, selector, context){        
@@ -63,22 +69,59 @@ class GenericSelectorParser extends MdictDefinitionParser {
     parseEntry($, element, context){
         context[this.ENTRY] = element;
 
-        let pronunciation = this.parsePronunciation($, element, context);    
+        let pronunciations = this.parsePronunciations($, element, context);    
+        pronunciations = this.convertPronunciations(pronunciations);
         let definitionGroups = this.parseDefinitionGroups($, element, context);
-        return { pronunciation, definitionGroups };
+        return { pronunciations, definitionGroups };
+    }
+
+    parsePronunciations($, element, context){
+        let pronunciationElements = this.findElements($, element, this.selector(this.PRONUNCIATION), context);
+        
+        let pronunciations = [];
+        
+        for(let pronunciationElement of pronunciationElements){
+            let pronunciation = this.parsePronunciation($, pronunciationElement, context);
+           
+            pronunciations.push(pronunciation);
+        }
+        
+        return pronunciations;
     }
 
     parsePronunciation($, element, context){
-        let elements = this.findElements($, element, this.selector(this.PRONUNCIATION), context);
-        
-        let pronunciation = '';
-        if(elements.length>0){
-            let textArray = elements.toArray().map(item => this.trimPronounciation($(item).text()));
+        this.beforeParsePronunciation($, element, context);
 
-            pronunciation = textArray.join(',');
+        let pronunciation;
+        if(this.hasSelector(this.PRONUNCIATION_NAME) && this.hasSelector(this.PRONUNCIATION_PHONETICS)){
+            let name = parserPronunciationName($, element, context);
+            let phonetics = parserPronunciationPhonetics($, element, context);
+            pronunciation = {name, phonetics};
+        }else{
+            let pronunciationText = $(element).text();
+            pronunciation = this.parsePronunciationText(pronunciationText);
         }
-        
-        return this.trimPronounciation(pronunciation);
+        return pronunciation;    
+    }
+
+    beforeParsePronunciation($, element, context){
+        //manipulate DOM
+    }
+
+    parserPronunciationName($, element, context){
+        if(this.hasSelector(this.PRONUNCIATION_NAME)){
+            return this.findElements($, element, this.selector(this.PRONUNCIATION_NAME), context).text();
+        } else {
+            return '';
+        }
+    }
+
+    parserPronunciationPhonetics($, element, context){
+        if(this.hasSelector(this.PRONUNCIATION_PHONETICSNAME)){
+            return this.findElements($, element, this.selector(this.PRONUNCIATION_PHONETICS), context).text();
+        } else {
+            return '';
+        }
     }
 
     parseDefinitionGroups($, element, context){

@@ -7,7 +7,8 @@ import { sendMessageMarkWordToBackground } from '../message.js';
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-import { textToBase64 } from '../utils/fileUtils.js'
+import { pronunciationsToText } from '../dictionary/definition-formatter.js'
+
 
 const props = defineProps({
     word: String,
@@ -100,12 +101,7 @@ function jsonToText(entries){
         }
         let groupsText = groupTexts.join('<br> ');
 
-        let pronunciation = definitionObj.pronunciation;    
-        if(!definitionObj.pronunciation || definitionObj.pronunciation == ''){
-            pronunciation = '';
-        }else {
-            pronunciation = `/${definitionObj.pronunciation}/`;
-        }
+        let pronunciation = pronunciationsToText(definitionObj.pronunciations);    
 
         let text = `${pronunciation}<br>${groupsText}`;
 

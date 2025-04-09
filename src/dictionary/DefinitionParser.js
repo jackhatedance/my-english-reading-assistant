@@ -88,6 +88,52 @@ class DefinitionParser {
         //subclass can process entries here
     }
 
+    beforeParsePronunciationText(text){
+        //manipulate text
+        return text;
+    }
+
+    parsePronunciationText(text){
+        text = this.beforeParsePronunciationText(text);
+        text  = text.trim();
+
+        let pattern = `((?<name>[\\w\\s]+)\\s+)?\\/(?<phonetics>[^\\/]+)\\/`;
+        let matchResult = text.match(pattern);
+        if(matchResult != null){
+            let name = matchResult.groups.name;
+            let phonetics = matchResult.groups.phonetics;
+
+            if(name == null){
+                name = '';
+            }
+
+            return { name, phonetics };            
+        }else{
+            return { name: '', phonetics: text};
+        }
+    }
+
+    getPronunciationRegion(name){
+        return '';
+    }
+
+    getPronunciationForm(name){
+        return '';
+    }
+
+    convertPronunciations(pronuciationArray){
+        let array = [];
+        for(let pronunciation of pronuciationArray){
+            let region = this.getPronunciationRegion(pronunciation.name);
+            let form = this.getPronunciationForm(pronunciation.name);
+            let phonetics = pronunciation.phonetics;
+            array.push({
+                region, form, phonetics
+            });
+        }
+        return array;
+    }
+
     trimPronounciation(text){
         text = text.replaceAll(/[\/]/g, '');
         text = text.trim();

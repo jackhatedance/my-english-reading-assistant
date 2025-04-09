@@ -7,7 +7,7 @@ class Oalecd9eParser extends GenericSelectorParser {
 
         let selectors = { };
         selectors[this.ENTRY] = ['.cixing_part', 'h-g'];
-        selectors[this.PRONUNCIATION] = ['> top-g pron-gs', '> top-g pron pron-g-blk'];
+        selectors[this.PRONUNCIATION] = ['> top-g pron-gs pron-g-blk', '> top-g pron pron-g-blk'];
         selectors[this.DEFINITION_GROUP] = ['subentry-g', 'root:h-g'];
         selectors[this.GROUP_NAME] = 'top-g pos';
         selectors[this.DEFINITION] = ['sn-gs shcut-blk chn', 'sn-gs sn-blk-nolist sn-g def chn', 'sn-gs sn-blk sn-g def chn', 
@@ -19,9 +19,27 @@ class Oalecd9eParser extends GenericSelectorParser {
         this.selectors = selectors;
     }
 
+    beforeParsePronunciationText(text){
+        return text.replaceAll(/[🔊]/g, '')
+    }
+
+    getPronunciationRegion(name){
+        if(name && name.includes('BrE')){
+            return 'uk';
+        }else if(name && name.includes('NAmE')){
+            return 'us';
+        }
+        return super.getPronunciationRegion(name);
+    }
+
+    getPronunciationForm(name){
+        if(name && name.includes('strong')){
+            return 'strong';
+        }
+        return super.getPronunciationForm(name);
+    }
 
     trimPronounciation(text){
-        text = text.replaceAll(/[🔊]/g, '')
         return super.trimPronounciation(text);
     }
 
