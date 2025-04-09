@@ -12,6 +12,7 @@ import { markdown2Html } from '../../../utils/markdownUtils.js'
 import HelpLink from '../../HelpLink.vue'
 import { deleteDictionaryAllResourceFiles } from '../../../store/db.js'
 import { DICTIONARY_INDEX_STATUS_OK, DICTIONARY_INDEX_STATUS_NOT_SUPPORT } from '../../../dictionary/dictConstants.js'
+import {useLoading} from 'vue-loading-overlay'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -28,6 +29,10 @@ const optionsEditDictionaryTips = ref('');
 const options_dictionary_detail_enabled = ref('');
 const optionalTips = ref({});
 const howToFindDictionaryLink = ref('#');
+
+const $loading = useLoading({
+        // options
+    });
 
 async function onChangeEnableAdditionalDictionary() {
   await updateAdditionalDictionaryEnabled(enableAdditionalDictionary.value);
@@ -123,6 +128,10 @@ async function onAdd() {
   let fileName = _file.name;
   let name = fileName.slice(0, -4);
   
+  const loader = $loading.show({
+            // Optional parameters
+        });
+  
   //console.log(e.target.result);
   const newDictionary = await getDictionaryFromFile(fileName,name, _file);  
   
@@ -134,6 +143,10 @@ async function onAdd() {
     await deleteDictionary(newDictionary.meta.name);
 
     await saveDictionary(newDictionary);
+    
+    
+    loader.hide()
+
 
     //add dictionary name to select element
     await refreshUI();

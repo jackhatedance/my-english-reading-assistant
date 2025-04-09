@@ -1,6 +1,10 @@
 
 import { createApp, ref } from 'vue';
 import { createWebHashHistory, createRouter } from 'vue-router'
+
+import {LoadingPlugin} from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
+
 import Options from './components/options/Options.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
 import NotesTab from './components/options/tabs/NotesTab.vue'
@@ -33,6 +37,7 @@ const router = createRouter({
 
 createApp(Options, { indexBuildingProgress })
     .use(router)
+    .use(LoadingPlugin)
     .mount('#app');
 
 
