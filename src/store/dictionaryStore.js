@@ -7,8 +7,6 @@ const TYPE_RAW = 'raw';
 const TYPE_INDEX = 'index';
 const TYPE_EXTRACTED_RAW_DIR = 'extracted_raw_dir';
 const TYPE_EXTRACTED_RAW_FILE = 'extracted_raw_file';
-const TYPE_EXTRACTED_RESOURCE_DIR = 'extracted_resource_dir';
-const TYPE_EXTRACTED_RESOURCE_FILE = 'extracted_resource_file';
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_save_extracted_files');
 
@@ -159,23 +157,6 @@ async function saveDictionaryExtractedResourceData(name, extractedResourceData, 
 
         await progress.count();
     }
-
-    let chunkKey = getDictionaryExtractedResourceDirKey(name);
-    await chunkedWrite(chunkKey, dir);
-}
-
-function getDictionaryExtractedResourceDirKey(name){
-    return getChunkKey(name, TYPE_EXTRACTED_RESOURCE_DIR);
-}
-
-async function loadDictionaryExtractResourceDir(name){
-    let chunkKey = getDictionaryExtractedResourceDirKey(name);
-    return await chunkedRead(chunkKey);
-}
-
-async function deleteDictionaryExtractedResourceDir(name){
-    let chunkKey = getDictionaryExtractedResourceDirKey(name);
-    return await chunkedDelete(chunkKey);
 }
 
 async function deleteDictionaryData(name){
@@ -210,4 +191,4 @@ function getChunkKey(name, type, type2){
 }
 
 
-export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadDictionaryExtractResourceDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, deleteDictionaryData, deleteDictionaryIndexData, deleteDictionaryExtractedData, loadDictionaryMetas, saveDictionaryMetas };
+export {loadDictionaryData, loadDictionaryRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, loadDictionaryExtractedRawDir, loadAllDictionaryExtractedRawData, findDictionaryExtractedRawFile, loadDictionaryExtractedRawFile, deleteDictionaryData, deleteDictionaryIndexData, deleteDictionaryExtractedData, loadDictionaryMetas, saveDictionaryMetas };

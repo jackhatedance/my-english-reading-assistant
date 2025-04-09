@@ -38,12 +38,13 @@ async function onChangeEnableAdditionalDictionary() {
   await updateAdditionalDictionaryEnabled(enableAdditionalDictionary.value);
 }
 
-async function onDeleteTrunk() {
-  let prefix = 'dictionary--extracted_';
+const debug = ref(false);
+async function onDeleteGarbage() {
+  let keyword = 'extracted_resource_';
   const all = await chrome.storage.local.get();
   let keys = [];
   for (const [key, val] of Object.entries(all)) {
-    if(key.startsWith(prefix)){
+    if(key.includes(keyword)){
       keys.push(key);
     }
   }
@@ -367,6 +368,7 @@ init();
         
       </div>
       <div class="action">
+        <button v-if="debug" @click="onDeleteGarbage">Delete Garbage</button>
         <button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system1'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
         <button @click="onImport" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsImportDictionaryAction') }}</button>
 
