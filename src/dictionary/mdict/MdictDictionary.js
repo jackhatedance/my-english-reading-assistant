@@ -59,10 +59,9 @@ class MdictDictionary extends Dictionary {
         }
     }
 
-    async needExtractResourceData(rawFileMap){
+    hasMddFile(rawFileMap){
         let mddDataUriFile = this.getDataUriFile(rawFileMap, '.mdd');
-        let resourceFileCount = await countDictionaryResourceFile(this.name);
-        if(mddDataUriFile && resourceFileCount==0){
+        if(mddDataUriFile){
             return true;
         }else{
             return false;

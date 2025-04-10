@@ -1,4 +1,5 @@
 import { loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
+import { deleteDictionaryAllResourceFiles } from '../store/db.js'
 import { TextDictionary } from './text/TextDictionary.js'
 import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
@@ -328,9 +329,10 @@ async function migrateDictionary(dictionary, updateProgress){
             console.log('extract dictionary resource data: '+ name);
 
             let rawFileMap = raw;
-            let needExtractResourceData = await dictionaryInstance.needExtractResourceData(rawFileMap);
+            
+            if(dictionaryInstance.hasMddFile(rawFileMap)){
+                await deleteDictionaryAllResourceFiles(name);
 
-            if(needExtractResourceData){
                 let extractedResourceData = await dictionaryInstance.extractResourceData(updateProgress);
                 await saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress);            
             }
