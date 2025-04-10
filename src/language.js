@@ -98,13 +98,13 @@ function searchWordWithDict(query, options, dicts){
     }
 
     let word = input;
-    let lookupResult = lookup(word, dicts);
+    let lookupResult = lookup(word, options, dicts);
     
     let transformResult, deepLookupResult;
 
     //try lower case
     if(!lookupResult) {
-        transformResult = transformLowercase(input, dicts);
+        transformResult = transformLowercase(input, options, dicts);
         word = transformResult.word;
         lookupResult = transformResult.lookupResult;
     }
@@ -115,13 +115,13 @@ function searchWordWithDict(query, options, dicts){
     //try captialize, such god -> God
     if(!lookupResult && input.length > 1){
         word = input[0].toUpperCase() + input.substring(1);
-        lookupResult = lookup(word, dicts);
+        lookupResult = lookup(word, options, dicts);
     }
 
 
     if(!lookupResult) {
         if(options.allowLemma){
-            transformResult = transformLemmatize(input, dicts);
+            transformResult = transformLemmatize(input, options, dicts);
 
             if(transformResult) {
                 word = transformResult.word;
@@ -135,7 +135,7 @@ function searchWordWithDict(query, options, dicts){
     if(lookupResult) {
         if(isOnlyLink(lookupResult)){            
             let link = getTheOnlyLink(lookupResult);        
-            let linkLookupResult = lookup(link, dicts);                  
+            let linkLookupResult = lookup(link, options, dicts);                  
             
             if(linkLookupResult) {
                 //replace
@@ -146,7 +146,7 @@ function searchWordWithDict(query, options, dicts){
         
         //lemma
         if(options.allowLemma){
-            deepLookupResult = deepLookup(lookupResult);
+            deepLookupResult = deepLookup(lookupResult, options);
 
             if(deepLookupResult){
                 searchType='lemma';
@@ -186,11 +186,11 @@ function searchWordWithDict(query, options, dicts){
     }
 }
 
-function transformLowercase(input, dicts){
+function transformLowercase(input, options, dicts){
     let word = input.toLowerCase();
     let lookupResult;
     if(word !== input){
-        lookupResult = lookup(word, dicts);
+        lookupResult = lookup(word, options, dicts);
     }
     return {
         word,
@@ -198,7 +198,7 @@ function transformLowercase(input, dicts){
     }
 }
 
-function transformLemmatize(input, dicts){
+function transformLemmatize(input, options, dicts){
     let word;
     let lookupResult;
     
@@ -206,14 +206,14 @@ function transformLemmatize(input, dicts){
     if(!lookupResult) {
         word = getBaseFromPossessive(input);
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }
     }
 
     if(!lookupResult) {
         word = singularize(input);
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }
     }
 
@@ -221,28 +221,28 @@ function transformLemmatize(input, dicts){
     if(!lookupResult) {
         word = getBaseFromWordParts(input)
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }
     }
 
     if(!lookupResult) {
         word = lemmatize.adjective(input);
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }
     }
 
     if(!lookupResult) {
         word = lemmatize.noun(input);
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }                
     }
 
     if(!lookupResult) {
         word = lemmatize.verb(input);
         if(word !== input){
-            lookupResult = lookup(word, dicts);
+            lookupResult = lookup(word, options, dicts);
         }
     }
 
@@ -256,46 +256,6 @@ function transformLemmatize(input, dicts){
     return result;
     
 }
-
-function transformRemovePrefix(input, dicts){
-    let lookupResult;
-    let word = removePrefix(input);
-    if(word.length > 2){
-        if(word!==input){
-            lookupResult = lookup(word, dicts);
-        }
-    }
-
-    return {
-        word,
-        lookupResult,
-    }
-}
-
-
-function transformRemoveSuffix(input, dicts){
-    let lookupResult;
-    let word = removeSuffix(input);
-    if(word.length > 2){
-        if(word!==input){
-            lookupResult = lookup(word, dicts);
-        }
-    }
-    return {
-        word,
-        lookupResult,
-    }
-}
-
-    function removePrefix(word){
-        for(let prefix of getPrefixes()){
-            if(word.startsWith(prefix)){
-                let newWord = word.substring(prefix.length);
-                return newWord;
-            }
-        }
-        return word;
-    }
 
 function isPrefix(s){    
     

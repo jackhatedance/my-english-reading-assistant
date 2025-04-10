@@ -1,5 +1,10 @@
 const REGION_EMPTY = 'empty';
 
+export const REGION_NONE = 'none';
+export const REGION_UK = 'uk';
+export const REGION_US = 'us';
+export const REGION_ALL = 'all';
+
 function getPronunciationMapByRegion(pronunciations){
 
     let regionMap = {};
@@ -72,12 +77,16 @@ function regionPronunciationsToText(region, pronunciations){
 /**
  * 
  * @param {*} pronunciations 
- * @param {*} preferRegion us, uk, *
+ * @param {*} preferRegion none, us, uk, all
  */
-function pronunciationsToText(pronunciations, region = '*'){
+function pronunciationsToText(pronunciations, region = 'all'){
+    if(region == 'none'){
+        return '';
+    }
+
     let regionMap = getPronunciationMapByRegion(pronunciations);
 
-    if(region != '*'){
+    if(region != 'all'){
         //single region
         let regionPronunciations = getRegionPronunciations(regionMap, region);
         return regionPronunciationsToText('', regionPronunciations);        

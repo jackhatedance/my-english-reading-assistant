@@ -13,7 +13,7 @@ function patchOptions(options){
     return Object.assign(createDefaultOptions(), options);
 }
 
-function lookup(word, dicts, options) {
+function lookup(word, options, dicts) {
     options = patchOptions(options);
     //console.log(word);
     if(!dicts){

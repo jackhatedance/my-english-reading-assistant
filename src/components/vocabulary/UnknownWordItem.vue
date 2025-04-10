@@ -10,6 +10,7 @@ const props = defineProps({
     reset: Boolean,
     isKnown: Boolean,
     siteOptions: Object,
+    options: Object,
 });
 
 const emit = defineEmits(['markWord']);
@@ -43,7 +44,8 @@ const definition = computed(() => {
     //query root word
     let searchResult = searchWord(word, {
       allowLemma: true,
-      dictionaryOptions: dictionaryOptions,  
+      dictionaryOptions: dictionaryOptions,
+      pronunciationRegion: props.options.pronunciation.region
     });
     
     let definition = '';

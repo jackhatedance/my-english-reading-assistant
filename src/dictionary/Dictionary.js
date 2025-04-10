@@ -119,7 +119,7 @@ class Dictionary {
         return this.lookupIndex(query);
     }
 
-    jsonToText(entries){
+    jsonToText(entries, options){
         if(!entries || entries.length == 0){
             return '';
         }
@@ -147,9 +147,13 @@ class Dictionary {
         }
         let groupsText = groupTexts.join('; ');
 
-        let pronunciation = pronunciationsToText(definitionObj.pronunciations);    
+        let region = options.pronunciationRegion;
+        let pronunciation = pronunciationsToText(definitionObj.pronunciations, region);    
         
-        let text = `${pronunciation}\n${groupsText}`;
+        let text = groupsText;
+        if(pronunciation){
+            text = `${pronunciation}\n${groupsText}`;
+        }
     
         //console.log(text);
         return text;
@@ -180,8 +184,10 @@ class Dictionary {
         let groupsText = groupTexts.join('<br>');
         
         let pronunciation = pronunciationsToText(definitionObj.pronunciations); 
-        let text = `${query} ${pronunciation}<br>${groupsText}`;
-    
+        let text = `${query}<br>${groupsText}`;
+        if(pronunciation){
+            text = `${query} ${pronunciation}<br>${groupsText}`;
+        }
         //console.log(text);
         return `${text}`;
     }
@@ -194,10 +200,10 @@ class Dictionary {
         }
     }
 
-    createText(result){
+    createText(result, options){
         //either from raw or json
         this.createJsonIfNotExist(result);
-        result.text = this.jsonToText(result.json);   
+        result.text = this.jsonToText(result.json, options);   
     }
 
     createHtml(result){
@@ -219,7 +225,7 @@ class Dictionary {
         }        
 
         if(options.outputFormats.includes('text') && !result.text){
-            this.createText(result);           
+            this.createText(result, options);           
         }
 
         if(options.outputFormats.includes('html') && !result.html){

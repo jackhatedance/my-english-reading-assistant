@@ -1,28 +1,28 @@
 import {lookup, isOnlyTransform, getTheOnlyBaseForm } from './dictionaries.js';
 
-function deepLookup(lookupResult){
+function deepLookup(lookupResult, options){
     let deepLookupResult;
     const dicts = [lookupResult.dictionary];
     
     if(!deepLookupResult){        
-        deepLookupResult = deepLookupOnlyTransform(lookupResult, dicts);
+        deepLookupResult = deepLookupOnlyTransform(lookupResult, options, dicts);
     }
 
     if(!deepLookupResult){        
-        deepLookupResult = deepLookupTransformParticipleOnlyByText(lookupResult, dicts);
+        deepLookupResult = deepLookupTransformParticipleOnlyByText(lookupResult, options, dicts);
     }
 
     if(!deepLookupResult){                        
-        deepLookupResult = deepLookupTransformPluralOnlyByText(lookupResult, dicts);
+        deepLookupResult = deepLookupTransformPluralOnlyByText(lookupResult, options, dicts);
     }
 
     return deepLookupResult;
 }
 
-function deepLookupOnlyTransform(originalLookupResult, dicts){
+function deepLookupOnlyTransform(originalLookupResult, options, dicts){
     if(isOnlyTransform(originalLookupResult)){
         let base = getTheOnlyBaseForm(originalLookupResult);
-        let lookupResult = lookup(base, dicts);
+        let lookupResult = lookup(base, options, dicts);
         if(lookupResult) {
             let type = 'transform';
             let word = base;
@@ -39,7 +39,7 @@ function deepLookupTransformParticipleOnlyByText(originalLookupResult, dicts){
     //console.log('match result 1:'+result);   
     if(result != null){
         let base = result[1];
-        let lookupResult = lookup(base, dicts);
+        let lookupResult = lookup(base, options, dicts);
         if(lookupResult) {
             let type = 'transform';
             let lemmaType = 'irregular';
@@ -54,7 +54,7 @@ function deepLookupTransformPluralOnlyByText(originalLookupResult, dicts){
     let result = originalLookupResult.text.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
     if(result != null){
         let base = result[1];
-        let lookupResult = lookup(base, dicts);
+        let lookupResult = lookup(base, options, dicts);
         if(lookupResult){
             let type = 'transform';
             let lemmaType = 'plural';

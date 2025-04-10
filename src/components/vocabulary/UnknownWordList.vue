@@ -5,6 +5,7 @@ import UnknownWordItem from './UnknownWordItem.vue';
 import { loadKnownWords } from '../../vocabularyStore.js';
 import { getWordParts, isKnown } from '../../language.js';
 import { lookup } from '../../dictionaries.js';
+import { getOptions } from '../../service/optionService.js'
 
 const props = defineProps({
     items: Array,
@@ -13,6 +14,7 @@ const props = defineProps({
     siteOptions: Object,
 });
 
+const options = ref();
 
 async function buildTargetWords(words) {
     let knownWords = await loadKnownWords();
@@ -66,6 +68,7 @@ async function buildTargetWords(words) {
 }
 
 async function updateItems(newItems) {
+    options.value = await getOptions();    
     let targetWords = await buildTargetWords(newItems);
     items.value = targetWords;
 }
@@ -110,7 +113,7 @@ onUpdated(() => {
         <ol id="unknownWordList">
             <UnknownWordItem v-for="item of items" :word="item" 
                 :key="item.target" :showDefinition="props.showDefinition" 
-                :reset="props.reset" @mark-word="onMarkWord" :isKnown="item.isKnown" :siteOptions="siteOptions">
+                :reset="props.reset" @mark-word="onMarkWord" :isKnown="item.isKnown" :siteOptions="siteOptions" :options="options">
             </UnknownWordItem>
         </ol>
     </div>

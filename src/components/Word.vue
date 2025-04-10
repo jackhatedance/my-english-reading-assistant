@@ -7,8 +7,8 @@ import { sendMessageMarkWordToBackground } from '../message.js';
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-import { pronunciationsToText } from '../dictionary/definition-formatter.js'
-
+import { pronunciationsToText, REGION_ALL } from '../dictionary/definition-formatter.js'
+import { getOptions } from '../service/optionService.js'
 
 const props = defineProps({
     word: String,
@@ -33,6 +33,7 @@ watch(() => props.word, async (newValue) => {
 
 async function _lookup(query){
     let dicts = getEnabledDictionaryNamesFromCache();
+    let options = await getOptions(); 
     //use default dicts
 
     //console.log(props.siteOptions);
@@ -44,7 +45,7 @@ async function _lookup(query){
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(query, dicts, { fromRaw: true, outputFormats: ['json', 'html'] });
+    let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', 'html'], pronunciationRegion: options.pronunciation.region }, dicts);
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionaryName)){
@@ -54,7 +55,7 @@ async function _lookup(query){
         }
 
         let json = lookupResult.json;
-        lookupResult.formattedText = jsonToText(json);
+        lookupResult.formattedText = jsonToText(json, options.pronunciation.region);
 
         let html = lookupResult.html;
         if(lookupResult.dictionary?.toEmbeddedHtml){
@@ -73,7 +74,7 @@ async function _lookup(query){
     lookupResultRef.value = lookupResult; 
 }
 
-function jsonToText(entries){
+function jsonToText(entries, pronunciationRegion){
     if(!entries || entries.length == 0){
         return '';
     }
@@ -101,9 +102,12 @@ function jsonToText(entries){
         }
         let groupsText = groupTexts.join('<br> ');
 
-        let pronunciation = pronunciationsToText(definitionObj.pronunciations);    
+        let pronunciation = pronunciationsToText(definitionObj.pronunciations, pronunciationRegion);    
 
-        let text = `${pronunciation}<br>${groupsText}`;
+        let text = groupsText;
+        if(pronunciation){
+            text = `${pronunciation}<br>${groupsText}`;
+        }        
 
         texts.push(text);
     }
