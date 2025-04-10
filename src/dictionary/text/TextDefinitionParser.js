@@ -37,7 +37,7 @@ class TextDefinitionParser extends DefinitionParser {
 
         let region = '';
         let phonetics = trimByCharacters(text, '/');
-        return { region, phonetics};
+        return [{ region, phonetics}];
     }
 
     parseDefinitionGroups(text){

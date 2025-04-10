@@ -50,7 +50,7 @@ function deepLookupTransformParticipleOnlyByText(originalLookupResult, dicts){
     } 
 }
 
-function deepLookupTransformPluralOnlyByText(originalLookupResult, dicts){
+function deepLookupTransformPluralOnlyByText(originalLookupResult, options, dicts){
     let result = originalLookupResult.text.match('([a-zA-Z]+) ?的((复数)|(名词复数))');
     if(result != null){
         let base = result[1];

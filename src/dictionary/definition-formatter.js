@@ -80,7 +80,7 @@ function regionPronunciationsToText(region, pronunciations){
  * @param {*} preferRegion none, us, uk, all
  */
 function pronunciationsToText(pronunciations, region = 'all'){
-    if(region == 'none'){
+    if(pronunciations == null || pronunciations.length==0 || region == 'none'){
         return '';
     }
 
