@@ -6,6 +6,7 @@ import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 
 import Options from './components/options/Options.vue'
+import GeneralTab from './components/options/tabs/GeneralTab.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
 import NotesTab from './components/options/tabs/NotesTab.vue'
 import RootAndAffixTab from './components/options/tabs/RootAndAffixTab.vue'
@@ -20,7 +21,8 @@ localizeHtmlPage();
 const indexBuildingProgress = ref();
 
 const routes = [
-    { path: '/', redirect: '/vocabulary' },
+    { path: '/', redirect: '/general' },
+    { path: '/general', component: GeneralTab },
     { path: '/vocabulary', component: VocabularyTab },
     { path: '/notes', component: NotesTab },
     { path: '/root-and-affix', component: RootAndAffixTab },

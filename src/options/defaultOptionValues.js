@@ -24,7 +24,16 @@ function patch_v_0_11_1(options){
     let dictionaryOptions = options.dictionary;
     if(!dictionaryOptions.hasOwnProperty('automigration')){
         dictionaryOptions.automigration = true;
-    }    
+    }
+    
+    if(!options.hasOwnProperty('pronunciation')){
+        options.pronunciation = {};
+    }
+
+    let pronunciationOptions = options.pronunciation;
+    if(!pronunciationOptions.hasOwnProperty('region')){
+        pronunciationOptions.region = 'us';
+    }
 }
 
 export { patchDefaultOptionValues };

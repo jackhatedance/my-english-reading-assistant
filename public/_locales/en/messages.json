@@ -183,6 +183,28 @@
         "message":"Clear Report Data"
     },
 
+    "optionsGeneralLabel":{
+        "message":"General"
+    },
+    "options_general_pronunciation_label":{
+        "message":"Pronunciation"
+    },
+    "options_general_pronunciation_region_label":{
+        "message":"choose the prefered pronunciation style you want to see"
+    },
+    "options_general_pronunciation_region_none":{
+        "message":"None"
+    },
+    "options_general_pronunciation_region_uk":{
+        "message":"UK"
+    },
+    "options_general_pronunciation_region_us":{
+        "message":"US"
+    },
+    "options_general_pronunciation_region_all":{
+        "message":"Both"
+    },
+
     "optionsSectionDictionaryTitle":{
         "message":"Dictionary"
     },

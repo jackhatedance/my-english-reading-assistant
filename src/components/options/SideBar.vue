@@ -16,6 +16,7 @@ init();
         </div>
         <div class="sidebar-middle">
             <nav>
+                <RouterLink to="/general">{{ t('optionsGeneralLabel') }}</RouterLink>
                 <RouterLink to="/vocabulary">{{ t('optionsSectionVocabularyTitle') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
                 <RouterLink to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>

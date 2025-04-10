@@ -182,6 +182,28 @@
         "message":"清除报告数据"
     },
 
+    "optionsGeneralLabel":{
+        "message":"通用"
+    },
+    "options_general_pronunciation_label":{
+        "message":"发音"
+    },
+    "options_general_pronunciation_region_label":{
+        "message":"选择你想看到的的发音风格"
+    },    
+    "options_general_pronunciation_region_none":{
+        "message":"不想看到"
+    },
+    "options_general_pronunciation_region_uk":{
+        "message":"英国"
+    },
+    "options_general_pronunciation_region_us":{
+        "message":"美国"
+    },
+    "options_general_pronunciation_region_all":{
+        "message":"都要"
+    },
+
     "optionsSectionDictionaryTitle":{
         "message":"词典"
     },
