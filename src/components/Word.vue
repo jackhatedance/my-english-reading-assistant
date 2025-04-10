@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const sendMessageToContentPage = inject('sendMessageToContentPage');
-
+const t = chrome.i18n.getMessage;
 const markToggleTips = chrome.i18n.getMessage('sidepanelWordActionMarkToggle');
 const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 
@@ -45,7 +45,7 @@ async function _lookup(query){
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', 'html'], pronunciationRegion: options.pronunciation.region }, dicts);
+    let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', { name: 'html', optional: true }], pronunciationRegion: options.pronunciation.region }, dicts);
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionaryName)){
@@ -57,19 +57,21 @@ async function _lookup(query){
         let json = lookupResult.json;
         lookupResult.formattedText = jsonToText(json, options.pronunciation.region);
 
-        let html = lookupResult.html;
-        if(lookupResult.dictionary?.toEmbeddedHtml){
-            html = await lookupResult.dictionary.toEmbeddedHtml(html);
-        }
-        
-        //console.log(html);
-        //let html = '<body>Foo</body>';
-        const iframe = dictionaryIframe.value;
-        let request = { html };
-        if(iframe){
-            iframe.contentWindow.postMessage(request, '*');    
-            //console.log('message posted');
-        }        
+        if(lookupResult.html){
+            let html = lookupResult.html;
+            if(lookupResult.dictionary?.toEmbeddedHtml){
+                html = await lookupResult.dictionary.toEmbeddedHtml(html);
+            }
+
+            //console.log(html);
+            //let html = '<body>Foo</body>';
+            const iframe = dictionaryIframe.value;
+            let request = { html };
+            if(iframe){
+                iframe.contentWindow.postMessage(request, '*');    
+                //console.log('message posted');
+            }    
+        }   
     } 
     lookupResultRef.value = lookupResult; 
 }
@@ -238,7 +240,7 @@ init();
 <template>
     <div class="word-container">
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button @click="switchToText">text</button> <button @click="switchToHtml">html</button> <button @click="openToDictionaryPage">open dictionary</button></p>
+            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ lookupResultRef?.alias }}]</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_text') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_html') }}</button> <button v-if="lookupResultRef?.html" @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></p>
             
             <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="definition.html" ></iframe>
             <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>

@@ -389,6 +389,15 @@
     "sidepanelWordActionClearMark":{
         "message":"我不确定"
     },
+    "sidepanel_word_action_dictionary_text":{
+        "message":"文本"
+    },
+    "sidepanel_word_action_dictionary_html":{
+        "message":"网页"
+    },
+    "sidepanel_word_action_dictionary_open_in_dictionary":{
+        "message":"在字典页面打开"
+    },
 
     "sidepanelAddAction":{
         "message":"添加"

@@ -81,7 +81,7 @@ class Dictionary {
                 }
             }
 
-            this.convertOutputFormat(result, options);
+            this.createOutputFormats(result, options);
             this.cleanOutputFormat(result, options);           
         }
 
@@ -192,7 +192,17 @@ class Dictionary {
         return `${text}`;
     }
 
-    createJson(result){        
+    createOutput(result, options, format){
+        if(format == 'json'){
+            this.createJson(result, options);
+        } else if(format == 'text'){
+            this.createText(result, options);
+        } else if(format == 'html'){
+            this.createHtml(result, options);
+        }
+    }
+
+    createJson(result, options){        
         if(result.raw){
             result.json = this.rawToJson(result.raw);                    
         } else {
@@ -206,7 +216,7 @@ class Dictionary {
         result.text = this.jsonToText(result.json, options);   
     }
 
-    createHtml(result){
+    createHtml(result, options){
         //either from raw or json
         this.createJsonIfNotExist(result);
         result.html = this.jsonToHtml(result);   
@@ -218,19 +228,39 @@ class Dictionary {
         }
     }
 
-    convertOutputFormat(result, options){
+    createOutputFormats(result, options){
+        this.createOutputFormat(result, options, 'json');
+        this.createOutputFormat(result, options, 'text');
+        this.createOutputFormat(result, options, 'html');
+    }
 
-        if(options.outputFormats.includes('json') && !result.json){
-            this.createJson(result);                      
+    createOutputFormat(result, options, format){
+        let option = this.findOutputFormatOption(options, format);
+        if(option && !result[format]){
+            if(this.supportOutputFormat(format) || option.optional == false){
+                this.createOutput(result, options, format);
+            }            
         }        
+    }
 
-        if(options.outputFormats.includes('text') && !result.text){
-            this.createText(result, options);           
+    findOutputFormatOption(options, format){
+        let findResult = options.outputFormats.find(item => {
+            if(typeof item == 'string'){
+                return item == format;
+            }else{
+                return item.name == format;
+            }
+        });
+        
+        if(typeof findResult == 'string'){
+            findResult = { name: findResult, optional: false};
         }
+        return findResult;        
+    }
 
-        if(options.outputFormats.includes('html') && !result.html){
-            this.createHtml(result);
-        }
+    includesOuputFormatOption(options, format){
+        let option = this.findOutputFormatOption(options, format);
+        return option != null;
     }
 
     supportOutputFormat(format){
@@ -238,19 +268,19 @@ class Dictionary {
     }
 
     cleanOutputFormat(result, options){
-        if(!options.outputFormats.includes('raw')){            
+        if(!this.includesOuputFormatOption(options, 'raw')){            
             delete result.raw;
         }
 
-        if(!options.outputFormats.includes('json')){            
+        if(!this.includesOuputFormatOption(options, 'json')){            
             delete result.json;
         }
 
-        if(!options.outputFormats.includes('text')){
+        if(!this.includesOuputFormatOption(options, 'text')){
             delete result.text;
         }
 
-        if(!options.outputFormats.includes('html')){
+        if(!this.includesOuputFormatOption(options, 'html')){
             delete result.html;
         }
     }
