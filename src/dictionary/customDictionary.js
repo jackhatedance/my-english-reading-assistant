@@ -238,18 +238,18 @@ function getCustomDictionary(name){
 
 async function deleteCustomDictionary(name){
     delete gCustomDictionaries.name;
-    deleteDictionaryData(name);
+    await deleteDictionaryData(name);
 }
 
 async function deleteDictionary(name){
     delete gCustomDictionaries.name;
-    deleteDictionaryData(name);
-    deleteDictionaryMeta(name);
+    await deleteDictionaryData(name);
+    await deleteDictionaryMeta(name);
 }
 
 async function addCustomDictionary(name, data){
     gCustomDictionaries[name] = data;
-    saveDictionaryData(name, data);
+    await saveDictionaryData(name, data);
 }
 
 async function saveDictionary(dictionary){
