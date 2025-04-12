@@ -10,7 +10,7 @@ describe('text definition parser', function () {
       this.parser = new TextDefinitionParser();
     });
 
-    it('tired', async function () {
+    it('text tired', async function () {
       let text = 'a. 疲累的, 疲乏的, 厌倦的';
       let parseResult = this.parser.parse(text);
       //console.log(parseResult);

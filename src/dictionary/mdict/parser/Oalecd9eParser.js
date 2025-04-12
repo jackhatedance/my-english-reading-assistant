@@ -2,14 +2,14 @@ import { GenericSelectorParser } from './GenericSelectorParser.js'
 
 
 class Oalecd9eParser extends GenericSelectorParser {
-    constructor(data, name){
-        super(data, name);
+    constructor(options){
+        super(options);
 
         let selectors = { };
         selectors[this.ENTRY] = ['.cixing_part', 'h-g'];
         selectors[this.HEADWORD] = ['> top-g'];
         selectors[this.PRONUNCIATION] = ['pron-gs pron-g-blk', 'pron pron-g-blk'];
-        selectors[this.DEFINITION_GROUP] = ['subentry-g', 'root:h-g'];
+        selectors[this.DEFINITION_GROUP] = ['subentry-g', 'root/h-g'];
         selectors[this.GROUP_NAME] = 'top-g pos';
         selectors[this.DEFINITION] = ['sn-gs shcut-blk chn', 'sn-gs sn-blk-nolist sn-g def chn', 'sn-gs sn-blk sn-g def chn', 
             'sn-gs sn-blk-nolist sn-g def',

@@ -1,9 +1,21 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, MAX_SUBDEFINITION_NUMBER } from './dictConstants.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER } from './dictConstants.js'
 import { removeParentheses } from '../text/textUtils.js'
 
 class DefinitionParser {
+    constructor(options){
+        this.options = options;
+    }
+
+    getMaxSubdefinitionNumber(){
+        if(this.options && this.options.hasOwnProperty(PARSER_OPTION_MAX_SUBDEFINITION_NUMBER)){
+            return this.options[PARSER_OPTION_MAX_SUBDEFINITION_NUMBER];
+        }else{
+            return MAX_SUBDEFINITION_NUMBER;
+        }
+    }
+
     parse(rawDefinition) {
         throw new Error('not implemented');
     }
@@ -30,7 +42,7 @@ class DefinitionParser {
         var subdefinitionCount = 0;
         var i=0;
         const subdefinitionIndexes = new Array(definitions.length).fill(0);
-        while(subdefinitionCount < totalSubdefinitions && subdefinitionCount < MAX_SUBDEFINITION_NUMBER){
+        while(subdefinitionCount < totalSubdefinitions && subdefinitionCount < this.getMaxSubdefinitionNumber()){
             let definitionIndex = i % definitions.length;
             const definition = definitions[definitionIndex];
 

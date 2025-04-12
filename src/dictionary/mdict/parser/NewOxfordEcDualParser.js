@@ -3,8 +3,8 @@ import { trimByCharacters } from '../../../utils/stringUtils.js'
 import { findBaseForm } from '../../base-forms.js' 
 
 class NewOxfordEcDualParser extends GenericSelectorParser {
-    constructor(data, name){
-        super(data, name);
+    constructor(options){
+        super(options);
 
         let selectors = { };
         selectors[this.ENTRY] = '.ODECN';

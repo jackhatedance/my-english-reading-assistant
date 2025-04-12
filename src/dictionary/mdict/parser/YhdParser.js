@@ -2,8 +2,8 @@ import { GenericSelectorParser } from './GenericSelectorParser.js'
 
 
 class YhdParser extends GenericSelectorParser {
-    constructor(data, name){
-        super(data, name);
+    constructor(options){
+        super(options);
 
         let selectors = { };
         selectors[this.ENTRY] = '.e';

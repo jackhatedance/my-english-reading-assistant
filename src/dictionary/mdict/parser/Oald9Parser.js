@@ -2,8 +2,8 @@ import { GenericSelectorParser } from './GenericSelectorParser.js'
 
 
 class Oald9Parser extends GenericSelectorParser {
-    constructor(data, name){
-        super(data, name);
+    constructor(options){
+        super(options);
 
         let selectors = { };
         selectors[this.ENTRY] = '.entry';

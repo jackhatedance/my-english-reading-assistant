@@ -23,8 +23,8 @@ class GenericSelectorParser extends MdictDefinitionParser {
     }
     
     findElementsByOneSelector($, baseElement, selector, context){        
-        if(selector.includes(':')){
-            let array = selector.split(':');
+        if(selector.includes('/')){
+            let array = selector.split('/');
             let elementName = array[0];
             selector = array[1];
 
