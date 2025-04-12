@@ -25,9 +25,10 @@ class TextDefinitionParser extends DefinitionParser {
         if(pronunciationText){
             definitionGroupsText = text.replace(/(\[.*\]|\/.*\/)\s/, '');
         }
-        let pronunciations = this.parsePronunciations(pronunciationText);    
+        let pronunciations = this.parsePronunciations(pronunciationText); 
+        let headword = { pronunciations };   
         let definitionGroups = this.parseDefinitionGroups(definitionGroupsText);
-        return { pronunciations, definitionGroups };
+        return { headword, definitionGroups };
     }
 
     parsePronunciations(text){   

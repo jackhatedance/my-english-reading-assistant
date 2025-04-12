@@ -8,6 +8,7 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
 
         let selectors = { };
         selectors[this.ENTRY] = '.ODECN';
+        selectors[this.HEADWORD] = '.headword';
         selectors[this.PRONUNCIATION] = '.pron';
         selectors[this.DEFINITION_GROUP] = '.content .cont-list';
         selectors[this.GROUP_NAME] = '.pos';

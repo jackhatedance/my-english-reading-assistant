@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio';
 class GenericSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
+    HEADWORD = 'headword';
     PRONUNCIATION = 'pronunciation';
     PRONUNCIATION_NAME = 'pronunciationName';
     PRONUNCIATION_PHONETICS = 'pronunciationPhonetics';
@@ -45,14 +46,15 @@ class GenericSelectorParser extends MdictDefinitionParser {
             selectorArray = [ selectors ];
         }
 
+        let elements;
         for(let selector of selectorArray){
-            let elements = this.findElementsByOneSelector($, containerElement, selector, context);
+            elements = this.findElementsByOneSelector($, containerElement, selector, context);
             if(elements.length>0){
                 return elements;
             }
         }        
 
-        return [];
+        return elements;
     }
         
     parseEntries($, context){
@@ -69,12 +71,24 @@ class GenericSelectorParser extends MdictDefinitionParser {
     parseEntry($, element, context){
         context[this.ENTRY] = element;
 
-        let pronunciations = this.parsePronunciations($, element, context);    
-        pronunciations = this.convertPronunciations(pronunciations);
+        let headWordElements = this.findElements($, element, this.selector(this.HEADWORD), context);
+        let headWordElement = headWordElements[0];
+        let headword = this.parseHeadword($, headWordElement, context);
+        
         let definitionGroups = this.parseDefinitionGroups($, element, context);
-        return { pronunciations, definitionGroups };
+        
+        return { headword, definitionGroups };
     }
 
+    parseHeadword($, element, context){
+        context[this.HEADWORD] = element;
+
+        let pronunciations = this.parsePronunciations($, element, context);    
+        pronunciations = this.convertPronunciations(pronunciations);
+        
+        return { pronunciations };
+    }
+    
     parsePronunciations($, element, context){
         let pronunciationElements = this.findElements($, element, this.selector(this.PRONUNCIATION), context);
         
@@ -139,7 +153,9 @@ class GenericSelectorParser extends MdictDefinitionParser {
     parseDefinitionGroup($, element, context){
         context[this.DEFINITION_GROUP] = element;
 
-        let name = $(element).find(this.selector(this.GROUP_NAME)).text();
+        let groupNameElements = this.findElements($, element, this.selector(this.GROUP_NAME), context);
+        let name = groupNameElements.text();
+        
         name=name.trim();
         let inflection = $(element).find(this.selector(this.INFLECTION)).text();
 

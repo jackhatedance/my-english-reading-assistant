@@ -16,7 +16,7 @@ describe('TextDefinitionParser test', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations.length, 0);
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
       assert.equal(parseResult[0].definitionGroups[0].name, "n.");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "爱丽丝");      
       
@@ -28,7 +28,7 @@ describe('TextDefinitionParser test', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations.length, 0);
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
       assert.equal(parseResult[0].definitionGroups[0].name, "");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "break的过去式");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      

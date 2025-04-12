@@ -104,7 +104,7 @@ function jsonToText(entries, pronunciationRegion){
         }
         let groupsText = groupTexts.join('<br> ');
 
-        let pronunciation = pronunciationsToText(definitionObj.pronunciations, pronunciationRegion);    
+        let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, pronunciationRegion);    
 
         let text = groupsText;
         if(pronunciation){

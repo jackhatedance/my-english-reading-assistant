@@ -16,31 +16,31 @@ describe('mdict oalecd9e parser', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[0].phonetics, 'ɡʊd');
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'ɡʊd');
 
-      assert.equal(parseResult[0].pronunciations[1].region, 'us');
-      assert.equal(parseResult[0].pronunciations[1].phonetics, 'ɡʊd');
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'ɡʊd');
 
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "高质量");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "令人愉快");      
 
-      assert.equal(parseResult[1].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[1].pronunciations[0].phonetics, 'ɡʊd');
+      assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'ɡʊd');
 
-      assert.equal(parseResult[1].pronunciations[1].region, 'us');
-      assert.equal(parseResult[1].pronunciations[1].phonetics, 'ɡʊd');
+      assert.equal(parseResult[1].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[1].headword.pronunciations[1].phonetics, 'ɡʊd');
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "合乎道德");      
       assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "益处");      
 
-      assert.equal(parseResult[2].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[2].pronunciations[0].phonetics, 'ɡʊd');
+      assert.equal(parseResult[2].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[2].headword.pronunciations[0].phonetics, 'ɡʊd');
 
-      assert.equal(parseResult[2].pronunciations[1].region, 'us');
-      assert.equal(parseResult[2].pronunciations[1].phonetics, 'ɡʊd');
+      assert.equal(parseResult[2].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[2].headword.pronunciations[1].phonetics, 'ɡʊd');
 
       assert.equal(parseResult[2].definitionGroups[0].name, "adverb");
       assert.equal(parseResult[2].definitionGroups[0].definitions.length, 1);
@@ -54,19 +54,19 @@ describe('mdict oalecd9e parser', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[0].phonetics, 'ju');
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'ju');
 
-      assert.equal(parseResult[0].pronunciations[1].region, 'us');
-      assert.equal(parseResult[0].pronunciations[1].phonetics, 'jə');
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'jə');
 
-      assert.equal(parseResult[0].pronunciations[2].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[2].form, 'strong');
-      assert.equal(parseResult[0].pronunciations[2].phonetics, 'juː');
+      assert.equal(parseResult[0].headword.pronunciations[2].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[2].form, 'strong');
+      assert.equal(parseResult[0].headword.pronunciations[2].phonetics, 'juː');
 
-      assert.equal(parseResult[0].pronunciations[3].region, 'us');
-      assert.equal(parseResult[0].pronunciations[3].form, 'strong');
-      assert.equal(parseResult[0].pronunciations[3].phonetics, 'juː');
+      assert.equal(parseResult[0].headword.pronunciations[3].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[3].form, 'strong');
+      assert.equal(parseResult[0].headword.pronunciations[3].phonetics, 'juː');
 
       assert.equal(parseResult[0].definitionGroups[0].name, "pronoun");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "你,您,你们");      
@@ -80,7 +80,7 @@ describe('mdict oalecd9e parser', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations.length, 0);
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
       assert.equal(parseResult[0].definitionGroups[0].name, "");
 
     });
@@ -91,11 +91,11 @@ describe('mdict oalecd9e parser', function () {
       console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[0].phonetics, 'rəʊd');
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'rəʊd');
 
-      assert.equal(parseResult[0].pronunciations[1].region, 'us');
-      assert.equal(parseResult[0].pronunciations[1].phonetics, 'roʊd');
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'roʊd');
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past tense of ride");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");
@@ -108,22 +108,22 @@ describe('mdict oalecd9e parser', function () {
       console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[0].phonetics, 'meɪk');
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'meɪk');
 
-      assert.equal(parseResult[0].pronunciations[1].region, 'us');
-      assert.equal(parseResult[0].pronunciations[1].phonetics, 'meɪk');
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'meɪk');
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "制造");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "床");
       assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "使出现／发生／成为／做");
 
-      assert.equal(parseResult[1].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[1].pronunciations[0].phonetics, 'meɪk');
+      assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'meɪk');
 
-      assert.equal(parseResult[1].pronunciations[1].region, 'us');
-      assert.equal(parseResult[1].pronunciations[1].phonetics, 'meɪk');
+      assert.equal(parseResult[1].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[1].headword.pronunciations[1].phonetics, 'meɪk');
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
@@ -137,19 +137,19 @@ describe('mdict oalecd9e parser', function () {
       console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[0].phonetics, 'wəz');
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'wəz');
 
-      assert.equal(parseResult[0].pronunciations[1].region, 'us');
-      assert.equal(parseResult[0].pronunciations[1].phonetics, 'wəz');
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'wəz');
 
-      assert.equal(parseResult[0].pronunciations[2].region, 'uk');
-      assert.equal(parseResult[0].pronunciations[2].form, 'strong');
-      assert.equal(parseResult[0].pronunciations[2].phonetics, 'wɒz');
+      assert.equal(parseResult[0].headword.pronunciations[2].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[2].form, 'strong');
+      assert.equal(parseResult[0].headword.pronunciations[2].phonetics, 'wɒz');
 
-      assert.equal(parseResult[0].pronunciations[3].region, 'us');
-      assert.equal(parseResult[0].pronunciations[3].form, 'strong');
-      assert.equal(parseResult[0].pronunciations[3].phonetics, 'wʌz');
+      assert.equal(parseResult[0].headword.pronunciations[3].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[3].form, 'strong');
+      assert.equal(parseResult[0].headword.pronunciations[3].phonetics, 'wʌz');
       
       assert.equal(parseResult[0].definitionGroups[0].name, "");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "转be");

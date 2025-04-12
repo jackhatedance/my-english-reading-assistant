@@ -2,9 +2,10 @@ import { profile as newOxfordEcDual } from './profiles/newOxfordEcDualProfile.js
 import { profile as oalecd8e } from './profiles/oalecd8e.js'
 import { profile as oalecd9e } from './profiles/oalecd9e.js'
 import { profile as yhd } from './profiles/yhdProfile.js'
+import { profile as mwalecd } from './profiles/mwalecd.js'
 
 
-const profiles = [newOxfordEcDual, oalecd8e, oalecd9e, yhd];
+const profiles = [newOxfordEcDual, oalecd8e, oalecd9e, yhd, mwalecd];
 
 function compareMap(expectedMap, actualMap) {
     expectedMap = toLowerCaseKeyMap(expectedMap);

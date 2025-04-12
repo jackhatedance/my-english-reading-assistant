@@ -148,7 +148,7 @@ class Dictionary {
         let groupsText = groupTexts.join('; ');
 
         let region = options.pronunciationRegion;
-        let pronunciation = pronunciationsToText(definitionObj.pronunciations, region);    
+        let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, region);    
         
         let text = groupsText;
         if(pronunciation){
@@ -183,7 +183,7 @@ class Dictionary {
         }
         let groupsText = groupTexts.join('<br>');
         
-        let pronunciation = pronunciationsToText(definitionObj.pronunciations); 
+        let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations); 
         let text = `${query}<br>${groupsText}`;
         if(pronunciation){
             text = `${query} ${pronunciation}<br>${groupsText}`;

@@ -28,9 +28,10 @@ class MdictDefinitionParser extends DefinitionParser {
         let definitionGroup = { type:'link', "name": 'link', "definitions": definitions };        
         
         let pronunciations = [];
+        let headword = { pronunciations };
         let definitionGroups = [ definitionGroup ];
         
-        let entry = { pronunciations, definitionGroups };
+        let entry = { headword, definitionGroups };
         return entry;
     }
 

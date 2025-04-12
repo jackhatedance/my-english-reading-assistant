@@ -7,7 +7,8 @@ class YhdParser extends GenericSelectorParser {
 
         let selectors = { };
         selectors[this.ENTRY] = '.e';
-        selectors[this.PRONUNCIATION] = '.hg .pr';
+        selectors[this.HEADWORD] = '.hg';
+        selectors[this.PRONUNCIATION] = '.pr';
         selectors[this.DEFINITION_GROUP] = '.sg .se1';
         selectors[this.GROUP_NAME] = '.pos';
         selectors[this.DEFINITION] = '.se2 .df';

@@ -50,7 +50,6 @@ class DefinitionParser {
             if(definition.subdefinitions.length >0){
                 definition.subdefinitions.length = subdefinitionIndexes[definitionIndex];
                 definition.text = definition.subdefinitions.join(',');
-                delete definition.subdefinitions.index;
             }            
         }
     }

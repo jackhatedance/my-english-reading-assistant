@@ -16,8 +16,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "gʊd");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "gʊd");
 
 
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
@@ -45,8 +45,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈdrægl");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈdrægl");
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏,拖湿");      
@@ -60,8 +60,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈtɪtə(r)");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈtɪtə(r)");
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "窃笑,咯咯笑");      
@@ -76,8 +76,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "ɪt");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ɪt");
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "构成原为指小词的名词");      
       
@@ -102,8 +102,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "twelv");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "twelv");
 
       assert.equal(parseResult[0].definitionGroups[0].name, "cardinal number");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "12十二,十二个");
@@ -117,8 +117,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "ˈmʌstɪ");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈmʌstɪ");
 
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].inflection, "mustier, mustiest");      
@@ -134,8 +134,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       //assert(tokens.length === 2,"test");
       
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "ðiːz");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ðiːz");
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "this的复数");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
@@ -151,8 +151,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "强ɪz, 弱z");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强ɪz, 弱z");
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "be的第三人称单数现在时");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
@@ -170,8 +170,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       //assert(tokens.length === 2,"test");
       
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "强bʌt, 弱bət");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
       assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是,然而");
       
@@ -185,8 +185,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
-      assert.equal(parseResult[0].pronunciations[0].region, "");
-      assert.equal(parseResult[0].pronunciations[0].phonetics, "rəʊd");
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "rəʊd");
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "ride的过去式");
       

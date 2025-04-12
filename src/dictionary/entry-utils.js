@@ -22,7 +22,7 @@ function mergeEntries(entries){
     let mergedDefinitionGroupMap = {};
     
     for(let entry of entries){
-        mergedPronunciationArray.push(...entry.pronunciations);
+        mergedPronunciationArray.push(...entry.headword.pronunciations);
         
         for(let definitionGroup of entry.definitionGroups){
             const { name, definitions} = definitionGroup;
@@ -44,8 +44,10 @@ function mergeEntries(entries){
         let definitions = mergedDefinitionGroupMap[name];
         mergedDefinitionGroups.push({name, definitions});
     }
+
+    let mergedHeadword = { pronunciations: mergedPronunciationArray };
     let mergedEntry = {
-        pronunciations: mergedPronunciationArray,
+        headword: mergedHeadword,
         definitionGroups : mergedDefinitionGroups,
     };
     return mergedEntry;
