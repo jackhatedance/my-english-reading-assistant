@@ -4,7 +4,7 @@ import { compareMap } from '../../src/dictionary/mdict/mdictProfileRegister.js'
 
 describe('mdict new-oxford-ec-dual parser', function () {
   
-  describe('NewOxfordEcDualParser parse', function () {
+  describe('Noecd2eParser parse', function () {
     before(function() {
       
     });

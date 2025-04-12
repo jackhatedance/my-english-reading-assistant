@@ -2,7 +2,7 @@ import { GenericSelectorParser } from './GenericSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
 import { findBaseForm } from '../../base-forms.js' 
 
-class NewOxfordEcDualParser extends GenericSelectorParser {
+class Noecd2eParser extends GenericSelectorParser {
     constructor(options){
         super(options);
 
@@ -56,4 +56,4 @@ class NewOxfordEcDualParser extends GenericSelectorParser {
     }
 }
 
-export { NewOxfordEcDualParser }
+export { Noecd2eParser }

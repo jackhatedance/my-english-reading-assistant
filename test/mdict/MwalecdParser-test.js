@@ -22,6 +22,8 @@ describe('mdict mwalecd parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈgʊd");
 
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 38);      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好的,优良的");      

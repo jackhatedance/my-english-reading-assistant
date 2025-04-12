@@ -1,7 +1,7 @@
 import { Progress } from './Progress.js'
 
 // index data version should always match below program version. any change to index building should increase it.
-export const INDEX_VERSION = 22;
+export const INDEX_VERSION = 24;
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_parse');
 //sleepWorkRatio: sleep time / work time. the larger the slower

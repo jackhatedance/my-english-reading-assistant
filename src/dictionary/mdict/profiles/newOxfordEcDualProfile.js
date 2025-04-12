@@ -18,5 +18,5 @@ export const profile = {
         "StyleSheet": "",
         "Title": "新牛津英汉双解大词典"
     },
-    parser: "NewOxfordEcDualParser",
+    parser: "Noecd2eParser",
 };

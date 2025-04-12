@@ -1,13 +1,13 @@
 
 import { strict as assert } from 'assert';
-import { NewOxfordEcDualParser } from '../../src/dictionary/mdict/parser/NewOxfordEcDualParser.js'
+import { Noecd2eParser } from '../../src/dictionary/mdict/parser/Noecd2eParser.js'
 import fs from 'fs'
 
 describe('mdict new-oxford-ec-dual parser', function () {
   
-  describe('NewOxfordEcDualParser parse', function () {
+  describe('Noecd2eParser parse', function () {
     before(function() {
-      this.parser = new NewOxfordEcDualParser();
+      this.parser = new Noecd2eParser();
     });
 
     it('noecd2e good', async function () {

@@ -562,7 +562,7 @@
         "message":"start build dictionary indexes"
     },
     "notification_build_index_message_start":{
-        "message":"Dictionaries can not be used before building is completed. Please keep the browser running."
+        "message":"Dictionaries can not be used before building is completed. Please keep the browser open."
     },
     "notification_build_index_title_end":{
         "message":"finish build dictionary indexes"
