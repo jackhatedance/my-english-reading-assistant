@@ -9,6 +9,7 @@ import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictiona
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
 import { pronunciationsToText, REGION_ALL } from '../dictionary/definition-formatter.js'
 import { getOptions } from '../service/optionService.js'
+import { mergeEntries } from '../dictionary/entry-utils.js'
 
 const props = defineProps({
     word: String,
@@ -81,42 +82,38 @@ function jsonToText(entries, pronunciationRegion){
         return '';
     }
 
-    let texts = [];
-    for(let entry of entries){
-        let definitionObj = entry;
+    let entry = mergeEntries(entries);
 
-        let groupTexts = [];
-        for(let definitionGroup of definitionObj.definitionGroups){
-            const { name } = definitionGroup;
-            let wordClass = getWordClassAbbreviation(name);
+    let definitionObj = entry;
 
-            let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+    let groupTexts = [];
+    for(let definitionGroup of definitionObj.definitionGroups){
+        const { name } = definitionGroup;
+        let wordClass = getWordClassAbbreviation(name);
 
-            let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
-            if(shortDefinitions.length >= 3){
-                definitions = shortDefinitions;
-            }
-            let definitionTexts = definitions.map(item => item.text );
-            
-            let definitionsText = definitionTexts.join(',');
-            let groupText = `${wordClass} ${definitionsText}`;
-            groupTexts.push(groupText);
+        let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+
+        let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
+        if(shortDefinitions.length >= 3){
+            definitions = shortDefinitions;
         }
-        let groupsText = groupTexts.join('<br> ');
-
-        let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, pronunciationRegion);    
-
-        let text = groupsText;
-        if(pronunciation){
-            text = `${pronunciation}<br>${groupsText}`;
-        }        
-
-        texts.push(text);
+        let definitionTexts = definitions.map(item => item.text );
+        
+        let definitionsText = definitionTexts.join(',');
+        let groupText = `${wordClass} ${definitionsText}`;
+        groupTexts.push(groupText);
     }
-    
+    let groupsText = groupTexts.join('<br> ');
+
+    let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, pronunciationRegion);    
+
+    let text = groupsText;
+    if(pronunciation){
+        text = `${pronunciation}<br>${groupsText}`;
+    }        
     
     //console.log(text);
-    return texts.join('<br><br>');
+    return text;
 }
 
 const knownRef = new ref(false);
