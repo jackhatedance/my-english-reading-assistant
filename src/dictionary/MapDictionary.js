@@ -29,7 +29,7 @@ class MapDictionary extends Dictionary {
     }
 
     supportOutputFormat(format){
-        return true;
+        return ['raw', 'text', 'json'].includes(format);
     }
 }
 
