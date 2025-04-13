@@ -229,7 +229,7 @@ async function getZipDictionary(fileName, name, file){
 
     let size = dictionary.size;
     let title = dictionary.title;
-    if(!title || title.trim() == ''){
+    if(!title || title.trim() == '' || title == 'Title (No HTML code allowed)'){
       title = name;
     }
     

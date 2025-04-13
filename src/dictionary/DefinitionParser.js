@@ -66,7 +66,7 @@ class DefinitionParser {
         }
     }
 
-    beforeParseDefinition(text){
+    beforeParseDefinitionText(text){
         if(!text){
             text = '';
         }

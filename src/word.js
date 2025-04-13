@@ -11,16 +11,16 @@ function buildAnnotationParameters(searchResult) {
     let middleDefinition = searchResult.middleDefinition;
 
     if (searchResult.searchType === 'stem') {
-        definition = '根' + searchResult.word + ':' + definition;
+        middleDefinition = '根' + searchResult.word + ':' + middleDefinition;
     }
     if (searchResult.searchType === 'removeSuffixOrPrefix') {
-        definition = '源' + searchResult.word + ':' + definition;
+        middleDefinition = '源' + searchResult.word + ':' + middleDefinition;
     }
-    if (searchResult.searchType === 'lemma' && searchResult.lemmaType === 'irregular') {
-        definition = '原' + searchResult.word + ':' + definition;
+    if (searchResult.searchType === 'lemma') {
+        middleDefinition = '原' + searchResult.word + ':' + middleDefinition;
     }
     if (searchResult.searchType === 'compounding') {
-        definition = '复' + searchResult.word + ':' + definition;
+        middleDefinition = '复' + searchResult.word + ':' + middleDefinition;
     }
 
     let wordPartObjs = getWordParts(baseWord);
@@ -84,13 +84,17 @@ function format(word, definition, shortDefinition, middleDefinition, baseWord, p
 
     let type = baseWord ? 'mea-word' : 'mea-nonword';
 
-    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</${TOKEN_TAG}>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-word="${escapedWord}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedWord}</${TOKEN_TAG}>`;
     return s;
 }
 
+
+function getWordFromElement(element) {
+    return element.getAttribute('data-word');
+}
 
 function getBaseWordFromElement(element) {
     return element.getAttribute('data-base-word');
 }
 
-export { annotateWord, annotateNonword, updateWordAnnotation, getBaseWordFromElement };
+export { annotateWord, annotateNonword, updateWordAnnotation, getWordFromElement, getBaseWordFromElement };

@@ -150,6 +150,7 @@ function searchWordWithDict(query, options, dicts){
 
             if(deepLookupResult){
                 searchType='lemma';
+                word = deepLookupResult.word;
             }        
         }
     }

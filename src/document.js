@@ -5,7 +5,7 @@ import { traverseElement, traverseNode } from './dom.js';
 import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
-import {getBaseWordFromElement} from './word.js';
+import { getWordFromElement, getBaseWordFromElement} from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
 
@@ -302,7 +302,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       //show hide unknown word annotation
       document.querySelectorAll('.mea-word').forEach((element) => {
   
-        let targetWord = getBaseWordFromElement(element);
+        let targetWord = getWordFromElement(element);
   
         if (enabled) {
           let hide = element.classList.contains("mea-hide");

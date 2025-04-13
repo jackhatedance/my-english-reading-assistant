@@ -2,7 +2,7 @@ import {lookup, isOnlyTransform, getTheOnlyBaseForm } from './dictionaries.js';
 
 function deepLookup(lookupResult, options){
     let deepLookupResult;
-    const dicts = [lookupResult.dictionary];
+    const dicts = [lookupResult.dictionaryName];
     
     if(!deepLookupResult){        
         deepLookupResult = deepLookupOnlyTransform(lookupResult, options, dicts);

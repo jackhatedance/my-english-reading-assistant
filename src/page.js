@@ -28,7 +28,7 @@ async function getPageInfo(siteProfile, documentArticleMap) {
 
         for (var e of elements) {
             //let targetWord = getTargetWordFromElement(e);
-            let base = e.getAttribute('data-base-word');
+            let base = e.getAttribute('data-word');
 
             unknownWordMap.set(base, { base, });
             unknownWordsCount++;

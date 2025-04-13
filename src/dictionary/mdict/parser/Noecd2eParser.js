@@ -18,18 +18,17 @@ class Noecd2eParser extends GenericSelectorParser {
         this.selectors = selectors;
     }
 
-    getDefinitionText($, element, context){
+    beforeParseDefinitionElement($, element, context){
         let text = $(element).text();
         let parenthesesText = $(element).find('strong').text();        
         let mainText = text.replace(parenthesesText, '');
         if(this.trimDefinition(mainText).length>0){
             $(element).find('strong').remove();        
         }
-
-        return super.getDefinitionText($, element, context);
+       
     }
     
-    beforeParseDefinition(text){
+    beforeParseDefinitionText(text){
         
         let baseForm = findBaseForm(text);
         if(baseForm){
@@ -39,7 +38,7 @@ class Noecd2eParser extends GenericSelectorParser {
             text = text.replace(base, lowerCaseBase);
         }   
 
-        return super.beforeParseDefinition(text);        
+        return super.beforeParseDefinitionText(text);        
     }
 
     afterParseDefinitionGroup(definitionGroup){

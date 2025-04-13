@@ -9,7 +9,7 @@ import { refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
-import {getBaseWordFromElement} from './word.js';
+import { getWordFromElement, getBaseWordFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
 import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
@@ -314,7 +314,7 @@ async function addDocumentEventListener(document, documentConfig) {
         let targetElement = event.target;
         let highlightElement = targetElement.closest('.mea-word');
         if(highlightElement){//find word
-          word = getBaseWordFromElement(highlightElement);
+          word = getWordFromElement(highlightElement);
 
           let knownWords = await loadKnownWords();
           if(isKnown(word, knownWords)){

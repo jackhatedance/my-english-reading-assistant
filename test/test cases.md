@@ -30,6 +30,9 @@ import export notes
 
 # content page
 
+## inline annotation
+
+* deep lookup
 
 mark single word
 

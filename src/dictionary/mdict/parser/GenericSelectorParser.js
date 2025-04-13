@@ -171,15 +171,17 @@ class GenericSelectorParser extends MdictDefinitionParser {
         return definitionGroup;
     }
 
-    getDefinitionText($, element, context){
-        return $(element).text(); 
+    beforeParseDefinitionElement($, element, context){
+        //manipulate dom
     }
 
+    
     parseDefinition($, element, context){
+        this.beforeParseDefinitionElement($, element, context);
         
-        let text = this.getDefinitionText($, element, context);        
+        let text = $(element).text(); 
         
-        text = this.beforeParseDefinition(text);    
+        text = this.beforeParseDefinitionText(text);    
 
         let subdefinitions = text.split(',');    
         subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));    
