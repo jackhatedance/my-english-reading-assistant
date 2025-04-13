@@ -22,7 +22,7 @@ describe('TextDefinitionParser test', function () {
       
     });
 
-    it('broke', async function () {
+    it('text broke', async function () {
       let parseResult = this.parser.parse('break的过去式');
       
       //console.log(parseResult);

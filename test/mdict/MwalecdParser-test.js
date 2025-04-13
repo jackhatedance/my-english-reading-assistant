@@ -88,6 +88,42 @@ describe('mdict mwalecd parser', function () {
     });
 
 
+    it('mwalecd rang', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/rang.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past tense of ring");      
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "ring");      
+    });
+
+    it('mwalecd is', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/is.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "see be");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "be");      
+           
+    });
+
   });
   
 });

@@ -74,12 +74,19 @@ class TextDefinitionParser extends DefinitionParser {
         if(!text){
             text = '';
         }
-        text = this.trimDefinition(text);    
+        text = this.beforeParseDefinitionText(text);    
+
+        let typedDefinition = this.detectTypedDefinitionOfText(text);
+        
 
         text = removeParentheses(text);
         text = text.split(',')[0];
         let subdefinitions = [ text ];       
         let definition = { text, subdefinitions };
+
+        if(typedDefinition){
+            this.assginTypedDefinition(definition, typedDefinition);
+        }
 
         this.afterParseDefinition(definition)
 

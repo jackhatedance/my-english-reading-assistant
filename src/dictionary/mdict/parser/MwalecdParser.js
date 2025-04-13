@@ -9,7 +9,7 @@ export class MwalecdParser extends GenericSelectorParser {
         selectors[this.ENTRY] = '.entry';
         selectors[this.HEADWORD] = '.hw_d';
         selectors[this.PRONUNCIATION] = '.hpron_word';
-        selectors[this.DEFINITION_GROUP] = ['> .sblocks', 'entry/.cxs'];
+        selectors[this.DEFINITION_GROUP] = ['> .sblocks', 'entry/.cxs', 'entry/.dxs'];
         selectors[this.GROUP_NAME] = 'headword/.fl';
         selectors[this.DEFINITION] = ['.sblock :is(.def_text, .un_text, .isyns) .mw_zh', 'entry/.cxs', 'entry/.dxs .dx'];
         

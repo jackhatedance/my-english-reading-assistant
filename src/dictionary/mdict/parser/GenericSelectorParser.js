@@ -1,6 +1,6 @@
 import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
-
+import { findMostAccurateTypedDefinition } from '../../typed-definition.js'
 class GenericSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
@@ -175,19 +175,50 @@ class GenericSelectorParser extends MdictDefinitionParser {
         //manipulate dom
     }
 
-    
+    detectLinkDefinitionOfElement($, element, context){
+        let linkElements = $(element).find('a[href^="entry:"]');
+        if(linkElements.length == 1){
+            let linkElement = linkElements[0];
+            let link = $(linkElement).text();
+            let text = $(element).text();
+            return this.createLinkDefinition(link);
+        }
+    }
+
+    detectTypedDefinitionOfElement($, element, context){
+        let definition = this.detectLinkDefinitionOfElement($, element, context);
+        return definition;
+    }
+ 
     parseDefinition($, element, context){
         this.beforeParseDefinitionElement($, element, context);
         
+        let typedDefinitions = [];
+        let typedDefinitionOfElement = this.detectTypedDefinitionOfElement($, element, context);
+        if(typedDefinitionOfElement){
+            typedDefinitions.push(typedDefinitionOfElement);
+        }
+
         let text = $(element).text(); 
         
         text = this.beforeParseDefinitionText(text);    
 
+        let typedDefinitionOfText = this.detectTypedDefinitionOfText(text);
+        if(typedDefinitionOfText){
+            typedDefinitions.push(typedDefinitionOfText);
+        }
+
         let subdefinitions = text.split(',');    
         subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));    
         let definition = { text, subdefinitions };
+        
+        
+        let typedDefinition = findMostAccurateTypedDefinition(typedDefinitions);
+        if(typedDefinition){
+            this.assginTypedDefinition(definition, typedDefinition);
+        }
 
-        this.afterParseDefinition(definition)
+        this.afterParseDefinition(definition);
 
         return definition;
     }

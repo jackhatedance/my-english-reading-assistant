@@ -1,6 +1,6 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER } from './dictConstants.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER } from './dictConstants.js'
 import { removeParentheses } from '../text/textUtils.js'
 
 class DefinitionParser {
@@ -76,15 +76,12 @@ class DefinitionParser {
         return text;    
     }
 
-    afterParseDefinition(definition){
-        const { text, type } = definition;
-        if(type){
-            return;    
-        }
-
+    detectTypedDefinitionOfText(text){
         let baseForm = findBaseForm(text);
         if(baseForm){
             const { base, form } = baseForm;
+
+            let definition = {};
             definition.type= DICTIONARY_DEFINITION_TYPE_FORM;
             definition.form= form;
             
@@ -92,7 +89,25 @@ class DefinitionParser {
             definition.base=lowerCaseBase;
 
             definition.text = text.replace(base, lowerCaseBase);
-        }                
+
+            return definition;
+        }
+    }
+
+    assginTypedDefinition(definition, typedDefinition){
+        
+        definition.type = typedDefinition.type;
+        if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+            definition.base = typedDefinition.base;
+            definition.form = typedDefinition.form;
+        } else if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+            definition.link = typedDefinition.link;
+        }
+    
+    }
+
+    afterParseDefinition(definition){
+                                
     }
 
     afterParse(entries){
