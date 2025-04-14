@@ -339,6 +339,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                 && token.content !== nodeContent
                 && nodeInfo.offset >= token.articleOffset
                 && nodeInfo.offset < token.articleOffset + token.length
+                && node.parentElement.tagName == 'MEA-TOKEN'
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showShortDefinition = firstNodeOfTheToken;
