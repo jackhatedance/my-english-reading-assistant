@@ -12,16 +12,16 @@ function buildAnnotationParameters(searchResult) {
     let middleDefinition = searchResult.middleDefinition;
 
     if (searchResult.searchType === 'stem') {
-        middleDefinition = '根' + searchResult.word + ':' + middleDefinition;
+        middleDefinition = '根' + searchResult.baseWord + ':' + middleDefinition;
     }
     if (searchResult.searchType === 'removeSuffixOrPrefix') {
-        middleDefinition = '源' + searchResult.word + ':' + middleDefinition;
+        middleDefinition = '源' + searchResult.baseWord + ':' + middleDefinition;
     }
     if (searchResult.searchType === 'lemma') {
-        middleDefinition = '原' + searchResult.word + ':' + middleDefinition;
+        middleDefinition = '原' + searchResult.baseWord + ':' + middleDefinition;
     }
     if (searchResult.searchType === 'compounding') {
-        middleDefinition = '复' + searchResult.word + ':' + middleDefinition;
+        middleDefinition = '复' + searchResult.baseWord + ':' + middleDefinition;
     }
 
     let effectiveWord = baseWord? baseWord : word;
