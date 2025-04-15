@@ -110,6 +110,9 @@
     "optionsEditVocabularyLabelDesc":{
         "message":"Copy & Paste is allowed"
     },
+    "options_edit_vocabulary_field_tip":{
+        "message":"These are familiar words, not new words!"
+    },
     "optionsEditVocabularyTotal":{
         "message":"total:"
     },

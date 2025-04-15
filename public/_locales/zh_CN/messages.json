@@ -110,6 +110,9 @@
     "optionsEditVocabularyLabelDesc":{
         "message":"允许复制粘贴"
     },
+    "options_edit_vocabulary_field_tip":{
+        "message":"这里是认识的词，不是生词！"
+    },
     "optionsEditVocabularyTotal":{
         "message":"总数："
     },

@@ -115,6 +115,7 @@ init();
             <p>{{ t('optionsEditVocabularyLabelDesc') }}</p>
         </div>
         <div class="input">
+            <p class="vocabulary-tip">{{ t('options_edit_vocabulary_field_tip') }}</p>
             <textarea v-model="knownWords" rows="10" maxlength="500000"></textarea>
             <p>{{ t('optionsEditVocabularyTotal') }}<span>{{ count }}</span></p>
         </div>
@@ -148,3 +149,8 @@ init();
     </div>
     
 </template>
+<style>
+.vocabulary-tip {
+    color: red;
+}
+</style>
