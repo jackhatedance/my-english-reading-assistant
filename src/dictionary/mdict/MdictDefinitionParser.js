@@ -24,13 +24,13 @@ class MdictDefinitionParser extends DefinitionParser {
     createEntryForLink(link){
         let definition = this.createLinkDefinition(link);        
         let definitions = [definition];
-        let definitionGroup = { type:'link', "name": 'link', "definitions": definitions };        
+        let definitionGroup = { name: 'link', "definitions": definitions };        
         
         let pronunciations = [];
         let headword = { pronunciations };
         let definitionGroups = [ definitionGroup ];
         
-        let entry = { headword, definitionGroups };
+        let entry = { headword, definitionGroups, type: 'link' };
         return entry;
     }
 

@@ -166,7 +166,23 @@ function getVisitedMeanings(definition){
     return visitedMeanings;    
 }
 
-function isOnlyLink(lookupResult){
+function hasLinkEntryOnly(lookupResult){
+    let entries = lookupResult.json;
+    try{
+        if(entries.length ==1){
+            let entry = entries[0];
+            if(entry.type == DICTIONARY_DEFINITION_TYPE_LINK){
+                return true;                
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+
+    return false;
+}
+
+function hasLinkDefinitionOnly(lookupResult){
     let entries = lookupResult.json;
     try{
         let definitions = entries[0].definitionGroups[0].definitions;
@@ -183,13 +199,13 @@ function isOnlyLink(lookupResult){
     return false;
 }
 
-function getTheOnlyLink(lookupResult){
+function getTheOnlyLinkDefintion(lookupResult){
     let entries = lookupResult.json;
     let definitions = entries[0].definitionGroups[0].definitions;
     if(definitions.length ==1){
         let definition = definitions[0];
         if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
-            return definition.link;                
+            return definition;                
         }
     }  
 }
@@ -230,4 +246,4 @@ function getTheOnlyBaseForm(lookupResult){
     }
 }
 
-export { lookup, simplifyDefinition, isOnlyLink, getTheOnlyLink, isOnlyTransform, getTheOnlyBaseForm };
+export { lookup, simplifyDefinition, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm };

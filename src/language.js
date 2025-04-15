@@ -1,6 +1,6 @@
 'use strict';
 
-import {lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, } from './dictionaries.js';
+import {lookup, simplifyDefinition, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion } from './dictionaries.js';
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache, createSimplifyDefinitionOptions} from './service/optionService.js';
@@ -135,14 +135,23 @@ function searchWordWithDict(query, options, dicts){
     let baseWord = '';
 
     if(lookupResult) {
-        if(isOnlyLink(lookupResult)){            
-            let link = getTheOnlyLink(lookupResult);        
+        let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult);
+        let bHasLinkDefinitionOnly = hasLinkDefinitionOnly(lookupResult);
+
+        if(bHasLinkDefinitionOnly){            
+            let linkDefinition = getTheOnlyLinkDefintion(lookupResult);   
+            let link = linkDefinition.link;    
             let linkLookupResult = lookup(link, options, dicts);                  
             
             if(linkLookupResult) {
                 //replace
                 lookupResult = linkLookupResult;
-                baseWord = link;        
+
+                if(bHasLinkEntryOnly){
+                    word = link;
+                } else {
+                    baseWord = link;        
+                }                
             }        
         }    
         
