@@ -17,6 +17,19 @@ function deduplicatePronunciations(pronunciations){
     return array;
 }
 
+function deduplicateSubdefinitions(definitionGroup){
+    let subdefinitionSet = new Set();
+    for(let definition of definitionGroup.definitions){
+        let duplicatedSubdefinitions = definition.subdefinitions.filter( item => !subdefinitionSet.has(item));
+        definition.subdefinitions = duplicatedSubdefinitions;
+        definition.text = duplicatedSubdefinitions.join(',');
+
+        for(let duplicatedSubdefinition of duplicatedSubdefinitions){
+            subdefinitionSet.add(duplicatedSubdefinition);
+        }        
+    }
+}
+
 function mergeEntries(entries){
     let mergedPronunciationArray = [];
     let mergedDefinitionGroupMap = {};
@@ -53,4 +66,4 @@ function mergeEntries(entries){
     return mergedEntry;
 }
 
-export { mergeEntries }
+export { mergeEntries, deduplicateSubdefinitions }

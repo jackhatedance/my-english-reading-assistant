@@ -164,11 +164,8 @@ function searchWordWithDict(query, options, dicts){
         let shortDefinition = definition;
         let middleDefinition = definition;
         if(options.simplifyDefinition){
-            //shortDefinition = simplifyDefinition(definition, options.simplifyDefinition);
-            //middleDefinition = simplifyDefinition(definition, createSimplifyDefinitionOptions(6, false));
-
-            shortDefinition = simplifyDefinitionV2(lookupResult, deepLookupResult, options.simplifyDefinition);
-            middleDefinition = simplifyDefinitionV2(lookupResult, deepLookupResult, createSimplifyDefinitionOptions(6, false));
+            shortDefinition = simplifyDefinition(lookupResult, deepLookupResult, options.simplifyDefinition);
+            middleDefinition = simplifyDefinition(lookupResult, deepLookupResult, createSimplifyDefinitionOptions(6, false));
         }
         
         let result = {

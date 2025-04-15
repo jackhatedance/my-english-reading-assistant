@@ -54,98 +54,8 @@ function getDict(name){
     return dict;
     
 }
-/**
- * TODO remove this function
- * @param {*} definition 
- * @param {*} options 
- * @returns 
- */
-function simplifyDefinition(definition, options){
-    let { maxMeaningNumber, hideWordClass } = options;
-    //hardcode temporarily
-    const hidePhoneticSymbol = true;
-    const hideParentheses = true;
-    //console.log('simplify definition:'+ JSON.stringify(definition));
 
-    if(!definition){
-        return definition;
-    }
-
-    const { phoneticSymbols, classes } = parseTextDefinition(definition);
-
-
-    let totalMeaningNumber = 0;
-    let definitions = [];
-    for(let cls of classes){
-        
-        let wordClassResult = parseWordClass(cls);
-        
-        //console.log('parse word class:'+ JSON.stringify(wordClassResult));
-        let wordClass = wordClassResult.wordClass;
-
-        let meanings = splitWordMeanings(wordClassResult.meanings);
-
-        let definition = {
-            wordClass: wordClass,
-            meanings: meanings,
-            size: meanings.length,
-            currentIndex: 0,//for later use
-        }
-
-        totalMeaningNumber += meanings.length;
-
-        definitions.push(definition);        
-    }
-
-    //visit meanings one by one
-    let definitionSize = definitions.length;
-    let i =0;
-    let definitionIndex;
-    let meaningCounter=0;
-    while(meaningCounter < maxMeaningNumber && meaningCounter < totalMeaningNumber && i < 100){
-        definitionIndex = i % definitionSize; 
-        let definition = definitions[definitionIndex];
-
-        let available = nextMeaning(definition);
-        if(available){
-            meaningCounter++;
-        }
-
-        i++;
-    }
-
-    //concat definition
-    let definitionStrList = [];
-    for(let def of definitions){
-        if(def.currentIndex == 0){
-            continue;
-        }
-
-        let definitionStr = '';
-
-        if(!hideWordClass){
-            definitionStr = def.wordClass;
-        }
-
-        let visiteMeanings = getVisitedMeanings(def);
-        
-        if(hideParentheses){
-            visiteMeanings = removeParentheses(visiteMeanings);
-        }
-
-        definitionStr = definitionStr + visiteMeanings;
-
-        definitionStrList.push(definitionStr);
-    }
-
-    if(meaningCounter < totalMeaningNumber){
-        definitionStrList.push('...');
-    }
-
-    return definitionStrList.join('; ');    
-}
-
-function simplifyDefinitionV2(originalLookupResult, deepLookupResult, options){
+function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
     const hidePhoneticSymbol = true;
@@ -177,7 +87,7 @@ function simplifyDefinitionV2(originalLookupResult, deepLookupResult, options){
         //console.log('parse word class:'+ JSON.stringify(wordClassResult));
         let wordClass = definitionGroup.name;
 
-        let meanings = definitionGroup.definitions.map(item => item.text);
+        let meanings = definitionGroup.definitions.map(item => item.text).filter(item => item != null && item.length>0);
 
         let definition = {
             wordClass: wordClass,
@@ -221,13 +131,14 @@ function simplifyDefinitionV2(originalLookupResult, deepLookupResult, options){
             definitionStr = def.wordClass;
         }
 
-        let visiteMeanings = getVisitedMeanings(def);
+        let visitedMeaningArray = getVisitedMeanings(def);
+        let visitedMeanings = visitedMeaningArray.join(',');
         
         if(hideParentheses){
-            visiteMeanings = removeParentheses(visiteMeanings);
+            visitedMeanings = removeParentheses(visitedMeanings);
         }
 
-        definitionStr = definitionStr + visiteMeanings;
+        definitionStr = definitionStr + visitedMeanings;
 
         definitionStrList.push(definitionStr);
     }
@@ -252,7 +163,7 @@ function nextMeaning(definition){
 
 function getVisitedMeanings(definition){
     let visitedMeanings = definition.meanings.slice(0, definition.currentIndex);
-    return visitedMeanings.join(',');    
+    return visitedMeanings;    
 }
 
 function isOnlyLink(lookupResult){
@@ -319,4 +230,4 @@ function getTheOnlyBaseForm(lookupResult){
     }
 }
 
-export { lookup, simplifyDefinition, simplifyDefinitionV2, isOnlyLink, getTheOnlyLink, isOnlyTransform, getTheOnlyBaseForm };
+export { lookup, simplifyDefinition, isOnlyLink, getTheOnlyLink, isOnlyTransform, getTheOnlyBaseForm };

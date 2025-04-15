@@ -124,6 +124,44 @@ describe('mdict mwalecd parser', function () {
            
     });
 
+    it('mwalecd what', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/what.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 2);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "pronoun");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 13);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "什么");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "…的东西");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "和…一样的,…之类");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "…之类的某事物");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[9].text, "…的事物,…的事情");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[10].text, "常接动词不定式");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[11].text, "无论什么");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[12].text, "用于提示要说的事情");      
+            
+      assert.equal(parseResult[1].definitionGroups[0].name, "adjective");      
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 3);      
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "什么");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "多么的");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "全部的,所有的");
+      
+      assert.equal(parseResult[2].definitionGroups[0].name, "adverb");      
+      assert.equal(parseResult[2].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "在哪一方面,到何种程度");
+      
+    });
+
   });
   
 });
