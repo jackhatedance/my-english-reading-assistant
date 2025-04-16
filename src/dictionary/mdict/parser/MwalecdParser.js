@@ -26,13 +26,19 @@ export class MwalecdParser extends JsonSelectorParser {
                             definition: 
                             [
                                 {
-                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns) .mw_zh'
+                                    selector: '.sblock :is(.def_text, .un_text, .isyns) .mw_zh'
+                                },
+                                {
+                                    selector: '.sblock :is(.def_text, .un_text, .isyns)'
                                 },
                                 {
                                     selector: '.sblock .dxs .dx'
+                                },                                
+                                {
+                                    selector: '.sblock .both_text .mw_zh'
                                 },
                                 {
-                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns)'
+                                    selector: '.sblock .both_text'
                                 },
                             ]
                         },

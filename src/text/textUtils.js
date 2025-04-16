@@ -91,7 +91,7 @@ function removeParentheses(text){
     text = text.replace(/】/, ')');
     
     
-    return text.replaceAll(/(\(.*\))/g, '');
+    return text.replaceAll(/(\([^\)]*\))/g, '');
 }
 
 

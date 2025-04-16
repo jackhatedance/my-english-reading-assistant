@@ -131,6 +131,35 @@ describe('mdict oalecd9e parser', function () {
       
     });
 
+    it('oalecd9e zoom', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/zoom.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, 'zuːm');
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'zuːm');
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "快速移动,迅速前往");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "急剧增长,猛涨");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "拉近，推远,使画面放大（或缩小）");
+
+      assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'zuːm');
+
+      assert.equal(parseResult[1].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[1].headword.pronunciations[1].phonetics, 'zuːm');
+
+      assert.equal(parseResult[1].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "疾驰的声音");
+      
+    });
+
     it('oalecd9e was link', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/was.html', 'utf8');
       let parseResult = this.parser.parse(html);
