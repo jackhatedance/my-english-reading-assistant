@@ -1,11 +1,14 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER } from './dictConstants.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from './dictConstants.js'
 import { removeParentheses } from '../text/textUtils.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
     constructor(options){
+        if(!options){
+            options = {};
+        }
         this.options = options;
     }
 
@@ -36,7 +39,9 @@ class DefinitionParser {
     }
 
     afterParseDefinitionGroup(definitionGroup){
-        deduplicateSubdefinitions(definitionGroup);
+        if(this.options[PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS] != false){
+            deduplicateSubdefinitions(definitionGroup);
+        }        
 
         const { definitions } = definitionGroup;
         const totalSubdefinitions = definitions.reduce((accumulator, currentValue) => accumulator + currentValue.subdefinitions.length, 0);

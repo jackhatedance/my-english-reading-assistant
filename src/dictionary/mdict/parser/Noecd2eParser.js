@@ -1,55 +1,85 @@
-import { GenericSelectorParser } from './GenericSelectorParser.js'
+import { JsonSelectorParser } from './JsonSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
-import { findBaseForm } from '../../base-forms.js' 
+import { findBaseForm } from '../../base-forms.js'
 
-class Noecd2eParser extends GenericSelectorParser {
-    constructor(options){
+class Noecd2eParser extends JsonSelectorParser {
+    constructor(options) {
         super(options);
 
-        let selectors = { };
-        selectors[this.ENTRY] = '.ODECN';
-        selectors[this.HEADWORD] = '.headword';
-        selectors[this.PRONUNCIATION] = '.pron';
-        selectors[this.DEFINITION_GROUP] = '.content .cont-list';
-        selectors[this.GROUP_NAME] = '.pos';
-        selectors[this.INFLECTION] = '.inflection';
-        selectors[this.DEFINITION] = ['.item .defs>dl .def', '.defs>dl .def', '.def'];
-        
-        this.selectors = selectors;
+        this.entriesSelector =
+        {
+            entry: [
+                {
+                    selector: '.ODECN',
+                    headword: {
+                        selector: '.headword',
+                        pronunciation: {
+                            selector: '.pron'
+                        },
+                    },
+                    definitionGroup: [
+                        {
+                            selector: '.content .cont-list',
+
+                            groupName: {
+                                selector: '.pos',
+                            },
+                            inflection: {
+                                selector: '.inflection',
+                            },
+                            definition:
+                                [
+                                    {
+                                        selector: '.item .defs>dl .def',
+                                    },
+                                    {
+                                        selector: '.defs>dl .def',
+                                    },
+                                    {
+                                        selector: '.def',
+                                    },
+                                ]
+                        },
+
+                    ]
+                },
+
+            ]
+        };
     }
 
-    beforeParseDefinitionElement($, element, context){
+    beforeParseDefinitionElement($, element, context) {
         let text = $(element).text();
-        let parenthesesText = $(element).find('strong').text();        
+        let parenthesesText = $(element).find('strong').text();
         let mainText = text.replace(parenthesesText, '');
-        if(this.trimDefinition(mainText).length>0){
-            $(element).find('strong').remove();        
+        if (this.trimDefinition(mainText).length > 0) {
+            $(element).find('strong').remove();
         }
-       
+
     }
-    
-    beforeParseDefinitionText(text){
-        
+
+    beforeParseDefinitionText(text) {
+
         let baseForm = findBaseForm(text);
-        if(baseForm){
-            const { base, form } = baseForm;            
+        if (baseForm) {
+            const { base, form } = baseForm;
             let lowerCaseBase = base.toLowerCase();
-        
-            text = text.replace(base, lowerCaseBase);
-        }   
 
-        return super.beforeParseDefinitionText(text);        
+            text = text.replace(base, lowerCaseBase);
+        }
+
+        return super.beforeParseDefinitionText(text);
     }
 
-    afterParseDefinitionGroup(definitionGroup){
-        const {name, inflection} = definitionGroup;
-        if(name.includes(inflection)){
+    afterParseDefinitionGroup(definitionGroup) {
+        const { name, inflection } = definitionGroup;
+        if (name.includes(inflection)) {
             definitionGroup.name = name.replace(inflection, '');
         }
         super.afterParseDefinitionGroup(definitionGroup);
     }
 
-    trimDefinition(text){        
+    trimDefinition(text) {
         text = trimByCharacters(text, '：。');
         return super.trimDefinition(text);
     }

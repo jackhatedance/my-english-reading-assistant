@@ -1,18 +1,37 @@
-import { GenericSelectorParser } from './GenericSelectorParser.js'
+import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 
-class Oald9Parser extends GenericSelectorParser {
+class Oald9Parser extends JsonSelectorParser {
     constructor(options){
         super(options);
-
-        let selectors = { };
-        selectors[this.ENTRY] = '.entry';
-        selectors[this.PRONUNCIATION] = '.hg .pr';
-        selectors[this.DEFINITION_GROUP] = '.sg .se1';
-        selectors[this.GROUP_NAME] = '.pos';
-        selectors[this.DEFINITION] = '.se2 .df';
         
-        this.selectors = selectors;
+        this.entriesSelector =
+        {
+            entry: [
+                {
+                    selector: '.entry',
+                    headword: {
+                        selector: '.hg',
+                        pronunciation: {
+                            selector: '.pr'
+                        },
+                    },
+                    definitionGroup: [
+                        {
+                            selector: '.sg se1',
+
+                            groupName: {
+                                selector: '.pos',
+                            },
+                            definition: {
+                                selector: '.se2 .df'
+                            }
+                        },                        
+                    ]
+                },
+                
+            ]
+        };
     }
 }
 

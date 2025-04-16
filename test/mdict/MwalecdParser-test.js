@@ -2,7 +2,7 @@
 import { strict as assert } from 'assert';
 import { MwalecdParser } from '../../src/dictionary/mdict/parser/MwalecdParser.js'
 import fs from 'fs'
-import { PARSER_OPTION_MAX_SUBDEFINITION_NUMBER } from '../../src/dictionary/dictConstants.js'
+import { PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from '../../src/dictionary/dictConstants.js'
 
 describe('mdict mwalecd parser', function () {
   
@@ -10,10 +10,11 @@ describe('mdict mwalecd parser', function () {
     before(function() {
       let options = {};
       options[PARSER_OPTION_MAX_SUBDEFINITION_NUMBER] = 999;
+      options[PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS] = false;      
       this.parser = new MwalecdParser(options);
     });
 
-    it('mwalecd good', async function () {
+    it('json mwalecd good', async function () {
       let html = fs.readFileSync('./test/mdict/mwalecd/good.html', 'utf8');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
@@ -88,7 +89,7 @@ describe('mdict mwalecd parser', function () {
     });
 
 
-    it('mwalecd rang', async function () {
+    it('json mwalecd rang', async function () {
       let html = fs.readFileSync('./test/mdict/mwalecd/rang.html', 'utf8');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
@@ -106,7 +107,7 @@ describe('mdict mwalecd parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "ring");      
     });
 
-    it('mwalecd is', async function () {
+    it('json mwalecd is', async function () {
       let html = fs.readFileSync('./test/mdict/mwalecd/is.html', 'utf8');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
@@ -124,7 +125,7 @@ describe('mdict mwalecd parser', function () {
            
     });
 
-    it('mwalecd what', async function () {
+    it('json mwalecd what', async function () {
       let html = fs.readFileSync('./test/mdict/mwalecd/what.html', 'utf8');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
@@ -137,11 +138,11 @@ describe('mdict mwalecd parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "pronoun");      
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 13);      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "什么");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "什么");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "什么");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "什么");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "什么");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "什么");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "…的东西");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "和…一样的,…之类");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "…之类的某事物");      
@@ -160,6 +161,135 @@ describe('mdict mwalecd parser', function () {
       assert.equal(parseResult[2].definitionGroups[0].definitions.length, 1);      
       assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "在哪一方面,到何种程度");
       
+    });
+
+    it('json mwalecd fumbling', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/fumbling.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "⇒ Main Entry: fumble");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "fumble");
+      
+    });
+
+    it('json mwalecd zodiacal', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/zodiacal.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "⇒ Main Entry: zodiac");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "zodiac");
+      
+    });
+
+    it('json mwalecd zodiac', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/zodiac.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 1);
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈzoʊdiˌæk");
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 2);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "黄道带");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "黄道带分成12宫，每个宫都按星座命名，有人认为这些星座主宰着人的性格和命运。");
+      
+    });
+
+    it('json mwalecd wkly abbreviation english', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/wkly.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+      
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "abbreviation");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "weekly");
+      
+    });
+
+    it('json mwalecd Xizang', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/Xizang.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "proper noun");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "see tibet");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "tibet");
+      
+    });
+
+    it('json mwalecd yup', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/yup.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 1);
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈjʌp");
+
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "adverb");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "yes");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "yes");
+      
+    });
+
+    it('json mwalecd unison', async function () {
+      let html = fs.readFileSync('./test/mdict/mwalecd/unison.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 1);
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈjuːnəsən");
+
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 2);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "一起,一致");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "共同努力");
     });
 
   });

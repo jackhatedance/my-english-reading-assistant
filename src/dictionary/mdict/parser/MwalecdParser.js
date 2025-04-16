@@ -1,28 +1,107 @@
-import { GenericSelectorParser } from './GenericSelectorParser.js'
+import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 
-export class MwalecdParser extends GenericSelectorParser {
-    constructor(options){
+export class MwalecdParser extends JsonSelectorParser {
+    constructor(options) {
         super(options);
 
-        let selectors = { };
-        selectors[this.ENTRY] = '.entry';
-        selectors[this.HEADWORD] = '.hw_d';
-        selectors[this.PRONUNCIATION] = '.hpron_word';
-        selectors[this.DEFINITION_GROUP] = ['> .sblocks', 'entry/.cxs', 'entry/.dxs'];
-        selectors[this.GROUP_NAME] = 'headword/.fl';
-        selectors[this.DEFINITION] = ['.sblock :is(.def_text, .un_text, .isyns) .mw_zh', 'entry/.cxs', 'entry/.dxs .dx'];
-        
-        this.selectors = selectors;
+        this.entriesSelector =
+        {
+            entry: [
+                {
+                    selector: '.entry',
+                    headword: {
+                        selector: '.hw_d',
+                        pronunciation: {
+                            selector: '.hpron_word'
+                        },
+                    },
+                    definitionGroup: [
+                        {
+                            selector: '> .sblocks',
+
+                            groupName: {
+                                selector: 'headword/.fl',
+                            },
+                            definition: 
+                            [
+                                {
+                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns) .mw_zh'
+                                },
+                                {
+                                    selector: '.sblock .dxs .dx'
+                                },
+                                {
+                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns)'
+                                },
+                            ]
+                        },
+                        {
+                            selector: '.cxs',  
+                            virtual: true,        
+                            definition: [
+                                {
+                                    selector: '.cxs',
+                                },                                
+                            ]                        
+                        },
+                        {
+                            selector: '.dxs',          
+                            definition: [
+                                {
+                                    selector: '.dx',
+                                },                                
+                            ]                        
+                        },
+                        {
+                            selector: '.dros',
+
+                            groupName: {
+                                selector: 'headword/.fl',
+                            },
+                            definition: 
+                            [
+                                {
+                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns) .mw_zh'
+                                },   
+                                {
+                                    selector: '.sblock :is(.def_text, .both_text, .un_text, .isyns)'
+                                },                                
+                            ]
+                        },
+                    ]
+                },
+                {
+                    selector: '.sms',
+                    virtual: true,
+                    headword: {                        
+                        selector: '.uro .ure',
+                    },
+                    definitionGroup: [
+                        {
+                            selector: '.sms',  
+                            virtual: true,        
+                            definition: [
+                                {
+                                    selector: '.sms',
+                                },                                
+                            ]                        
+                        },                        
+                    ]
+                },
+                
+            ]
+        };
+
     }
 
-    beforeParseDefinitionElement($, element, context){
+    beforeParseDefinitionElement($, element, context) {
         let text = $(element).text();
-        let parenthesesText = $(element).find('sup').text();        
+        let parenthesesText = $(element).find('sup').text();
         let mainText = text.replace(parenthesesText, '');
-        if(this.trimDefinition(mainText).length>0){
-            $(element).find('sup').remove();        
+        if (this.trimDefinition(mainText).length > 0) {
+            $(element).find('sup').remove();
         }
-       
+
     }
 }
