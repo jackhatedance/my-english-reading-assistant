@@ -31,6 +31,7 @@ class Noecd2eParser extends JsonSelectorParser {
                                 [
                                     {
                                         selector: '.item .defs>dl .def',
+                                        removeSelector: 'strong'
                                     },
                                     {
                                         selector: '.defs>dl .def',
@@ -46,16 +47,6 @@ class Noecd2eParser extends JsonSelectorParser {
 
             ]
         };
-    }
-
-    beforeParseDefinitionElement($, element, context) {
-        let text = $(element).text();
-        let parenthesesText = $(element).find('strong').text();
-        let mainText = text.replace(parenthesesText, '');
-        if (this.trimDefinition(mainText).length > 0) {
-            $(element).find('strong').remove();
-        }
-
     }
 
     beforeParseDefinitionText(text) {

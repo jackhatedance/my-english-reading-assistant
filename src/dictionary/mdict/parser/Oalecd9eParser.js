@@ -121,14 +121,14 @@ class Oalecd9eParser extends JsonSelectorParser {
         }
     }
 
-    parseDefinition($, element, context) {
+    parseDefinition($, element, context, entitySelector) {
         let link = this.getLinkFromDefinition($, element, context);
         if (link) {
             return this.createLinkDefinition(link);
         }
 
 
-        return super.parseDefinition($, element, context);
+        return super.parseDefinition($, element, context, entitySelector);
     }
 
 }

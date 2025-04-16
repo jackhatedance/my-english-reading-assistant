@@ -261,9 +261,22 @@ class JsonSelectorParser extends MdictDefinitionParser {
         return definition;
     }
  
+    removeDefinitionSubelements($, element, context, entitySelector){
+        if(entitySelector.removeSelector){
+            let text = $(element).text();
+            let parenthesesText = $(element).find(entitySelector.removeSelector).text();
+            let mainText = text.replace(parenthesesText, '');
+            if (this.trimDefinition(mainText).length > 0) {
+                $(element).find(entitySelector.removeSelector).remove();
+            }
+        }
+    }
+
     parseDefinition($, element, context, entitySelector){
         this.beforeParseDefinitionElement($, element, context);
         
+        this. removeDefinitionSubelements($, element, context, entitySelector);
+
         let typedDefinitions = [];
         let typedDefinitionOfElement = this.detectTypedDefinitionOfElement($, element, context);
         if(typedDefinitionOfElement){

@@ -5,14 +5,6 @@ class YhdParser extends JsonSelectorParser {
     constructor(options) {
         super(options);
 
-        let selectors = {};
-        selectors[this.ENTRY] = '.e';
-        selectors[this.HEADWORD] = '.hg';
-        selectors[this.PRONUNCIATION] = '.pr';
-        selectors[this.DEFINITION_GROUP] = '.sg .se1';
-        selectors[this.GROUP_NAME] = '.pos';
-        selectors[this.DEFINITION] = '.se2 .df';
-
         this.entriesSelector =
         {
             entry: [
@@ -30,10 +22,34 @@ class YhdParser extends JsonSelectorParser {
                         groupName: {
                             selector: '.pos',
                         },
-                        definition:
-                        {
-                            selector: '.se2 .df'
+                        definition:[
+                            {
+                                selector: '.se2 .df'
+                            },
+                            {
+                                selector: '.se2 .xrg'
+                            },
+                        ]
+                        
+                    },
+                },
+                {
+                    selector: '.table',
+                    virtual: true,                    
+                    definitionGroup: {
+                        selector: '.table',
+                        virtual: true,
+                        groupName: {      
+                            selector: '.tag3',                      
                         },
+                        definition:[
+                            {
+                                selector: '.table',
+                                removeSelector: '.num',
+
+                            },                            
+                        ]
+                        
                     },
                 },
             ]

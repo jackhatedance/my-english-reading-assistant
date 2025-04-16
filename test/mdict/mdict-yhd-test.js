@@ -23,6 +23,32 @@ describe('mdict yhd parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "正当的");      
     });
 
+    it('yhd zoot', async function () {
+      let html = fs.readFileSync('./test/mdict/yhd/zoot.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "zuːt");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "= zoot suit");
+      
+    });
+
+    it('yhd varech', async function () {
+      let html = fs.readFileSync('./test/mdict/yhd/varech.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "n.");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[植]海草,海藻");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "海草灰");
+      
+      
+    });
+
 
   });
   

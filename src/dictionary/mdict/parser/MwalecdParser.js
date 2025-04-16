@@ -48,6 +48,7 @@ export class MwalecdParser extends JsonSelectorParser {
                             definition: [
                                 {
                                     selector: '.cxs',
+                                    removeSelector: 'sup',
                                 },                                
                             ]                        
                         },
@@ -101,13 +102,4 @@ export class MwalecdParser extends JsonSelectorParser {
 
     }
 
-    beforeParseDefinitionElement($, element, context) {
-        let text = $(element).text();
-        let parenthesesText = $(element).find('sup').text();
-        let mainText = text.replace(parenthesesText, '');
-        if (this.trimDefinition(mainText).length > 0) {
-            $(element).find('sup').remove();
-        }
-
-    }
 }
