@@ -1,7 +1,7 @@
 
 import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
-import { parseTextDefinition, parseWordClass, splitWordMeanings } from './dictionary/text/textDefinitionUtils.js'
+import { getWordClassAbbreviation } from './dictionary/wordClass.js'
 import { removeParentheses } from './text/textUtils.js' 
 import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
 
@@ -85,7 +85,7 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let definitions = [];
     for(let definitionGroup of definitionGroups){
         //console.log('parse word class:'+ JSON.stringify(wordClassResult));
-        let wordClass = definitionGroup.name;
+        let wordClass = getWordClassAbbreviation(definitionGroup.name);
 
         let meanings = definitionGroup.definitions.map(item => item.text).filter(item => item != null && item.length>0);
 

@@ -88,8 +88,7 @@ function jsonToText(entries, pronunciationRegion){
 
     let groupTexts = [];
     for(let definitionGroup of definitionObj.definitionGroups){
-        const { name } = definitionGroup;
-        let wordClass = getWordClassAbbreviation(name);
+        let wordClass = definitionGroup.name;
 
         let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
 
