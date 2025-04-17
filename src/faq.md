@@ -23,9 +23,6 @@
 * zlib
 * TG
 
-#### 词典哪里找？
-* [mdict.org](https://mdx.mdict.org)
-
 #### 为什么有些PDF格式电子书无法显示单词含义？
 因为有些PDF是由扫描图片组成的，往往文件也比较大。此类PDF不支持显示单词含义的功能。
 
@@ -39,3 +36,18 @@
 
 #### 为什么有的词典不支持创建索引？
 因为创建索引需要解析词典含义的内容。大部分Mdict词典的内容是Html格式的，需要额外的适配才能解析。请选用已知[支持的词典](guide.html#词典索引)，或者反馈给开发者。
+
+
+#### 词典哪里找？
+* [mdict.org](https://mdx.mdict.org)
+
+
+MDict词典支持列表(陆续添加中)
+|名称|发布时间|更新时间|大小|发音|图片|支持度|下载链接|
+|-|-|-|-|-|-|-|-|
+|新牛津英汉双解大词典（第2版）|2015||30MB|无|无|良好|[mdict.org](https://mdx.mdict.org/Recommend/%E6%96%B0%E7%89%9B%E6%B4%A5%E8%8B%B1%E6%B1%89%E5%8F%8C%E8%A7%A3%E5%A4%A7%E8%AF%8D%E5%85%B8%EF%BC%88%E7%AC%AC2%E7%89%88%EF%BC%89.zip)|
+|牛津高阶英汉双解词典（第9版）|2019||197MB|无|有|良好|[mdict.org](https://mdx.mdict.org/Recommend/%E7%89%9B%E6%B4%A5%E9%AB%98%E9%98%B6%E8%8B%B1%E6%B1%89%E5%8F%8C%E8%A7%A3%E8%AF%8D%E5%85%B8%EF%BC%88%E7%AC%AC9%E7%89%88%EF%BC%89-%20%E5%B8%A6%E9%AB%98%E6%B8%85%E7%89%88%E5%9B%BE%E7%89%87.zip)|
+|韦氏高阶英汉双解词典|2018|2019|200MB|有|有|良好|[mdict.org](https://mdx.mdict.org/Recommend/%E9%9F%A6%E6%B0%8F%E9%AB%98%E9%98%B6%E8%8B%B1%E6%B1%89%E5%8F%8C%E8%A7%A3%E8%AF%8D%E5%85%B8.zip)|
+|英汉大词典|2019|2019|27MB|有|有|良好|[mdict.org](https://mdx.mdict.org/Recommend/%E8%8B%B1%E6%B1%89%E5%A4%A7.zip)|
+
+字典下载网站与本软件无关，这里仅提供链接。如果用户希望支持导入的词典不在列表里，可以联系开发者。

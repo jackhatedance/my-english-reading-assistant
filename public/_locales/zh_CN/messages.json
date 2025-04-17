@@ -286,7 +286,7 @@
         "message": "支持格式：.txt, .zip(mdict)"
     },
     "options_dictionary_find_tips": {
-        "message": "哪里可以找到词典？"
+        "message": "哪里可以找到词典"
     },
     "optionsAddDictionaryAction":{
         "message":"添加"

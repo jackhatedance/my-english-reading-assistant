@@ -28,7 +28,6 @@ const indexBuildingProgress = inject('indexBuildingProgress');
 const optionsEditDictionaryTips = ref('');
 const options_dictionary_detail_enabled = ref('');
 const optionalTips = ref({});
-const howToFindDictionaryLink = ref('#');
 
 const $loading = useLoading({
         // options
@@ -320,7 +319,7 @@ const sumOfEnabledBigDictionary = computed(() => {
 });
 
 watch(sumOfEnabledBigDictionary, (newValue) =>{
-  if(newValue > 3){
+  if(newValue > 2){
     optionalTips.value['sumOfEnabledBigDictionary'] = t('optionsEditDictionaryIndexColorTipsTooManyDictionariesEnabled');
   }else{
     delete optionalTips.value['sumOfEnabledBigDictionary'];
@@ -335,8 +334,7 @@ const init = async () => {
 
   optionsEditDictionaryTips.value = await markdown2Html(t('optionsEditDictionaryTips'));
   options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');
-  options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');
-  howToFindDictionaryLink.value = chrome.runtime.getURL('faq.html#词典哪里找');
+  options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');  
 };
 
 init();
@@ -379,7 +377,7 @@ init();
     <div class="section">
       <div class="label">
         <p>{{ t('optionsImportDictionaryDesc') }} <HelpLink type="guide" keyword="词典格式"/></p>
-        <a :href="howToFindDictionaryLink">{{ t('options_dictionary_find_tips') }}</a>
+        <HelpLink type="faq" keyword="词典哪里找" :parentheses=false :message="t('options_dictionary_find_tips')"/>
       </div>
       <div class="input">
         <input type="file" ref="file" accept=".txt, .zip">
