@@ -148,6 +148,15 @@ class DefinitionParser {
     }
 
     getPronunciationRegion(name){
+                
+        if(name && name.includes(this.pronunciationRegionMapping.us)){
+            return 'us';
+        }
+
+        if(name && name.includes(this.pronunciationRegionMapping.uk)){
+            return 'uk';
+        }
+
         return '';
     }
 

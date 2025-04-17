@@ -84,19 +84,16 @@ class Oalecd9eParser extends JsonSelectorParser {
 
             ]
         };
+
+
+        this.pronunciationRegionMapping = {
+            uk: 'BrE',
+            us: 'NAmE',
+        };
     }
 
     beforeParsePronunciationText(text) {
         return text.replaceAll(/[🔊]/g, '')
-    }
-
-    getPronunciationRegion(name) {
-        if (name && name.includes('BrE')) {
-            return 'uk';
-        } else if (name && name.includes('NAmE')) {
-            return 'us';
-        }
-        return super.getPronunciationRegion(name);
     }
 
     getPronunciationForm(name) {
