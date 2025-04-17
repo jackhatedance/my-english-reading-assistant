@@ -18,15 +18,16 @@ let setSendMessageToApp = (sendMessageToApp)=>{
 
 function sendMessageToContentPage(message, sender, resolve){
 
-    console.log('send message to content page,chrome tab id:'+gChromeTabId + ',message:' + JSON.stringify(message));
-
     if(gChromeTabId) {
+        //console.log('send message to content page,chrome tab id:'+gChromeTabId + ',message:' + JSON.stringify(message));
         chrome.tabs.sendMessage(
             gChromeTabId,
             message,
             resolve
           );
     
+    }else{
+        console.log('unable to send message to content page, because chrome tab id is undefined, message:' + JSON.stringify(message));
     }
     
     //window.top.postMessage(message);
@@ -78,16 +79,8 @@ window.addEventListener('message', event => {
     gSendMessageToApp(event.data, null, (response)=>{});
 }, false);
 
-
-chrome.runtime.sendMessage(
-    {
-        type: 'WHO_AM_I',
-        payload: {          
-        },
-    },
-    (response) => {
-      gChromeTabId = response.message;
-      //console.log('My Chrome Tab Id:'+ gChromeTabId);
-      load();
-    },
-  );
+chrome.tabs.getCurrent((tab)=>{
+    gChromeTabId = tab.id;
+    //console.log('My Chrome Tab:'+ gChromeTabId);
+    load();
+});

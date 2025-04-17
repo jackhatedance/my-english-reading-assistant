@@ -109,9 +109,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   let tabId =sender.tab.id;
 
   let message = 'ok';
-  if(request.type === 'WHO_AM_I') {
-    message = tabId;
-  } else if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
+  if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
 
     //console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
