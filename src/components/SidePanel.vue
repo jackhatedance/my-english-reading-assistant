@@ -88,7 +88,7 @@ async function updatePageInfo(pageInfo) {
 
 function messageListener(request, sender, sendResponse) {
 
-  console.log('recieve message:'+request.type);
+  //console.log('receive message:'+request.type);
   let response = {};
   if (request.type === 'LOAD') {
     getPageInfo();
