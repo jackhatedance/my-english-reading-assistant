@@ -275,7 +275,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseDefinition($, element, context, entitySelector){
         this.beforeParseDefinitionElement($, element, context);
         
-        this. removeDefinitionSubelements($, element, context, entitySelector);
+        this.removeDefinitionSubelements($, element, context, entitySelector);
 
         let typedDefinitions = [];
         let typedDefinitionOfElement = this.detectTypedDefinitionOfElement($, element, context);

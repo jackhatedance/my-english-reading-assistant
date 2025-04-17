@@ -99,6 +99,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past tense of ride");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "ride");
 
     });
 
@@ -181,7 +182,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[3].phonetics, 'wʌz');
       
       assert.equal(parseResult[0].definitionGroups[0].name, "");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "转be");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "➡  be verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "be");
       
