@@ -1,6 +1,4 @@
 
-import {dict as dictLarge} from '../dicts/dict-large.js'
-import {dict as dictSmall} from '../dicts/dict-small.js'
 import {dict as dictAffix} from '../dicts/dict-affix.js'
 import { MapDictionary } from './MapDictionary.js'
 
@@ -9,9 +7,18 @@ const gSystemDictionaryMap = {};
 
 var smallDictionary, largeDictionary, affixDictionary;
 
+async function getDictJson(name){
+    let url = chrome.runtime.getURL(`dictionaries/dict-${name}.json`);
+    const response = await fetch(url);
+    return await response.json();    
+}
+
 async function loadSystemDictionariesToCache(){
-    
+
+    let dictSmall = await getDictJson('small');
     smallDictionary = new MapDictionary({ raw: dictSmall }, '#small');
+
+    let dictLarge = await getDictJson('large');
     largeDictionary = new MapDictionary({ raw: dictLarge }, '#large');
     affixDictionary = new MapDictionary({ raw: dictAffix }, '#affix');
         

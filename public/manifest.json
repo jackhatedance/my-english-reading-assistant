@@ -43,7 +43,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "contentScript.css", "svg/*", "icons/*", "images/*", "*.html" ],
+      "resources": [ "contentScript.css", "svg/*", "icons/*", "images/*", "*.html", "dictionaries/*" ],
       "matches": [ "<all_urls>" ]
     }
     
