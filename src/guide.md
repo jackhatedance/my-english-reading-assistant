@@ -337,6 +337,4 @@ https://app.flowoss.com/#The%20Great%20Gatsby%20(Francis%20Scott%20Fitzg...%20(Z
 ## 0.11.0
 Vue重做设置页面;支持音标;改进设置>笔记的内容预览;
 ## 0.11.1
-设置>字典改进;
-## 0.11.2
-支持mdict字典;
+设置>字典改进; 支持mdict字典;

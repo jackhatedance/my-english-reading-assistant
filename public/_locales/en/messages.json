@@ -212,7 +212,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* Dictionaries are used from top to bottom\n* dictionaries have not been imported cannot be used for text, but can be used as ordinary dictionaries\n* Software upgrades may require re-import"
+        "message": "* Dictionaries are used from top to bottom\n* After the dictionary is imported, it needs to be enabled and moved to the top to be effective\n* dictionaries have not been imported cannot be used for text, but can be used as ordinary dictionaries\n* Mdict dictionary takes up a lot of system resources. If it causes system slowdown, it is recommended not to use it\n* Software upgrades may require re-import"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"
