@@ -262,7 +262,7 @@
         "message": "任务"
     },
     "options_dictionary_detail_job_parse": {
-        "message": "解析"
+        "message": "导入"
     },
     "options_dictionary_detail_job_extract_resource_data": {
         "message": "提取资源数据"
@@ -295,7 +295,7 @@
         "message":"删除"
     },  
     "optionsImportDictionaryAction":{
-        "message":"(重新)解析"
+        "message":"(重新)导入"
     },
     "optionsDictionaryMoveUpAction":{
         "message":"上移"

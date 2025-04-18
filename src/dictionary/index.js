@@ -41,7 +41,10 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
         if(definition){
             map[key] = result;
         }else{
-            console.log(`no definition found for key:${key}`);
+            if(!key.includes(' ')){
+                // ignore phrase
+                console.log(`no definition found for key:${key}`);
+            }            
         }
 
         await progress.count();
