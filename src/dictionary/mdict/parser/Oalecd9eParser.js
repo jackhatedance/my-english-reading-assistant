@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 class Oalecd9eParser extends JsonSelectorParser {
     constructor(options) {
-        super(options);
+        super('Oalecd9eParser', options);
 
         this.entriesSelector =
         {

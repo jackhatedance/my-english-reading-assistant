@@ -5,7 +5,8 @@ import { removeParentheses } from '../text/textUtils.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
-    constructor(options){
+    constructor(name, options){
+        this.name = name;
         if(!options){
             options = {};
         }

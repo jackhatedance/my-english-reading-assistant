@@ -6,7 +6,7 @@ import { MwalecdParser } from './parser/MwalecdParser.js'
 const parsers = [ new Noecd2eParser(), new Oalecd9eParser(), new YhdParser(), new MwalecdParser() ];
 
 function findMdictParser(name) {
-    return parsers.find(item => item.constructor.name == name);    
+    return parsers.find(item => item.name == name);    
 }
 
 

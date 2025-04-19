@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 export class MwalecdParser extends JsonSelectorParser {
     constructor(options) {
-        super(options);
+        super('MwalecdParser', options);
 
         this.entriesSelector =
         {
