@@ -225,7 +225,7 @@ function onIframeLoad(){
 
 
 function init() {
-    console.log(`watch word, new value: ${props.word}`); 
+    //console.log(`watch word, new value: ${props.word}`); 
     _lookup(props.word);
 }
 
