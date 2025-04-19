@@ -352,7 +352,7 @@ init();
         </ul>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
-          <li v-for="(tip, index) in optionalTips" :key="key" :value="tip">{{ tip }}</li>
+          <li v-for="(tip, index) in optionalTips" :key="tip" :value="tip">{{ tip }}</li>
         </ul>
         
       </div>
