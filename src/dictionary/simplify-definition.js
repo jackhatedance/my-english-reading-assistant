@@ -1,5 +1,6 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { removeParentheses } from '../text/textUtils.js' 
+import { mergeEntries } from './entry-utils.js'
 
 function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let { maxMeaningNumber, hideWordClass } = options;
@@ -24,7 +25,8 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         return '';
     }
 
-    let entry = entries[0];
+    let entry = mergeEntries(entries);
+        
     const { pronunciation, definitionGroups } = entry;
 
     let totalMeaningNumber = 0;
