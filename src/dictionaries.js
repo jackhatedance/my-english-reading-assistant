@@ -1,8 +1,6 @@
 
 import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
-import { getWordClassAbbreviation } from './dictionary/wordClass.js'
-import { removeParentheses } from './text/textUtils.js' 
 import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
 
 function createDefaultOptions(){
@@ -53,117 +51,6 @@ function getDict(name){
 
     return dict;
     
-}
-
-function simplifyDefinition(originalLookupResult, deepLookupResult, options){
-    let { maxMeaningNumber, hideWordClass } = options;
-    //hardcode temporarily
-    const hidePhoneticSymbol = true;
-    const hideParentheses = true;
-    //console.log('simplify definition:'+ JSON.stringify(definition));
-
-    if(!originalLookupResult){
-        return '';
-    }
-
-    let lookupResult = originalLookupResult;
-    let prefix = '';
-    if(deepLookupResult){
-        lookupResult = deepLookupResult.lookupResult;
-        //prefix = `${deepLookupResult.lookupResult.query}:`;
-    }
-
-    let entries = lookupResult.json;
-    if(entries.length == 0){
-        return '';
-    }
-
-    let entry = entries[0];
-    const { pronunciation, definitionGroups } = entry;
-
-    let totalMeaningNumber = 0;
-    let definitions = [];
-    for(let definitionGroup of definitionGroups){
-        //console.log('parse word class:'+ JSON.stringify(wordClassResult));
-        let wordClass = getWordClassAbbreviation(definitionGroup.name);
-
-        let meanings = definitionGroup.definitions.map(item => item.text).filter(item => item != null && item.length>0);
-
-        let definition = {
-            wordClass: wordClass,
-            meanings: meanings,
-            size: meanings.length,
-            currentIndex: 0,//for later use
-        }
-
-        totalMeaningNumber += meanings.length;
-
-        definitions.push(definition);        
-    }
-
-    //visit meanings one by one
-    let definitionSize = definitions.length;
-    let i =0;
-    let definitionIndex;
-    let meaningCounter=0;
-    while(meaningCounter < maxMeaningNumber && meaningCounter < totalMeaningNumber && i < 100){
-        definitionIndex = i % definitionSize; 
-        let definition = definitions[definitionIndex];
-
-        let available = nextMeaning(definition);
-        if(available){
-            meaningCounter++;
-        }
-
-        i++;
-    }
-
-    //concat definition
-    let definitionStrList = [];
-    for(let def of definitions){
-        if(def.currentIndex == 0){
-            continue;
-        }
-
-        let definitionStr = '';
-
-        if(!hideWordClass){
-            definitionStr = def.wordClass;
-        }
-
-        let visitedMeaningArray = getVisitedMeanings(def);
-        let visitedMeanings = visitedMeaningArray.join(',');
-        
-        if(hideParentheses){
-            visitedMeanings = removeParentheses(visitedMeanings);
-        }
-
-        definitionStr = definitionStr + visitedMeanings;
-
-        definitionStrList.push(definitionStr);
-    }
-
-    if(meaningCounter < totalMeaningNumber){
-        definitionStrList.push('...');
-    }
-
-    let definitionStr = definitionStrList.join('; ');   
-    return prefix + definitionStr;
-}
-
-function nextMeaning(definition){
-    if(definition.currentIndex < definition.size){
-        definition.currentIndex = definition.currentIndex + 1;
-
-        return true;
-    }else {
-        return false;
-    }
-}
-
-function getVisitedMeanings(definition){
-    let visitedMeanings = definition.meanings.slice(0, definition.currentIndex);
-    return visitedMeanings;    
 }
 
 function hasLinkEntryOnly(lookupResult){
@@ -246,4 +133,4 @@ function getTheOnlyBaseForm(lookupResult){
     }
 }
 
-export { lookup, simplifyDefinition, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm };
+export { lookup, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm };
