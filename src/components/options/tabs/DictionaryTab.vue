@@ -367,7 +367,7 @@ init();
       </div>
       <div class="action">
         <button v-if="debug" @click="onDeleteGarbage">Delete Garbage</button>
-        <button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system1'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
+        <button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
         <button @click="onImport" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsImportDictionaryAction') }}</button>
 
         <button @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</button>
