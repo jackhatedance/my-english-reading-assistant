@@ -348,7 +348,7 @@ init();
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
           <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
-          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有的词典不支持创建索引"/></li>
+          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么我的词典无法导入"/></li>
         </ul>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
