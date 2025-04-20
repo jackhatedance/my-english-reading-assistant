@@ -1,6 +1,7 @@
 import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
 import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
+import { containsAbbreviation } from './transforms/abbreviation.js'
 
 function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
     //split by space, dash (dash is not hyphen)
@@ -27,6 +28,11 @@ function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
 function splitCamelWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }
+
         let content = part.content;
         //console.log(content);        
         let contentWithoutPunctuation = trimPunctuations(content);
@@ -36,6 +42,7 @@ function splitCamelWords(checkWord, parts){
             let checkWordResult = checkWord(contentWithoutPunctuation);            
             if(checkWordResult){
                 part.content = checkWordResult;
+                part.checked = true;
                 parts2.push(part);
             } else {
                 
@@ -60,6 +67,11 @@ function splitCamelWords(checkWord, parts){
 function splitSlashWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }
+
         let content = part.content;
         let contentWithoutPunctuation = trimPunctuations(content);
         if(containsSlash(contentWithoutPunctuation)){
@@ -68,6 +80,7 @@ function splitSlashWords(checkWord, parts){
             let checkWordResult = checkWord(contentWithoutPunctuation);            
             if(checkWordResult){
                 part.content = checkWordResult;
+                part.chcked = true;
                 parts2.push(part);
             } else {
                 
@@ -91,6 +104,11 @@ function splitSlashWords(checkWord, parts){
 function splitCompoundWord(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }
+
         let content = part.content;
         //console.log(content);        
         let contentWithoutPunctuation = trimPunctuations(content);
@@ -99,6 +117,7 @@ function splitCompoundWord(checkWord, parts){
             let checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
             if(checkWordResult){
                 part.content = checkWordResult;
+                part.checked = true;
                 parts2.push(part);
             } else {
                 //step 2: eliminate hyphen then check word
@@ -106,6 +125,7 @@ function splitCompoundWord(checkWord, parts){
                 checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
                 if(checkWordResult){
                     part.content = checkWordResult;
+                    part.checked = true;
                     parts2.push(part);
                 } else {
                     //step 3: split compound word by hyphen
@@ -146,7 +166,10 @@ function guessWordOfNormal(checkWord, content){
 function endingDotWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
-            
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }    
         
         let originalContent = part.content;
         
@@ -155,11 +178,14 @@ function endingDotWords(checkWord, parts){
         let options = { };
         let transforms = ['endingDot'];
 
-        let guessResult = guessWord(originalContent, options, checkWord, transforms);
-        //console.log("guessResult:"+JSON.stringify(guessResult));
-        if(guessResult){
-            part.content = guessResult.content;
-        }        
+        if(originalContent && originalContent.endsWith('.')){
+            let guessResult = guessWord(originalContent, options, checkWord, transforms);
+            //console.log("guessResult:"+JSON.stringify(guessResult));
+            if(guessResult){
+                part.content = guessResult.content;
+                part.checked = true;
+            }
+        }
 
         parts2.push(part);
     
@@ -171,7 +197,10 @@ function endingDotWords(checkWord, parts){
 function trimWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
-            
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }    
         
         let originalContent = part.content;
         
@@ -184,6 +213,7 @@ function trimWords(checkWord, parts){
         //console.log("guessResult:"+JSON.stringify(guessResult));
         if(guessResult){
             part.content = guessResult.content;
+            part.checked = true;
         }        
 
         parts2.push(part);
@@ -196,7 +226,12 @@ function trimWords(checkWord, parts){
 function detectAbbreviationWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
-            
+        /* detected abbreviation words anyway
+        if(part.checked){
+            parts2.push(part);
+            continue;
+        }
+            */    
         
         let originalContent = part.content;
         
@@ -205,11 +240,14 @@ function detectAbbreviationWords(checkWord, parts){
         let options = { };
         let transforms = ['abbreviation'];
 
-        let guessResult = guessWord(originalContent, options, checkWord, transforms);
-        //console.log("guessResult:"+JSON.stringify(guessResult));
-        if(guessResult){
-            part.content = guessResult.content;
-        }        
+        if(containsAbbreviation(originalContent)){
+            let guessResult = guessWord(originalContent, options, checkWord, transforms);
+            //console.log("guessResult:"+JSON.stringify(guessResult));
+            if(guessResult){
+                part.content = guessResult.content;
+                part.checked = true;
+            }
+        }
 
         parts2.push(part);
     
@@ -370,12 +408,24 @@ function _splitPartByNewLines(checkWord, part, positions) {
         let submask = mask.substring(startTextIndex, endTextIndex);
 
         let originalContent = subtext;
-                let content = guessWordOfCrossLine(checkWord, originalContent, submask);
+        let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
+        let content;
+        let checked;
+        if(guessWordResult){
+            content = guessWordResult.content;
+            if(guessWordResult.checkType=='content'){
+                checked = true;
+            }            
+        }else {
+            content = originalContent;
+            checked = false;
+        }
 
         let subpart = {
             originalContent: originalContent,
             mask: submask,
             content: content,
+            checked: checked,
             offset: startTextIndex + part.offset,
             length: subtext.length,
         };
@@ -390,12 +440,24 @@ function _splitPartByNewLines(checkWord, part, positions) {
     let submask = mask.substring(startTextIndex);
 
     let originalContent = subtext;
-    let content = guessWordOfCrossLine(checkWord, originalContent, submask);
-    
+    let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
+    let content;
+    let checked;
+    if(guessWordResult){
+        content = guessWordResult.content;
+        if(guessWordResult.checkType=='content'){
+            checked = true;
+        }
+    }else {
+        content = originalContent;
+        checked = false;
+    }
+
     let subpart = {
         originalContent: originalContent,
         mask: submask,
         content: content,
+        checked: checked,
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
@@ -405,8 +467,6 @@ function _splitPartByNewLines(checkWord, part, positions) {
 }
 
 function guessWordOfCrossLine(checkWord, originalContent, submask){
-    let content;
-
     let options = {
         lineEndHyphenMask : submask,
     };
@@ -414,17 +474,9 @@ function guessWordOfCrossLine(checkWord, originalContent, submask){
     let transforms = ['punctuation', 'endingDot', 'line-end-hyphen', 'compound', 'apostrophe'];
 
     let guessResult = guessWord(originalContent, options, checkWord, transforms);
-    if(guessResult){
-        content = guessResult.content;
-    }
-    
+        
     //console.log('guess result:'+ JSON.stringify(guessResult));
-    
-    //fallback
-    if(!content){
-        content = originalContent;
-    }
-    return content;
+    return guessResult;
 }
 
 export { tokenize };
