@@ -6,7 +6,7 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     //hardcode temporarily
     const hidePhoneticSymbol = true;
     const hideParentheses = true;
-    console.log('simplify definition:'+ JSON.stringify(originalLookupResult));
+    //console.log('simplify definition:'+ JSON.stringify(originalLookupResult));
 
     if(!originalLookupResult){
         return '';

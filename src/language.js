@@ -1,10 +1,9 @@
 'use strict';
 
 import {lookup, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion } from './dictionaries.js';
-import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
-import {getOptionsFromCache, createSimplifyDefinitionOptions} from './service/optionService.js';
+import {getOptionsFromCache } from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
@@ -171,12 +170,6 @@ function searchWordWithDict(query, options, dicts){
     if(lookupResult){// find the correct form which has definition in dictionary
 
         let definition = lookupResult.text;
-        let shortDefinition = definition;
-        let middleDefinition = definition;
-        if(options.simplifyDefinition){
-            shortDefinition = simplifyDefinition(lookupResult, deepLookupResult, options.simplifyDefinition);
-            middleDefinition = simplifyDefinition(lookupResult, deepLookupResult, createSimplifyDefinitionOptions(6, false));
-        }
         
         let result = {
             query : query,
@@ -185,8 +178,8 @@ function searchWordWithDict(query, options, dicts){
             word: word,
             baseWord: baseWord,
             definition: definition,
-            shortDefinition: shortDefinition,
-            middleDefinition: middleDefinition,
+            lookupResult: lookupResult,
+            deepLookupResult: deepLookupResult,
         };
 
         //console.log('search result:'+JSON.stringify(result));

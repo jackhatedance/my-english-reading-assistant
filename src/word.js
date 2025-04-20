@@ -2,14 +2,21 @@
 
 import { getWordParts } from './language.js';
 import {  TOKEN_TAG } from './html.js';
+import { simplifyDefinition } from './dictionary/simplify-definition.js'
+import { createSimplifyDefinitionOptions } from './service/optionService.js'
 
-function buildAnnotationParameters(searchResult) {
+function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     
     let word = searchResult.word;
     let baseWord = searchResult.baseWord;
     let definition = searchResult.definition;
-    let shortDefinition = searchResult.shortDefinition;
-    let middleDefinition = searchResult.middleDefinition;
+    
+    let shortDefinition = definition;
+    let middleDefinition = definition;
+    if(simplifyDefinitionOptions){
+        shortDefinition = simplifyDefinition(searchResult.lookupResult, searchResult.deepLookupResult, simplifyDefinitionOptions);
+        middleDefinition = simplifyDefinition(searchResult.lookupResult, searchResult.deepLookupResult, createSimplifyDefinitionOptions(6, false));
+    }
 
     if (searchResult.searchType === 'stem') {
         middleDefinition = '根' + searchResult.baseWord + ':' + middleDefinition;
@@ -41,8 +48,8 @@ function buildAnnotationParameters(searchResult) {
     return annotationParameters;
 }
 
-function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber) {
-    let annotationParameters = buildAnnotationParameters(searchResult);
+function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions) {
+    let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions);
     let { definition, shortDefinition, middleDefinition, word, baseWord, parts } = annotationParameters;
     let formatted = format(token, definition, shortDefinition, middleDefinition, word, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
     //console.log('formatted:'+formatted);
@@ -50,9 +57,9 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
     return formatted;
 }
 
-function updateWordAnnotation(textElement, searchResult, showShortDefinition){
+function updateWordAnnotation(textElement, searchResult, showShortDefinition, simplifyDefinitionOptions){
     //console.log(textElement.tagName);
-    let annotationParameters = buildAnnotationParameters(searchResult);
+    let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions);
     let { definition, shortDefinition, middleDefinition, word, baseWord, parts } = annotationParameters;
 
     let escapedWord = word.replace(/&/g, "&amp;");

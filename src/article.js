@@ -63,14 +63,13 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
-                    simplifyDefinition: simplifyDefinitionOptions,
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0);
+                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions);
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
                     tokenHtml = annotatedWord;
@@ -349,11 +348,10 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        simplifyDefinition: simplifyDefinitionOptions,
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {
-                        updateWordAnnotation(node.parentElement, searchResult, showShortDefinition);
+                        updateWordAnnotation(node.parentElement, searchResult, showShortDefinition, simplifyDefinitionOptions);
 
 
                         //in case the wrong word has been searched

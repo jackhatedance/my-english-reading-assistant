@@ -10,15 +10,55 @@ describe('TextDefinitionParser test', function () {
         });
 
         it('Alice', async function () {
-            let lookupResult = { "query": "lad", "json": [{ "headword": { "pronunciations": [{ "region": "", "form": "", "phonetics": "ˈlæd" }] }, "definitionGroups": [{ "name": "noun", "definitions": [{ "text": "男孩子,男青年,小伙子", "subdefinitions": ["男孩子", "男青年", "小伙子"] }, { "text": "伙计,伙伴,哥们儿", "subdefinitions": ["伙计", "伙伴", "哥们儿"] }] }] }], "text": "/ˈlæd/\nnoun 男孩子,男青年,小伙子,伙计,伙伴,哥们儿", "dictionaryName": "韦氏高阶英汉双解词典" };
+            let lookupResult = {
+                "query": "stand",
+                "json": [
+                    {
+                        "headword": {
+                            "pronunciations": [{ "region": "", "form": "", "phonetics": "ˈlæd" }]
+                        },
+                        "definitionGroups": [
+                            {
+                                "name": "verb",
+                                "definitions": [
+                                    {
+                                        "text": "站,站起来,竖立",
+                                        "subdefinitions": ["站", "站起来", "竖立"]
+                                    },
+                                    {
+                                        "text": "竖放,位于,常用作比喻", 
+                                        "subdefinitions": ["竖放", "位于", "常用作比喻"]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "noun",
+                                "definitions": [
+                                    {
+                                        "text": "立场,通常用单数,抵御",
+                                        "subdefinitions": ["立场", "通常用单数", "抵御"]
+                                    },
+                                    {
+                                        "text": "售货亭,架,戏台",
+                                        "subdefinitions": ["售货亭", "架", "戏台"]
+                                    }
+                                ]
+                            }
 
-            let result = simplifyDefinition(lookupResult, null, {maxMeaningNumber:3, hideWordClass:true});
+                        ]
+                    }
+                ],
+                "text": "/ˈlæd/\nverb 站,站起来,竖立,竖放,位于,常用作比喻; noun 立场,通常用单数,抵御,售货亭,架,戏台",
+                "dictionaryName": "韦氏高阶英汉双解词典"
+            };
+
+            let result = simplifyDefinition(lookupResult, null, { maxMeaningNumber: 3, hideWordClass: true });
 
             //console.log(parseResult);
             //assert(tokens.length === 2,"test");
 
-            assert.equal(result, '男孩子,伙计,男青年; ...');
-            
+            assert.equal(result, '站,竖放; 立场; ...');
+
         });
 
 
