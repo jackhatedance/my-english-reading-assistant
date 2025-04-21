@@ -206,7 +206,7 @@ class MdictDictionary extends Dictionary {
         }
        
         result.html = result.raw;
-        result.dictionary = this;
+        result.toEmbeddedHtml = (html) => this.toEmbeddedHtml(html);
     }
 
     supportOutputFormat(format){

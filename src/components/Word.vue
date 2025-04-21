@@ -86,8 +86,8 @@ async function _lookup(query){
 
         if(lookupResult.html){
             let html = lookupResult.html;
-            if(lookupResult.dictionary?.toEmbeddedHtml){
-                lookupResult.embeddedHtml = await lookupResult.dictionary.toEmbeddedHtml(html);
+            if(lookupResult.toEmbeddedHtml){
+                lookupResult.embeddedHtml = await lookupResult.toEmbeddedHtml(html);
             }else {
                 lookupResult.embeddedHtml = html;
             }
