@@ -119,7 +119,7 @@ function messageListener(request, sender, sendResponse) {
     let matchResult = href.match(/.*:\/\/(.*)/);
     if(matchResult && matchResult.length>1){
       let entry = matchResult[1];
-      word.value = entry.toLowerCase();
+      word.value = entry;
     }    
   }
   

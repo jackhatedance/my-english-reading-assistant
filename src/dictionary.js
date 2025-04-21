@@ -46,7 +46,7 @@ window.addEventListener('message', event => {
         let matchResult = href.match(/.*:\/\/(.*)/);
         if(matchResult && matchResult.length>1){
             let entry = matchResult[1];
-            query.value = entry.toLowerCase();
+            query.value = entry;
         }    
     }
 }, false);
