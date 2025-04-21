@@ -31,6 +31,14 @@ class MapDictionary extends Dictionary {
     supportOutputFormat(format){
         return ['raw', 'text', 'json'].includes(format);
     }
+
+    createText(result, options){
+        if(!result.raw){
+            result.raw = this.lookupRaw(result.query);
+        }
+       
+        result.text = result.raw;
+    }
 }
 
 export { MapDictionary }

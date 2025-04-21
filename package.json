@@ -9,7 +9,7 @@
     "build": "webpack --mode=production --config config/webpack.config.js",
     "pack": "node pack.cjs",
     "clean": "rm -rf build/*",
-    "test": "mocha",
+    "test": "mocha --recursive",
     "repack": "npm run clean && npm run build && npm run pack",
     "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
   },

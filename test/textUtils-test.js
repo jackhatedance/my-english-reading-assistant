@@ -94,6 +94,7 @@ describe('textUtils', function () {
     
     it('aurochs', async function () {
       assert.equal(removeParentheses("原牛（现代家牛之祖, 可能于青铜器时代在英国灭绝, 最后一头1627年在波兰被杀）。亦称 URUS."), "原牛。亦称 URUS.");
+      assert.equal(removeParentheses("波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)"), "波拿巴");
     });
 
     

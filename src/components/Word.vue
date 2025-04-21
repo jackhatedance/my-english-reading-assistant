@@ -46,7 +46,7 @@ async function _lookup(query){
     }
     
     //console.log(dicts);
-    let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', { name: 'html', optional: true }], pronunciationRegion: options.pronunciation.region }, dicts);
+    let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', { name: 'text', optional: true }, { name: 'html', optional: true }], pronunciationRegion: options.pronunciation.region }, dicts);
     if(lookupResult) {
         
         if(isSystemDictionary(lookupResult.dictionaryName)){
@@ -56,7 +56,11 @@ async function _lookup(query){
         }
 
         let json = lookupResult.json;
-        lookupResult.formattedText = jsonToText(json, options.pronunciation.region);
+        if(lookupResult.text){
+            lookupResult.formattedText = lookupResult.text    
+        }else{
+            lookupResult.formattedText = jsonToText(json, options.pronunciation.region);
+        }        
 
         if(lookupResult.html){
             let html = lookupResult.html;
