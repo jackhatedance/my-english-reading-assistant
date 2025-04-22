@@ -1,7 +1,7 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
+import { standardizePunctuations } from '../text/textUtils.js'
 import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from './dictConstants.js'
-import { removeParentheses } from '../text/textUtils.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
@@ -75,13 +75,53 @@ class DefinitionParser {
         }
     }
 
+    parseDefinitionText(text){
+        if(!text){
+            text = '';
+        }
+        let originalText = text;
+        text = this.beforeParseDefinitionText(text);    
+
+        let typedDefinition = this.detectTypedDefinitionOfText(text);
+        
+        
+        let subdefinitions = this.parseSubdefinitions(text);       
+        let definition = { text: originalText, subdefinitions: subdefinitions };
+
+        if(typedDefinition){
+            this.assginTypedDefinition(definition, typedDefinition);
+        }
+
+        return definition;
+    }
+
+    parseSubdefinitions(text){
+
+        let separaters = [';', ',', '!'];
+        let separater = separaters.find(item => text.indexOf(item) >= 0);
+        if(!separater){
+            separater = ',';
+        }
+        
+        for(let s of separaters){
+            if(s!=separater){
+                text = text.replaceAll(s, '/');
+            }
+        }
+        
+        let subdefinitions = text.split(separater); 
+        subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));         
+        return subdefinitions;
+    }
+
     beforeParseDefinitionText(text){
         if(!text){
             text = '';
         }
+
+        text = standardizePunctuations(text);
         text = this.trimDefinition(text);    
 
-        text = removeParentheses(text);    
         return text;    
     }
 
@@ -183,9 +223,10 @@ class DefinitionParser {
         text = text.trim();
         return trimByCharacters(text, '/');
     }
-
+    
     trimDefinition(text){
-        text = text.replaceAll(/[!！;；]/g, ',')        
+        text = text.trim();
+        text = trimByCharacters(text, ':!;,.');    
         return text.trim();
     }
 

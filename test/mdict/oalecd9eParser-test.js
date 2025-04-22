@@ -70,7 +70,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[0].definitionGroups[0].name, "pronoun");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "你,您,你们");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "(与名词及形容词连用,直接称呼某人)");      
 
     });
 
@@ -128,7 +128,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "品牌，型号");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(机器、设备等的)品牌,型号");
       
     });
 
@@ -146,8 +146,13 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "快速移动,迅速前往");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "快速移动");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "迅速前往");
+      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "急剧增长,猛涨");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "拉近，推远,使画面放大（或缩小）");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "(用变焦距镜头)拉近/推远,使画面放大(或缩小)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].subdefinitions[0], "(用变焦距镜头)拉近/推远");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].subdefinitions[1], "使画面放大(或缩小)");
 
       assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
       assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'zuːm');
@@ -157,7 +162,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "疾驰的声音");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(车辆等)疾驰的声音");
       
     });
 

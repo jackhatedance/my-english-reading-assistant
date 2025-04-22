@@ -1,5 +1,5 @@
 import { getWordClassAbbreviation } from './wordClass.js'
-import { removeParentheses } from '../text/textUtils.js' 
+import { removeParentheses, standardizeParenthesesPunctuations } from '../text/textUtils.js' 
 import { mergeEntries } from './entry-utils.js'
 
 function simplifyDefinition(originalLookupResult, deepLookupResult, options){
@@ -83,6 +83,7 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         let visitedMeanings = visitedMeaningArray.join(',');
         
         if(hideParentheses){
+            visitedMeanings = standardizeParenthesesPunctuations(visitedMeanings);
             visitedMeanings = removeParentheses(visitedMeanings);
         }
 

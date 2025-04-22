@@ -34,7 +34,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "商品,所有物");      
       
       assert.equal(parseResult[0].definitionGroups[2].name, "adverb");      
-      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "好地");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "(非正式)好地");      
       
     });
 
@@ -173,7 +173,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "但是,然而");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "(澳/新西兰,苏格兰,非正式)(用于句尾)但是,然而");
       
       
     });
@@ -203,7 +203,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈzəʊəfaɪt");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "植形动物,植虫");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(动)(旧)植形动物,植虫(如珊瑚、海葵、海绵、海百合等)");
       
       
     });

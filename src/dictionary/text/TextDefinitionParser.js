@@ -1,7 +1,7 @@
 import { DefinitionParser } from '../DefinitionParser.js'
 import { splitWordClasses, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
 import { trimByCharacters } from '../../utils/stringUtils.js'
-import { removeParentheses } from '../../text/textUtils.js' 
+import { standardizePunctuations } from '../../text/textUtils.js'
 
 class TextDefinitionParser extends DefinitionParser {
     parse(rawDefinition) {
@@ -29,7 +29,6 @@ class TextDefinitionParser extends DefinitionParser {
         let pronunciations = this.parsePronunciations(pronunciationText); 
         let headword = { pronunciations };   
         
-        definitionGroupsText = removeParentheses(definitionGroupsText);
         let definitionGroups = this.parseDefinitionGroups(definitionGroupsText);
         return { headword, definitionGroups };
     }
@@ -60,7 +59,9 @@ class TextDefinitionParser extends DefinitionParser {
         let wordClassResult = parseWordClass(text);
         let name = wordClassResult.wordClass;    
         name=name.trim();
-        let definitionTexts = splitWordMeanings(wordClassResult.meanings);
+
+        let definitionGroupText = standardizePunctuations(wordClassResult.meanings);
+        let definitionTexts = splitWordMeanings(definitionGroupText);
 
         let definitions = [];
         for(let definitionText of definitionTexts){
@@ -74,20 +75,7 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     parseDefinition(text){        
-        if(!text){
-            text = '';
-        }
-        text = this.beforeParseDefinitionText(text);    
-
-        let typedDefinition = this.detectTypedDefinitionOfText(text);
-        
-        text = text.split(',')[0];
-        let subdefinitions = [ text ];       
-        let definition = { text, subdefinitions };
-
-        if(typedDefinition){
-            this.assginTypedDefinition(definition, typedDefinition);
-        }
+        let definition = this.parseDefinitionText(text);
 
         this.afterParseDefinition(definition)
 

@@ -2,7 +2,7 @@
 import { strict as assert } from 'assert';
 import { simplifyDefinition } from '../../src/dictionary/simplify-definition.js'
 
-describe('TextDefinitionParser test', function () {
+describe('simplifyDefinition test', function () {
 
     describe('parse', function () {
         before(function () {

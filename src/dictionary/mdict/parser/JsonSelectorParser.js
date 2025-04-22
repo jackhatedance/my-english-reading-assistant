@@ -105,7 +105,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseEntry($, element, context, entitySelector){
         context[this.ENTRY] = element;
 
-        let headword = {};
+        let headword = { pronunciations: [] };
         if(this.hasSelector(entitySelector, this.HEADWORD)){
             let findElementsResult = this.findElements($, element, entitySelector[this.HEADWORD], context);
             
@@ -285,18 +285,13 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
         let text = $(element).text(); 
         
-        text = this.beforeParseDefinitionText(text);    
+        let definition = this.parseDefinitionText(text);    
 
         let typedDefinitionOfText = this.detectTypedDefinitionOfText(text);
         if(typedDefinitionOfText){
             typedDefinitions.push(typedDefinitionOfText);
-        }
-
-        let subdefinitions = text.split(',');    
-        subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));    
-        let definition = { text, subdefinitions };
-        
-        
+        }     
+                        
         let typedDefinition = findMostAccurateTypedDefinition(typedDefinitions);
         if(typedDefinition){
             this.assginTypedDefinition(definition, typedDefinition);

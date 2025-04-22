@@ -74,25 +74,45 @@ function removeMaskedChars(str, mask){
     return replaceMaskedChars(str, mask, '')
 }
 
+function standardizeParenthesesPunctuations(text){
+    text = text.replaceAll(/（/g, '(');
+    text = text.replaceAll(/）/g, ')');
+
+    text = text.replaceAll(/［/g, '(');
+    text = text.replaceAll(/］/g, ')');
+
+    text = text.replaceAll(/〈/g, '(');
+    text = text.replaceAll(/〉/g, ')');
+
+    text = text.replaceAll(/【/g, '(');
+    text = text.replaceAll(/】/g, ')');
+    
+    return text;
+}
+
+
+function standardizePunctuations(text){
+    text = standardizeParenthesesPunctuations(text);
+
+    text = text.replaceAll(/：/g, ':');
+    text = text.replaceAll(/！/g, '!');
+
+    text = text.replaceAll(/；/g, ';');
+    text = text.replaceAll(/，/g, ',');
+
+    text = text.replaceAll(/。/g, '.');
+    
+    return text;
+}
+
 function removeParentheses(text){
     if(!text){
         return text;
     }
-    text = text.replace(/（/, '(');
-    text = text.replace(/）/, ')');
-
-    text = text.replace(/［/, '(');
-    text = text.replace(/］/, ')');
-
-    text = text.replace(/〈/, '(');
-    text = text.replace(/〉/, ')');
-
-    text = text.replace(/【/, '(');
-    text = text.replace(/】/, ')');
-    
+    text = standardizeParenthesesPunctuations(text);
     
     return text.replaceAll(/(\([^\)]*\))/g, '');
 }
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, removeParentheses };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses };

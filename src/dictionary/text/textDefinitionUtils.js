@@ -1,18 +1,42 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
 function splitWordClasses(definition){
-    if(!definition){
-        return [];
+    let matches = definition.matchAll(/([a-z]{0,6}\.)/g);
+    let matchArray = [...matches];
+
+    let groups = [];
+    
+    for (let i =0; i< matchArray.length; i++) {
+        let match = matchArray[i];
+        let start = match.index;
+        let group;
+        if(i == matchArray.length-1){
+            group = definition.slice(start);
+        } else{
+            let end = matchArray[i+1].index;
+            group = definition.slice(start, end);
+        }
+
+        group = trimByCharacters(group, ';');
+        groups.push(group);
+
     }
-    return definition.split(';');
+
+    if(groups.length==0){
+        groups.push(definition);
+    }
+    
+    return groups;
 }
 
 function splitWordMeanings(meaningsStr){
-    let meanings;
-    if(meaningsStr === ''){
-        meanings = [];
-    }else {
-        meanings = meaningsStr.split(',');
+    let matches = meaningsStr.matchAll(/(?<subdef>(\([^)]*\))?[^,;()]+(\([^)]*\))?)/g);
+    let meanings = [];
+    if(matches){
+        for(let match of matches){
+            let meaning = match.groups['subdef'];
+            meanings.push(meaning);
+        }
     }
     return meanings;
 }
