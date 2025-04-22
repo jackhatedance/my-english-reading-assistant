@@ -2,7 +2,7 @@
 
 # 交流与反馈
 欢迎反馈任何与软件相关的问题，以帮助改进此软件。
-* [github](https://github.com/jackhatedance/my-english-reading-assistant/issues)，可以看源码，提交Bug, PR。
+* [github](https://github.com/jackhatedance/my-english-reading-assistant/issues)，提交Bug
 * [电子邮件](mailto:mera@dingjianghao.com)
 * [贴吧](https://tieba.baidu.com/f?ie=utf-8&kw=%E6%88%91%E7%9A%84%E8%8B%B1%E6%96%87%E9%98%85%E8%AF%BB%E5%8A%A9%E6%89%8B&fr=search)
 * [知乎](https://www.zhihu.com/people/ding-jack-94)
@@ -18,7 +18,7 @@
 ![](screenshots/web-page-novel.png "")
 
 
-这个浏览器插件能自动在英语网页里显示陌生单词的词义。
+这个浏览器插件能自动在英语网页里显示生词的词义。
 
 这不是一个背单词的软件。如果在阅读过程中，反复看到某个单词，顺便记住了，就可以标记为认识。无需刻意背单词。
 
