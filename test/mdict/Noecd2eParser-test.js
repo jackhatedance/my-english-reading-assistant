@@ -13,7 +13,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     it('noecd2e good', async function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/good.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -42,7 +42,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/draggle.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -57,7 +57,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/titter.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -73,7 +73,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/-et.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -87,7 +87,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/feathers.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
@@ -99,7 +99,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/twelve.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -114,7 +114,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/musty.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -130,7 +130,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/these.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       
@@ -148,7 +148,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/is.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -166,7 +166,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/but.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       
@@ -182,7 +182,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -197,7 +197,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/zoophyte.html', 'utf8');
 
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");

@@ -88,7 +88,7 @@ describe('mdict oalecd9e parser', function () {
     it('oalecd9e rode', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/rode.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(JSON.stringify(parseResult));
+      //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
@@ -106,7 +106,7 @@ describe('mdict oalecd9e parser', function () {
     it('oalecd9e make', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/make.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(JSON.stringify(parseResult));
+      //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
@@ -135,7 +135,7 @@ describe('mdict oalecd9e parser', function () {
     it('oalecd9e zoom', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/zoom.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(JSON.stringify(parseResult));
+      //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
@@ -169,7 +169,7 @@ describe('mdict oalecd9e parser', function () {
     it('oalecd9e was link', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/was.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(JSON.stringify(parseResult));
+      //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
@@ -196,7 +196,7 @@ describe('mdict oalecd9e parser', function () {
     it('oalecd9e preside', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/preside.html', 'utf8');
       let parseResult = this.parser.parse(html);
-      console.log(JSON.stringify(parseResult));
+      //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
