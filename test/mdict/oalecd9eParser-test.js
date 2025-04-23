@@ -193,6 +193,23 @@ describe('mdict oalecd9e parser', function () {
       
     });
 
+    it('oalecd9e preside', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/preside.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "prɪˈzaɪd");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "prɪˈzaɪd");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "主持(会议、仪式等),担任(会议)主席");
+      
+    });
+
   });
   
 });

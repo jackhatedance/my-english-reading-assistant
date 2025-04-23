@@ -71,6 +71,12 @@ class Oalecd9eParser extends JsonSelectorParser {
                                         selector: 'sn-gs sn-blk sn-g def chn'
                                     },
                                     {
+                                        selector: 'sn-gs sn-blk-nolist sn-g def chn'
+                                    },
+                                    {
+                                        selector: 'sn-gs sn-blk sn-g def'
+                                    },
+                                    {
                                         selector: 'sn-gs sn-blk-nolist sn-g def'
                                     },
                                     {
