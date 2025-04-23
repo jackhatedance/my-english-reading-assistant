@@ -6,7 +6,7 @@ import Tabs from './Tabs.vue';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { getNote } from '../service/noteService.js';
 import { initializeCustomDictionaryService } from '../dictionary/customDictionary.js';
-
+import { getEntryFromLink } from '../dictionary/mdict/mdict-definition-utils.js'
 import { isPageAnnotationVisible } from '../page.js';
 
 const props = defineProps({
@@ -116,11 +116,10 @@ function messageListener(request, sender, sendResponse) {
     changeToggle.value = !(changeToggle.value);
   } else if (request.type === 'DICTIONARY_LINK') {
     const href = request.data;
-    let matchResult = href.match(/.*:\/\/(.*)/);
-    if(matchResult && matchResult.length>1){
-      let entry = matchResult[1];
+    let entry = getEntryFromLink(href);
+    if(entry){
       word.value = entry;
-    }    
+    }
   }
   
   sendResponse(response);

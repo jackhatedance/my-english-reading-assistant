@@ -10,8 +10,11 @@ import * as cheerio from 'cheerio';
 import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
+import { getEntryFromLink, isAllUpperCaseEntry } from './mdict-definition-utils.js'
+
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
+const ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE = 'lowerCase';
 
 class MdictDictionary extends Dictionary {
     
@@ -49,6 +52,7 @@ class MdictDictionary extends Dictionary {
                 this.mdd = new MDD(mddBufferedFile);  
             }        
         
+            this.allUpperCaseEntryPolicy = this.detectEntryCasePolicyFromRaw();
         }
         
     }
@@ -197,6 +201,18 @@ class MdictDictionary extends Dictionary {
                       
         }
 
+        let linkElements = $('a[href^="entry:"]');
+        for(let element of linkElements){
+            let href = $(element).attr('href');
+            let entry = getEntryFromLink(href);
+            if(entry && isAllUpperCaseEntry(entry)){
+                if(this.allUpperCaseEntryPolicy == ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE){
+                    href = `entry://${entry.toLowerCase()}`;
+                    $(element).attr('href', href);
+                }
+            }
+        }
+
         return $.html();    
     }
 
@@ -217,6 +233,24 @@ class MdictDictionary extends Dictionary {
         }
 
         return true;
+    }
+
+    detectEntryCasePolicyFromRaw(){
+        let policy = null;
+
+        let raw = this.lookupRaw('is');
+
+        const $ = cheerio.load(raw, null, false);
+        let linkElements = $('a[href^="entry:"]');
+        if(linkElements.length >= 1){
+            let linkElement = linkElements[0];
+            let href = $(linkElement).attr('href');
+            let entry = getEntryFromLink(href);
+            if(entry == 'BE'){
+                policy = ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE;
+            }
+        }
+        return policy;
     }
 }
 

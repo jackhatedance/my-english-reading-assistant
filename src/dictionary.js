@@ -3,7 +3,7 @@ import { createApp, ref } from 'vue';
 import { createWebHashHistory, createRouter } from 'vue-router'
 import Dictionary from './components/dictionary/Dictionary.vue'
 import Lookup from './components/dictionary/Lookup.vue'
-
+import { getEntryFromLink } from './dictionary/mdict/mdict-definition-utils.js'
 import { localizeHtmlPage} from './locale.js'
 
 localizeHtmlPage();
@@ -43,10 +43,9 @@ window.addEventListener('message', event => {
     let request = event.data;
     if (request.type === 'DICTIONARY_LINK') {
         const href = request.data;
-        let matchResult = href.match(/.*:\/\/(.*)/);
-        if(matchResult && matchResult.length>1){
-            let entry = matchResult[1];
+        let entry = getEntryFromLink(href);
+        if(entry){
             query.value = entry;
-        }    
+        }
     }
 }, false);
