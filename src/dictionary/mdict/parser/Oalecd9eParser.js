@@ -60,27 +60,27 @@ class Oalecd9eParser extends JsonSelectorParser {
                     },
                     definitionGroup: [
                         {
-                            selector: 'root/h-g',
+                            selector: '> sn-gs',
 
                             groupName: {
-                                selector: 'top-g pos',
+                                selector: 'headword/pos',
                             },
                             definition:
                                 [
                                     {
-                                        selector: 'sn-gs sn-blk sn-g def chn'
+                                        selector: 'sn-blk sn-g def chn'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk-nolist sn-g def chn'
+                                        selector: 'sn-blk-nolist sn-g def chn'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk sn-g def'
+                                        selector: 'sn-blk sn-g def'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk-nolist sn-g def'
+                                        selector: 'sn-blk-nolist sn-g def'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk-nolist sn-g'
+                                        selector: 'sn-blk-nolist sn-g'
                                     },
                                 ]
                         },

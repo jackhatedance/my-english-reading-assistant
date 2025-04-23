@@ -210,6 +210,24 @@ describe('mdict oalecd9e parser', function () {
       
     });
 
+    it('oalecd9e apple', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/apple.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈæpl");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ˈæpl");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "苹果");
+      
+    });
+
   });
   
 });
