@@ -47,8 +47,8 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 return;
             }
-            
-
+            //console.log(node.parentElement.nodeName);
+            //console.log(textContent);
             let tokens = tokenize((text)=>checkWord(siteOptions, text), textContent);
             //console.log(siteOptions);
 

@@ -33,22 +33,36 @@ function searchWord(query, options){
     if(!query){
         return;
     }
-
-    query = variableLengthStandardizeCharacters(query);
-    options = patchSearchOptionDefaultValues(options);
-
+    query = query.trim();
+    if(query.length == 0){
+        return;
+    }
+    
     let result;
     
     //too long
     if(query.length > 45){
         return;
     }
-    
+
+    query = variableLengthStandardizeCharacters(query);
+
     //no alphabet at all
     if(query.match(/^[^a-zA-Z]+$/)){
         return result;
     }
-    
+
+    /*
+    //non pure Enlgish
+    if(query.match(/[^a-zA-Z\-\.']+/)){
+        console.log(`non pure English word: ${query}`);
+    }
+    */
+
+    //console.log(`search word: ${query}`);
+
+    options = patchSearchOptionDefaultValues(options);
+
     if(!result) {        
         let dicts = getDicts(options);
         result = searchWordWithDict(query, options, dicts);

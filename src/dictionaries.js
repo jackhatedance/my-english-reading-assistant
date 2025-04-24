@@ -92,6 +92,7 @@ function getTheOnlyLinkDefintion(lookupResult){
     if(definitions.length ==1){
         let definition = definitions[0];
         if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+            //console.log(`get the only link of ${lookupResult.query}: ${definition.link}`);
             return definition;                
         }
     }  
@@ -125,6 +126,7 @@ function getTheOnlyBaseForm(lookupResult){
         if(definitions.length ==1){
             let definition = definitions[0];
             if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+                //console.log(`get the only base form of ${lookupResult.query}: ${definition.base}`);
                 return definition.base;
             }
         }        
