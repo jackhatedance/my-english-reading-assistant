@@ -79,6 +79,11 @@ class DefinitionParser {
         if(!text){
             text = '';
         }
+
+        //too long, possibly parsed wrongly
+        if(text.length > 200){
+            console.log(`definition too long: ${text}`);
+        }
         let originalText = text;
         text = this.beforeParseDefinitionText(text);    
 

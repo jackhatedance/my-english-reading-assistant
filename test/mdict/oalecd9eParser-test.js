@@ -74,17 +74,6 @@ describe('mdict oalecd9e parser', function () {
 
     });
 
-    it('oalecd9e -acy', async function () {
-      let html = fs.readFileSync('./test/mdict/oalecd9e/-acy.html', 'utf8');
-      let parseResult = this.parser.parse(html);
-      //console.log(parseResult);
-      //assert(tokens.length === 2,"test");
-      
-      assert.equal(parseResult[0].headword.pronunciations.length, 0);
-      assert.equal(parseResult[0].definitionGroups[0].name, "");
-
-    });
-
     it('oalecd9e rode', async function () {
       let html = fs.readFileSync('./test/mdict/oalecd9e/rode.html', 'utf8');
       let parseResult = this.parser.parse(html);
@@ -225,6 +214,152 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "noun");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "苹果");
+      
+    });
+
+    it('oalecd9e ad', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/ad.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "æd");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "æd");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 2);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  advertisement");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "➡  see also banner ad");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].type, 'link');
+      
+    });
+
+    it('oalecd9e refer phraser verbs', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/refer.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "rɪˈfɜː(r)");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "rɪˈfɜːr");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 4);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "提到,谈及");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "描述,涉及");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "查阅");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "将…送交给(以求获得帮助等)");
+    });
+
+    it('oalecd9e used', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/used.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "juːst");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "juːst");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "习惯于,适应");
+    });
+
+
+    it('oalecd9e tech', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/tech.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "tek");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "tek");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 3);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  technology");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "=  technical college");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "➡  see also high-tech,low-tech");
+    });
+
+    it('oalecd9e titty', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/titty.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈtɪti");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ˈtɪti");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  tit (1)");
+      
+    });
+
+    it('oalecd9e -ally', async function () {
+      let html = fs.readFileSync('./test/mdict/oalecd9e/-ally.html', 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "suffix");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "以 -al 结尾的形容词加 ly 构成副词");
+      
+    });
+
+
+    it("oalecd9e 'tis", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/'tis.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "tɪz");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "tɪz");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "short form");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "it is");
+      
+    });
+
+    it("oalecd9e condo", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/condo.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈkɒndəʊ");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ˈkɑːndoʊ");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  condominium");
       
     });
 
