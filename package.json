@@ -38,6 +38,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "cheerio": "^1.0.0",
     "date-fns": "^3.6.0",
+    "html-entities": "^2.6.0",
     "html-loader": "^5.0.0",
     "html-to-text": "^9.0.5",
     "idb": "^8.0.2",
