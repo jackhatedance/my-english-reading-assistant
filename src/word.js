@@ -4,6 +4,7 @@ import { getWordParts } from './language.js';
 import {  TOKEN_TAG } from './html.js';
 import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/optionService.js'
+import { encode } from 'html-entities';
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     
@@ -92,13 +93,15 @@ function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
 }
 
 function format(token, definition, shortDefinition, middleDefinition, word, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
-    let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
-    let escapedWord = word.replace(/&/g, "&amp;");
-    let escapedToken = token.replace(/&/g, "&amp;");
+    baseWord = encode(baseWord);
+    word = encode(word);
+    token = encode(token);
+    shortDefinition = encode(shortDefinition);
+    middleDefinition = encode(middleDefinition);
 
     let type = word ? 'mea-word' : 'mea-nonword';
 
-    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-word="${escapedWord}" data-base-word="${escapedBaseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${escapedToken}</${TOKEN_TAG}>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-word="${word}" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${token}</${TOKEN_TAG}>`;
     return s;
 }
 
