@@ -40,6 +40,7 @@ function sameLengthStandardizeCharacters(text){
 
 function variableLengthStandardizeCharacters(text){
     return text.replaceAll(/[ﬁ]/g, "fi")
+        .replaceAll(/[ﬀ]/g, "ff")
         .replaceAll(/[ﬂ]/g, "fl")
 
         .replaceAll(/a¨/g, "ä")
