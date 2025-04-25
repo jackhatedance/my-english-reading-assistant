@@ -26,7 +26,7 @@ describe('simplifyDefinition test', function () {
                                         "subdefinitions": ["站", "站起来", "竖立"]
                                     },
                                     {
-                                        "text": "竖放,位于,常用作比喻", 
+                                        "text": "竖放,位于,常用作比喻",
                                         "subdefinitions": ["竖放", "位于", "常用作比喻"]
                                     }
                                 ]
@@ -61,6 +61,36 @@ describe('simplifyDefinition test', function () {
 
         });
 
+        it('Ignorant', async function () {
+            let lookupResult = { "query": "ignorant", "json": 
+                [
+                    { 
+                        "headword": 
+                        { "pronunciations": 
+                        
+                            [{ "region": "", "form": "", "phonetics": "ˈɪgnərənt" }
+
+                            ] 
+                        }, "definitionGroups": 
+                        [
+                            { "name": "adjective", "definitions": 
+                                [{ "text": "没有学识的/ 无知的/ 愚昧的/ 未受教育的,不通世故的", "subdefinitions": ["没有学识的/ 无知的/ 愚昧的/ 未受教育的", "不通世故的"] }] 
+                            }
+                        ] 
+                    }
+                ], 
+                "text": "/ˈɪgnərənt/\nadjective 没有学识的/ 无知的/ 愚昧的/ 未受教育的,不通世故的", 
+                "dictionaryName": "新牛津英汉双解大词典" 
+            };
+
+            let result = simplifyDefinition(lookupResult, null, { maxMeaningNumber: 3, hideWordClass: true });
+
+            //console.log(parseResult);
+            //assert(tokens.length === 2,"test");
+
+            assert.equal(result, '没有学识的,不通世故的');
+
+        });
 
 
     });

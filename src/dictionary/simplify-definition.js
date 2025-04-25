@@ -80,12 +80,12 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         }
 
         let visitedMeaningArray = getVisitedMeanings(def);
-        let visitedMeanings = visitedMeaningArray.join(',');
         
         if(hideParentheses){
-            visitedMeanings = standardizeParenthesesPunctuations(visitedMeanings);
-            visitedMeanings = removeParentheses(visitedMeanings);
+            visitedMeaningArray = visitedMeaningArray.map(item => removeParentheses(item));
         }
+        visitedMeaningArray = visitedMeaningArray.map(item => item.split('/')[0].trim());
+        let visitedMeanings = visitedMeaningArray.join(',');                
 
         definitionStr = definitionStr + visitedMeanings;
 
