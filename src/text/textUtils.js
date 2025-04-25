@@ -1,5 +1,5 @@
 'use strict';
-
+import parse from 'parenthesis'
 
 function endsWithDot(text){
     var result = false;
@@ -75,18 +75,28 @@ function removeMaskedChars(str, mask){
     return replaceMaskedChars(str, mask, '')
 }
 
+function containsParenthesesPunctuations(text){
+    if(!text){
+        return false;
+    }
+
+    let punctuations = ['(', '[', '<'];
+    let findResult = punctuations.find(item => text.includes(item));
+    return findResult != null;
+}
+
 function standardizeParenthesesPunctuations(text){
     text = text.replaceAll(/（/g, '(');
     text = text.replaceAll(/）/g, ')');
 
-    text = text.replaceAll(/［/g, '(');
-    text = text.replaceAll(/］/g, ')');
+    text = text.replaceAll(/［/g, '[');
+    text = text.replaceAll(/］/g, ']');
 
-    text = text.replaceAll(/〈/g, '(');
-    text = text.replaceAll(/〉/g, ')');
+    text = text.replaceAll(/〈/g, '<');
+    text = text.replaceAll(/〉/g, '>');
 
-    text = text.replaceAll(/【/g, '(');
-    text = text.replaceAll(/】/g, ')');
+    text = text.replaceAll(/【/g, '[');
+    text = text.replaceAll(/】/g, ']');
     
     return text;
 }
@@ -112,8 +122,60 @@ function removeParentheses(text){
     }
     text = standardizeParenthesesPunctuations(text);
     
+    let tokens = parse(text);
+    if(tokens){
+        tokens = tokens.filter(item => !Array.isArray(item));
+        text = tokens.join('');
+    }
+    
+    
     return text.replaceAll(/(\([^\)]*\))/g, '');
 }
 
+function getAllTextContent(token){
+    if(!Array.isArray(token)){
+        return token;
+    }else{
+        let array = token;
+        let texts = [];
+        for(let token of array){
+            let text = getAllTextContent(token);
+            texts.push(text);
+        }
+        return texts.join('');
+    }
+}
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses };
+function splitButIgnoreParentheses(text, separater){
+    if(!containsParenthesesPunctuations(text)){
+        return text.split(separater);
+    }
+
+    let tokens = parse(text);
+    //console.log(tokens);
+
+    let result = [];
+    if(tokens){
+        let part='';
+        for(let token of tokens){
+            if(Array.isArray(token)){
+                let tokenText = getAllTextContent(token);
+                part = part + tokenText;
+            }else {
+                for(let char of token){
+                    if(char == separater){
+                        result.push(part);
+                        part = '';
+                    }else{
+                        part = part + char;
+                    }
+                }
+            }            
+        }
+        result.push(part);
+    }
+    return result;
+}
+
+
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };

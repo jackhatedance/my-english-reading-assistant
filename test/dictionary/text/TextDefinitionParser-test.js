@@ -47,7 +47,7 @@ describe('TextDefinitionParser test', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "");      
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "波拿巴(①姓氏,法国科西嘉岛上的家族 ②Napoleon,1769-1821,法国皇帝,1804-1815在位)");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");      
       
     });
 

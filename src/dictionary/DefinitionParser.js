@@ -1,6 +1,6 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
-import { standardizePunctuations } from '../text/textUtils.js'
+import { standardizePunctuations, removeParentheses, splitButIgnoreParentheses } from '../text/textUtils.js'
 import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from './dictConstants.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
@@ -102,8 +102,10 @@ class DefinitionParser {
 
     parseSubdefinitions(text){
 
+        let noParenthesesText = removeParentheses(text);
+
         let separaters = [';', ',', '!'];
-        let separater = separaters.find(item => text.indexOf(item) >= 0);
+        let separater = separaters.find(item => noParenthesesText.indexOf(item) >= 0);
         if(!separater){
             separater = ',';
         }
@@ -114,7 +116,7 @@ class DefinitionParser {
             }
         }
         
-        let subdefinitions = text.split(separater); 
+        let subdefinitions = splitButIgnoreParentheses(text, separater); 
         subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));         
         return subdefinitions;
     }

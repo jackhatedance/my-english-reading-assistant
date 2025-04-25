@@ -34,7 +34,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "商品,所有物");      
       
       assert.equal(parseResult[0].definitionGroups[2].name, "adverb");      
-      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "(非正式)好地");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "<非正式>好地");      
       
     });
 
@@ -173,7 +173,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "(澳/新西兰,苏格兰,非正式)(用于句尾)但是,然而");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰,苏格兰,非正式>[用于句尾]但是,然而");
       
       
     });
@@ -203,8 +203,24 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈzəʊəfaɪt");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(动)(旧)植形动物,植虫(如珊瑚、海葵、海绵、海百合等)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[动]<旧>植形动物,植虫(如珊瑚、海葵、海绵、海百合等)");
       
+      
+    });
+
+    it('noecd2e Nabokov', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/Nabokov.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "nəˈbəʊkɒf");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "纳巴科夫,弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "纳巴科夫");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
       
     });
 
