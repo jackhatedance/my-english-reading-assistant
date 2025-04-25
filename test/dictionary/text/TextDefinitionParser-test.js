@@ -51,6 +51,20 @@ describe('TextDefinitionParser test', function () {
       
     });
 
+    it('text Bonaparte bracket2', async function () {
+      let parseResult = this.parser.parse("['bәunәpɑ:t] 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");
+      
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "['bәunәpɑ:t] 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");      
+      
+    });
+
 
   });
   

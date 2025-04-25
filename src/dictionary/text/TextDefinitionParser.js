@@ -15,7 +15,7 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     parseEntry(text){
-        const phoneticSymbolsArray = text.match(/(\[.*\]|\/.*\/)\s/);
+        const phoneticSymbolsArray = text.match(/(\/.*\/)\s/);
         let pronunciationText = null;
         if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
             pronunciationText = phoneticSymbolsArray[1];            
@@ -23,7 +23,7 @@ class TextDefinitionParser extends DefinitionParser {
 
         let definitionGroupsText = text;
         if(pronunciationText){
-            definitionGroupsText = text.replace(/(\[.*\]|\/.*\/)\s/, '');
+            definitionGroupsText = text.replace(/(\/.*\/)\s/, '');
         }
         
         let pronunciations = this.parsePronunciations(pronunciationText); 

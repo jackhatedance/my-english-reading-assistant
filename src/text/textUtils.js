@@ -122,14 +122,14 @@ function removeParentheses(text){
     }
     text = standardizeParenthesesPunctuations(text);
     
-    let tokens = parse(text);
+    let tokens = parse(text, { brackets: ['{}', '[]', '()', '<>']});
     if(tokens){
         tokens = tokens.filter(item => !Array.isArray(item));
         text = tokens.join('');
     }
     
     
-    return text.replaceAll(/(\([^\)]*\))/g, '');
+    return text.replaceAll(/[{}[\]()<>]/g, '');
 }
 
 function getAllTextContent(token){
@@ -151,7 +151,7 @@ function splitButIgnoreParentheses(text, separater){
         return text.split(separater);
     }
 
-    let tokens = parse(text);
+    let tokens = parse(text, { brackets: ['{}', '[]', '()', '<>']});
     //console.log(tokens);
 
     let result = [];

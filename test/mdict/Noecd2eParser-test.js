@@ -173,7 +173,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰,苏格兰,非正式>[用于句尾]但是,然而");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰, 苏格兰, 非正式>[用于句尾]但是,然而");
       
       
     });
