@@ -68,4 +68,83 @@ function mergeEntries(entries){
     return mergedEntry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions }
+function hasLinkEntryOnly(entries){
+    try{
+        if(entries.length ==1){
+            let entry = entries[0];
+            if(entry.type == DICTIONARY_DEFINITION_TYPE_LINK){
+                return true;                
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+
+    return false;
+}
+
+function hasLinkDefinitionOnly(entries){
+    try{
+        let definitions = entries[0].definitionGroups[0].definitions;
+        if(definitions.length ==1){
+            let definition = definitions[0];
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+                return true;                
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+
+    return false;
+}
+
+function getTheOnlyLinkDefintion(entries){
+    let definitions = entries[0].definitionGroups[0].definitions;
+    if(definitions.length ==1){
+        let definition = definitions[0];
+        if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+            //console.log(`get the only link of ${lookupResult.query}: ${definition.link}`);
+            return definition;                
+        }
+    }  
+}
+
+function isOnlyTransform(entries, form){
+    try{
+        let definitions = entries[0].definitionGroups[0].definitions;
+        if(definitions.length ==1){
+            let definition = definitions[0];
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+                if(!form){
+                    return true;
+                } else if(definition.form == form) {
+                    return true;
+                }
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+
+    return false;
+}
+
+
+function getTheOnlyBaseForm(lookupResult){
+    let entries = lookupResult.json;
+    try{
+        let definitions = entries[0].definitionGroups[0].definitions;
+        if(definitions.length ==1){
+            let definition = definitions[0];
+            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+                //console.log(`get the only base form of ${lookupResult.query}: ${definition.base}`);
+                return definition.base;
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+}
+
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm }
