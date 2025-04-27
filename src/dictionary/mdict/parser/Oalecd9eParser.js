@@ -11,24 +11,40 @@ class Oalecd9eParser extends JsonSelectorParser {
                 {
                     testSelector: '.cixing_part subentry-g',
                     selector: '.cixing_part',
-                    headword: {
-                        selector: '> top-g',
-                        pronunciation:
-                            [
-                                {
-                                    selector: 'pron-gs pron-g-blk'
-                                },
-                                {
-                                    selector: 'pron pron-g-blk'
-                                },
-                            ]
-                    },
+                    headword: [
+                        {
+                            testSelector: '> top-g pron-g-blk',
+                            selector: '> top-g',
+                            pronunciation:
+                                [
+                                    {
+                                        selector: 'pron-gs pron-g-blk'
+                                    },
+                                    {
+                                        selector: 'pron pron-g-blk'
+                                    },
+                                ]
+                        },
+                        {
+                            testSelector: 'subentry-g pron-gs pron-g-blk',
+                            selector: 'subentry-g',
+                            pronunciation:
+                                [
+                                    {
+                                        selector: 'pron-gs pron-g-blk'
+                                    },
+                                    {
+                                        selector: 'pron pron-g-blk'
+                                    },
+                                ]
+                        },
+                    ],
                     definitionGroup: [
                         {
                             selector: 'subentry-g',
 
                             groupName: {
-                                selector: 'top-g pos',
+                                selector: '> top-g pos',
                             },
                             definition:
                                 [

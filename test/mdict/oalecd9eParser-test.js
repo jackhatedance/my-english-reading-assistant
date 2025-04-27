@@ -7,7 +7,7 @@ describe('mdict oalecd9e parser', function () {
   
   describe('Olaecd9eParser parse', function () {
     before(function() {
-      this.parser = new Oalecd9eParser();
+      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false });
     });
 
     it('oalecd9e good', async function () {
@@ -360,6 +360,34 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "noun");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  condominium");
+      
+    });
+
+
+    it("oalecd9e covert", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/covert.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 3);
+
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈkʌvət");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, '');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ˈkəʊvɜːt");
+      
+      assert.equal(parseResult[0].headword.pronunciations[2].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[2].phonetics, "ˈkoʊvɜːrt");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "秘密的,隐蔽的,暗中的");
+      
+      assert.equal(parseResult[1].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(动物可藏身的)矮树丛,灌木林");
       
     });
 
