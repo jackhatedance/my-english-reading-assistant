@@ -35,7 +35,7 @@ init();
       <div class="input">
         <div>
           <label>{{ t('options_general_pronunciation_region_label') }}</label>
-          <select class="region" v-model="selectedRegion" @change="onChangeRegion" >
+          <select data-testid="region" class="region" v-model="selectedRegion" @change="onChangeRegion" >
             <option value="none">{{ t('options_general_pronunciation_region_none') }}</option>
             <option value="uk">{{ t('options_general_pronunciation_region_uk') }}</option>
             <option value="us">{{ t('options_general_pronunciation_region_us') }}</option>
