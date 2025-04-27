@@ -10,7 +10,7 @@ import * as cheerio from 'cheerio';
 import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
-import { getEntryFromLink, isAllUpperCaseEntry } from './mdict-definition-utils.js'
+import { getEntryFromLink, isAllUpperCaseEntry, getLink } from './mdict-definition-utils.js'
 
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
@@ -144,6 +144,11 @@ class MdictDictionary extends Dictionary {
     }
 
     async toEmbeddedHtml(html){        
+        let link = getLink(html);
+        if (link) {
+            return `见<a href="entry://${link}">${link}</a>`;
+        }
+
         const $ = cheerio.load(html, null, false);
                 
         let stylesheetElements = $('link[rel="stylesheet"]');

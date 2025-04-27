@@ -11,4 +11,14 @@ function isAllUpperCaseEntry(entry){
     return (entry && entry.match(/[^a-z]+/));
 }
 
-export { getEntryFromLink, isAllUpperCaseEntry }
+function getLink(raw) {
+  if(raw){
+      let matchResult = raw.trim().match(/^@@@LINK=(.*)\r*\n*\u0000*$/);
+      if(matchResult){
+          return matchResult[1];
+      }
+  }
+  return null;    
+}
+
+export { getEntryFromLink, isAllUpperCaseEntry, getLink }

@@ -1,3 +1,7 @@
+'use strict'
+
+import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictConstants.js'
+
 /**
  * remove duplicates
  * @param {*} pronunciations 

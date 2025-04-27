@@ -1,7 +1,7 @@
 
 import { getSystemDictionary } from './dictionary/systemDictionary.js'
 import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
-import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
+                                          
 
 function createDefaultOptions(){
     return { outputFormats:['text', 'json']};

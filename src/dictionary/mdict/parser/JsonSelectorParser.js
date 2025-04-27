@@ -2,6 +2,7 @@ import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 import { findMostAccurateTypedDefinition } from '../../typed-definition.js'
 import { PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND } from '../../dictConstants.js'
+import { getLink } from '../mdict-definition-utils.js'
 
 class JsonSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
@@ -89,7 +90,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parse(rawDefinition) {
         rawDefinition = this.beforeParse(rawDefinition);
 
-        let link = this.getLink(rawDefinition);
+        let link = getLink(rawDefinition);
         if (link) {
             let linkEntry = this.createEntryForLink(link);
             return [ linkEntry ];
