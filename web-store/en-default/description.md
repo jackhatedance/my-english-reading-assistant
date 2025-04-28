@@ -15,3 +15,4 @@ The main functions are as follows:
 5. View reading history.
 6. Highlight and take notes on web page content.
 7. Support epub/pdf format e-books (novels, foreign magazines, etc.), as well as most English websites.
+8. import user dictionary, support Mdict format
