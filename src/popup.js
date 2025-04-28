@@ -19,6 +19,20 @@ localizeHtmlPage();
 
   var pageInfo;
 
+  
+  var gQueryParams = parseQuery(window.location.search);
+
+
+  function parseQuery(queryString) {
+      var query = {};
+      var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+      for (var i = 0; i < pairs.length; i++) {
+          var pair = pairs[i].split('=');
+          query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+      }
+      return query;
+  }
+
   const enabledStorage = {
     get: (cb) => {
       chrome.storage.sync.get(['enabled'], (result) => {
@@ -255,8 +269,13 @@ localizeHtmlPage();
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
     //console.log(newOptions);
+    let queryOptions = { active: true, currentWindow: true };
+    if(gQueryParams.index){
+      let index = parseInt(gQueryParams.index);
+      queryOptions = { index: index };
+    }
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query(queryOptions, (tabs) => {
       const tab = tabs[0];
       chrome.tabs.sendMessage(
         tab.id,
@@ -283,7 +302,12 @@ localizeHtmlPage();
 
         // Communicate with content script of
         // active tab by sending a message
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        let queryOptions = { active: true, currentWindow: true };
+        if(gQueryParams.index){
+          let index = parseInt(gQueryParams.index);
+          queryOptions = { index: index };
+        }
+        chrome.tabs.query(queryOptions, (tabs) => {
           const tab = tabs[0];
 
           chrome.tabs.sendMessage(
@@ -307,7 +331,15 @@ localizeHtmlPage();
   function getPageInfo(resolve){
     // Communicate with content script of
     // active tab by sending a message
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    let queryOptions = { active: true, currentWindow: true };
+    if(gQueryParams.index){
+      let index = parseInt(gQueryParams.index);
+      queryOptions = { index: index };
+    }
+
+    chrome.tabs.query(queryOptions, (tabs) => {
+      console.log(`query tab`);
+      console.log(JSON.stringify(tabs));
       const tab = tabs[0];
 
       chrome.tabs.sendMessage(
@@ -319,7 +351,7 @@ localizeHtmlPage();
         },
         (response) => {
           if(response){
-            //console.log('getPageInfo:'+JSON.stringify(response));
+            console.log('getPageInfo:'+JSON.stringify(response));
             resolve(response.pageInfo?response.pageInfo:undefined);
           }else {
             resolve(undefined);
