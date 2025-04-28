@@ -2,12 +2,14 @@ import { test as base, chromium, type BrowserContext } from '@playwright/test';
 import path from 'path';
 import { PopupPage } from './popup-page';
 import { OptionsPage } from './options-page';
+import { TestPage } from './pages/test-page';
 
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
   popupPage: PopupPage;
   optionsPage: OptionsPage;
+  testPage : TestPage;
 }>({
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../../build');
@@ -44,6 +46,9 @@ export const test = base.extend<{
   optionsPage: async ({ context }, use) => {
     let page = await context.newPage();
     await use(new OptionsPage(page));
+  },
+  testPage: async ({ page }, use) => {
+    await use(new TestPage(page));
   },
 });
 export const expect = test.expect;
