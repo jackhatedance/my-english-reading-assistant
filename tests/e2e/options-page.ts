@@ -7,7 +7,7 @@ export class OptionsPage {
     }
 
     async goto(extensionId) {
-        await this.page.goto(`chrome-extension://${extensionId}/options2.html`);
+        await this.page.goto(`chrome-extension://${extensionId}/options.html`);
     }
 
     async gotoTab(name) {
