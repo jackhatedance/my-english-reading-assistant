@@ -381,6 +381,13 @@ function singularize(word) {
 
 function isKnown(baseWord, vocabulary){
     //console.log('isKnow:'+baseWord);
+    const singleCharacterWordAsKnown = true;
+
+    if(singleCharacterWordAsKnown){
+        if(baseWord && baseWord.length==1){
+            return true;
+        }
+    }
     
     //check if has unknown record
     let foundUnknownRecord = existWordRecord('#'+baseWord, vocabulary);
