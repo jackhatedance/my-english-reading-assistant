@@ -116,10 +116,11 @@ function jsonToText(entries, pronunciationRegion){
 
         let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
 
+        /*
         let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
         if(shortDefinitions.length >= 3){
             definitions = shortDefinitions;
-        }
+        }*/
         let definitionTexts = definitions.map(item => item.text );
         
         let definitionsText = definitionTexts.join(',');
