@@ -1,5 +1,7 @@
 
 const wordClassMap = {
+    "article": "art.",
+    "definite article": "art.",
     "noun": "n.",
     "verb": "v.",
     "auxiliary verb": "aux.",
