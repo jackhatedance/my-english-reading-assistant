@@ -108,7 +108,7 @@ class Oalecd9eParser extends JsonSelectorParser {
                                     selector: 'pron-gs pron-g-blk'
                                 },
                                 {
-                                    selector: 'pron pron-g-blk'
+                                    selector: '>pron>pron-g-blk'
                                 },
                             ],
                     },
@@ -124,29 +124,29 @@ class Oalecd9eParser extends JsonSelectorParser {
                             definition:
                                 [
                                     {
-                                        selector: 'sn-blk sn-g def chn'
+                                        selector: '>sn-blk>xhtml\\:ol sn-g def chn'
                                     },
                                     {
-                                        testSelector: 'sn-blk-nolist sn-g def chn:empty',
-                                        selector: 'sn-blk-nolist sn-g def'
+                                        testSelector: '>sn-blk-nolist>sn-g>def chn:empty',
+                                        selector: '>sn-blk-nolist>sn-g>def'
                                     },
                                     {
-                                        selector: 'sn-blk-nolist sn-g def chn'
+                                        selector: '>sn-blk-nolist>sn-g>def chn'
                                     },
                                     {
-                                        selector: 'sn-blk-nolist sn-g use-blk chn'
+                                        selector: '>sn-blk-nolist>sn-g>use-blk chn'
                                     },
                                     {
-                                        selector: 'sn-blk sn-g xr-gs'
+                                        selector: '>sn-blk>xhtml\\:ol sn-g>xr-gs'
                                     },
                                     {
-                                        selector: 'sn-blk sn-g def'
+                                        selector: '>sn-blk>sn-g>def'
                                     },
                                     {
-                                        selector: 'sn-blk-nolist sn-g def'
+                                        selector: '>sn-blk-nolist>sn-g>def'
                                     },
                                     {
-                                        selector: 'sn-blk-nolist sn-g xr-gs'
+                                        selector: '>sn-blk-nolist>sn-g>xr-gs'
                                     },
                                     
                                 ]
