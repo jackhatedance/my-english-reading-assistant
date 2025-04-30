@@ -412,6 +412,51 @@ describe('mdict oalecd9e parser', function () {
       
     });
 
+
+    it("oalecd9e the", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/the.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 6);
+
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ðə");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ðə");
+      
+
+      assert.equal(parseResult[0].headword.pronunciations[2].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[2].phonetics, "ði");
+
+      assert.equal(parseResult[0].headword.pronunciations[3].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[3].phonetics, "ði");
+      
+
+      assert.equal(parseResult[0].headword.pronunciations[4].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[4].phonetics, "ðiː");
+
+      assert.equal(parseResult[0].headword.pronunciations[5].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[5].phonetics, "ðiː");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "definite article");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 10);
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(指已提到或易领会到的人或事物)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "(指独一无二的、正常的或不言而喻的人或事物)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "(解说时用)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "(用以泛指)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "(与形容词连用,指事物或统称的人)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "(用于姓氏的复数形式前,指家庭或夫妇)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "(指特定用途的事物)足够,恰好");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "(与计量单位连用)每,一");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "(与时间单位连用)当前的,本,此");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[9].text, "(重读,表示所指的为知名或重要的人或事物)");
+
+      
+    });
   });
   
 });

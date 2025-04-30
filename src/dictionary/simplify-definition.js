@@ -36,7 +36,13 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         let wordClass = getWordClassAbbreviation(definitionGroup.name);
 
         let meaningsArray = definitionGroup.definitions.map(item => item.subdefinitions);
+        
         let mergedMeanings = mergeMeanings(meaningsArray);
+        if(hideParentheses){
+            mergedMeanings = mergedMeanings.map(item => removeParentheses(item));            
+        }
+        mergedMeanings = mergedMeanings.filter(item => item.trim().length>0);
+
         let definition = {
             wordClass: wordClass,
             meanings: mergedMeanings,
@@ -81,9 +87,6 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
 
         let visitedMeaningArray = getVisitedMeanings(def);
         
-        if(hideParentheses){
-            visitedMeaningArray = visitedMeaningArray.map(item => removeParentheses(item));
-        }
         visitedMeaningArray = visitedMeaningArray.map(item => item.split('/')[0].trim());
         let visitedMeanings = visitedMeaningArray.join(',');                
 
