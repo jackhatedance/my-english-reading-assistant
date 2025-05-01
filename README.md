@@ -1,4 +1,4 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Mango English Reading Assistant
+# <img src="public/icons/icon_48.png" width="45" align="left"> Jelly English Reading Assistant
 
 My Browser Extension of English reading assistant
 
