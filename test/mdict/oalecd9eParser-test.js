@@ -7,7 +7,7 @@ describe('mdict oalecd9e parser', function () {
   
   describe('Olaecd9eParser parse', function () {
     before(function() {
-      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false });
+      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: true });
     });
 
     it('oalecd9e good', async function () {
@@ -251,9 +251,9 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 4);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "提到,谈及");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "描述,涉及");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "查阅");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "提到,谈及,说起");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "描述,涉及,与…相关");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "查阅,参考,征询");
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "将…送交给(以求获得帮助等)");
     });
 
@@ -457,6 +457,48 @@ describe('mdict oalecd9e parser', function () {
 
       
     });
+
+
+
+    it("oalecd9e least", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/least.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      assert.equal(parseResult.length, 2);
+
+
+      assert.equal(parseResult[0].headword.pronunciations.length, 2);
+
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "liːst");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "liːst");
+      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "determiner");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "最小的,最少的,程度最轻的");
+      
+
+      assert.equal(parseResult[1].headword.pronunciations.length, 2);
+
+      assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[1].headword.pronunciations[0].phonetics, "liːst");
+
+      assert.equal(parseResult[1].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[1].headword.pronunciations[1].phonetics, "liːst");
+      
+
+      assert.equal(parseResult[1].definitionGroups[0].name, "adverb");
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
+
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "最小,最少,微不足道");
+      
+    });
+
   });
   
 });

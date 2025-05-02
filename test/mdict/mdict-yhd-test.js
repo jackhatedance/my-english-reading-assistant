@@ -19,8 +19,8 @@ describe('mdict yhd parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ɡʊd");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "正当的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好的,出色的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "正当的,正确的");      
     });
 
     it('yhd zoot', async function () {

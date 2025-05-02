@@ -240,7 +240,10 @@ class JsonSelectorParser extends MdictDefinitionParser {
         if(findElementsResult){
             let definitionGroupNameElements = findElementsResult.elements;
 
-            name = definitionGroupNameElements.text();            
+            if(definitionGroupNameElements.length>0){
+                name = $(definitionGroupNameElements[0]).text();    
+            }
+            
             name= name.trim();
         }
 
