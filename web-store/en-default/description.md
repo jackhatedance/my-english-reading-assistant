@@ -17,11 +17,4 @@ The main functions are as follows:
 7. Support epub/pdf format e-books (novels, foreign magazines, etc.), as well as most English websites.
 8. import user dictionary, support Mdict format
 
-This software pursues an immersive reading experience, the specific details are as follows:
-* Try not to look up the dictionary during reading, the meaning of new words is automatically displayed
-* Do not change the layout
-* Do not distract from the main content, the meaning of new words is semi-transparent
-* New words are not highlighted
-* Do not interrupt reading, mark words after reading the entire article
-
 old name: My English Reading Assistant
