@@ -287,7 +287,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
 function checkWord(siteOptions, text){
     let searchResult = searchWord(text, {
-        allowLemma: true,
+        allowLemma: false,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });

@@ -135,8 +135,7 @@ function isOnlyTransform(entries, form){
 }
 
 
-function getTheOnlyBaseForm(lookupResult){
-    let entries = lookupResult.json;
+function getTheOnlyBaseForm(entries){    
     try{
         let definitions = entries[0].definitionGroups[0].definitions;
         if(definitions.length ==1){
