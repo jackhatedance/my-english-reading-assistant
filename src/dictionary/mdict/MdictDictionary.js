@@ -98,7 +98,7 @@ class MdictDictionary extends Dictionary {
         }
 
         let result;
-        if(key && key.endsWith('.css')){
+        if(key && key.toLowerCase().endsWith('.css')){
             result = await findDictionaryExtractedRawFile(this.name, key);
         }
 

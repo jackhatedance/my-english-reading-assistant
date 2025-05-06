@@ -80,10 +80,16 @@ async function loadAllDictionaryExtractedRawData(name, extensions){
     return fileMap;
 }
 
+/**
+ * case insensitive
+ * @param {*} name 
+ * @param {*} fileName
+ * @returns 
+ */
 async function findDictionaryExtractedRawFile(name, fileName){
     let dir = await loadDictionaryExtractedRawDir(name);
     for(let fullFileName of dir){
-        if(fullFileName.includes(fileName)){
+        if(fullFileName.toLowerCase().includes(fileName.toLowerCase())){
             let data = await loadDictionaryExtractedRawFile(name, fullFileName);
             return data;        
         }
