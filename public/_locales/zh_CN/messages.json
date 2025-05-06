@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"果冻英文阅读助手"
+        "message":"新月英文阅读助手"
     },
     "extensionDescription":{
-        "message":"自动显示陌生单词含义，不查词典也能看懂英文文章"
+        "message":"自动显示生词含义，方便阅读英文原著，外刊和网页"
     },
     "popupDictionary":{
         "message":"词典"
