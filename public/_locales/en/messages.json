@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"Crescent English Reading Assistant"
+        "message":"10xReader"
     },
     "extensionDescription":{
-        "message":"Automatically displays the meaning of new words, making it easier to read English originals, foreign journals and web pages"
+        "message":"Automatically display the meaning of new words to speed up reading of English originals, foreign journals and web pages"
     },
     "popupDictionary":{
         "message":"Dictionary"

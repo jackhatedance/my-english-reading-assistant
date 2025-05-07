@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"新月英文阅读助手"
+        "message":"一目十行"
     },
     "extensionDescription":{
-        "message":"自动显示生词含义，方便阅读英文原著，外刊和网页"
+        "message":"自动显示生词含义，加速阅读英文原著，外刊和网页"
     },
     "popupDictionary":{
         "message":"词典"
