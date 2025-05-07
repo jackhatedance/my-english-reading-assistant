@@ -66,7 +66,7 @@ function deepLookupOnlyLink(originalLookupResult, options, dicts){
     }  
 }
 
-function deepLookupTransformParticipleOnlyByText(originalLookupResult, dicts){
+function deepLookupTransformParticipleOnlyByText(originalLookupResult, options, dicts){
     //console.log(input);
     let result = originalLookupResult.text.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
         
