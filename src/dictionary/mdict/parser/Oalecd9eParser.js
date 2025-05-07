@@ -49,13 +49,13 @@ class Oalecd9eParser extends JsonSelectorParser {
                             definition:
                                 [
                                     {
-                                        selector: 'sn-gs shcut-blk chn'
+                                        selector: '> sn-gs shcut-blk chn'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk-nolist sn-g def chn'
+                                        selector: '> sn-gs sn-blk-nolist sn-g def chn'
                                     },
                                     {
-                                        selector: 'sn-gs sn-blk sn-g def chn'
+                                        selector: '> sn-gs sn-blk sn-g def chn'
                                     },
                                 ]
                         },

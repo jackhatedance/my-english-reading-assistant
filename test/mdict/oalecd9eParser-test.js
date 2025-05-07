@@ -134,15 +134,14 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[1].phonetics, 'zuːm');
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 2);
+
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "快速移动,迅速前往");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "快速移动");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "迅速前往");
       
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "急剧增长,猛涨");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "(用变焦距镜头)拉近/推远,使画面放大(或缩小)");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].subdefinitions[0], "(用变焦距镜头)拉近/推远");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].subdefinitions[1], "使画面放大(或缩小)");
-
+      
       assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
       assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'zuːm');
 
@@ -496,6 +495,84 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
 
       assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "最小,最少,微不足道");
+      
+    });
+
+
+    it("oalecd9e well", async function () {
+      let html = fs.readFileSync("./test/mdict/oalecd9e/well.html", 'utf8');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      assert.equal(parseResult.length, 5);
+
+
+      assert.equal(parseResult[0].headword.pronunciations.length, 2);
+
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "wel");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "wel");
+      
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "adverb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 6);
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好,对,令人满意地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "完全地,彻底地,全部地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "很,相当,大大地,远远地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "容易地,轻松地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "很可能");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "有充分理由,合理地");
+      
+
+      assert.equal(parseResult[1].headword.pronunciations.length, 2);
+
+      assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[1].headword.pronunciations[0].phonetics, "wel");
+
+      assert.equal(parseResult[1].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[1].headword.pronunciations[1].phonetics, "wel");
+      
+
+      assert.equal(parseResult[1].definitionGroups[0].name, "adjective");
+      assert.equal(parseResult[1].definitionGroups[0].definitions.length, 3);
+
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "健康,身体好");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "状态良好,情况良好");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "明智,可取,好主意");
+      
+
+      assert.equal(parseResult[2].definitionGroups[0].name, "exclamation");
+      assert.equal(parseResult[2].definitionGroups[0].definitions.length, 9);
+
+      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "(表示惊奇、愤怒或宽慰)哎呀,哟,啊,好啦");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[1].text, "(承认某事不可改变)唉,好吧");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[2].text, "(勉强同意)嗯");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[3].text, "(停顿后继续交谈)唔,这个,噢");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[4].text, "(表示不肯定)哦");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[5].text, "(等待别人说话)嘿,嗨");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[6].text, "(结束交谈)就这样");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[7].text, "(说话时稍微停顿)对了");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[8].text, "(纠正或改变刚说过的话时用)");
+      
+
+      assert.equal(parseResult[3].definitionGroups[0].name, "noun");
+      assert.equal(parseResult[3].definitionGroups[0].definitions.length, 3);
+
+      assert.equal(parseResult[3].definitionGroups[0].definitions[0].text, "井,水井");
+      assert.equal(parseResult[3].definitionGroups[0].definitions[1].text, "楼梯井,电梯井道");
+      assert.equal(parseResult[3].definitionGroups[0].definitions[2].text, "(法庭中的)律师席");
+      
+
+
+      assert.equal(parseResult[4].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[4].definitionGroups[0].definitions.length, 2);
+
+      assert.equal(parseResult[4].definitionGroups[0].definitions[0].text, "涌出,冒出,流出,溢出");
+      assert.equal(parseResult[4].definitionGroups[0].definitions[1].text, "涌起,迸发");
+      
       
     });
 
