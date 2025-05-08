@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"我的英文阅读助手"
+        "message":"一目十行"
     },
     "extensionDescription":{
-        "message":"生词含义自动展示，阅读英语文章不停顿"
+        "message":"生词含义自动展示，阅读英文不停顿"
     },
     "popupDictionary":{
         "message":"词典"
