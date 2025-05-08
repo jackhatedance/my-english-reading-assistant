@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"狸花猫英语阅读助手"
+        "message":"读易典"
     },
     "extensionDescription":{
-        "message":"生词含义自动展示，阅读英文不停顿"
+        "message":"自动查生词并展示含义，阅读英文不停顿"
     },
     "popupDictionary":{
         "message":"词典"

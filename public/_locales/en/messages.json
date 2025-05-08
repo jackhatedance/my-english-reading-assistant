@@ -1,9 +1,9 @@
 {
     "extensionName":{
-        "message":"DragonLi English Reading Assistant"
+        "message":"ReadEZ"
     },
     "extensionDescription":{
-        "message":"The meaning of new words is automatically displayed, so you can read English articles without stopping"
+        "message":"Automatically look up new words and display their meanings, so you can read English without stopping"
     },
     "popupDictionary":{
         "message":"Dictionary"
