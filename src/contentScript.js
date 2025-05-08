@@ -195,7 +195,7 @@ chrome.runtime.onMessage.addListener(messageListener);
 
 
 async function domMonitor() {
-
+  //console.log('domMonitor begin');
   let siteInfoSame = checkSiteInfoChanges();
   if(!gSiteProfile || !siteInfoSame){
     gSiteProfile = findSiteProfile(document);
@@ -204,11 +204,12 @@ async function domMonitor() {
   //check body attribute flag.  
   let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
 
+  //console.log(`DOM changes:${gDomChanges}`);
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
       //no more changes in this interval. now we can reset annotations
       
-      //console.log('DOM changed, auto refresh page annotation');
+      //console.log('DOM stop changing');
       
       //reset
       gDomChanges =0;
@@ -223,9 +224,12 @@ async function domMonitor() {
   }
   
   if(needRefresh) {
+    //console.log('auto refresh page annotation');
+    
+    let startTime = new Date().getTime();
+
     gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
 
-    let startTime = new Date().getTime();
     await resetPageAnnotationVisibilityAndNotify(true);
     let endTime = new Date().getTime();
     let elapseTime = endTime - startTime;
@@ -241,6 +245,7 @@ async function domMonitor() {
   //update gloabl variable
   gUrl = url;
 
+  //console.log('domMonitor end');
 }
 
 //enahnced version of setInterval(), make sure tasks are exectued sequentially.
@@ -395,13 +400,15 @@ async function addDocumentEventListener(document, documentConfig) {
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
     for (const mutation of mutationList) {
-      if (mutation.type === "childList"
-        //skip the mutations that triggered by itself.
-        && !(mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX))
-      ) {
+      if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
         //console.log(mutation);
-        gDomChanges ++;
+        //skip the mutations that triggered by itself.
+        let triggeredBySelf = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
+
+        if(!triggeredBySelf){
+          gDomChanges ++;
+        }        
       } else if (mutation.type === "attributes") {
         //console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
