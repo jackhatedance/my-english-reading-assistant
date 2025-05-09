@@ -4,7 +4,7 @@ refer to [message file](./public/_locales/en/messages.json), key: extensionDescr
 
 ### Long Description
 
-English beginners often cannot persist in reading English articles because of insufficient vocabulary. This software can save readers from the pain of constantly looking up dictionaries and overcome the reading difficulties caused by insufficient vocabulary. If you see a new word many times, you will remember its meaning unconsciously, and words in context are less likely to be forgotten. Let readers enjoy the content of the article as much as possible.
+English beginners often cannot persist in reading English articles because of insufficient vocabulary. This software automatically displays the meaning of new words, improves the reading experience, makes English reading smooth, and allows readers to experience the joy brought by the content of the article. As the saying goes, great skill does not work, and a heavy sword has no edge. Extensive reading is better than any seemingly clever learning method.
 
 The main functions are as follows:
 
