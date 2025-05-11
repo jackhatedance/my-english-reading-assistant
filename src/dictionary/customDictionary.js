@@ -1,7 +1,7 @@
 import { loadDictionaryRawData, loadAllDictionaryExtractedRawData, loadDictionaryIndexData, saveDictionaryData, saveDictionaryIndexData, saveDictionaryExtractedResourceData, deleteDictionaryData, deleteDictionaryIndexData, loadDictionaryMetas, saveDictionaryMetas } from '../store/dictionaryStore.js'
 import { deleteDictionaryAllResourceFiles } from '../store/db.js'
 import { TextDictionary } from './text/TextDictionary.js'
-import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed } from './dictionaryLoader.js'
+import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed, hasNewerParser } from './dictionaryLoader.js'
 import { generateIndex } from './index.js'
 import { createSystemDictionaryMeta, loadSystemDictionariesToCache } from './systemDictionary.js'
 import { DICTIONARY_INDEX_STATUS_OK } from './dictConstants.js'
@@ -81,6 +81,11 @@ function getCleanMeta(meta){
             },
             index:{
                 version: meta.data.index?.version,
+                schemaVersion: meta.data.index?.schemaVersion,
+                parser: {
+                    name: meta.data.index?.parser?.name,
+                    version: meta.data.index?.parser?.version,
+                }
             },
 
         },
@@ -132,6 +137,10 @@ async function getAllDictionaryMetas(){
 
         let indexStatus = getIndexStatus(meta);
         meta.data.index.status = indexStatus;        
+
+        if(indexStatus == DICTIONARY_INDEX_STATUS_OK) {
+            meta.data.index.hasNewerParser = hasNewerParser(meta);
+        }
     }    
 
     return metas;    
@@ -345,6 +354,8 @@ async function migrateDictionary(dictionary, updateProgress){
     
             meta.data.index = {
                 version: index.version,
+                schemaVersion: index.schemaVersion,
+                parser: index.parser,
             };
             await saveDictionaryMeta(meta);    
         }

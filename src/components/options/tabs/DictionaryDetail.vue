@@ -67,6 +67,9 @@ init();
             <label>{{ t('options_dictionary_detail_index') }}</label>
             <span>{{ props.dict.data?.index?.status }}</span>
 
+            <label>{{ t('options_dictionary_detail_parser_has_newer_version') }}</label>
+            <span>{{ props.dict.data?.index?.hasNewerParser }}</span>
+
             <label>{{ t('options_dictionary_detail_job') }}</label>
             <span>{{ jobStatus }}</span>
         </div>

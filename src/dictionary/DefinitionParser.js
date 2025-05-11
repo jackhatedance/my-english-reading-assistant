@@ -5,8 +5,10 @@ import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_S
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
-    constructor(name, options){
+    constructor(name, version, jsonSchemaVersion, options){
         this.name = name;
+        this.version = version;
+        this.jsonSchemaVersion = jsonSchemaVersion;
         if(!options){
             options = {};
         }

@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 class YhdParser extends JsonSelectorParser {
     constructor(options) {
-        super('YhdParser', options);
+        super('YhdParser', "1.0.2", "1.0.0", options);
 
         this.entriesSelector =
         {

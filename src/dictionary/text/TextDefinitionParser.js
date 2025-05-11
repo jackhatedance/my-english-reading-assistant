@@ -4,6 +4,11 @@ import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
 
 class TextDefinitionParser extends DefinitionParser {
+    
+    constructor(options){
+        super("TextParser", "1.0.0", "1.0.0", options);
+    }
+
     parse(rawDefinition) {
         if(!rawDefinition){
             return [];

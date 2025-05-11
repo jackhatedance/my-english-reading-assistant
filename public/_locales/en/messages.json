@@ -224,13 +224,16 @@
         "message": "Please do not close your browser while the index is being created."
     },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "Import success"
+        "message": "Valid"
+    },
+    "optionsEditDictionaryIndexColorTipsLightGreen": {
+        "message": "Valid and parser has newer version"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
-        "message": "need to (re)import"
+        "message": "Invalid and require re-import"
     },
     "optionsEditDictionaryIndexColorTipsRed": {
-        "message": "unable to import"
+        "message": "import is not supported"
     },
     "options_dictionary_detail": {
         "message": "Detail"
@@ -258,6 +261,9 @@
     },
     "options_dictionary_detail_index": {
         "message": "Index"
+    },
+    "options_dictionary_detail_parser_has_newer_version": {
+        "message": "Parser has newer version"
     },
     "options_dictionary_detail_job": {
         "message": "Job"

@@ -223,13 +223,16 @@
         "message": "创建索引时请不要关闭浏览器"
     },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "导入成功"
+        "message": "可用"
+    },
+    "optionsEditDictionaryIndexColorTipsLightGreen": {
+        "message": "可用,解析器有更新"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
-        "message": "需要（重新）导入"
+        "message": "不可用,需要重新导入"
     },
     "optionsEditDictionaryIndexColorTipsRed": {
-        "message": "无法导入"
+        "message": "不支持导入"
     },
     "options_dictionary_detail": {
         "message": "详情"
@@ -257,6 +260,9 @@
     },
     "options_dictionary_detail_index": {
         "message": "索引"
+    },
+    "options_dictionary_detail_parser_has_newer_version": {
+        "message": "解析器有新版本"
     },
     "options_dictionary_detail_job": {
         "message": "任务"

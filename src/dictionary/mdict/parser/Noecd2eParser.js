@@ -4,7 +4,7 @@ import { findBaseForm } from '../../base-forms.js'
 
 class Noecd2eParser extends JsonSelectorParser {
     constructor(options) {
-        super('Noecd2eParser', options);
+        super('Noecd2eParser', "1.0.0", "1.0.0", options);
 
         this.entriesSelector =
         {

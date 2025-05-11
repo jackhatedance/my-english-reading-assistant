@@ -347,6 +347,7 @@ init();
       <div class="label">
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
+          <li class="lightgreen">{{ t('optionsEditDictionaryIndexColorTipsLightGreen') }}</li>
           <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
           <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么我的词典无法导入"/></li>
         </ul>
@@ -359,7 +360,7 @@ init();
       <div class="input dictionary">
         <div class="list">
           <select class="dictionaries" v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
-            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
+            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser != true, support_ok_upgradable: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser == true, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
           </select>          
         </div>
         <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
@@ -415,6 +416,9 @@ init();
       option.support_ok{
         color: green;
       }
+      option.support_ok_upgradable{
+        color: lightgreen;
+      }
       option.support_invalid{
         color: rgb(209, 185, 3);
       }
@@ -427,6 +431,9 @@ init();
 
   .green {
     color: green;
+  }
+  .lightgreen {
+    color: lightgreen;
   }
   .yellow {
     color: rgb(209, 185, 3);
