@@ -1,7 +1,7 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
 function splitWordClasses(definition){
-    let matches = definition.matchAll(/([a-z]{0,6}\.)/g);
+    let matches = definition.matchAll(/(\w{1,6}\.((& ?)?\w{1,6}\.)*)/g);
     let matchArray = [...matches];
 
     let groups = [];
@@ -68,14 +68,14 @@ function parseWordClass(def){
 
     if(def){
 
-        var rx = /^((\w{1,6}\.)+ )?(.+)$/;
+        var rx = /^(\w{1,6}\.((& ?)?\w{1,6}\.)*)?(.+)$/;
         var arr = rx.exec(def);
         //console.log(arr);
 
         if(arr && arr.length >=4 ){
             result = {
-                wordClass: arr[2] ? arr[2] : '',
-                meanings: arr[3].trim(),
+                wordClass: arr[1] ? arr[1] : '',
+                meanings: arr[4].trim(),
             };
         }
     }

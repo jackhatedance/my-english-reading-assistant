@@ -20,6 +20,18 @@ describe('TextDefinitionUtils test', function () {
       assert.equal(parseResult[0], "n. [军] 轰炸, [军] 投弹");
       assert.equal(parseResult[1], "v. 轰击；引爆炸弹（bomb的ing形式）");      
       
+    });
+
+    it('vowed multiple wordclass', async function () {
+      let parseResult = splitWordClasses('vt.& vi. 起誓, 发誓（vow的过去式与过去分词形式）');
+      
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult.length, 1);
+      assert.equal(parseResult[0], "vt.& vi. 起誓, 发誓（vow的过去式与过去分词形式）");
+      
       
     });
 
