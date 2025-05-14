@@ -33,6 +33,10 @@ function sendMsg(type, baseForm){
 
 chrome.runtime.onInstalled.addListener(async function () {
   /*
+  problem of context menu:
+  * right click on MacOs Chrome will select the word, and the selection triggers note operation. Unless user disable the note function firstly.
+  I would prefer the hover solution: when user hover mouse to a word, a tooltip will display, a small button in the tooptip to mark words.
+  
   let toggle = chrome.contextMenus.create({
     title: 'Known <-> Unknown: %s',
     contexts: ['selection'],
