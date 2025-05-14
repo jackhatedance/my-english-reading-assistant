@@ -1,9 +1,9 @@
 import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 import { findMostAccurateTypedDefinition } from '../../typed-definition.js'
-import { PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND } from '../../dictConstants.js'
+import { PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../../dictConstants.js'
 import { getLink } from '../mdict-definition-utils.js'
-
+import { getEntryFromLink, isAllUpperCaseEntry } from '../mdict-definition-utils.js'
 class JsonSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
@@ -280,9 +280,14 @@ class JsonSelectorParser extends MdictDefinitionParser {
         let linkElements = $(element).find('a[href^="entry:"]');
         if(linkElements.length == 1){
             let linkElement = linkElements[0];
-            let link = $(linkElement).text();
-            let text = $(element).text();
-            return this.createLinkDefinition(link);
+            let href = $(linkElement).attr('href');
+            let entry = getEntryFromLink(href);
+            if(entry && isAllUpperCaseEntry(entry)){
+                if(this.getAllUpperCaseEntryPolicy() == ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE){
+                    entry = entry.toLowerCase();
+                }
+            }
+            return this.createLinkDefinition(entry);
         }
     }
 

@@ -7,7 +7,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
   
   describe('Noecd2eParser parse', function () {
     before(function() {
-      this.parser = new Noecd2eParser();
+      this.parser = new Noecd2eParser({
+        allUpperCaseEntryPolicy: 'lowerCase',
+      });
     });
 
     it('noecd2e good', async function () {
@@ -92,6 +94,18 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "feather");      
+      
+    });
+
+    it('noecd2e prentice link uppercase', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/prentice.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "apprentice");      
       
     });
 

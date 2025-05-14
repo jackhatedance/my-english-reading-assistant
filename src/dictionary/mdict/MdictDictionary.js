@@ -11,10 +11,9 @@ import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
 import { getEntryFromLink, isAllUpperCaseEntry, getLink } from './mdict-definition-utils.js'
-
+import { PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../dictConstants.js'
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
-const ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE = 'lowerCase';
 
 class MdictDictionary extends Dictionary {
     
@@ -35,11 +34,18 @@ class MdictDictionary extends Dictionary {
             let headers = Object.assign({}, this.mdx.header);
             this.rawMeta = { headers };
             
+            this.allUpperCaseEntryPolicy = this.detectEntryCasePolicyFromRaw();
+            
             let profile = findMdictProfile(this.rawMeta);
             if(profile){
                 this.definitionParser = findDefinitionParser(profile.parser);
-                if(!this.definitionParser){
-                    //console.error(`parser not found`);    
+                if(this.definitionParser){
+
+                    if(this.allUpperCaseEntryPolicy) {
+                        this.definitionParser.options[PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY] = this.allUpperCaseEntryPolicy;
+                    }                    
+                } else {
+                    console.error(`parser not found`);    
                 }
             }else{
                 //console.error(`profile not found`);
@@ -52,7 +58,7 @@ class MdictDictionary extends Dictionary {
                 this.mdd = new MDD(mddBufferedFile);  
             }        
         
-            this.allUpperCaseEntryPolicy = this.detectEntryCasePolicyFromRaw();
+            
         }
         
     }
