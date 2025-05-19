@@ -28,13 +28,21 @@ class JsonSelectorParser extends MdictDefinitionParser {
         if(selector.includes('/')){
             let array = selector.split('/');
             let elementName = array[0];
-            selector = array[1];
+            if(array.length >= 2){
+                selector = array[1];
+            } else {
+                selector = null;
+            }
 
             baseElement = context[elementName];                        
         }
 
         if(baseElement){
-            return $(baseElement).find(selector);        
+            if(selector){
+                return $(baseElement).find(selector);        
+            }else {
+                return [baseElement];        
+            }            
         }else{
             return $(selector);        
         }
@@ -42,7 +50,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
     findElements($, containerElement, entitySelectors, name, context){    
         if(!entitySelectors){
-            return null;
+            return [];
         }    
         
         let entitySelectorArray;
@@ -52,27 +60,46 @@ class JsonSelectorParser extends MdictDefinitionParser {
             entitySelectorArray = [ entitySelectors ];
         }
 
-        let result;
+        let result = [];
+        let groupSet = new Set();
         
         for(let entitySelector of entitySelectorArray){    
+            let group = 'default';
+            if(entitySelector.hasOwnProperty('group')){
+                group = entitySelector.group;
+            }
+            if(groupSet.has(group)){
+                continue;
+            }
+
+            let item = null;
             if(entitySelector.hasOwnProperty('testSelector')){
                 let elements = this.findElementsByOneSelector($, containerElement, entitySelector.testSelector, context);
                 if(elements.length>0){
                     let elements = this.findElementsByOneSelector($, containerElement, entitySelector.selector, context);
                     if(elements.length>0){
-                        result = {elements, entitySelector };
-                        break;
+                        item = { elements, entitySelector };
                     }
                 }
             } else {
                 let elements = this.findElementsByOneSelector($, containerElement, entitySelector.selector, context);
                 if(elements.length>0){
-                    result = {elements, entitySelector };
-                    break;
+                    item = { elements, entitySelector };
                 }
-            }            
+            }
+            
+            if(item){
+                result.push(item);
+                groupSet.add(group);
+                this.logFindResult(name, item);                    
+            }
+            
         }        
 
+        return result;
+    }
+
+    logFindResult(name, result){
         if(result && this.options[PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND] == true){
             if(result.entitySelector.name){
                 console.log(`find [${name}], name: ${result.entitySelector.name}`);
@@ -81,10 +108,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
             } else{
                 console.log(`find [${name}], selector: ${result.entitySelector.selector}`);                
             }
-            
         }
-            
-        return result;
     }
         
     parse(rawDefinition) {
@@ -117,8 +141,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseEntries($, context){
         let entries = [];
 
-        let findElementsResult = this.findElements($, null, this.entriesSelector[this.ENTRY], this.ENTRY, context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, null, this.entriesSelector[this.ENTRY], this.ENTRY, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let entryElement of findElementsResult.elements){  
                 let baseElement = this.getBaseElementForChild(null, entryElement, childEntitySelector);          
@@ -134,11 +158,11 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
         let headword = { pronunciations: [] };
         if(this.hasSelector(entitySelector, this.HEADWORD)){
-            let findElementsResult = this.findElements($, element, entitySelector[this.HEADWORD], this.HEADWORD, context);
+            let findElementsResults = this.findElements($, element, entitySelector[this.HEADWORD], this.HEADWORD, context);
             
-            if(findElementsResult){
-                let childEntitySelector = findElementsResult.entitySelector;
-                let headWordElement = findElementsResult.elements[0];
+            if(findElementsResults.length > 0){
+                let childEntitySelector = findElementsResults[0].entitySelector;
+                let headWordElement = findElementsResults[0].elements[0];
                 let baseElement = this.getBaseElementForChild(element, headWordElement, childEntitySelector); 
                 headword = this.parseHeadword($, baseElement, context, childEntitySelector);
             }
@@ -161,8 +185,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parsePronunciations($, element, context, entitySelector){
         let pronunciations = [];
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.PRONUNCIATION], this.PRONUNCIATION, context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, element, entitySelector[this.PRONUNCIATION], this.PRONUNCIATION, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let pronunciationElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, pronunciationElement, childEntitySelector); 
@@ -195,9 +219,9 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
     parserPronunciationName($, element, context, entitySelector){
         if(this.hasSelector(entitySelector, this.PRONUNCIATION_NAME)){
-            let findElementsResult = this.findElements($, element, entitySelector[this.PRONUNCIATION_NAME], this.PRONUNCIATION_NAME, context);
-            if(findElementsResult){
-                let pronunciationNameElements = findElementsResult.elements;
+            let findElementsResults = this.findElements($, element, entitySelector[this.PRONUNCIATION_NAME], this.PRONUNCIATION_NAME, context);
+            if(findElementsResults.length > 0){
+                let pronunciationNameElements = findElementsResults[0].elements;
                 return pronunciationNameElements.text();
             }
         } else {
@@ -207,9 +231,9 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
     parserPronunciationPhonetics($, element, context, entitySelector){
         if(this.hasSelector(this.PRONUNCIATION_PHONETICSNAME)){
-            let findElementsResult = this.findElements($, element, this.selector(this.PRONUNCIATION_PHONETICS), this.PRONUNCIATION_PHONETICS, context);
-            if(findElementsResult){
-                let pronunciationPhoneticsElements = findElementsResult.elements;
+            let findElementsResults = this.findElements($, element, this.selector(this.PRONUNCIATION_PHONETICS), this.PRONUNCIATION_PHONETICS, context);
+            if(findElementsResults.length > 0){
+                let pronunciationPhoneticsElements = findElementsResults[0].elements;
                 return pronunciationPhoneticsElements.text();
             }
         } else {
@@ -220,8 +244,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseDefinitionGroups($, element, context, entitySelector){
         let definitionGroups = [];
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.DEFINITION_GROUP], this.DEFINITION_GROUP, context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, element, entitySelector[this.DEFINITION_GROUP], this.DEFINITION_GROUP, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let groupElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, groupElement, childEntitySelector); 
@@ -235,10 +259,10 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseDefinitionGroup($, element, context, entitySelector){
         context[this.DEFINITION_GROUP] = element;
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.GROUP_NAME], this.GROUP_NAME, context);
+        let findElementsResults = this.findElements($, element, entitySelector[this.GROUP_NAME], this.GROUP_NAME, context);
         let name = '';
-        if(findElementsResult){
-            let definitionGroupNameElements = findElementsResult.elements;
+        if(findElementsResults.length > 0){
+            let definitionGroupNameElements = findElementsResults[0].elements;
 
             if(definitionGroupNameElements.length>0){
                 name = $(definitionGroupNameElements[0]).text();    
@@ -249,16 +273,16 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
         let inflection;
         
-        findElementsResult = this.findElements($, element, entitySelector[this.INFLECTION], this.INFLECTION, context);
-        if(findElementsResult){
-            let inflectionElements = findElementsResult.elements;
+        findElementsResults = this.findElements($, element, entitySelector[this.INFLECTION], this.INFLECTION, context);
+        if(findElementsResults.length > 0){
+            let inflectionElements = findElementsResults[0].elements;
 
             inflection = inflectionElements.text();
         }
     
         let definitions = [];
-        findElementsResult = this.findElements($, element, entitySelector[this.DEFINITION], this.DEFINITION, context);
-        if(findElementsResult){
+        findElementsResults = this.findElements($, element, entitySelector[this.DEFINITION], this.DEFINITION, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let definitionElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, definitionElement, childEntitySelector); 

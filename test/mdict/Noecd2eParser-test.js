@@ -9,6 +9,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     before(function() {
       this.parser = new Noecd2eParser({
         allUpperCaseEntryPolicy: 'lowerCase',
+        debugPrintSelectorFind: true
       });
     });
 
@@ -235,6 +236,21 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "纳巴科夫,弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "纳巴科夫");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      
+    });
+
+    it('noecd2e said', async function () {
+      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/said.html', 'utf8');
+
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "sed");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past and past participle of say. SAY的过去式和过去分词");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的,该(用于法律语言或幽默中)");
       
     });
 
