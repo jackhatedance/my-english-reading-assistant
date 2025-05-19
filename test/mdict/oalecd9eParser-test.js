@@ -7,7 +7,7 @@ describe('mdict oalecd9e parser', function () {
   
   describe('Olaecd9eParser parse', function () {
     before(function() {
-      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: true });
+      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false });
     });
 
     it('oalecd9e good', async function () {
