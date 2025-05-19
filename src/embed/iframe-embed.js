@@ -16,8 +16,7 @@ function addVueApp() {
 
   var dialog = document.createElement('dialog');
   dialog.id = "mea-vue-container";
-  dialog.classList.add('mea-element');
-  dialog.classList.add('mea-dialog');
+  dialog.classList.add('mea-element', 'mea-supplementary');
 
   document.body.appendChild(dialog);
 

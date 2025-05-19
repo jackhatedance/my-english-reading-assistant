@@ -10,6 +10,7 @@ import { findStyleSheet, changeStyle } from './style.js';
 import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
 import { getIsbn } from './service/pageService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
+import { createTooltip } from './tooltip.js'
 
 /**
  * 
@@ -218,6 +219,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
     if (!isIframe) {
         if(!containsVueApp()){
             addVueApp();
+            createTooltip(document);
         }        
     }
 
@@ -253,7 +255,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         */
         tokenizeTextNode(document, currentSiteOption);
 
-        addDocumentEventListener(document, documentConfig);
+        addDocumentEventListener(document, documentConfig, currentSiteOption);
     }
     
     if (documentConfig.canProcess) {

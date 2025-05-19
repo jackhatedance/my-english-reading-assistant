@@ -127,25 +127,6 @@ function addStyle(document) {
           }
         }
 
-        &:hover, &.mea-hide:hover {
-          &::after{
-            background-color: white;
-            border: solid 1px;
-            opacity: 1;
-            z-index: 99;
-            visibility: visible;
-
-            content: attr(data-footnote);
-          }
-        }
-
-        &:not([data-parts='']) {
-          &:hover, &.mea-hide:hover {
-            &::after{
-              content: attr(data-footnote) ' [' attr(data-parts) ']';
-            }
-          }
-        } 
       }
 
 
@@ -227,6 +208,24 @@ function addStyle(document) {
         #vue {
           width: 400px;
           
+        }
+      }
+
+      #mea-definition-tooltip {
+        position: absolute;
+        min-width: 20px;
+        max-width: 400px;
+        background-color: rgb(226, 225, 225);
+        color: black;
+        border-radius: 4px;
+        border: 1px solid black !important;
+        font-size: 14px;
+        visibility: hidden;
+        z-index: 100;
+
+        * {
+          margin: 0px;
+          padding: 1px;
         }
       }
 
