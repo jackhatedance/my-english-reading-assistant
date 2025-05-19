@@ -5,7 +5,7 @@ import './side-panel-component.css';
 import { loadKnownWords } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
-import { refreshOptionsCache, } from './service/optionService.js';
+import { getOptionsFromCache, refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
@@ -18,7 +18,7 @@ import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnn
 import { MenuItems } from './menu.js';
 import { MEA_TAG_PREFIX } from './html.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
-
+import { addTooltipEventListener } from './tooltip.js'
 
 //used to check if title changed
 var gUrl;
@@ -267,13 +267,39 @@ function checkSiteInfoChanges(){
   return same;
 }
 
-async function addDocumentEventListener(document, documentConfig) {
+async function addDocumentEventListener(document, documentConfig, currentSiteOption) {
+  let options = getOptionsFromCache();
+  addTooltipEventListener(document, documentConfig,
+    (word) => {
+      //console.log(`click tooltip of ${word}`);
+      let request = {
+        type: 'SELECTION_CHANGE',
+        payload: {
+          word: word,
+          type: 'search-note',            
+          selectedText: '',
+          sentenceSelection: null,
+          paragraphSelection: null,
+          notes: [],
+        },
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      //console.log('selection change:'+JSON.stringify(request));
+      sendMessageToApp(request, sender, sendResponse);
+      showDialog([MenuItems.Vocabulary]);
+    }, 
+    currentSiteOption,
+    options
+  );
   
   document.addEventListener("mouseup", async (event) => {
-    
+    //console.log(event);
     //mouse up event on dialog itself, ignore
-    let dialog = event.target.closest('.mea-dialog');
-    if(dialog){
+    let supplementary = event.target.closest('.mea-supplementary');
+    if(supplementary){
       return;
     }
 

@@ -148,6 +148,7 @@ function searchWordWithDict(query, options, dicts){
     }
 
     let baseWord = '';
+    let baseSearchType = '';
 
     if(lookupResult) {
         let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult.json);
@@ -163,6 +164,7 @@ function searchWordWithDict(query, options, dicts){
                 lookupResult = linkLookupResult;
 
                 if(bHasLinkEntryOnly){
+                    searchType = 'link';
                     word = link;
                 } else {
                     baseWord = link;        
@@ -175,7 +177,7 @@ function searchWordWithDict(query, options, dicts){
             deepLookupResult = deepLookup(lookupResult, options);
 
             if(deepLookupResult){
-                searchType='lemma';
+                baseSearchType='lemma';
                 baseWord = deepLookupResult.word;
             }        
         }
@@ -191,7 +193,9 @@ function searchWordWithDict(query, options, dicts){
             searchType: searchType,
             lemmaType: lemmaType,
             word: word,
+            searchType: searchType,
             baseWord: baseWord,
+            baseSearchType: baseSearchType,
             definition: definition,
             lookupResult: lookupResult,
             deepLookupResult: deepLookupResult,

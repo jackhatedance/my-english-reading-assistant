@@ -45,7 +45,7 @@
 
 #### 词典哪里找？
 * [mdict.org](https://mdx.mdict.org)
-
+* [freemdict.com](https://freemdict.com/)
 
 支持导入的Mdict词典列表(陆续添加中)
 |名称|发布时间|更新时间|大小|发音|图片|支持度|下载链接|

@@ -27,25 +27,6 @@
     }
   }
 
-  &:hover, &.mea-hide:hover {
-    &::after{
-      background-color: white;
-      border: solid 1px;
-      opacity: 1;
-      z-index: 99;
-      visibility: visible;
-
-      content: attr(data-footnote);
-    }
-  }
-
-  &:not([data-parts='']) {
-    &:hover, &.mea-hide:hover {
-      &::after{
-        content: attr(data-footnote) ' [' attr(data-parts) ']';
-      }
-    }
-  } 
 }
 
 
