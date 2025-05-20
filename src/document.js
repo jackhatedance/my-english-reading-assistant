@@ -227,6 +227,18 @@ function addStyle(document) {
           margin: 0px;
           padding: 1px;
         }
+        
+        .word-mark-actions {
+          padding: 0;
+          img {
+            width: 10px;
+          }          
+        }
+        .word-mark-actions .unknown {
+          img {
+            filter: grayscale(100%);
+          }
+        }  
       }
 
     `;

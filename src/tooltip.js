@@ -1,15 +1,112 @@
-const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 import { mergeEntries, hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import { pronunciationsToText } from './dictionary/definition-formatter.js'
-import { searchWord, buildDictionaryOptions, getWordParts } from './language.js';
+import { searchWord, buildDictionaryOptions, getWordParts, isKnown } from './language.js';
 import { getSearchTypeDescription } from './dictionary/search-type.js'
+import { sendMessageMarkWordToBackground } from './message.js'; 
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
+import { isPageAnnotationVisible } from './page.js'
+
+const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
+
+const TOOLTIP_MARK_TOGGLE_ID = 'mea-tooltip-mark-toggle';
+const TOOLTIP_MARK_CLEAR_ID = 'mea-tooltip-mark-clear';
+
+const tickImgUrl = chrome.runtime.getURL("icons/tick.png");
+const clearImgUrl = chrome.runtime.getURL("icons/clear.png");
+
+var resetPageAnnotationVisibilityAndNotify;
 
 function createTooltip(document) {
   let tooltipElement = document.createElement('div');
   tooltipElement.id = DEFINITION_TOOLTIP_ID;
   tooltipElement.classList.add('mea-element', 'mea-supplementary');
+
+  tooltipElement.innerHTML = `
+  <p>
+    <span id='mea-headword'></span>
+    <span class="word-mark-actions"><button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button'><img src="${clearImgUrl}" /></button></span>
+  </p>
+  <p id='mea-definition'></p>
+  `;
   
   document.body.appendChild(tooltipElement);  
+
+  let markToggle = tooltipElement.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
+  markToggle.addEventListener('click', function() {
+    let word = tooltipElement.getAttribute('data-word');  
+    //console.log(`toggle ${word}`);
+    onMarkToggle(tooltipElement, word);
+  });
+
+  let markClear = tooltipElement.querySelector('#' + TOOLTIP_MARK_CLEAR_ID);
+  markClear.addEventListener('click', function() {
+    let word = tooltipElement.getAttribute('data-word');  
+    //console.log(`clear ${word}`);
+    onClearMark(word);
+  });
+}
+
+async function onMarkToggle(tooltipElement, word) {
+  let knownWords = await loadKnownWords();
+  let known = isKnown(word, knownWords);
+  if(known){
+      await onMarkAsUnknown(tooltipElement, word);
+  } else {
+      await onMarkAsKnown(tooltipElement, word);
+  }
+  //console.log('mark toggle');
+}
+
+async function onMarkAsKnown(tooltipElement, word) {
+  let targetWord = word;
+  let wordChanges = await markWordAsKnown(targetWord);
+
+  updateWordMarkToogle(tooltipElement, false);
+
+  let visible = isPageAnnotationVisible();
+  resetPageAnnotationVisibilityAndNotify(visible);
+
+  sendMessageMarkWordToBackground(wordChanges);
+}
+
+async function onMarkAsUnknown(tooltipElement, word) {
+  let targetWord = word;
+  let wordChanges = await markWordAsUnknown(targetWord);
+  updateWordMarkToogle(tooltipElement, true);
+
+  let visible = isPageAnnotationVisible();
+  resetPageAnnotationVisibilityAndNotify(visible);
+
+  sendMessageMarkWordToBackground(wordChanges);
+}
+
+async function onClearMark(word) {
+  let targetWord = word;
+  let wordChanges = await removeWordMark(targetWord);
+  
+  let visible = isPageAnnotationVisible();
+  resetPageAnnotationVisibilityAndNotify(visible);
+
+  sendMessageMarkWordToBackground(wordChanges);
+}
+
+function updateUI(tooltipElement, headwordHtml, definitionHtml, unknown){
+  let headword = tooltipElement.querySelector('#mea-headword');
+  headword.innerHTML = headwordHtml;
+
+  let definition = tooltipElement.querySelector('#mea-definition');
+  definition.innerHTML = definitionHtml;
+
+  updateWordMarkToogle(tooltipElement, unknown);
+}
+
+function updateWordMarkToogle(tooltipElement, unknown){
+  let markToggle = tooltipElement.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
+  if(unknown){
+    markToggle.classList.add('unknown');
+  } else {
+    markToggle.classList.remove('unknown');
+  }
 }
 
 function getTooltipElement(){
@@ -17,13 +114,19 @@ function getTooltipElement(){
   return topDocument.getElementById(DEFINITION_TOOLTIP_ID);
 }
 
-function addTooltipEventListener(document, documentConfig, clickHandler, siteOptions, options) {
+function addTooltipEventListener(document, documentConfig, clickHandler, siteOptions, options, resetPageAnnotationVisibilityAndNotifyFunction) {
+  resetPageAnnotationVisibilityAndNotify = resetPageAnnotationVisibilityAndNotifyFunction;
+
+  console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
   var hideTooltipTimeout;
 
-  definitionTooltipElement.addEventListener('click', () => {
-    let word = definitionTooltipElement.getAttribute('data-word');
-    clickHandler(word);
+  definitionTooltipElement.addEventListener('click', (event) => {
+    let tooltipButton = event.target.closest('.mea-tooltip-button');
+    if(!tooltipButton){
+      let word = definitionTooltipElement.getAttribute('data-word');
+      clickHandler(word);
+    }
   });
 
   definitionTooltipElement.addEventListener('mouseenter', () => {
@@ -75,7 +178,8 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
   let baseLeft = iframeLeft + window.scrollX;
 
   let searchType = targetElement.getAttribute('data-search-type'); 
-  tooltipElement.innerHTML = searchResultToHtml(searchType, searchResult, options.pronunciation.region);
+  let unknown = !targetElement.classList.contains('mea-hide');
+  searchResultToHtml(tooltipElement, searchType, searchResult, options.pronunciation.region, unknown);
   tooltipElement.setAttribute('data-word', searchResult.word);
   //left top
   
@@ -96,7 +200,7 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
 }
 
 
-function searchResultToHtml(searchType, searchResult, pronunciationRegion){
+function searchResultToHtml(tooltipElement, searchType, searchResult, pronunciationRegion, unknown){
   
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
@@ -121,10 +225,7 @@ function searchResultToHtml(searchType, searchResult, pronunciationRegion){
   let definitionHtml = generateDefinitionHtml(entry);
   let pronunciationText = pronunciationsToText(entry.headword.pronunciations, pronunciationRegion);    
 
-  return `
-  <p>${headWordHtml} ${pronunciationText} ${partsHtml} </p>
-  <p>${definitionHtml}</p>
-  `;
+  updateUI(tooltipElement, `${headWordHtml} ${pronunciationText} ${partsHtml}`, definitionHtml, unknown);
 }
 
 function generateDefinitionHtml(entry) {

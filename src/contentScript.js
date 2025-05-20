@@ -292,7 +292,8 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
       showDialog([MenuItems.Vocabulary]);
     }, 
     currentSiteOption,
-    options
+    options,
+    resetPageAnnotationVisibilityAndNotify
   );
   
   document.addEventListener("mouseup", async (event) => {
@@ -430,8 +431,15 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
         //console.log("A child node has been added or removed.");
         //console.log(mutation);
         //skip the mutations that triggered by itself.
-        let triggeredBySelf = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
-
+        let triggeredByTokenize = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
+        
+        let targetId = mutation.target?.id;
+        let triggeredInMeaElement = false;
+        if(targetId){
+          triggeredInMeaElement = targetId.toUpperCase().startsWith(MEA_TAG_PREFIX);
+        }
+        
+        let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
         if(!triggeredBySelf){
           gDomChanges ++;
         }        
