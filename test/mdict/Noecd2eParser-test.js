@@ -2,11 +2,13 @@
 import { strict as assert } from 'assert';
 import { Noecd2eParser } from '../../src/dictionary/mdict/parser/Noecd2eParser.js'
 import fs from 'fs'
+import { MDX, MDD, BufferedFile } from '@jackhatedance/js-mdict'
 
 describe('mdict new-oxford-ec-dual parser', function () {
   
   describe('Noecd2eParser parse', function () {
     before(function() {
+      this.mdx = new MDX('./test/mdict/zips/新牛津英汉双解大词典（第2版）.mdx');
       this.parser = new Noecd2eParser({
         allUpperCaseEntryPolicy: 'lowerCase',
         debugPrintSelectorFind: false
@@ -240,8 +242,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e said', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/said.html', 'utf8');
-
+      let html = this.mdx.lookup('said').definition;
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -251,6 +252,20 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past and past participle of say. SAY的过去式和过去分词");
       assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的,该(用于法律语言或幽默中)");
+      
+    });
+
+    it('noecd2e woven', async function () {
+      let html = this.mdx.lookup('woven').definition;
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈwəʊvən");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past participle of weave. WEAVE的过去分词");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "编织的,机织的");
       
     });
 

@@ -25,6 +25,7 @@ class Noecd2eParser extends JsonSelectorParser {
                                 [
                                     {
                                         selector: 'definitionGroup/',
+                                        removeSelector: 'sup'
                                     },
                                 ]
                         },
