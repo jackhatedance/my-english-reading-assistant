@@ -151,7 +151,7 @@ function searchWordWithDict(query, options, dicts){
     let baseSearchType = '';
 
     if(lookupResult) {
-        let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult.json);
+        //let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult.json);
         let bHasLinkDefinitionOnly = hasLinkDefinitionOnly(lookupResult.json);
 
         if(bHasLinkDefinitionOnly){            
@@ -161,14 +161,10 @@ function searchWordWithDict(query, options, dicts){
             
             if(linkLookupResult) {
                 //replace
-                lookupResult = linkLookupResult;
+                deepLookupResult = linkLookupResult;
 
-                if(bHasLinkEntryOnly){
-                    searchType = 'link';
-                    word = link;
-                } else {
-                    baseWord = link;        
-                }                
+                baseWord = link;
+                baseSearchType='link';
             }        
         }    
         

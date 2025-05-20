@@ -1,13 +1,14 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { removeParentheses, standardizeParenthesesPunctuations } from '../text/textUtils.js' 
 import { mergeEntries } from './entry-utils.js'
+import { hasOnlyLinkOrFormDefinition } from './entry-utils.js'
 
 function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
     const hidePhoneticSymbol = true;
     const hideParentheses = true;
-    //console.log('simplify definition:'+ JSON.stringify(originalLookupResult));
+    console.log('originalLookupResult:'+ JSON.stringify(originalLookupResult));
 
     if(!originalLookupResult){
         return '';
@@ -15,9 +16,11 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
 
     let lookupResult = originalLookupResult;
     let prefix = '';
-    if(deepLookupResult){
+    
+    if(hasOnlyLinkOrFormDefinition(originalLookupResult.json)){
         lookupResult = deepLookupResult.lookupResult;
         //prefix = `${deepLookupResult.lookupResult.query}:`;
+        console.log('deepLookupResult:'+ JSON.stringify(deepLookupResult));
     }
 
     let entries = lookupResult.json;

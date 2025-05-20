@@ -1,5 +1,5 @@
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
-import { mergeEntries } from './dictionary/entry-utils.js'
+import { mergeEntries, hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import { pronunciationsToText } from './dictionary/definition-formatter.js'
 import { searchWord, buildDictionaryOptions, getWordParts } from './language.js';
 import { getSearchTypeDescription } from './dictionary/search-type.js'
@@ -101,14 +101,17 @@ function searchResultToHtml(searchType, searchResult, pronunciationRegion){
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
   let baseSearchType = searchResult.baseSearchType;
-  
-  let headWordHtml = generateHeadWordHtml(word, searchType, baseWord, baseSearchType);
-  let partsHtml = generatePartsHtml(word, baseWord);
+
 
   let lookupResult = searchResult.lookupResult;
-  if(searchResult.deepLookupResult){
-      lookupResult = searchResult.deepLookupResult.lookupResult;
+  let useBaseWord = hasOnlyLinkOrFormDefinition(lookupResult.json);
+  if(useBaseWord){
+    lookupResult = searchResult.deepLookupResult.lookupResult;
   }
+
+  let headWordHtml = generateHeadWordHtml(useBaseWord, word, searchType, baseWord, baseSearchType);
+  let partsHtml = generatePartsHtml(useBaseWord, word, baseWord);
+
   
   let entries = lookupResult.json;
   if(!entries){
@@ -152,10 +155,10 @@ function generateDefinitionHtml(entry) {
   return text;
 }
 
-function generateHeadWordHtml(word, searchType, baseWord, baseSearchType){
+function generateHeadWordHtml(useBaseWord, word, searchType, baseWord, baseSearchType){
   
   let headWordStr = '';
-  if(baseWord){
+  if(useBaseWord){
     let description = getSearchTypeDescription(baseSearchType, true);
     let descriptionStr = description ? `${description}:`:'';
 
@@ -174,8 +177,8 @@ function generateHeadWordHtml(word, searchType, baseWord, baseSearchType){
   return headWordStr;
 }
 
-function generatePartsHtml(word, baseWord) {
-  let effectiveWord = baseWord? baseWord : word;
+function generatePartsHtml(useBaseWord, word, baseWord) {
+  let effectiveWord = useBaseWord? baseWord : word;
   let wordPartObjs = getWordParts(effectiveWord);
   let parts = '';
   if (wordPartObjs) {

@@ -3,7 +3,7 @@ import { test, expect } from './fixtures';
 
 
 
-test('past tense rode', async ({ testPage, extensionId, popupPage }) => {
+test('only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
   await testPage.goto();
@@ -16,5 +16,21 @@ test('past tense rode', async ({ testPage, extensionId, popupPage }) => {
   await expect(rode).toHaveAttribute('data-base-word', 'ride');
   await expect(rode).toHaveAttribute('data-footnote', '原ride:n.骑马,乘坐; vt.骑,乘坐; vi.骑马,乘车; ...');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.骑马; vt.骑; vi.骑马; ...');
+  
+});
+
+
+test('not only tranform abode', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("mea-token[data-word='abode']");
+  await expect(rode).toHaveAttribute('data-footnote', 'n.住所,住处,abide的过去式和过去分词');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.住所,住处,abide的过去式和过去分词');
   
 });

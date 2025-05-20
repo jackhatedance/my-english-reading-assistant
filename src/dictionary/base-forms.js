@@ -8,7 +8,7 @@ const FORM_MATCHERS = [
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_THIRD_PERSON_SINGULAR_PRESENT,
-        suffix: '第三人称单数现在时',
+        suffix: '第三人称单数现在(式|时)',
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,

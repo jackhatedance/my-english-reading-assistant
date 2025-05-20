@@ -87,48 +87,47 @@ function hasLinkEntryOnly(entries){
     return false;
 }
 
-function hasLinkDefinitionOnly(entries){
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
-                return true;                
+function getTheOnlyDefinition(entries){
+    if(entries && entries.length == 1){
+        let entry = entries[0];
+        let definitionGroups = entry.definitionGroups;
+        if(definitionGroups && definitionGroups.length == 1){
+            let definitionGroup = definitionGroups[0];
+            let definitions = definitionGroup.definitions;
+            if(definitions && definitions.length == 1){
+                let definition = definitions[0];
+                return definition;
             }
-        }        
-    }catch(error){
-        //do nothing
+        }
+    }
+    return null;
+}
+
+function hasLinkDefinitionOnly(entries){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+        return true;                
     }
 
     return false;
 }
 
 function getTheOnlyLinkDefintion(entries){
-    let definitions = entries[0].definitionGroups[0].definitions;
-    if(definitions.length ==1){
-        let definition = definitions[0];
-        if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
-            //console.log(`get the only link of ${lookupResult.query}: ${definition.link}`);
-            return definition;                
-        }
-    }  
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+        //console.log(`get the only link of ${lookupResult.query}: ${definition.link}`);
+        return definition;                
+    }
 }
 
 function isOnlyTransform(entries, form){
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
-                if(!form){
-                    return true;
-                } else if(definition.form == form) {
-                    return true;
-                }
-            }
-        }        
-    }catch(error){
-        //do nothing
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+        if(!form){
+            return true;
+        } else if(definition.form == form) {
+            return true;
+        }
     }
 
     return false;
@@ -136,18 +135,25 @@ function isOnlyTransform(entries, form){
 
 
 function getTheOnlyBaseForm(entries){    
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
-                //console.log(`get the only base form of ${lookupResult.query}: ${definition.base}`);
-                return definition.base;
-            }
-        }        
-    }catch(error){
-        //do nothing
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+        //console.log(`get the only base form of ${lookupResult.query}: ${definition.base}`);
+        return definition.base;
     }
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm }
+function hasOnlyLinkOrFormDefinition(entries){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && 
+        (
+            definition.type == DICTIONARY_DEFINITION_TYPE_LINK ||
+            definition.type == DICTIONARY_DEFINITION_TYPE_FORM
+        )
+    ){
+        return true;                
+    }
+
+    return false;
+}
+
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition }
