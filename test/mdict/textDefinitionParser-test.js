@@ -1,7 +1,6 @@
 
 import { strict as assert } from 'assert';
 import { TextDefinitionParser } from '../../src/dictionary/text/TextDefinitionParser.js'
-import fs from 'fs'
 
 describe('text definition parser', function () {
   

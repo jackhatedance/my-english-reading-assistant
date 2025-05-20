@@ -1,22 +1,27 @@
 
 import { strict as assert } from 'assert';
 import { Noecd2eParser } from '../../src/dictionary/mdict/parser/Noecd2eParser.js'
-import fs from 'fs'
-import { MDX, MDD, BufferedFile } from '@jackhatedance/js-mdict'
+import { MDX } from '@jackhatedance/js-mdict'
 
 describe('mdict new-oxford-ec-dual parser', function () {
   
   describe('Noecd2eParser parse', function () {
     before(function() {
-      this.mdx = new MDX('./test/mdict/zips/新牛津英汉双解大词典（第2版）.mdx');
+      
       this.parser = new Noecd2eParser({
         allUpperCaseEntryPolicy: 'lowerCase',
         debugPrintSelectorFind: false
       });
+
+      this.mdx = new MDX('./test/mdict/mdx/新牛津英汉双解大词典（第2版）.mdx');
+      this.lookup = function(word) {
+        return this.mdx.lookup(word).definition;
+      };
+
     });
 
     it('noecd2e good', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/good.html', 'utf8');
+      let html = this.lookup('good');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -44,8 +49,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e draggle', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/draggle.html', 'utf8');
-
+      let html = this.lookup('draggle');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -59,8 +63,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e titter', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/titter.html', 'utf8');
-
+      let html = this.lookup('titter');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -75,8 +78,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
     it('noecd2e -et', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/-et.html', 'utf8');
-
+      let html = this.lookup('-et');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -89,8 +91,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e feathers link', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/feathers.html', 'utf8');
-
+      let html = this.lookup('feathers');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -101,8 +102,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e prentice link uppercase', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/prentice.html', 'utf8');
-
+      let html = this.lookup('prentice');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -113,8 +113,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e twelve', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/twelve.html', 'utf8');
-
+      let html = this.lookup('twelve');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -128,8 +127,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e musty', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/musty.html', 'utf8');
-
+      let html = this.lookup('musty');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -144,8 +142,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e these - plual', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/these.html', 'utf8');
-
+      let html = this.lookup('these');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -162,8 +159,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
     it('noecd2e is - third person singular', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/is.html', 'utf8');
-
+      let html = this.lookup('is');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -180,8 +176,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e but - parentheses, subdefinitions', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/but.html', 'utf8');
-
+      let html = this.lookup('but');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -196,8 +191,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e rode - merge pronunciations', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
-
+      let html = this.lookup('rode');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -211,8 +205,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e zoophyte', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/zoophyte.html', 'utf8');
-
+      let html = this.lookup('zoophyte');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -226,8 +219,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e Nabokov', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/Nabokov.html', 'utf8');
-
+      let html = this.lookup('Nabokov');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -242,7 +234,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e said', async function () {
-      let html = this.mdx.lookup('said').definition;
+      let html = this.lookup('said');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -256,7 +248,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e woven', async function () {
-      let html = this.mdx.lookup('woven').definition;
+      let html = this.lookup('woven');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");

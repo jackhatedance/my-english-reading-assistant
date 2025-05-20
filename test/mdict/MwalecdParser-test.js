@@ -1,7 +1,7 @@
 
 import { strict as assert } from 'assert';
 import { MwalecdParser } from '../../src/dictionary/mdict/parser/MwalecdParser.js'
-import fs from 'fs'
+import { MDX } from '@jackhatedance/js-mdict'
 import { PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from '../../src/dictionary/dictConstants.js'
 
 describe('mdict mwalecd parser', function () {
@@ -12,10 +12,15 @@ describe('mdict mwalecd parser', function () {
       options[PARSER_OPTION_MAX_SUBDEFINITION_NUMBER] = 999;
       options[PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS] = false;      
       this.parser = new MwalecdParser(options);
+
+      this.mdx = new MDX('./test/mdict/mdx/韦氏高阶英汉双解词典.mdx');
+      this.lookup = function(word) {
+        return this.mdx.lookup(word).definition;
+      };
     });
 
     it('json mwalecd good', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/good.html', 'utf8');
+      let html = this.lookup('good');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -90,7 +95,7 @@ describe('mdict mwalecd parser', function () {
 
 
     it('json mwalecd rang', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/rang.html', 'utf8');
+      let html = this.lookup('rang');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -108,7 +113,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd is', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/is.html', 'utf8');
+      let html = this.lookup('is');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -126,7 +131,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd what', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/what.html', 'utf8');
+      let html = this.lookup('what');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -164,7 +169,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd fumbling', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/fumbling.html', 'utf8');
+      let html = this.lookup('fumbling');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -182,7 +187,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd zodiacal', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/zodiacal.html', 'utf8');
+      let html = this.lookup('zodiacal');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -200,7 +205,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd zodiac', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/zodiac.html', 'utf8');
+      let html = this.lookup('zodiac');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -219,7 +224,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd wkly abbreviation english', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/wkly.html', 'utf8');
+      let html = this.lookup('wkly');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -235,7 +240,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd Xizang', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/Xizang.html', 'utf8');
+      let html = this.lookup('Xizang');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -253,7 +258,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd yup', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/yup.html', 'utf8');
+      let html = this.lookup('yup');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -274,7 +279,7 @@ describe('mdict mwalecd parser', function () {
     });
 
     it('json mwalecd unison', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/unison.html', 'utf8');
+      let html = this.lookup('unison');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -295,7 +300,7 @@ describe('mdict mwalecd parser', function () {
 
 
     it('json mwalecd weary', async function () {
-      let html = fs.readFileSync('./test/mdict/mwalecd/weary.html', 'utf8');
+      let html = this.lookup('weary');
       let parseResult = this.parser.parse(html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
