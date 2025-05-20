@@ -8,7 +8,7 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     //hardcode temporarily
     const hidePhoneticSymbol = true;
     const hideParentheses = true;
-    console.log('originalLookupResult:'+ JSON.stringify(originalLookupResult));
+    //console.log('originalLookupResult:'+ JSON.stringify(originalLookupResult));
 
     if(!originalLookupResult){
         return '';
@@ -17,10 +17,10 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let lookupResult = originalLookupResult;
     let prefix = '';
     
-    if(hasOnlyLinkOrFormDefinition(originalLookupResult.json)){
+    if(deepLookupResult && hasOnlyLinkOrFormDefinition(originalLookupResult.json)){
         lookupResult = deepLookupResult.lookupResult;
         //prefix = `${deepLookupResult.lookupResult.query}:`;
-        console.log('deepLookupResult:'+ JSON.stringify(deepLookupResult));
+        //console.log('deepLookupResult:'+ JSON.stringify(deepLookupResult));
     }
 
     let entries = lookupResult.json;

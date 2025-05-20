@@ -104,7 +104,7 @@ function searchResultToHtml(searchType, searchResult, pronunciationRegion){
 
 
   let lookupResult = searchResult.lookupResult;
-  let useBaseWord = hasOnlyLinkOrFormDefinition(lookupResult.json);
+  let useBaseWord = searchResult.deepLookupResult && hasOnlyLinkOrFormDefinition(lookupResult.json);
   if(useBaseWord){
     lookupResult = searchResult.deepLookupResult.lookupResult;
   }
