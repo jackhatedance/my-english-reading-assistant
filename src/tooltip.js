@@ -20,29 +20,67 @@ function createTooltip(document) {
   let tooltipElement = document.createElement('div');
   tooltipElement.id = DEFINITION_TOOLTIP_ID;
   tooltipElement.classList.add('mea-element', 'mea-supplementary');
+  document.body.appendChild(tooltipElement);
 
-  tooltipElement.innerHTML = `
-  <p>
-    <span id='mea-headword'></span>
-    <span class="word-mark-actions"><button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button'><img src="${clearImgUrl}" /></button></span>
-  </p>
-  <p id='mea-definition'></p>
+  const tooltipElementShowRoot = tooltipElement.attachShadow({ mode: 'open' });
+
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #mea-definition-tooltip-wrapper {
+      
+      * {
+        margin: 0px;
+        padding: 1px;
+      }
+      
+      .word-mark-actions {
+        button {
+          border-width: 1px;
+        }
+        img {
+          width: 16px;
+          vertical-align: middle;
+        }          
+      }
+      .word-mark-actions .unknown {
+        img {
+          filter: grayscale(100%);
+        }
+      }  
+    }
+  `;
+  tooltipElementShowRoot.appendChild(style);
+  
+  let tooltipWrapperElement = document.createElement('div');
+  tooltipWrapperElement.id = 'mea-definition-tooltip-wrapper';
+  tooltipElementShowRoot.appendChild(tooltipWrapperElement);
+
+  tooltipWrapperElement.innerHTML = `
+    <div class="word-mark-actions">
+      <button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button'><img src="${clearImgUrl}" /></button>
+    </div>
+    <p>
+      <span id='mea-headword'></span>
+    </p>
+    <p id='mea-definition'></p>
+  
   `;
   
-  document.body.appendChild(tooltipElement);  
+    
 
-  let markToggle = tooltipElement.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
+  let markToggle = tooltipElementShowRoot.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
   markToggle.addEventListener('click', function() {
     let word = tooltipElement.getAttribute('data-word');  
     //console.log(`toggle ${word}`);
     onMarkToggle(tooltipElement, word);
   });
 
-  let markClear = tooltipElement.querySelector('#' + TOOLTIP_MARK_CLEAR_ID);
+  let markClear = tooltipElementShowRoot.querySelector('#' + TOOLTIP_MARK_CLEAR_ID);
   markClear.addEventListener('click', function() {
     let word = tooltipElement.getAttribute('data-word');  
     //console.log(`clear ${word}`);
-    onClearMark(word);
+    onClearMark(tooltipElement, word);
   });
 }
 
@@ -80,10 +118,14 @@ async function onMarkAsUnknown(tooltipElement, word) {
   sendMessageMarkWordToBackground(wordChanges);
 }
 
-async function onClearMark(word) {
+async function onClearMark(tooltipElement, word) {
   let targetWord = word;
   let wordChanges = await removeWordMark(targetWord);
   
+  let knownWords = await loadKnownWords();
+  let known = isKnown(word, knownWords);
+  updateWordMarkToogle(tooltipElement, !known);
+
   let visible = isPageAnnotationVisible();
   resetPageAnnotationVisibilityAndNotify(visible);
 
@@ -91,17 +133,17 @@ async function onClearMark(word) {
 }
 
 function updateUI(tooltipElement, headwordHtml, definitionHtml, unknown){
-  let headword = tooltipElement.querySelector('#mea-headword');
+  let headword = tooltipElement.shadowRoot.querySelector('#mea-headword');
   headword.innerHTML = headwordHtml;
 
-  let definition = tooltipElement.querySelector('#mea-definition');
+  let definition = tooltipElement.shadowRoot.querySelector('#mea-definition');
   definition.innerHTML = definitionHtml;
 
   updateWordMarkToogle(tooltipElement, unknown);
 }
 
 function updateWordMarkToogle(tooltipElement, unknown){
-  let markToggle = tooltipElement.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
+  let markToggle = tooltipElement.shadowRoot.querySelector('#' + TOOLTIP_MARK_TOGGLE_ID);
   if(unknown){
     markToggle.classList.add('unknown');
   } else {
@@ -121,7 +163,7 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
   const definitionTooltipElement = getTooltipElement();
   var hideTooltipTimeout;
 
-  definitionTooltipElement.addEventListener('click', (event) => {
+  definitionTooltipElement.shadowRoot.addEventListener('click', (event) => {
     let tooltipButton = event.target.closest('.mea-tooltip-button');
     if(!tooltipButton){
       let word = definitionTooltipElement.getAttribute('data-word');
