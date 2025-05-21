@@ -16,6 +16,22 @@ const clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 var resetPageAnnotationVisibilityAndNotify;
 
+var gTooltipTimeout;
+
+function clearAndSetTooltipTimeout(tooltipTimeout){
+  if(gTooltipTimeout){
+    clearTimeout(gTooltipTimeout);
+  }
+
+  gTooltipTimeout = tooltipTimeout;
+}
+
+function clearTooltipTimeout(){
+  if(gTooltipTimeout){
+    clearTimeout(gTooltipTimeout);
+  }
+}
+
 function createTooltip(document) {
   let tooltipElement = document.createElement('div');
   tooltipElement.id = DEFINITION_TOOLTIP_ID;
@@ -161,8 +177,7 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
 
   console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
-  var hideTooltipTimeout;
-
+  
   definitionTooltipElement.shadowRoot.addEventListener('click', (event) => {
     let tooltipButton = event.target.closest('.mea-tooltip-button');
     if(!tooltipButton){
@@ -173,13 +188,15 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
 
   definitionTooltipElement.addEventListener('mouseenter', () => {
     //console.log('clearTimeout 1');
-    clearTimeout(hideTooltipTimeout);
+    clearTooltipTimeout();
   });
 
   definitionTooltipElement.addEventListener('mouseleave', () => {
-    hideTooltipTimeout = setTimeout(() => {
+    let timeout = setTimeout(() => {
+      //console.log('timer 1');
       hideTooltip(definitionTooltipElement); 
     }, 100);
+    clearAndSetTooltipTimeout(timeout);
   });
 
   const meaWords = document.querySelectorAll('.mea-word');
@@ -188,20 +205,26 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
       //console.log('mouse enter');
 
       //console.log('clearTimeout 2');
-      clearTimeout(hideTooltipTimeout);
+      clearTooltipTimeout();
       
-      let word = ele.getAttribute('data-word');      
+      let timeout = setTimeout(() => {
+        //console.log('timer 2');
+        let word = ele.getAttribute('data-word');      
       
-      let searchResult = searchWord(word, { dictionaryOptions: buildDictionaryOptions(siteOptions) });
-      showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, options);
+        let searchResult = searchWord(word, { dictionaryOptions: buildDictionaryOptions(siteOptions) });
+
+        showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, options);
+      }, 500); 
+      clearAndSetTooltipTimeout(timeout);      
     
     });
 
     ele.addEventListener('mouseleave', function() {
       //console.log('mouse leave');    
-      hideTooltipTimeout = setTimeout(() => {
+      let timeout = setTimeout(() => {
         hideTooltip(definitionTooltipElement);   
       }, 100); 
+      clearAndSetTooltipTimeout(timeout);  
     });
   });
 }
