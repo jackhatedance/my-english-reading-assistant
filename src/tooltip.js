@@ -356,7 +356,11 @@ function adjustIfOutOfViewPort(tooltipElement, baseTop, baseLeft, targetRect, to
 
   if (isOffTop) {
     //under target
-    tooltipElement.style.top = `${baseTop + targetRect.bottom}px`;      
+    tooltipElement.style.top = `${baseTop + targetRect.bottom}px`;  
+    
+    moveActions(tooltipElement, true);
+  } else {
+    moveActions(tooltipElement, false);
   }
 
   if (isOffRight) {
@@ -367,6 +371,21 @@ function adjustIfOutOfViewPort(tooltipElement, baseTop, baseLeft, targetRect, to
     tooltipElement.style.right = `10px`;
   }
 
+}
+
+function moveActions(tooltipElement, top){
+  let wrapper = tooltipElement.shadowRoot.querySelector('#mea-definition-tooltip-wrapper')
+  let actions = wrapper.querySelector('.word-mark-actions')
+  
+  if(top){
+    if(wrapper.firstElementChild != actions){
+      wrapper.prepend(actions);
+    }
+  }else {
+    if(wrapper.lastElementChild != actions){
+      wrapper.appendChild(actions);
+    }
+  }
 }
 
 function hideTooltip(tooltipElement){
