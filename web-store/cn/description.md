@@ -17,4 +17,4 @@
 8. 导入用户词典，支持Mdict格式
 
 
-原名：我的英文阅读助手
+原名：我的英文阅读助手/My English Reading Assistant
