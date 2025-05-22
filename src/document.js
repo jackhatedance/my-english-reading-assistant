@@ -222,23 +222,7 @@ function addStyle(document) {
         font-size: 14px;
         visibility: hidden;
         z-index: 100;
-
-        * {
-          margin: 0px;
-          padding: 1px;
-        }
-        
-        .word-mark-actions {
-          padding: 0;
-          img {
-            width: 10px;
-          }          
-        }
-        .word-mark-actions .unknown {
-          img {
-            filter: grayscale(100%);
-          }
-        }  
+        padding: 2px;
       }
 
     `;
