@@ -14,6 +14,9 @@ const TOOLTIP_MARK_CLEAR_ID = 'mea-tooltip-mark-clear';
 const tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 const clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
+const markToggleTips = chrome.i18n.getMessage('sidepanelWordActionMarkToggle');
+const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
+
 var resetPageAnnotationVisibilityAndNotify;
 
 var gTooltipTimeout;
@@ -45,15 +48,13 @@ function createTooltip(document) {
   style.textContent = `
     #mea-definition-tooltip-wrapper {
       
-      * {
+      p {
         margin: 0px;
-        padding: 1px;
+        padding: 0px;
       }
       
       .word-mark-actions {
-        button {
-          border-width: 1px;
-        }
+        
         img {
           width: 16px;
           vertical-align: middle;
@@ -74,10 +75,9 @@ function createTooltip(document) {
 
   tooltipWrapperElement.innerHTML = `
     <div class="word-mark-actions">
-      <button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button'><img src="${clearImgUrl}" /></button>
+      <button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button' title='${markToggleTips}'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button' title='${clearMarkTips}'><img src="${clearImgUrl}" /></button>
     </div>
-    <p>
-      <span id='mea-headword'></span>
+    <p id='mea-headword'>
     </p>
     <p id='mea-definition'></p>
   
@@ -175,7 +175,7 @@ function getTooltipElement(){
 function addTooltipEventListener(document, documentConfig, clickHandler, siteOptions, options, resetPageAnnotationVisibilityAndNotifyFunction) {
   resetPageAnnotationVisibilityAndNotify = resetPageAnnotationVisibilityAndNotifyFunction;
 
-  console.log('addTooltipEventListener');
+  //console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
   
   definitionTooltipElement.shadowRoot.addEventListener('click', (event) => {
