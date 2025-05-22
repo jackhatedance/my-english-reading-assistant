@@ -157,7 +157,8 @@ function searchWordWithDict(query, options, dicts){
         if(bHasLinkDefinitionOnly){            
             let linkDefinition = getTheOnlyLinkDefintion(lookupResult.json);   
             let link = linkDefinition.link;    
-            let linkLookupResult = lookup(link, options, dicts);                  
+            const dicts2 = [ lookupResult.dictionaryName ];
+            let linkLookupResult = lookup(link, options, dicts2);                  
             
             if(linkLookupResult) {
                 

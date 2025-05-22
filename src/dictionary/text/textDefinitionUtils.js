@@ -10,6 +10,14 @@ function splitWordClasses(definition){
         let match = matchArray[i];
         let start = match.index;
         let group;
+
+        //text before first word class
+        if(i==0 && start != 0){
+            group = definition.slice(0, start);
+            group = trimByCharacters(group, ';');
+            groups.push(group);
+        }
+
         if(i == matchArray.length-1){
             group = definition.slice(start);
         } else{

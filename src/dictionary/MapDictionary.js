@@ -6,7 +6,12 @@ class MapDictionary extends Dictionary {
         super(data, name, options);
 
         this.size = Object.keys(data.raw).length;
-        this.definitionParser = new TextDefinitionParser();
+
+        let parserOptions = [];
+        if(options?.oneTransformToLink){
+            parserOptions.oneTransformToLink = true;
+        }
+        this.definitionParser = new TextDefinitionParser(parserOptions);
     }
 
     lookupFromMap(map, query){

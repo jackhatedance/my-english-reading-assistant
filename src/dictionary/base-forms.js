@@ -4,7 +4,7 @@ import { DICTIONARY_DEFINITION_TYPE_FORM_PLURAL, DICTIONARY_DEFINITION_TYPE_FORM
 const FORM_MATCHERS = [
     {
         form: DICTIONARY_DEFINITION_TYPE_FORM_PLURAL,
-        suffix: '复数'
+        suffix: '((复数)|(名词复数))'
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_THIRD_PERSON_SINGULAR_PRESENT,

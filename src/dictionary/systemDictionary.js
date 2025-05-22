@@ -19,7 +19,7 @@ async function loadSystemDictionariesToCache(){
     smallDictionary = new MapDictionary({ raw: dictSmall }, '#small');
 
     let dictLarge = await getDictJson('large');
-    largeDictionary = new MapDictionary({ raw: dictLarge }, '#large');
+    largeDictionary = new MapDictionary({ raw: dictLarge }, '#large', { oneTransformToLink: true });
     affixDictionary = new MapDictionary({ raw: dictAffix }, '#affix');
         
     gSystemDictionaryMap['#small'] = smallDictionary;
