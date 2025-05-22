@@ -209,7 +209,7 @@ async function domMonitor() {
     if(gDomChanges === gDomChangesMonitored){
       //no more changes in this interval. now we can reset annotations
       
-      //console.log('DOM stop changing');
+      //console.log(`DOM stop changing, ${gDomChanges} changes accumulated`);
       
       //reset
       gDomChanges =0;
@@ -224,7 +224,7 @@ async function domMonitor() {
   }
   
   if(needRefresh) {
-    //console.log('auto refresh page annotation');
+    //console.log('start refresh page annotation');
     
     let startTime = new Date().getTime();
 
@@ -233,7 +233,7 @@ async function domMonitor() {
     await resetPageAnnotationVisibilityAndNotify(true);
     let endTime = new Date().getTime();
     let elapseTime = endTime - startTime;
-    //console.log('elapseTime：'+ elapseTime);
+    //console.log(`time costs: ${elapseTime} ms`);
   }
 
   let url = gSiteProfile.getUrl(document);
@@ -250,10 +250,12 @@ async function domMonitor() {
 
 //enahnced version of setInterval(), make sure tasks are exectued sequentially.
 (function domMonitorLoop() {
-  setTimeout(async () => {    
-    await domMonitor();
-
-    domMonitorLoop();
+  setTimeout(async () => {
+    try {
+      await domMonitor();
+    } finally {
+      domMonitorLoop();
+    }
   }, 2000);
 })();
 
@@ -426,6 +428,7 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
   const targetNode = document.body;
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
+    let domChangesStart = gDomChanges;
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
@@ -447,6 +450,10 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
         //console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
     }
+    let domChangesCount = gDomChanges - domChangesStart;
+    if(domChangesCount>0){
+      //console.log(`DOM changes: ${domChangesCount}`);
+    }    
   };
   const observer = new MutationObserver(callback);
 
