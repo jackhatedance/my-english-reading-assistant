@@ -229,11 +229,14 @@ async function domMonitor() {
     let startTime = new Date().getTime();
 
     gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
+    let endTime1 = new Date().getTime();
+    let elapseTime1 = endTime1 - startTime;
+    //console.log(`initPageAnnotations time costs: ${elapseTime1} ms`);
 
     await resetPageAnnotationVisibilityAndNotify(true);
-    let endTime = new Date().getTime();
-    let elapseTime = endTime - startTime;
-    //console.log(`time costs: ${elapseTime} ms`);
+    let endTime2 = new Date().getTime();
+    let elapseTime2 = endTime2 - endTime1;
+    //console.log(`resetPageAnnotationVisibilityAndNotify time costs: ${elapseTime2} ms`);
   }
 
   let url = gSiteProfile.getUrl(document);
@@ -433,6 +436,18 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
       if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
         //console.log(mutation);
+        let nodeTextContentArray = [];
+        for(let node of mutation.addedNodes){
+          if(node.textContent && node.textContent != ''){
+            nodeTextContentArray.push(node.textContent);
+          }          
+        }
+        let nodeTextContents = '';
+        if(nodeTextContentArray.length>0){
+          nodeTextContents = nodeTextContentArray.join('')
+        } 
+        let nodeTextContentsIsEmpty = nodeTextContents == '';
+
         //skip the mutations that triggered by itself.
         let triggeredByTokenize = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
         
@@ -443,7 +458,7 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
         }
         
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
-        if(!triggeredBySelf){
+        if(!triggeredBySelf && !nodeTextContentsIsEmpty){
           gDomChanges ++;
         }        
       } else if (mutation.type === "attributes") {

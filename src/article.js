@@ -59,7 +59,7 @@ function tokenizeTextNode(document, siteOptions) {
                 let query = token.content; 
                 //console.log('before trim punctuation:'+query);
                 query = trimPunctuations(query);
-                //console.log('after trim punctuation:'+query);
+                //console.log('token to query:'+query);
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
@@ -330,14 +330,20 @@ function parseArticleTextNodes(article, element, siteOptions){
                 //console.log(token);
             }
             */  
-            
+
+            let contentSame = false;
+            if(token 
+                && token.originalContent 
+                && node.textContent
+                && token.originalContent.trim() == node.textContent.trim()){
+                //console.log(`node content != token.content: ${node.textContent.trim()} != ${token.content.trim()}`);
+                contentSame = true;
+            }
            
             if(token 
                 //&& token.originalContent.includes('-')
                 //&& !token.content.includes('-')
-                && token.content !== nodeContent
-                && nodeInfo.offset >= token.articleOffset
-                && nodeInfo.offset < token.articleOffset + token.length
+                && !contentSame                
                 && node.parentElement.tagName == 'MEA-TOKEN'
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;

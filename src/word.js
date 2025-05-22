@@ -68,6 +68,7 @@ function updateWordAnnotation(textElement, searchResult, showShortDefinition, si
     //console.log(textElement.tagName);
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions);
     let { definition, shortDefinition, middleDefinition, word, searchType, baseWord, parts } = annotationParameters;
+    //console.log(`updateWordAnnotation: ${word}`);
 
     let escapedWord = word.replace(/&/g, "&amp;");
     let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
