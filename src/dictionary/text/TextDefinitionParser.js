@@ -2,7 +2,6 @@ import { DefinitionParser } from '../DefinitionParser.js'
 import { splitWordClasses, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
 import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
-import { findTransformDefinitions } from '../entry-utils.js'
 
 class TextDefinitionParser extends DefinitionParser {
     
@@ -22,17 +21,7 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     afterParse(entries){
-        if(this.options?.oneTransformToLink == true){
-            let transformDefinitions = findTransformDefinitions(entries);
-            if(transformDefinitions.length ==1){
-                let def = transformDefinitions[0];
-                let link = def.base;
-                let entry = this.createEntryForLink(link);
-
-                entries.length = 0;
-                entries.push(entry);
-            }
-        }
+        
     }
 
     parseEntry(text){

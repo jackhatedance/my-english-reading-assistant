@@ -1,7 +1,7 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion } from './dictionary/entry-utils.js'
+import { hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, findTransformDefinitions } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
@@ -11,6 +11,7 @@ import { addUnrecognizedWord } from './service/dictionaryService.js';
 import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { deepLookup } from './deep-lookup.js'
+import { isRegularTransform } from './lemma.js'
 
 
 var gPrefixes, gSuffixes;
@@ -153,6 +154,9 @@ function searchWordWithDict(query, options, dicts){
     if(lookupResult) {
         let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult.json);
         let bHasLinkDefinitionOnly = hasLinkDefinitionOnly(lookupResult.json);
+        
+        let transformDefinitions = findTransformDefinitions(lookupResult.json);
+        let bHasOneTransformDefinition = (transformDefinitions.length ==1);
 
         if(bHasLinkDefinitionOnly){            
             let linkDefinition = getTheOnlyLinkDefintion(lookupResult.json);   
@@ -161,9 +165,8 @@ function searchWordWithDict(query, options, dicts){
             let linkLookupResult = lookup(link, options, dicts2);                  
             
             if(linkLookupResult) {
-                
-                if(bHasLinkEntryOnly){
-                    //most cases are regular transform
+                let regularTransform = isRegularTransform(link, word);
+                if(regularTransform){
                     lookupResult = linkLookupResult;
                     searchType = 'link';
                     word = link;
@@ -173,7 +176,25 @@ function searchWordWithDict(query, options, dicts){
                     baseSearchType='link';
                 }
             }        
-        }    
+        } else if(bHasOneTransformDefinition){
+            let transformDefinition = transformDefinitions[0];   
+            let base = transformDefinition.base;    
+            const dicts2 = [ lookupResult.dictionaryName ];
+            let linkLookupResult = lookup(base, options, dicts2);                  
+            
+            if(linkLookupResult) {
+                let regularTransform = isRegularTransform(base, word);
+                if(regularTransform){
+                    lookupResult = linkLookupResult;
+                    searchType = 'link';
+                    word = base;
+                } else {
+                    deepLookupResult = linkLookupResult;
+                    baseWord = base;        
+                    baseSearchType='link';
+                }
+            } 
+        }   
         
         //lemma
         if(options.allowLemma){

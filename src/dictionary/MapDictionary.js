@@ -8,9 +8,7 @@ class MapDictionary extends Dictionary {
         this.size = Object.keys(data.raw).length;
 
         let parserOptions = [];
-        if(options?.oneTransformToLink){
-            parserOptions.oneTransformToLink = true;
-        }
+        
         this.definitionParser = new TextDefinitionParser(parserOptions);
     }
 

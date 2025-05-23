@@ -19,7 +19,7 @@ async function loadSmallDictionary(){
 
 async function loadLargeDictionary(){
     let dictLarge = await getDictJson('large');
-    return new MapDictionary({ raw: dictLarge }, '#large', { oneTransformToLink: true });
+    return new MapDictionary({ raw: dictLarge }, '#large', { });
 }
 
 async function loadAffixDictionary(){

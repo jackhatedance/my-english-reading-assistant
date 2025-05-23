@@ -37,32 +37,31 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text boys SysLarge', async function () {
-      this.parser.options.oneTransformToLink = true;
       let parseResult = this.parser.parse('n. 男孩子们；小伙子们（boy的复数）');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations.length, 0);
-      assert.equal(parseResult[0].definitionGroups[0].name, "link");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "转boy");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "boy");      
+      assert.equal(parseResult[0].definitionGroups[0].name, "n.");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "男孩子们");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "小伙子们(boy的复数)");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].base, "boy");      
       
     });
     
     it('text esquires SysLarge', async function () {
-      this.parser.options.oneTransformToLink = true;
       let parseResult = this.parser.parse('(esquire 的复数) n. 先生, 绅士');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations.length, 0);
-      assert.equal(parseResult[0].definitionGroups[0].name, "link");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "转esquire");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "esquire");      
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "esquire 的复数");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "esquire");      
       
     });
 

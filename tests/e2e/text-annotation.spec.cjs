@@ -3,7 +3,7 @@ import { test, expect } from './fixtures';
 
 
 
-test('only transform rode', async ({ testPage, extensionId, popupPage }) => {
+test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
   await testPage.goto();
@@ -20,7 +20,7 @@ test('only transform rode', async ({ testPage, extensionId, popupPage }) => {
 });
 
 
-test('not only tranform abode', async ({ testPage, extensionId, popupPage }) => {
+test('iregular not only tranform abode', async ({ testPage, extensionId, popupPage }) => {
   
   
   await testPage.goto();
