@@ -36,7 +36,7 @@ test('iregular not only tranform abode', async ({ testPage, extensionId, popupPa
 });
 
 
-test('regular plural boys', async ({ testPage, extensionId, popupPage }) => {
+test('regular plural multiple meanings boys', async ({ testPage, extensionId, popupPage }) => {
   
   
   await testPage.goto();
@@ -49,5 +49,22 @@ test('regular plural boys', async ({ testPage, extensionId, popupPage }) => {
   await expect(rode).toHaveText('boys');
   await expect(rode).toHaveAttribute('data-footnote', 'n.男孩,男孩,少年,儿子');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩,男孩,少年; ...');
+  
+});
+
+
+test('regular plural single meanings girls', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("mea-token[data-word='girl']");
+  await expect(rode).toHaveText('girls');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.女孩,少女,女佣');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.女孩,少女,女佣');
   
 });
