@@ -34,3 +34,20 @@ test('not only tranform abode', async ({ testPage, extensionId, popupPage }) => 
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.住所,住处,abide的过去式和过去分词');
   
 });
+
+
+test('regular plural boys', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("mea-token[data-word='boy']");
+  await expect(rode).toHaveText('boys');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.男孩,男孩,少年,儿子');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩,男孩,少年; ...');
+  
+});
