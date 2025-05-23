@@ -398,11 +398,11 @@
     "sidepanelWordActionClearMark":{
         "message":"我不确定"
     },
-    "sidepanel_word_action_dictionary_text":{
-        "message":"文本"
+    "sidepanel_word_action_dictionary_concise":{
+        "message":"简明"
     },
-    "sidepanel_word_action_dictionary_html":{
-        "message":"网页"
+    "sidepanel_word_action_dictionary_full":{
+        "message":"完整"
     },
     "sidepanel_word_action_dictionary_open_in_dictionary":{
         "message":"词典页"

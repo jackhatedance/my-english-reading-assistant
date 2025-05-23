@@ -1,6 +1,6 @@
 
-import { getSystemDictionary } from './dictionary/systemDictionary.js'
-import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
+import { getSystemDictionaryFromCache } from './dictionary/systemDictionary.js'
+import { getCustomDictionaryFromCache, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
                                           
 
 function createDefaultOptions(){
@@ -27,7 +27,7 @@ function lookup(word, options, dicts) {
     let lookupResult;
 
     for(let name of dicts){
-        let dict = getDict(name);
+        let dict = getDictFromCache(name);
         
         if(dict){
             lookupResult = dict.lookup(word, options);
@@ -43,10 +43,10 @@ function lookup(word, options, dicts) {
     return lookupResult;
 }
 
-function getDict(name){
-    let dict = getSystemDictionary(name);
+function getDictFromCache(name){
+    let dict = getSystemDictionaryFromCache(name);
     if(!dict){
-        dict = getCustomDictionary(name);
+        dict = getCustomDictionaryFromCache(name);
     } 
 
     return dict;

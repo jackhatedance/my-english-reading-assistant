@@ -3,7 +3,7 @@ import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, wat
 import { useRoute } from 'vue-router'
 import Definition from './Definition.vue'
 import { getAllDictionaryMetas, loadCustomDictionary } from '../../dictionary/customDictionary.js'
-import { getSystemDictionary } from '../../dictionary/systemDictionary.js'
+import { loadSystemDictionary } from '../../dictionary/systemDictionary.js'
 
 const props = defineProps({
     
@@ -30,7 +30,7 @@ const lookupResultRef = ref(null);
 async function getDictionary(meta){
     let dictionaryInstance;
     if(meta.type =='system'){
-        dictionaryInstance = await getSystemDictionary(meta.name);
+        dictionaryInstance = await loadSystemDictionary(meta.name);
     }else{
         dictionaryInstance = await loadCustomDictionary(meta, ['raw'], { rawType: 'extracted'});    
     }

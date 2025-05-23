@@ -399,11 +399,11 @@
     "sidepanelWordActionClearMark":{
         "message":"I am not sure"
     },
-    "sidepanel_word_action_dictionary_text":{
-        "message":"Text"
+    "sidepanel_word_action_dictionary_concise":{
+        "message":"Concise"
     },
-    "sidepanel_word_action_dictionary_html":{
-        "message":"Html"
+    "sidepanel_word_action_dictionary_full":{
+        "message":"Full"
     },
     "sidepanel_word_action_dictionary_open_in_dictionary":{
         "message":"Dictionary Page"

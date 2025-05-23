@@ -1,6 +1,6 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { mergeEntries } from './entry-utils.js'
-import { pronunciationsToText } from './definition-formatter.js'
+import { pronunciationsToText, entriesToHtml } from './definition-formatter.js'
 
 class Dictionary {
     size = 0;
@@ -170,17 +170,7 @@ class Dictionary {
     
         let definitionObj = entry;
     
-        let groupTexts = [];
-        for(let definitionGroup of definitionObj.definitionGroups){
-            const { name, definitions} = definitionGroup;
-            let wordClass = getWordClassAbbreviation(name);
-    
-            let definitionTexts = definitions.filter(item => item.text != '').map(item => item.text );
-            let definitionsText = definitionTexts.join(',');
-            let groupText = `${wordClass} ${definitionsText}`;
-            groupTexts.push(groupText);
-        }
-        let groupsText = groupTexts.join('<br>');
+        let groupsText = entriesToHtml(entries);
         
         let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations); 
         let text = `${query}<br>${groupsText}`;

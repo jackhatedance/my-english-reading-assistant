@@ -242,7 +242,7 @@ function removeCustomDictionaryFromCache(name) {
 }
 
 //sync function, get from memory.
-function getCustomDictionary(name){
+function getCustomDictionaryFromCache(name){
     return gCustomDictionaries[name];
 }
 
@@ -382,4 +382,4 @@ async function deleteDictionaryIndex(name){
     await deleteDictionaryIndexData(name);
 }
 
-export { initializeCustomDictionaryService, getCustomDictionary, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder, loadCustomDictionary }
+export { initializeCustomDictionaryService, getCustomDictionaryFromCache, addCustomDictionary, saveDictionary, deleteCustomDictionary, deleteDictionary, getAllDictionaryMetas, getDictionaryMeta, getEnabledDictionaryNamesFromCache, getAdditionalDictionaryMetas, updateAdditionalDictionariesInCache, saveDictionaryMeta, deleteDictionaryMeta, deleteDictionaryIndex, migrateDictionary, migrateAllDictionaries, changeOrder, loadCustomDictionary }
