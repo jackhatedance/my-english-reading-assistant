@@ -9,7 +9,7 @@ import { getOptionsFromCache, refreshOptionsCache, } from './service/optionServi
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
-import { getWordFromElement, getBaseWordFromElement} from './word.js';
+import { getWordFromElement, getQueryFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
 import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
@@ -19,6 +19,7 @@ import { MenuItems } from './menu.js';
 import { MEA_TAG_PREFIX } from './html.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
 import { addTooltipEventListener } from './tooltip.js'
+import { searchWord, buildDictionaryOptions } from './language.js'
 
 //used to check if title changed
 var gUrl;
@@ -275,12 +276,13 @@ function checkSiteInfoChanges(){
 async function addDocumentEventListener(document, documentConfig, currentSiteOption) {
   let options = getOptionsFromCache();
   addTooltipEventListener(document, documentConfig,
-    (word) => {
+    (word, dictionary) => {
       //console.log(`click tooltip of ${word}`);
       let request = {
         type: 'SELECTION_CHANGE',
         payload: {
           word: word,
+          dictionary: dictionary,
           type: 'search-note',            
           selectedText: '',
           sentenceSelection: null,
@@ -344,6 +346,7 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
       let type;
       let menuItems = [];
       let word;
+      let dictionaryName;
       
       let filteredNotes = [];
       if (isSelectionCollapsed) {
@@ -351,6 +354,10 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
         let targetElement = event.target;
         let highlightElement = targetElement.closest('.mea-word');
         if(highlightElement){//find word
+          let query = getQueryFromElement(highlightElement);
+          let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
+          dictionaryName = searchResult?.lookupResult?.dictionaryName;
+
           word = getWordFromElement(highlightElement);
 
           let knownWords = await loadKnownWords();
@@ -405,6 +412,7 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
           type: 'SELECTION_CHANGE',
           payload: {
             word: word,
+            dictionary: dictionaryName,
             type: type,            
             selectedText: selectedText,
             sentenceSelection: sentenceHashSelection,

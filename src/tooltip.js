@@ -182,7 +182,9 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
     let tooltipButton = event.target.closest('.mea-tooltip-button');
     if(!tooltipButton){
       let word = definitionTooltipElement.getAttribute('data-word');
-      clickHandler(word);
+      let dictionary = definitionTooltipElement.getAttribute('data-dictionary');
+      
+      clickHandler(word, dictionary);
     }
   });
 
@@ -209,9 +211,9 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
       
       let timeout = setTimeout(() => {
         //console.log('timer 2');
-        let word = ele.getAttribute('data-word');      
+        let query = ele.getAttribute('data-query');      
       
-        let searchResult = searchWord(word, { dictionaryOptions: buildDictionaryOptions(siteOptions) });
+        let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
         showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, options);
       }, 500); 
@@ -246,6 +248,7 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
   let unknown = !targetElement.classList.contains('mea-hide');
   searchResultToHtml(tooltipElement, searchType, searchResult, options.pronunciation.region, unknown);
   tooltipElement.setAttribute('data-word', searchResult.word);
+  tooltipElement.setAttribute('data-dictionary', searchResult.lookupResult.dictionaryName);
   //left top
   
   tooltipElement.style.left = `0px`;

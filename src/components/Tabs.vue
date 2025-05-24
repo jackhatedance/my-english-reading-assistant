@@ -14,6 +14,7 @@ const emit = defineEmits(['markWord', 'vocabulary', 'note']);
 
 const props = defineProps({
     word: String,
+    dictionary: String,
     notes: Array,
     page: Object,
     activeTabId: String,
@@ -103,7 +104,7 @@ onUpdated(() => {
         </TabBody>
         <TabBody id="actions-tab" v-show="activeTabId === 'actions-tab'" :isActive="activeTabId === 'actions-tab'">
             
-            <ActionsTabContent :page="page" :word="word" :notes="props.notes"></ActionsTabContent>
+            <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :notes="props.notes"></ActionsTabContent>
         </TabBody>
 
         

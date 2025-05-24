@@ -10,6 +10,7 @@ import { getOptions } from '../service/optionService.js'
 import { entriesToHtml } from '../dictionary/definition-formatter.js'
 
 const props = defineProps({
+    dictionary: String,
     word: String,
     siteOptions: Object,
 });
@@ -28,7 +29,7 @@ const definitionFormat = ref('text');
 const lookupResultRef = ref(null);
 watch(() => props.word, async (newValue) => {
       
-    await _lookup(newValue);
+    await _lookup(newValue, [props.dictionary]);
 });
 
 watch(() => lookupResultRef.value, async (newValue) => {
@@ -52,19 +53,22 @@ function refreshDefinitionHtml(iframe, html){
     }  
 }
 
-async function _lookup(query){
-    let dicts = getEnabledDictionaryNamesFromCache();
+async function _lookup(query, dicts){
+    
     let options = await getOptions(); 
     //use default dicts
 
     //console.log(props.siteOptions);
-    let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
-    for(let additionalDictionary of additionalDictionaries){
-        if(additionalDictionary && !dicts.includes(additionalDictionary)){
-            dicts.unshift(additionalDictionary);
+    if(!dicts || dicts.length == 0){
+        dicts = getEnabledDictionaryNamesFromCache();
+        let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
+        for(let additionalDictionary of additionalDictionaries){
+            if(additionalDictionary && !dicts.includes(additionalDictionary)){
+                dicts.unshift(additionalDictionary);
+            }
         }
     }
-    
+
     //console.log(dicts);
     let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', { name: 'html', optional: true }], pronunciationRegion: options.pronunciation.region }, dicts);
     if(lookupResult) {
@@ -211,7 +215,7 @@ function onIframeLoad(){
 
 function init() {
     //console.log(`watch word, new value: ${props.word}`); 
-    _lookup(props.word);
+    _lookup(props.word, [props.dictionary]);
 }
 
 
