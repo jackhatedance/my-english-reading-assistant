@@ -112,7 +112,7 @@ function format(token, definition, shortDefinition, middleDefinition, query, wor
 
     let type = word ? 'mea-word' : 'mea-nonword';
 
-    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-query="${token}" data-word="${word}" data-search-type="${searchType}" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${token}</${TOKEN_TAG}>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-query="${query}" data-word="${word}" data-search-type="${searchType}" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${token}</${TOKEN_TAG}>`;
     return s;
 }
 
