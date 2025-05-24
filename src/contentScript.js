@@ -45,7 +45,7 @@ function myMain() {
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -72,7 +72,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized(gSiteProfile)) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -94,7 +94,7 @@ function messageListener(request, sender, sendResponse) {
       }
 
       //init all documents
-      initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+      initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -229,7 +229,7 @@ async function domMonitor() {
     
     let startTime = new Date().getTime();
 
-    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
+    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
     //console.log(`initPageAnnotations time costs: ${elapseTime1} ms`);
@@ -273,7 +273,7 @@ function checkSiteInfoChanges(){
   return same;
 }
 
-async function addDocumentEventListener(document, documentConfig, currentSiteOption) {
+async function addWordHoverEventListener(document, documentConfig, currentSiteOption) {
   let options = getOptionsFromCache();
   addTooltipEventListener(document, documentConfig,
     (word, dictionary) => {
@@ -302,7 +302,9 @@ async function addDocumentEventListener(document, documentConfig, currentSiteOpt
     options,
     resetPageAnnotationVisibilityAndNotify
   );
-  
+}
+
+async function addDocumentEventListener(document, currentSiteOption) {  
   document.addEventListener("mouseup", async (event) => {
     //console.log(event);
     //mouse up event on dialog itself, ignore

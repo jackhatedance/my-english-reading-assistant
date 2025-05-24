@@ -13,5 +13,9 @@ export class TestPage {
         await this.page.goto(file);
     }
 
+    async gotoPdf() {
+        const url = "https://mozilla.github.io/pdf.js/web/viewer.html";
+        await this.page.goto(url);
+    }
 
 }

@@ -125,7 +125,7 @@ function isPageAnnotationInitialized() {
 }
 
 
-async function initPageAnnotations(siteProfile, addDocumentEventListener) {
+async function initPageAnnotations(siteProfile, addDocumentEventListener, addWordHoverEventListener) {
     //console.log('initPageAnnotations');
     await initializeOptionService();
     let options = getOptionsFromCache();
@@ -149,7 +149,7 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, siteProfile, documentConfig, addDocumentEventListener);
+        let article = await preprocessDocument(document, false, siteProfile, documentConfig, addDocumentEventListener, addWordHoverEventListener);
         documentArticleMap.set(document, article);
     }
 
@@ -160,7 +160,7 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, siteProfile, iframeDocumentConfig, addDocumentEventListener);
+                let article = await preprocessDocument(iframeDocument, true, siteProfile, iframeDocumentConfig, addDocumentEventListener, addWordHoverEventListener);
                 
                 documentArticleMap.set(iframeDocument, article);
             }
@@ -206,7 +206,7 @@ async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, en
     }    
 }
 
-async function preprocessDocument(document, isIframe, siteProfile, documentConfig, addDocumentEventListener) {
+async function preprocessDocument(document, isIframe, siteProfile, documentConfig, addDocumentEventListener, addWordHoverEventListener) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -255,14 +255,15 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         */
         tokenizeTextNode(document, currentSiteOption);
 
-        addDocumentEventListener(document, documentConfig, currentSiteOption);
+        addDocumentEventListener(document, currentSiteOption);
     }
     
     if (documentConfig.canProcess) {
         article = parseDocument(document, currentSiteOption);
 
         //console.log(JSON.stringify(article));
-
+        addWordHoverEventListener(document, documentConfig, currentSiteOption);
+        
     } else {
         //empty article
         article = parseDocument(document, currentSiteOption, true);

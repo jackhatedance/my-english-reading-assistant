@@ -68,3 +68,19 @@ test('regular plural single meanings girls', async ({ testPage, extensionId, pop
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.女孩,少女,女佣');
   
 });
+
+
+test('pdf line end hyphen', async ({ testPage, extensionId, popupPage }) => {
+  
+  await testPage.gotoPdf();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let compile = testPage.page.locator("mea-token[data-word='compile']").first();
+  await expect(compile).toHaveText('com-');
+  await expect(compile).toHaveAttribute('data-footnote', 'vt.编译,编辑,编纂,收集');
+  await expect(compile).toHaveAttribute('data-footnote-short', 'vt.编译,编辑,编纂; ...');
+  
+});

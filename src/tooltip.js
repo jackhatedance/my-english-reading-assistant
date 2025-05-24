@@ -202,6 +202,7 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
   });
 
   const meaWords = document.querySelectorAll('.mea-word');
+  //console.log(`add mouseenter event listener for mea-word`);
   meaWords.forEach(function(ele) {
     ele.addEventListener('mouseenter', function() {
       //console.log('mouse enter');
