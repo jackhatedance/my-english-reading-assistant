@@ -59,7 +59,7 @@ describe('TextDefinitionParser test', function () {
       
       assert.equal(parseResult[0].headword.pronunciations.length, 0);
       assert.equal(parseResult[0].definitionGroups[0].name, "");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "esquire 的复数");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(esquire 的复数)");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "esquire");      
       
