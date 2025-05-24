@@ -40,14 +40,13 @@ function splitIntoDefinitionGroups(definition){
 }
 
 function splitWordMeanings(meaningsStr){
-    let matches = meaningsStr.matchAll(/(?<subdef>(\([^)]*\))?[^,;()]+(\([^)]*\))?)/g);
-    let meanings = [];
-    if(matches){
-        for(let match of matches){
-            let meaning = match.groups['subdef'];
-            meanings.push(meaning);
-        }
+    let meanings;
+    if(meaningsStr === ''){
+        meanings = [];
+    }else {
+        meanings = meaningsStr.split(/[,;](?![^()]*\))/);
     }
+
     return meanings;
 }
 

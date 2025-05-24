@@ -44,6 +44,19 @@ describe('TextDefinitionUtils test', function () {
       
     });
 
+    it('splitIntoDefinitionGroups squeezed', async function () {
+      let parseResult = splitIntoDefinitionGroups('squeeze（挤压）的过去式与过去分词');
+      
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult.length, 1);
+      assert.equal(parseResult[0], "squeeze（挤压）的过去式与过去分词");
+      
+      
+    });
+
 
   });
   
