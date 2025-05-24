@@ -1,5 +1,5 @@
 import { DefinitionParser } from '../DefinitionParser.js'
-import { splitWordClasses, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
+import { splitIntoDefinitionGroups, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
 import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
 
@@ -54,7 +54,7 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     parseDefinitionGroups(text){
-        let definitionGroupTexts = splitWordClasses(text);
+        let definitionGroupTexts = splitIntoDefinitionGroups(text);
     
         let definitionGroups = [];
         for(let definitionGroupText of definitionGroupTexts){

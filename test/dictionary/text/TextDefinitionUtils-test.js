@@ -1,6 +1,6 @@
 
 import { strict as assert } from 'assert';
-import { splitWordClasses } from '../../../src/dictionary/text/textDefinitionUtils.js'
+import { splitIntoDefinitionGroups } from '../../../src/dictionary/text/textDefinitionUtils.js'
 
 describe('TextDefinitionUtils test', function () {
   
@@ -9,8 +9,8 @@ describe('TextDefinitionUtils test', function () {
       
     });
 
-    it('splitWordClasses bombings SysLarge', async function () {
-      let parseResult = splitWordClasses('n. [军] 轰炸, [军] 投弹;v. 轰击；引爆炸弹（bomb的ing形式）');
+    it('splitIntoDefinitionGroups bombings SysLarge', async function () {
+      let parseResult = splitIntoDefinitionGroups('n. [军] 轰炸, [军] 投弹;v. 轰击；引爆炸弹（bomb的ing形式）');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -22,8 +22,8 @@ describe('TextDefinitionUtils test', function () {
       
     });
 
-    it('splitWordClasses no word class brigand', async function () {
-      let parseResult = splitWordClasses("n. 土匪, 强盗;[法] 土匪, 盗贼");
+    it('splitIntoDefinitionGroups no word class brigand', async function () {
+      let parseResult = splitIntoDefinitionGroups("n. 土匪, 强盗;[法] 土匪, 盗贼");
       
       assert.equal(parseResult.length, 2);
       assert.equal(parseResult[0], "n. 土匪, 强盗");
@@ -31,8 +31,8 @@ describe('TextDefinitionUtils test', function () {
       
     });
 
-    it('vowed multiple wordclass', async function () {
-      let parseResult = splitWordClasses('vt.& vi. 起誓, 发誓（vow的过去式与过去分词形式）');
+    it('splitIntoDefinitionGroups vowed multiple wordclass', async function () {
+      let parseResult = splitIntoDefinitionGroups('vt.& vi. 起誓, 发誓（vow的过去式与过去分词形式）');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
