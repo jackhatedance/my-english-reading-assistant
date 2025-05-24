@@ -47,6 +47,9 @@ function splitWordMeanings(meaningsStr){
         meanings = meaningsStr.split(/[,;](?![^()]*\))/);
     }
 
+    meanings = meanings.map(item => item.trim());
+    meanings = meanings.filter(item => item.length>0);
+
     return meanings;
 }
 
