@@ -46,6 +46,7 @@
     "idb": "^8.0.2",
     "js-md5": "^0.8.3",
     "lancaster-stemmer": "^2.1.0",
+    "loglevel": "^1.9.2",
     "markdown-loader": "^8.0.0",
     "mime-types": "^3.0.1",
     "node-polyfill-webpack-plugin": "^4.1.0",

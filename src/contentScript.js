@@ -20,6 +20,8 @@ import { MEA_TAG_PREFIX } from './html.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
 import { addTooltipEventListener } from './tooltip.js'
 import { searchWord, buildDictionaryOptions } from './language.js'
+import log from 'loglevel'
+import { initLog } from './log.js'
 
 //used to check if title changed
 var gUrl;
@@ -32,6 +34,13 @@ var gDocumentArticleMap;
 
 var gDomChanges=0;
 var gDomChangesMonitored=0;
+
+var gDomMonitorInterval=2000;
+const DOM_MONITOR_INTERVAL_MIN = 2000;
+const DOM_MONITOR_INTERVAL_MAX = 5000;
+
+initLog();
+const gLogger = log.getLogger("contentScript");
 
 window.addEventListener("load", myMain, false);
 function myMain() {
@@ -194,6 +203,17 @@ function messageListener(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(messageListener);
 
 
+function adjustDomMonitorInterval(workTime){
+  let interval = workTime * 0.5
+
+  if(interval < DOM_MONITOR_INTERVAL_MIN){
+    interval = DOM_MONITOR_INTERVAL_MIN;
+  } else if(interval > DOM_MONITOR_INTERVAL_MAX){
+    interval = DOM_MONITOR_INTERVAL_MAX;
+  }
+  
+  gDomMonitorInterval = interval;
+}
 
 async function domMonitor() {
   //console.log('domMonitor begin');
@@ -205,12 +225,12 @@ async function domMonitor() {
   //check body attribute flag.  
   let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
 
-  //console.log(`DOM changes:${gDomChanges}`);
+  gLogger.debug(`DOM changes:${gDomChanges}`);
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
       //no more changes in this interval. now we can reset annotations
       
-      //console.log(`DOM stop changing, ${gDomChanges} changes accumulated`);
+      gLogger.debug(`DOM stop changing, ${gDomChanges} changes accumulated`);
       
       //reset
       gDomChanges =0;
@@ -225,19 +245,22 @@ async function domMonitor() {
   }
   
   if(needRefresh) {
-    //console.log('start refresh page annotation');
+    gLogger.debug('start refresh page annotation');
     
     let startTime = new Date().getTime();
 
     gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
-    //console.log(`initPageAnnotations time costs: ${elapseTime1} ms`);
+    gLogger.debug(`initPageAnnotations time costs: ${elapseTime1} ms`);
 
     await resetPageAnnotationVisibilityAndNotify(true);
     let endTime2 = new Date().getTime();
     let elapseTime2 = endTime2 - endTime1;
-    //console.log(`resetPageAnnotationVisibilityAndNotify time costs: ${elapseTime2} ms`);
+    let elapseTimeTotal = endTime2 - startTime;
+    adjustDomMonitorInterval(elapseTimeTotal);
+    gLogger.debug(`resetPageAnnotationVisibilityAndNotify time costs: ${elapseTime2} ms`);
+
   }
 
   let url = gSiteProfile.getUrl(document);
@@ -260,7 +283,7 @@ async function domMonitor() {
     } finally {
       domMonitorLoop();
     }
-  }, 2000);
+  }, gDomMonitorInterval);
 })();
 
 function checkSiteInfoChanges(){

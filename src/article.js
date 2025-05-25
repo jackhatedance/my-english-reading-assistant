@@ -9,11 +9,13 @@ import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstan
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord, buildDictionaryOptions } from './language.js';
 import { isTextTag } from './html.js';
-import { TEXT_TAG } from './html.js';
+import { TEXT_TAG, MEA_TAG_PREFIX } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
+import log from 'loglevel'
 
+const gLogger = log.getLogger('article');
 /**
  * split text node to words, wrapped by span.
  * in order to show unknown word definition
@@ -24,6 +26,7 @@ function tokenizeTextNode(document, siteOptions) {
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
+    var tokenCount = 0;
 
     traverseNode(document.body, (node) => {
         //avoid re-enter
@@ -83,6 +86,8 @@ function tokenizeTextNode(document, siteOptions) {
                 }
                 //let tokenHtml = `<span class="mea-container mea-token">${token.content}</span>`;
                 tokenHtmls.push(tokenHtml);
+
+                tokenCount ++;
             }
             let tokensHtml = tokenHtmls.join('');
             let textTag = document.createElement(TEXT_TAG);
@@ -97,6 +102,8 @@ function tokenizeTextNode(document, siteOptions) {
             node.parentNode.replaceChild(textTag, node);
         }
     });
+
+    gLogger.debug(`tokenized ${tokenCount} tokens`);
 }
 
 
@@ -483,6 +490,12 @@ function isInMeaElement(element) {
         console.log('null element');
         return false;
     }
+
+    let isMeaElement = element.tagName.startsWith(MEA_TAG_PREFIX);
+    if(isMeaElement){
+        return true;
+    }        
+
     let meaElement = element.closest('.mea-element');
     if (meaElement) {
         return true;
