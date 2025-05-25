@@ -34,6 +34,7 @@ function splitIntoDefinitionGroups(definition){
         groups.push(definition);
     }
 
+    groups = groups.filter(item => item.trim());
     groups = groups.filter(item => item.length > 0);
     
     return groups;

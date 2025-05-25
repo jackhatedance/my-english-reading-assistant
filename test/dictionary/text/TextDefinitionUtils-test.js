@@ -57,6 +57,16 @@ describe('TextDefinitionUtils test', function () {
       
     });
 
+    it('splitIntoDefinitionGroups will sysSmall', async function () {
+      let parseResult = splitIntoDefinitionGroups("n. 意志, 决心, 意愿, 意向, 干劲, 遗嘱; vt. 用意志的力量驱使, 决意, 愿意, 立遗嘱; vi. 下决心, 愿意; aux. 将, 愿意, 必须");
+      
+      assert.equal(parseResult.length, 4);
+      assert.equal(parseResult[0], "n. 意志, 决心, 意愿, 意向, 干劲, 遗嘱");
+      assert.equal(parseResult[1], "vt. 用意志的力量驱使, 决意, 愿意, 立遗嘱");
+      assert.equal(parseResult[2], "vi. 下决心, 愿意");
+      assert.equal(parseResult[3], "aux. 将, 愿意, 必须");
+    });
+
 
   });
   
