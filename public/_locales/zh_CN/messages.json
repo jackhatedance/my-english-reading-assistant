@@ -425,11 +425,11 @@
     },
 
     "sidepanelActionsTabNotesLabelNotes":{
-        "message":"笔记:"
+        "message":"笔记"
     },
 
     "sidepanelActionsTabWordLabelWord":{
-        "message":"单词:"
+        "message":"单词"
     },
     "sidepanelActionsTabWordMarkAsUnknownAction":{
         "message":"不认识"

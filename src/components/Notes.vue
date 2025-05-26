@@ -17,10 +17,14 @@ init();
 </script>
 
 <template>
-    <div>
-        <h4>{{ sidepanelActionsTabNotesLabelNotes }}</h4>
+    <div class="notes-container">
+        <h3 class="title">{{ sidepanelActionsTabNotesLabelNotes }}</h3>
         <div class="notes">
             <Note v-for="item of props.items" :note="item" :key="item.selectedText"></Note>
         </div>
     </div>
 </template>
+
+<style>
+
+</style>

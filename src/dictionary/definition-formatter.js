@@ -110,7 +110,7 @@ function pronunciationsToText(pronunciations, region = 'all'){
 }
 
 
-function entriesToHtml(entries, pronunciationRegion){
+function entriesToHtml(word, entries, pronunciationRegion){
     if(!entries || entries.length == 0){
         return '';
     }
@@ -142,7 +142,7 @@ function entriesToHtml(entries, pronunciationRegion){
 
     let text = groupsText;
     if(pronunciation){
-        text = `${pronunciation}<br>${groupsText}`;
+        text = `${word} ${pronunciation}<br>${groupsText}`;
     }        
     
     //console.log(text);

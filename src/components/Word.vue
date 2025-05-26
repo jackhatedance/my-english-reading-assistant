@@ -80,7 +80,7 @@ async function _lookup(query, dicts){
         }
 
         let entries = lookupResult.json;
-        lookupResult.formattedText = entriesToHtml(entries, options.pronunciation.region);
+        lookupResult.formattedText = entriesToHtml(lookupResult.query, entries, options.pronunciation.region);
         
         if(lookupResult.html){
             let html = lookupResult.html;
@@ -224,8 +224,9 @@ init();
 
 <template>
     <div class="word-container">
+        <h3 class="title">{{ t('sidepanelActionsTabWordLabelWord') }}</h3>
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ dictionaryName }}]</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_concise') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_full') }}</button> <button @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></p>
+            <div class="dictionary"><span>{{ dictionaryName }}</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_concise') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_full') }}</button> <button @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></div>
             
             <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeHtml" id="dictionary-iframe-html" class="content-iframe" src="definition.html" ></iframe>
             <iframe v-if="definitionFormat == 'text'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeText" id="dictionary-iframe-text" class="content-iframe" src="definition.html" ></iframe>
@@ -242,18 +243,15 @@ init();
 </template>
 
 <style>
-.word-container {
-    height: 400px;
-}
+
 
 .word-definition {
-    border: solid black 1px;
-    height: 85%;
-    .word {
-        font-size: large;
-    }
+    
+    
+    
     .dictionary {
         font-size: smaller;
+        margin: 5px;
     }
     .word-definition-content {
         white-space: pre-line;
@@ -261,7 +259,15 @@ init();
 
     .content-iframe {
         width: 100%;
-        height: 80%;
+        
+    }
+
+    iframe {
+        border: solid gray 1px;
+    }
+
+    #dictionary-iframe-html {
+        height: 300px;
     }
 }
 

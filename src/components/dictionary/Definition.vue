@@ -24,19 +24,6 @@ function sendHtmlMessage(){
     } 
 }
 
-
-function switchToText(){
-    if(definitionFormat.value != 'text'){
-        definitionFormat.value = 'text';
-    }
-}
-
-function switchToHtml(){
-    if(definitionFormat.value != 'html'){
-        definitionFormat.value = 'html';
-    }
-}
-
 function onIframeLoad(){
     //console.log('onIframeLoad');
     sendHtmlMessage();

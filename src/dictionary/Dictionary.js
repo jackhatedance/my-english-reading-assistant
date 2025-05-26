@@ -170,15 +170,11 @@ class Dictionary {
     
         let definitionObj = entry;
     
-        let groupsText = entriesToHtml(entries);
+        let html = entriesToHtml(query, entries);
         
-        let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations); 
-        let text = `${query}<br>${groupsText}`;
-        if(pronunciation){
-            text = `${query} ${pronunciation}<br>${groupsText}`;
-        }
-        //console.log(text);
-        return `${text}`;
+        
+        //console.log(html);
+        return html;
     }
 
     createOutput(result, options, format){

@@ -426,11 +426,11 @@
     },
 
     "sidepanelActionsTabNotesLabelNotes":{
-        "message":"Notes:"
+        "message":"Notes"
     },
 
     "sidepanelActionsTabWordLabelWord":{
-        "message":"Word:"
+        "message":"Word"
     },
     "sidepanelActionsTabWordMarkAsUnknownAction":{
         "message":"Unknown"
