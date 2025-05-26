@@ -143,7 +143,9 @@ function entriesToHtml(word, entries, pronunciationRegion){
     let text = groupsText;
     if(pronunciation){
         text = `${word} ${pronunciation}<br>${groupsText}`;
-    }        
+    } else {
+        text = `${word}<br>${groupsText}`;
+    }       
     
     //console.log(text);
     return text;
