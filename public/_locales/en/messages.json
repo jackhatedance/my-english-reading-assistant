@@ -360,16 +360,16 @@
         "message":"Unknown words"
     },
     "sidepanelWordStatisticsLabel":{
-        "message":"ratio:"
+        "message":"Unknown words:"
     },
     "sidepanelTitleDesc":{
-        "message":"marking the words that you known"
+        "message":"mark the words you know below"
     },
     "sidepanelShowDefinitions":{
-        "message":"Show Definitions"
+        "message":"Show All Definitions"
     },
     "sidepanelHideDefinitions":{
-        "message":"Hide Definitions"
+        "message":"Hide All Definitions"
     },
     "sidepanelReadingDifficultyLabel": {
         "message":"Difficulty"

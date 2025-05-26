@@ -182,20 +182,20 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 }
 
 .word-and-actions{
-  clear:both;
-  line-height: 1.8em;
-}
+    clear:both;
+    line-height: 1.8em;
 
-.actions {
-  float:right;
-    
-  button {
-    font-size: 5px;
-    margin-right: 2px;
-  }
-}
-.word {
-    font-weight: bold;
+    .actions {
+    float:right;
+        
+    button {
+        font-size: 5px;
+        margin-right: 2px;
+    }
+    }
+    .word {
+        font-weight: bold;
+    }
 }
 .word-and-actions .word.known {
     text-decoration: line-through;
