@@ -20,6 +20,10 @@ function addVueApp() {
 
   document.body.appendChild(dialog);
 
+  //click background of dialog to close dialog.
+  dialog.addEventListener('click', function(event) {
+      dialog.close();                        
+  });
 
   let sidePanelUrl = chrome.runtime.getURL("side-panel.html");
   let innerHTML =
