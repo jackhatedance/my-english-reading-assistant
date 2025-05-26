@@ -24,7 +24,11 @@ const wordStr = computed(() => {
     let fromArray = from;
     let fromStr = '';
     if (fromArray) {
-        fromStr = fromArray.join(',');
+        if(fromArray.length >3){
+            fromStr = fromArray.slice(0, 3).join(',') + '...';    
+        } else {
+            fromStr = fromArray.join(',');
+        }
     }
     
     let wordStr = fromStr ? `${word} (${fromStr})` : word;
