@@ -175,7 +175,7 @@ function getNewLinePositions(bodyElement){
     const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
 
     let positions = [];
-    let text = '';
+    let pos = 0;
     //let lines = [];
     let line = '';
     
@@ -183,12 +183,11 @@ function getNewLinePositions(bodyElement){
 
         if(NEW_LINE_ELEMENTS.includes(node.nodeName) && line.length >0){
             
-            text += line;
+            pos += line.length;
             //lines.push(line);
             line = '';
 
             
-            let pos = text.length;
             if(pos > 0){
                 positions.push(pos);
             }
