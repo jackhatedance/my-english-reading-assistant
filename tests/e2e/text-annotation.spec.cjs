@@ -47,7 +47,7 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
 
   let rode = testPage.page.locator("mea-token[data-query='boys']");
   await expect(rode).toHaveText('boys');
-  await expect(rode).toHaveAttribute('data-footnote', 'n.男孩; 男孩,少年,儿子');
+  await expect(rode).toHaveAttribute('data-footnote', '原boy:n.男孩; 男孩,少年,儿子');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
   
 });
@@ -64,7 +64,7 @@ test('regular plural single meanings girls', async ({ testPage, extensionId, pop
 
   let rode = testPage.page.locator("mea-token[data-query='girls']");
   await expect(rode).toHaveText('girls');
-  await expect(rode).toHaveAttribute('data-footnote', 'n.女孩,少女,女佣');
+  await expect(rode).toHaveAttribute('data-footnote', '原girl:n.女孩,少女,女佣');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.女孩,少女,女佣');
   
 });

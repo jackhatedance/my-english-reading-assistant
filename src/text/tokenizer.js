@@ -6,7 +6,7 @@ import { containsAbbreviation } from './transforms/abbreviation.js'
 function tokenize(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-    let parts = _splitTextByRegex(sentence, regexp, 0);
+    let parts = _splitTextByRegex(sentence, regexp, 0, null, null, checkWord);
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
     parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
@@ -256,7 +256,7 @@ function detectAbbreviationWords(checkWord, parts){
     return parts2;
 }
 
-function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMaskedChar) {
+function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMaskedChar, checkWord) {
     let parts = [];
 
     if(!mask){
@@ -282,10 +282,26 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let cleanContent = removeMaskedChars(content, submask)
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
+        let partContent = contentWithoutPunctuation;
+        let checked = false;
+        if(checkWord){
+            let checkWordResult = checkWord(contentWithoutPunctuation);
+            
+            if(checkWordResult){
+                partContent = checkWordResult;
+                checked = true;
+            } else {
+                partContent = contentWithoutPunctuation;
+                checked = false;
+            }
+        }
+        //console.log('partContent:'+partContent);
+
         let part = {
             originalContent: originalContent,
             mask: submask,
-            content:contentWithoutPunctuation,
+            content: partContent,
+            checked: checked,
             //relative to sentence
             offset: match.index + baseIndex,
             length: match[0].length,

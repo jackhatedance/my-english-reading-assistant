@@ -152,50 +152,6 @@ function searchWordWithDict(query, options, dicts){
     let baseSearchType = '';
 
     if(lookupResult) {
-        let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult.json);
-        let bHasLinkDefinitionOnly = hasLinkDefinitionOnly(lookupResult.json);
-        
-        let transformDefinitions = findTransformDefinitions(lookupResult.json);
-        let bHasOneTransformDefinition = (transformDefinitions.length ==1);
-
-        if(bHasLinkDefinitionOnly){            
-            let linkDefinition = getTheOnlyLinkDefintion(lookupResult.json);   
-            let link = linkDefinition.link;    
-            const dicts2 = [ lookupResult.dictionaryName ];
-            let linkLookupResult = lookup(link, options, dicts2);                  
-            
-            if(linkLookupResult) {
-                let regularTransform = isRegularTransform(link, word);
-                if(regularTransform){
-                    lookupResult = linkLookupResult;
-                    searchType = 'link';
-                    word = link;
-                } else {
-                    deepLookupResult = linkLookupResult;
-                    baseWord = link;        
-                    baseSearchType='link';
-                }
-            }        
-        } else if(bHasOneTransformDefinition){
-            let transformDefinition = transformDefinitions[0];   
-            let base = transformDefinition.base;    
-            const dicts2 = [ lookupResult.dictionaryName ];
-            let linkLookupResult = lookup(base, options, dicts2);                  
-            
-            if(linkLookupResult) {
-                let regularTransform = isRegularTransform(base, word);
-                if(regularTransform){
-                    lookupResult = linkLookupResult;
-                    searchType = 'link';
-                    word = base;
-                } else {
-                    deepLookupResult = linkLookupResult;
-                    baseWord = base;        
-                    baseSearchType='link';
-                }
-            } 
-        }   
-        
         //lemma
         if(options.allowLemma){
             deepLookupResult = deepLookup(lookupResult, options);
