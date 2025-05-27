@@ -426,8 +426,24 @@ describe('tokenizer', function () {
 
   });
 
-  
+  it('tower end with 2 punctuations', async function () {
+    
+    let tokens = tokenize((text)=> {
+      //console.log('checkWord:'+text);
+      let words = ['tower'];
+      if(words.includes(text)){
+        return text;
+      }else {
+        return null;
+      }
+    }, '“tower.”1', 0, { newWordPositions:[8]});
+    
+    
+    assert.equal(tokens.length, 2);
+    
+    assert.equal(tokens[0].content, 'tower');
+    assert.equal(tokens[1].content, '1');
+  });
 
-  
-  
+
 });

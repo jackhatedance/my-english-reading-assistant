@@ -172,14 +172,14 @@ function endingDotWords(checkWord, parts){
         }    
         
         let originalContent = part.content;
-        
+        let contentWithoutPunctuation = trimPunctuations(originalContent); 
         //console.log("originalContent:"+originalContent);
         
         let options = { };
         let transforms = ['endingDot'];
 
-        if(originalContent && originalContent.endsWith('.')){
-            let guessResult = guessWord(originalContent, options, checkWord, transforms);
+        if(contentWithoutPunctuation && contentWithoutPunctuation.endsWith('.')){
+            let guessResult = guessWord(contentWithoutPunctuation, options, checkWord, transforms);
             //console.log("guessResult:"+JSON.stringify(guessResult));
             if(guessResult){
                 part.content = guessResult.content;

@@ -11,6 +11,11 @@ function endsWithDot(text){
     return result;
 }
 
+/**
+ * ending dot not trimmed
+ * @param {*} text 
+ * @returns 
+ */
 function trimPunctuations(text){
     var result = text;
     // first or last char cannot be punctuation, some punctuations ('.-) allowed in between
