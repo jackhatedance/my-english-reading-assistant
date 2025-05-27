@@ -90,6 +90,26 @@ function updateWordAnnotation(textElement, searchResult, showShortDefinition, si
     textElement.setAttribute('data-footnote-short', shortDefinition);
 }
 
+function updateNonWordAnnotation(textElement, query){
+    textElement.classList.remove('mea-word');
+    textElement.classList.add('mea-nonword');
+
+    let definition = '';
+    let shortDefinition = '';
+    let word = '';
+    let searchType = '';
+    let baseWord = '';
+    let parts = '';
+
+    textElement.setAttribute('data-query', query);
+    textElement.setAttribute('data-word', word);
+    textElement.setAttribute('data-search-type', searchType);
+    textElement.setAttribute('data-base-word', baseWord);
+    textElement.setAttribute('data-parts', parts);
+    textElement.setAttribute('data-footnote', definition);
+    textElement.setAttribute('data-footnote-short', shortDefinition);
+}
+
 function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
     let definition = '';
     let shortDefinition = '';
@@ -128,4 +148,4 @@ function getBaseWordFromElement(element) {
     return element.getAttribute('data-base-word');
 }
 
-export { annotateWord, annotateNonword, updateWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement };
+export { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement };

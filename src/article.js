@@ -3,7 +3,7 @@
 import { split } from "sentence-splitter";
 import { tokenize } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword, updateWordAnnotation } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
@@ -157,10 +157,10 @@ function parseDocument(document, siteOptions, skip = false) {
     if(!skip) {    
         //let lines = getParagraphLines2(document.body);
         let lines = breakString(document.body.textContent, '\n');
-        let newLinePositions = getNewLinePositions(document.body);
-        //console.log('newLinePositions');
+        let newTagPositions = getTagPositions(document.body);
+        //console.log('newTagPositions');
         //parse paragraph, token
-        parseArticleContent(siteOptions, article, lines, newLinePositions);
+        parseArticleContent(siteOptions, article, lines, newTagPositions);
         //parse text node(offset)
         parseArticleTextNodes(article, document.body, siteOptions);
 
@@ -171,40 +171,51 @@ function parseDocument(document, siteOptions, skip = false) {
     return article;
 }
 
-function getNewLinePositions(bodyElement){
+function getTagPositions(bodyElement){
     const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
+    const NEW_WORD_ELEMENTS = ['SUP'];
+    
+    let newLinePositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
 
-    let positions = [];
-    let pos = 0;
-    //let lines = [];
-    let line = '';
+    let newWordPositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
     
     traverseNode(bodyElement, (node) => {
-
-        if(NEW_LINE_ELEMENTS.includes(node.nodeName) && line.length >0){
-            
-            pos += line.length;
-            //lines.push(line);
-            line = '';
-
-            
-            if(pos > 0){
-                positions.push(pos);
-            }
-        }
-
-        if (node.nodeName === '#text') {
-            line += node.textContent;
-        }
-
+        collectNodePositions(node, NEW_LINE_ELEMENTS, newLinePositionCollection);
+        collectNodePositions(node, NEW_WORD_ELEMENTS, newWordPositionCollection);
     });
 
-    //lines.push(line);
-    //console.log(lines);
-    return positions;
+    return {
+        newLinePositions: newLinePositionCollection.positions,
+        newWordPositions: newWordPositionCollection.positions,
+    };
 }
 
-function parseArticleContent(siteOptions, article, lines, newLinePositions){
+function collectNodePositions(node, tags, collection){
+    
+    if(tags.includes(node.nodeName) && collection.content.length >0){
+            
+        collection.pos += collection.content.length;
+        collection.content = '';
+        
+        if(collection.pos > 0){
+            collection.positions.push(collection.pos);
+        }
+    }
+
+    if (node.nodeName === '#text') {
+        collection.content += node.textContent;
+    }
+}
+
+function parseArticleContent(siteOptions, article, lines, newTagPositions){
     
     let offset =0;
     var paragraphNumber = 0;
@@ -218,7 +229,7 @@ function parseArticleContent(siteOptions, article, lines, newLinePositions){
             sentences: [],
         };
 
-        parseParagraphContent(siteOptions, article, paragraphInfo, line, newLinePositions);
+        parseParagraphContent(siteOptions, article, paragraphInfo, line, newTagPositions);
         addParagraph(article, paragraphInfo);
 
         offset += line.length;
@@ -247,7 +258,7 @@ function extractIsbn(content) {
     return isbns;
 }
 
-function parseParagraphContent(siteOptions, article, paragraphInfo, content, newLinePositions){
+function parseParagraphContent(siteOptions, article, paragraphInfo, content, newTagPositions){
     //search isbn
     let isbns = extractIsbn(content);
     if(isbns){
@@ -271,7 +282,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenize((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newLinePositions);
+        let tokens = tokenize((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -370,6 +381,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                         //console.log('deleteUnrecognizedWord, node content:'+nodeContent + '; token content:'+token.content);
                         deleteUnrecognizedWord(nodeContent);
                     } else {
+                        updateNonWordAnnotation(node.parentElement, contentWithoutPunctuation);
                         //console.log('search not found:' + token.content);
                     }
                 }

@@ -3,12 +3,12 @@ import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
 
-function tokenize(checkWord, sentence, offsetOfArticle, newLinePositions = []) {
+function tokenize(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0);
-
-    parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newLinePositions);
+    parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
+    parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
     parts = splitCompoundWord(checkWord, parts);
 
@@ -297,6 +297,9 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
 }
 
 function splitPartsTextByNewLines(checkWord, parts, sentenceOffsetOfArticle, newLinePositions) {
+    if(!newLinePositions){
+        newLinePositions = [];
+    }
 
     let parts2 = [];
     let startPositionIndex = 0;
@@ -321,6 +324,42 @@ function splitPartsTextByNewLines(checkWord, parts, sentenceOffsetOfArticle, new
             }
 
             let subparts = _splitPartByNewLines(checkWord, part, positions);
+
+            for(let subpart of subparts){
+                parts2.push(subpart);
+            }
+
+            let lastPositionIndex = positionIndexes[positionIndexes.length - 1];
+            startPositionIndex = lastPositionIndex + 1;
+        }else{
+            parts2.push(part);
+        }
+    }
+    return parts2;
+}
+
+function splitPartsTextByNewWords(checkWord, parts, sentenceOffsetOfArticle, newWordPositions) {
+    if(!newWordPositions){
+        newWordPositions = [];
+    }
+
+    let parts2 = [];
+    let startPositionIndex = 0;
+    for(const part of parts){
+        part.sentenceOffsetOfArticle = sentenceOffsetOfArticle;
+        let positionIndexes = _findPartPositionIndexes(part, newWordPositions, startPositionIndex);
+        
+        if(positionIndexes.length > 0){//found
+            //console.log("positionIndexes:");
+            //console.log(positionIndexes);
+
+            let positions = [];
+            for(let idx of positionIndexes){
+                let pos = newWordPositions[idx];
+                positions.push(pos);
+            }
+
+            let subparts = _splitPartByNewWords(checkWord, part, positions);
 
             for(let subpart of subparts){
                 parts2.push(subpart);
@@ -460,6 +499,75 @@ function _splitPartByNewLines(checkWord, part, positions) {
         checked: checked,
         offset: startTextIndex + part.offset,
         length: subtext.length,
+    };
+    parts2.push(subpart);        
+    
+    return parts2;
+}
+
+function _splitPartByNewWords(checkWord, part, positions) {
+    let parts2 = [];
+
+    let text = sameLengthStandardizeCharacters(part.originalContent);
+    
+    let startTextIndex =0;
+    for(let i=0;i<positions.length;i++){
+        let absolutePos = positions[i];
+    
+        let endTextIndex = absolutePos - part.offset - part.sentenceOffsetOfArticle;
+        let subtext = text.substring(startTextIndex, endTextIndex);
+
+        let subtextWithoutPunctuation = trimPunctuations(subtext);
+        
+        let checkWordResult = checkWord(subtextWithoutPunctuation);
+        
+        let originalContent = subtext;
+        
+        let content, checked;
+        if(checkWordResult){
+            content = checkWordResult;
+            checked = true;
+        } else {
+            content = originalContent;
+            checked = false;
+        }
+
+        let subpart = {
+            originalContent: originalContent,
+            content: content,
+            checked: checked,
+            offset: startTextIndex + part.offset,
+            length: originalContent.length,
+        };
+        parts2.push(subpart);        
+
+        //for next loop
+        startTextIndex = endTextIndex;
+    }
+
+    //last subpart
+    let subtext = text.substring(startTextIndex);
+    let subtextWithoutPunctuation = trimPunctuations(subtext);
+        
+    let checkWordResult = checkWord(subtextWithoutPunctuation);
+    
+    let originalContent = subtext;
+    
+    let content, checked;
+    if(checkWordResult){
+        content = checkWordResult;
+        checked = true;
+    } else {
+        content = originalContent;
+        checked = false;
+    }
+
+    let subpart = {
+        originalContent: originalContent,
+        content: content,
+        checked: checked,
+        offset: startTextIndex + part.offset,
+        length: originalContent.length,
     };
     parts2.push(subpart);        
     

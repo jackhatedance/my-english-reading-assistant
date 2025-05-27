@@ -245,7 +245,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
             }
         }, 1000);
 
-        cleanElements(document);
+        //cleanElements(document);
 
         /*
         visitElement(document.body, (element) => {
