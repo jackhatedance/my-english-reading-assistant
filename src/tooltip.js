@@ -244,11 +244,10 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
   let baseTop = iframeTop + window.scrollY;
   let baseLeft = iframeLeft + window.scrollX;
 
-  let searchType = targetElement.getAttribute('data-search-type'); 
   let unknown = !targetElement.classList.contains('mea-hide');
   let targetWord = getTargetWord(searchResult);
   
-  searchResultToHtml(tooltipElement, searchType, searchResult, targetWord, options.pronunciation.region, unknown);
+  searchResultToHtml(tooltipElement, searchResult, targetWord, options.pronunciation.region, unknown);
   tooltipElement.setAttribute('data-word', targetWord);
   tooltipElement.setAttribute('data-dictionary', searchResult.lookupResult.dictionaryName);
   //left top
@@ -270,7 +269,7 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
 }
 
 
-function searchResultToHtml(tooltipElement, searchType, searchResult, targetWord, pronunciationRegion, unknown){
+function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciationRegion, unknown){
   
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
