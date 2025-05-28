@@ -48,6 +48,7 @@ const definition = computed(() => {
     //query root word
     let searchResult = searchWord(word, {
       allowLemma: true,
+      lookupBaseWhenNecessary: false,
       dictionaryOptions: dictionaryOptions,
       pronunciationRegion: props.options.pronunciation.region
     });

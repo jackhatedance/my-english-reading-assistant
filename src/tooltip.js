@@ -210,7 +210,10 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
         //console.log('timer 2');
         let query = ele.getAttribute('data-query');      
       
-        let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(siteOptions) });
+        let searchResult = searchWord(query, { 
+          allowLemma: true,
+          lookupBaseWhenNecessary: true,
+          dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
         showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, options);
       }, 500); 

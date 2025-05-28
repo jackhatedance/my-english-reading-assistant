@@ -66,6 +66,7 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
+                    lookupBaseWhenNecessary: true,
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
@@ -305,6 +306,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 function checkWord(siteOptions, text){
     let searchResult = searchWord(text, {
         allowLemma: false,
+        lookupBaseWhenNecessary: false,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });
@@ -371,6 +373,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
+                        lookupBaseWhenNecessary: true,
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {

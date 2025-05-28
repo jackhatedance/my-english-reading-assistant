@@ -1,17 +1,16 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, findTransformDefinitions } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
-import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
+import { variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { deepLookup } from './deep-lookup.js'
-import { isRegularTransform } from './lemma.js'
 
 
 var gPrefixes, gSuffixes;
@@ -19,6 +18,7 @@ var gPrefixes, gSuffixes;
 function createDefaultSearchWordOptions(){
     return {
         allowLemma: true,
+        lookupBaseWhenNecessary: false,
         simplifyDefinition: {},
         dictionaryOptions: {},
         anonymous: true,
@@ -152,14 +152,15 @@ function searchWordWithDict(query, options, dicts){
     let baseSearchType = '';
 
     if(lookupResult) {
-        //lemma
-        if(options.allowLemma){
-            deepLookupResult = deepLookup(lookupResult, options);
+        if(options.lookupBaseWhenNecessary){
+            if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
+                deepLookupResult = deepLookup(lookupResult, options);
 
-            if(deepLookupResult){
-                baseSearchType='lemma';
-                baseWord = deepLookupResult.word;
-            }        
+                if(deepLookupResult){
+                    baseSearchType='lemma';
+                    baseWord = deepLookupResult.word;
+                }
+            }
         }
     }
 
