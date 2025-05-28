@@ -1,7 +1,7 @@
 'use strict';
 
 import { split } from "sentence-splitter";
-import { tokenize } from "./text/tokenizer.js";
+import { tokenizeSentence, tokenizeNodeText } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
 import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation } from './word.js';
 import { getSegmentOffset } from './segment.js';
@@ -52,7 +52,7 @@ function tokenizeTextNode(document, siteOptions) {
             }
             //console.log(node.parentElement.nodeName);
             //console.log(textContent);
-            let tokens = tokenize((text)=>checkWord(siteOptions, text), textContent);
+            let tokens = tokenizeNodeText((text)=>checkWord(siteOptions, text), textContent);
             //console.log(siteOptions);
 
             let tokenHtmls = [];
@@ -283,7 +283,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenize((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newTagPositions);
+        let tokens = tokenizeSentence((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,

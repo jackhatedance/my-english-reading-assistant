@@ -1,12 +1,12 @@
 
-import {tokenize} from '../src/text/tokenizer.js';
+import { tokenizeSentence } from '../src/text/tokenizer.js';
 import { strict as assert } from 'assert';
 
 describe('tokenizer', function () {
-  describe('#tokenize()', function () {
+  describe('#tokenizeSentence()', function () {
     it('normal sentence', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
@@ -28,7 +28,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: normal word', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
@@ -50,7 +50,7 @@ describe('tokenizer', function () {
 
     it('wrong hyphenation: unecessary hyphen', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
@@ -72,7 +72,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: compoud word of 2 words', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['good-bye', 'world'];
         if(words.includes(text)){
@@ -94,7 +94,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: compoud word of 2 words with newline hyphen', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['national', 'secu', 'security'];
         if(words.includes(text)){
@@ -115,7 +115,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: compoud word of 3 words', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['his', 'son-in-law', 'son', 'in', 'law'];
         if(words.includes(text)){
@@ -136,7 +136,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: public-in-formation', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['public', 'in', 'formation', 'information'];
         if(words.includes(text)){
@@ -159,7 +159,7 @@ describe('tokenizer', function () {
 
     it('camel word', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['Hello','World'];
         if(words.includes(text)){
@@ -180,7 +180,7 @@ describe('tokenizer', function () {
 
     it('camel word in dictionary', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['TikTok', 'Tik', 'Tok'];
         if(words.includes(text)){
@@ -200,7 +200,7 @@ describe('tokenizer', function () {
 
     it('slash words', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['yes','no'];
         if(words.includes(text)){
@@ -222,7 +222,7 @@ describe('tokenizer', function () {
 
     it('end of line hyphenation: normal word with Apostrophe', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['Russia'];
         if(words.includes(text)){
@@ -243,7 +243,7 @@ describe('tokenizer', function () {
 
     it('Apostrophe possesion', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['he'];
         if(words.includes(text)){
@@ -263,7 +263,7 @@ describe('tokenizer', function () {
 
     it('Apostrophe will', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['he'];
         if(words.includes(text)){
@@ -283,7 +283,7 @@ describe('tokenizer', function () {
 
     it('Spanish word', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'Buendía'];
         if(words.includes(text)){
@@ -304,7 +304,7 @@ describe('tokenizer', function () {
 
     it('Turkish word', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['C¸atal', 'Hu¨yu¨k', 'Çatalhöyük'];
         if(words.includes(text)){
@@ -328,7 +328,7 @@ describe('tokenizer', function () {
 
     it('CEOs', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['CEO', 'CEOs'];
         if(words.includes(text)){
@@ -347,7 +347,7 @@ describe('tokenizer', function () {
 
     it('D.C.', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['D.C.'];
         if(words.includes(text)){
@@ -366,7 +366,7 @@ describe('tokenizer', function () {
 
     it('U.S.-designated', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['U.S.', 'designated'];
         if(words.includes(text)){
@@ -388,7 +388,7 @@ describe('tokenizer', function () {
 
     it('start with non-standard quotaion mark', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['the'];
         if(words.includes(text)){
@@ -407,7 +407,7 @@ describe('tokenizer', function () {
 
     it('new word positions', async function () {
       
-      let tokens = tokenize((text)=> {
+      let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['boy', 'at'];
         if(words.includes(text)){
@@ -428,7 +428,7 @@ describe('tokenizer', function () {
 
   it('tower end with 2 punctuations', async function () {
     
-    let tokens = tokenize((text)=> {
+    let tokens = tokenizeSentence((text)=> {
       //console.log('checkWord:'+text);
       let words = ['tower'];
       if(words.includes(text)){

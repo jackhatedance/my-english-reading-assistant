@@ -3,7 +3,7 @@ import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
 
-function tokenize(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
+function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0, null, null, checkWord);
@@ -21,6 +21,18 @@ function tokenize(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     parts = trimWords(checkWord, parts);
 
     parts = detectAbbreviationWords(checkWord, parts);
+
+    return parts;
+}
+
+function tokenizeNodeText(checkWord, sentence) {
+    //split by space, dash (dash is not hyphen)
+    const regexp = /([^\s—]+)|([\s—]+)/g;
+    let parts = _splitTextByRegex(sentence, regexp, 0, null, null);
+    //console.log(parts);
+    parts = splitCompoundWord(checkWord, parts);
+    parts = splitCamelWords(checkWord, parts);
+    parts = splitSlashWords(checkWord, parts);
 
     return parts;
 }
@@ -603,4 +615,4 @@ function guessWordOfCrossLine(checkWord, originalContent, submask){
     return guessResult;
 }
 
-export { tokenize };
+export { tokenizeSentence, tokenizeNodeText };

@@ -248,18 +248,11 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 
         //cleanElements(document);
 
-        /*
-        visitElement(document.body, (element) => {
-          //console.log(element.nodeName + element.nodeType);
-          annotateChildTextContents(element, isIframe);
-        });
-        */
+        
         tokenizeTextNode(document, currentSiteOption);
 
         addDocumentEventListener(document, currentSiteOption);
-    }
     
-    if (documentConfig.canProcess) {
         article = parseDocument(document, currentSiteOption);
 
         //console.log(JSON.stringify(article));
