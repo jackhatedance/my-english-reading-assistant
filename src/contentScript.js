@@ -9,7 +9,7 @@ import { getOptionsFromCache, refreshOptionsCache, } from './service/optionServi
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
-import { getWordFromElement, getQueryFromElement} from './word.js';
+import { getTargetWordFromElement, getQueryFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
 import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
@@ -383,7 +383,7 @@ async function addDocumentEventListener(document, currentSiteOption) {
           let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
           dictionaryName = searchResult?.lookupResult?.dictionaryName;
 
-          word = getWordFromElement(highlightElement);
+          word = getTargetWordFromElement(highlightElement);
 
           let knownWords = await loadKnownWords();
           if(isKnown(word, knownWords)){

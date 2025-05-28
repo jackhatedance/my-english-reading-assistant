@@ -11,6 +11,7 @@ import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
 import { getIsbn } from './service/pageService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
 import { createTooltip } from './tooltip.js'
+import { getTargetWordFromElement } from './word.js';
 
 /**
  * 
@@ -29,7 +30,7 @@ async function getPageInfo(siteProfile, documentArticleMap) {
 
         for (var e of elements) {
             //let targetWord = getTargetWordFromElement(e);
-            let base = e.getAttribute('data-word');
+            let base = getTargetWordFromElement(e);
 
             unknownWordMap.set(base, { base, });
             unknownWordsCount++;

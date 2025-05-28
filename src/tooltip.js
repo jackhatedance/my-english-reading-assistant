@@ -1,10 +1,10 @@
 import { mergeEntries, hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import { pronunciationsToText } from './dictionary/definition-formatter.js'
 import { searchWord, buildDictionaryOptions, getWordParts, isKnown } from './language.js';
-import { getSearchTypeDescription } from './dictionary/search-type.js'
 import { sendMessageMarkWordToBackground } from './message.js'; 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
 import { isPageAnnotationVisible } from './page.js'
+import { getTargetWord } from './word.js'
 
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
@@ -77,10 +77,9 @@ function createTooltip(document) {
     <div class="word-mark-actions">
       <button id="${TOOLTIP_MARK_TOGGLE_ID}" class='mea-tooltip-button' title='${markToggleTips}'><img src="${tickImgUrl}" /></button> <button id="${TOOLTIP_MARK_CLEAR_ID}" class='mea-tooltip-button' title='${clearMarkTips}'><img src="${clearImgUrl}" /></button>
     </div>
-    <p id='mea-headword'>
-    </p>
-    <p id='mea-definition'></p>
-  
+    <div id="mea-definitions">
+    
+    </div>
   `;
   
     
@@ -148,12 +147,9 @@ async function onClearMark(tooltipElement, word) {
   sendMessageMarkWordToBackground(wordChanges);
 }
 
-function updateUI(tooltipElement, headwordHtml, definitionHtml, unknown){
-  let headword = tooltipElement.shadowRoot.querySelector('#mea-headword');
-  headword.innerHTML = headwordHtml;
-
-  let definition = tooltipElement.shadowRoot.querySelector('#mea-definition');
-  definition.innerHTML = definitionHtml;
+function updateUI(tooltipElement, definitionsHtml, unknown){
+  let definitions = tooltipElement.shadowRoot.querySelector('#mea-definitions');
+  definitions.innerHTML = definitionsHtml;
 
   updateWordMarkToogle(tooltipElement, unknown);
 }
@@ -247,8 +243,10 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
 
   let searchType = targetElement.getAttribute('data-search-type'); 
   let unknown = !targetElement.classList.contains('mea-hide');
-  searchResultToHtml(tooltipElement, searchType, searchResult, options.pronunciation.region, unknown);
-  tooltipElement.setAttribute('data-word', searchResult.word);
+  let targetWord = getTargetWord(searchResult);
+  
+  searchResultToHtml(tooltipElement, searchType, searchResult, targetWord, options.pronunciation.region, unknown);
+  tooltipElement.setAttribute('data-word', targetWord);
   tooltipElement.setAttribute('data-dictionary', searchResult.lookupResult.dictionaryName);
   //left top
   
@@ -269,23 +267,30 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
 }
 
 
-function searchResultToHtml(tooltipElement, searchType, searchResult, pronunciationRegion, unknown){
+function searchResultToHtml(tooltipElement, searchType, searchResult, targetWord, pronunciationRegion, unknown){
   
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
-  let baseSearchType = searchResult.baseSearchType;
-
-
-  let lookupResult = searchResult.lookupResult;
-  let useBaseWord = searchResult.deepLookupResult && hasOnlyLinkOrFormDefinition(lookupResult.json);
-  if(useBaseWord){
-    lookupResult = searchResult.deepLookupResult.lookupResult;
-  }
-
-  let headWordHtml = generateHeadWordHtml(useBaseWord, word, searchType, baseWord, baseSearchType);
-  let partsHtml = generatePartsHtml(useBaseWord, word, baseWord);
-
   
+  let html;
+  if(targetWord == word){
+    let wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
+    let baseHtml = '';
+    if(hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)){
+      baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, false);
+    }
+    html = `${wordHtml} <br> ${baseHtml}`;
+  } else{
+    let baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, true);
+    html = baseHtml;
+  }
+  
+  updateUI(tooltipElement, html, unknown);
+}
+
+function lookupResultToHtml(word, lookupResult, pronunciationRegion, isBold){
+  let wordHtml = isBold? `<b>${word}</b>` : word;
+  let partsHtml = generatePartsHtml(word);
   let entries = lookupResult.json;
   if(!entries){
     entries = [];
@@ -293,8 +298,9 @@ function searchResultToHtml(tooltipElement, searchType, searchResult, pronunciat
   let entry = mergeEntries(entries);
   let definitionHtml = generateDefinitionHtml(entry);
   let pronunciationText = pronunciationsToText(entry.headword.pronunciations, pronunciationRegion);    
-
-  updateUI(tooltipElement, `${headWordHtml} ${pronunciationText} ${partsHtml}`, definitionHtml, unknown);
+  return `<p>${wordHtml} ${pronunciationText} ${partsHtml}</p>
+  <p>${definitionHtml}</p>
+  `;
 }
 
 function generateDefinitionHtml(entry) {
@@ -325,31 +331,9 @@ function generateDefinitionHtml(entry) {
   return text;
 }
 
-function generateHeadWordHtml(useBaseWord, word, searchType, baseWord, baseSearchType){
-  
-  let headWordStr = '';
-  if(useBaseWord){
-    let description = getSearchTypeDescription(baseSearchType, true);
-    let descriptionStr = description ? `${description}:`:'';
 
-    let baseWordStr = baseSearchType == 'raw' ? baseWord: `<i>${baseWord}</i>`;
-    headWordStr = `${descriptionStr}${baseWordStr}`;
-  } else {
-    if(searchType){
-      let description = getSearchTypeDescription(searchType, true);
-      let descriptionStr = description ? `${description}:`:'';
-
-      let wordStr = searchType == 'raw' ? word: `<i>${word}</i>`;
-      headWordStr = `${descriptionStr}${wordStr}`;
-    }
-  }
-
-  return headWordStr;
-}
-
-function generatePartsHtml(useBaseWord, word, baseWord) {
-  let effectiveWord = useBaseWord? baseWord : word;
-  let wordPartObjs = getWordParts(effectiveWord);
+function generatePartsHtml(word) {
+  let wordPartObjs = getWordParts(word);
   let parts = '';
   if (wordPartObjs) {
       let partArray = [];

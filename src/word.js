@@ -6,6 +6,7 @@ import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/optionService.js'
 import { encode } from 'html-entities';
 import { getSearchTypeDescription } from './dictionary/search-type.js'
+import { isRegularTransform } from './lemma.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     let query = searchResult.query;
@@ -14,6 +15,8 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     let searchType = searchResult.searchType;
     let baseSearchType = searchResult.baseSearchType;
     let definition = searchResult.definition;
+    let targetWord = getTargetWord(searchResult);
+
     
     let shortDefinition = definition;
     let middleDefinition = definition;
@@ -40,9 +43,24 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     }
 
     let annotationParameters = {
-        definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, parts
+        definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, targetWord, parts
     };
     return annotationParameters;
+}
+
+function getTargetWord(searchResult){
+    const { lookupResult, deepLookupResult, word, baseWord } = searchResult;
+    if(!baseWord){
+        return word;
+    }
+
+    let regularTransform = isRegularTransform(baseWord, word);
+    if(regularTransform){
+        return baseWord;
+    }else {
+        return word;
+    }
+
 }
 
 function addPrefixBySearchType(searchType, word, definition){
@@ -57,8 +75,8 @@ function addPrefixBySearchType(searchType, word, definition){
 
 function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions) {
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions);
-    let { definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, parts } = annotationParameters;
-    let formatted = format(token, definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+    let { definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, targetWord, parts } = annotationParameters;
+    let formatted = format(token, definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber);
     //console.log('formatted:'+formatted);
 
     return formatted;
@@ -67,12 +85,13 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
 function updateWordAnnotation(textElement, searchResult, showShortDefinition, simplifyDefinitionOptions){
     //console.log(textElement.tagName);
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions);
-    let { definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, parts } = annotationParameters;
+    let { definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, targetWord, parts } = annotationParameters;
     //console.log(`updateWordAnnotation: ${word}`);
 
     let escapedQuery = query.replace(/&/g, "&amp;");
     let escapedWord = word.replace(/&/g, "&amp;");
     let escapedBaseWord = baseWord.replace(/&/g, "&amp;");
+    let escapedTargetWord = targetWord.replace(/&/g, "&amp;");
 
     textElement.classList.remove('mea-nonword');
     textElement.classList.add('mea-word');
@@ -81,6 +100,7 @@ function updateWordAnnotation(textElement, searchResult, showShortDefinition, si
     textElement.setAttribute('data-word', escapedWord);
     textElement.setAttribute('data-search-type', searchType);
     textElement.setAttribute('data-base-word', escapedBaseWord);
+    textElement.setAttribute('data-target-word', escapedTargetWord);
     textElement.setAttribute('data-parts', `${parts}`);
     textElement.setAttribute('data-footnote', middleDefinition);
 
@@ -99,12 +119,14 @@ function updateNonWordAnnotation(textElement, query){
     let word = '';
     let searchType = '';
     let baseWord = '';
+    let targetWord = '';
     let parts = '';
 
     textElement.setAttribute('data-query', query);
     textElement.setAttribute('data-word', word);
     textElement.setAttribute('data-search-type', searchType);
     textElement.setAttribute('data-base-word', baseWord);
+    textElement.setAttribute('data-target-word', targetWord);
     textElement.setAttribute('data-parts', parts);
     textElement.setAttribute('data-footnote', definition);
     textElement.setAttribute('data-footnote-short', shortDefinition);
@@ -116,23 +138,25 @@ function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
     let word = '';
     let searchType = '';
     let baseWord = '';
+    let targetWord = '';
     let parts = '';
 
-    let result = format(text, definition, shortDefinition, word, searchType, baseWord, parts, sentenceId, sentenceNumber, tokenNumber);
+    let result = format(text, definition, shortDefinition, word, searchType, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber);
 
     return result;
 }
 
-function format(token, definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, parts, sentenceId, sentenceNumber, tokenNumber) {
+function format(token, definition, shortDefinition, middleDefinition, query, word, searchType, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber) {
     baseWord = encode(baseWord);
     word = encode(word);
+    targetWord = encode(targetWord);
     token = encode(token);
     shortDefinition = encode(shortDefinition);
     middleDefinition = encode(middleDefinition);
 
     let type = word ? 'mea-word' : 'mea-nonword';
 
-    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-query="${query}" data-word="${word}" data-search-type="${searchType}" data-base-word="${baseWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${token}</${TOKEN_TAG}>`;
+    let s = `<${TOKEN_TAG} class="mea-element mea-highlight mea-hide ${type}" data-query="${query}" data-word="${word}" data-search-type="${searchType}" data-base-word="${baseWord}" data-target-word="${targetWord}" data-parts="${parts}" data-footnote="${middleDefinition}" data-footnote-short="${shortDefinition}" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}" data-token-number="${tokenNumber}">${token}</${TOKEN_TAG}>`;
     return s;
 }
 
@@ -148,4 +172,8 @@ function getBaseWordFromElement(element) {
     return element.getAttribute('data-base-word');
 }
 
-export { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement };
+function getTargetWordFromElement(element) {
+    return element.getAttribute('data-target-word');
+}
+
+export { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement, getTargetWordFromElement, getTargetWord };
