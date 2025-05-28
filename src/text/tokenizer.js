@@ -10,11 +10,7 @@ function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions 
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
     parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
-    parts = splitCompoundWord(checkWord, parts);
-
-    parts = splitCamelWords(checkWord, parts);
-
-    parts = splitSlashWords(checkWord, parts);
+    parts = splitWords(checkWord, parts);
 
     parts = endingDotWords(checkWord, parts);
 
@@ -30,14 +26,13 @@ function tokenizeNodeText(checkWord, sentence) {
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0, null, null);
     //console.log(parts);
-    parts = splitCompoundWord(checkWord, parts);
-    parts = splitCamelWords(checkWord, parts);
-    parts = splitSlashWords(checkWord, parts);
-
+    parts = splitWords(checkWord, parts);
+    
     return parts;
 }
 
-function splitCamelWords(checkWord, parts){
+
+function splitWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
         if(part.checked){
@@ -49,25 +44,11 @@ function splitCamelWords(checkWord, parts){
         //console.log(content);        
         let contentWithoutPunctuation = trimPunctuations(content);
         if(isCamelWord(contentWithoutPunctuation)){
-            //console.log('camel world')
-            //step 1: check original word
-            let checkWordResult = checkWord(contentWithoutPunctuation);            
-            if(checkWordResult){
-                part.content = checkWordResult;
-                part.checked = true;
-                parts2.push(part);
-            } else {
-                
-                //step 2: split compound word
-                const regexp2 = /([A-Z][^A-Z\s]+)/g;
-                let subParts = _splitTextByRegex(content, regexp2, part.offset);
-                for(const subPart of subParts){
-                    parts2.push(subPart);
-                }
-            
-
-            }                
-        
+            splitCamelWords(checkWord, part, parts2);
+        } else if(containsSlash(contentWithoutPunctuation)){
+            splitSlashWords(checkWord, part, parts2)
+        } else if(containsHyphen(contentWithoutPunctuation)){
+            splitCompoundWord(checkWord, part, parts2);
         } else {
             parts2.push(part);
         }
@@ -76,90 +57,73 @@ function splitCamelWords(checkWord, parts){
     return parts2;
 }
 
-function splitSlashWords(checkWord, parts){
-    let parts2 = [];
-    for(const part of parts){
-        if(part.checked){
-            parts2.push(part);
-            continue;
-        }
-
-        let content = part.content;
-        let contentWithoutPunctuation = trimPunctuations(content);
-        if(containsSlash(contentWithoutPunctuation)){
-            //console.log('slash world')
-            //step 1: check original word
-            let checkWordResult = checkWord(contentWithoutPunctuation);            
-            if(checkWordResult){
-                part.content = checkWordResult;
-                part.chcked = true;
-                parts2.push(part);
-            } else {
-                
-                //step 2: split word
-                const regexp2 = /([/])|([^/]+)/g;
-                let subParts = _splitTextByRegex(content, regexp2, part.offset);
-                for(const subPart of subParts){
-                    parts2.push(subPart);
-                }
-
-            }                
-        
-        } else {
-            parts2.push(part);
+function splitCamelWords(checkWord, part, parts){
+    let content = part.content;
+    let contentWithoutPunctuation = trimPunctuations(content);
+    let checkWordResult = checkWord(contentWithoutPunctuation);            
+    if(checkWordResult){
+        part.content = checkWordResult;
+        part.checked = true;
+        parts.push(part);
+    } else {
+        //step 2: split compound word
+        const regexp2 = /([A-Z][^A-Z\s]+)/g;
+        let subParts = _splitTextByRegex(content, regexp2, part.offset);
+        for(const subPart of subParts){
+            parts.push(subPart);
         }
     }
-
-    return parts2;
 }
 
-function splitCompoundWord(checkWord, parts){
-    let parts2 = [];
-    for(const part of parts){
-        if(part.checked){
-            parts2.push(part);
-            continue;
-        }
-
-        let content = part.content;
-        //console.log(content);        
-        let contentWithoutPunctuation = trimPunctuations(content);
-        if(containsHyphen(contentWithoutPunctuation)){
-            //step 1: check original word
-            let checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
-            if(checkWordResult){
-                part.content = checkWordResult;
-                part.checked = true;
-                parts2.push(part);
-            } else {
-                //step 2: eliminate hyphen then check word
-                const contentWithoutPunctuationAndHyphen = contentWithoutPunctuation.replaceAll(/[-]/g, '');
-                checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
-                if(checkWordResult){
-                    part.content = checkWordResult;
-                    part.checked = true;
-                    parts2.push(part);
-                } else {
-                    //step 3: split compound word by hyphen
-                    const regexp2 = /([-])|([^-]+)/g;
-
-                    //replace '-' to any other letter
-                    let originalContent = replaceMaskedChars(part.originalContent, part.mask, 'x');
-                    let originalMaskedChar = '-';
-                    let subParts = _splitTextByRegex(originalContent, regexp2, part.offset, part.mask, originalMaskedChar);
-                    for(const subPart of subParts){
-                        parts2.push(subPart);
-                    }
-                }
-
-            }                
-        
-        } else {
-            parts2.push(part);
+function splitSlashWords(checkWord, part, parts){
+    let content = part.content;
+    let contentWithoutPunctuation = trimPunctuations(content);
+    let checkWordResult = checkWord(contentWithoutPunctuation);            
+    if(checkWordResult){
+        part.content = checkWordResult;
+        part.chcked = true;
+        parts.push(part);
+    } else {
+        //step 2: split word
+        const regexp2 = /([/])|([^/]+)/g;
+        let subParts = _splitTextByRegex(content, regexp2, part.offset);
+        for(const subPart of subParts){
+            parts.push(subPart);
         }
     }
+}
 
-    return parts2;
+function splitCompoundWord(checkWord, part, parts){
+    let content = part.content;
+    let contentWithoutPunctuation = trimPunctuations(content);
+
+    //step 1: check original word
+    let checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
+    if(checkWordResult){
+        part.content = checkWordResult;
+        part.checked = true;
+        parts.push(part);
+    } else {
+        //step 2: eliminate hyphen then check word
+        const contentWithoutPunctuationAndHyphen = contentWithoutPunctuation.replaceAll(/[-]/g, '');
+        checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
+        if(checkWordResult){
+            part.content = checkWordResult;
+            part.checked = true;
+            parts.push(part);
+        } else {
+            //step 3: split compound word by hyphen
+            const regexp2 = /([-])|([^-]+)/g;
+
+            //replace '-' to any other letter
+            let originalContent = replaceMaskedChars(part.originalContent, part.mask, 'x');
+            let originalMaskedChar = '-';
+            let subParts = _splitTextByRegex(originalContent, regexp2, part.offset, part.mask, originalMaskedChar);
+            for(const subPart of subParts){
+                parts.push(subPart);
+            }
+        }
+    }
 }
 
 
@@ -187,6 +151,10 @@ function endingDotWords(checkWord, parts){
         let contentWithoutPunctuation = trimPunctuations(originalContent); 
         //console.log("originalContent:"+originalContent);
         
+        if(originalContent.includes('lord.')){
+            //console.log(originalContent);
+        }
+
         let options = { };
         let transforms = ['endingDot'];
 

@@ -3,7 +3,7 @@
 import { split } from "sentence-splitter";
 import { tokenizeSentence, tokenizeNodeText } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
@@ -343,27 +343,15 @@ function parseArticleTextNodes(article, element, siteOptions){
             
             //debug purpose
             
-            /*
-            if(node.textContent === 'Ne-'){
-                //console.log(node.textContent);
-                //console.log(token);
+            
+            if(node.textContent.includes('lord.')){
+                console.log(node.textContent);
+                console.log(token);
             }
-            */  
-
-            let contentSame = false;
-            if(token 
-                && token.originalContent 
-                && node.textContent
-                && token.originalContent.trim() == node.textContent.trim()){
-                //console.log(`node content != token.content: ${node.textContent.trim()} != ${token.content.trim()}`);
-                contentSame = true;
-            }
-           
-            if(token 
-                //&& token.originalContent.includes('-')
-                //&& !token.content.includes('-')
-                && !contentSame                
+             
+            if(token
                 && node.parentElement.tagName == 'MEA-TOKEN'
+                && getWordFromElement(node.parentElement) != token.content
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showShortDefinition = firstNodeOfTheToken;
