@@ -201,7 +201,7 @@ function addStyle(document) {
         padding: 0px;
         #mea-vueapp-iframe {
           width: 500px;
-          height: 610px;
+          height: 520px;
           border: none;
         }
 
