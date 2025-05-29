@@ -157,6 +157,52 @@ describe('tokenizer', function () {
             
     });
 
+    it('dot at end of line', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['of.', 'of', 'think'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "think of.", 0 , { });
+      
+      
+      assert.equal(tokens.length, 3);
+      
+      assert.equal(tokens[0].content, "think");
+      assert.equal(tokens[1].content, " ");
+
+      assert.equal(tokens[2].content, "of");
+      assert.equal(tokens[2].originalContent, "of.");
+            
+    });
+
+    it('dot not at end of line', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['of.', 'of', 'think', 'any'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, "think of. any", 0 , { });
+      
+      
+      assert.equal(tokens.length, 5);
+      
+      assert.equal(tokens[0].content, "think");
+      assert.equal(tokens[1].content, " ");
+
+      assert.equal(tokens[2].content, "of.");
+      assert.equal(tokens[2].originalContent, "of.");
+            
+    });
+
     it('camel word', async function () {
       
       let tokens = tokenizeSentence((text)=> {

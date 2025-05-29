@@ -60,6 +60,10 @@ function createBlankMask(str) {
     return " ".repeat(str.length);
 }
 
+function isBlankMask(str){
+    return str && str.replaceAll(' ', '').length ==0;
+}
+
 function containsMaskedChars(str){
     return str && str.includes('#');
 }
@@ -183,4 +187,4 @@ function splitButIgnoreParentheses(text, separater){
 }
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, isBlankMask, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };

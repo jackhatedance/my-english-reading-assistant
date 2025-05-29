@@ -6,18 +6,25 @@ import { containsAbbreviation } from './transforms/abbreviation.js'
 function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-    let parts = _splitTextByRegex(sentence, regexp, 0, null, null, checkWord);
+    let parts = _splitTextByRegex(sentence, regexp, 0, null, null);
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
     parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
     parts = splitWords(checkWord, parts);
 
-    parts = endingDotWords(checkWord, parts);
+    //----end of split
 
-    parts = trimWords(checkWord, parts);
+    //add sentence position info
+    if(parts.length>0){
+        let firstPart = parts[0];
+        firstPart.isSentenceFirstWord = true;
 
-    parts = detectAbbreviationWords(checkWord, parts);
-
+        let lastPart = parts[parts.length - 1];
+        lastPart.isSentenceLastWord = true;
+    }
+    
+    guessPartsWord(checkWord, parts);
+    
     return parts;
 }
 
@@ -138,102 +145,67 @@ function guessWordOfNormal(checkWord, content){
     }
 }
 
-
-function endingDotWords(checkWord, parts){
-    let parts2 = [];
+function guessPartsWord(checkWord, parts){
     for(const part of parts){
         if(part.checked){
-            parts2.push(part);
             continue;
-        }    
-        
-        let originalContent = part.content;
-        let contentWithoutPunctuation = trimPunctuations(originalContent); 
-        //console.log("originalContent:"+originalContent);
-        
-        if(originalContent.includes('lord.')){
-            //console.log(originalContent);
         }
 
-        let options = { };
-        let transforms = ['endingDot'];
-
-        if(contentWithoutPunctuation && contentWithoutPunctuation.endsWith('.')){
-            let guessResult = guessWord(contentWithoutPunctuation, options, checkWord, transforms);
-            //console.log("guessResult:"+JSON.stringify(guessResult));
-            if(guessResult){
-                part.content = guessResult.content;
-                part.checked = true;
-            }
-        }
-
-        parts2.push(part);
-    
+        guessPartWord(checkWord, part);
     }
-
-    return parts2;
 }
 
-function trimWords(checkWord, parts){
-    let parts2 = [];
-    for(const part of parts){
-        if(part.checked){
-            parts2.push(part);
-            continue;
-        }    
-        
-        let originalContent = part.content;
-        
-        //console.log("originalContent:"+originalContent);
-        
-        let options = { };
-        let transforms = ['punctuation', 'apostrophe'];
+function guessPartWord(checkWord, part){
+    let originalContent = part.content;
+    let contentWithoutPunctuation = trimPunctuations(originalContent); 
 
-        let guessResult = guessWord(originalContent, options, checkWord, transforms);
-        //console.log("guessResult:"+JSON.stringify(guessResult));
-        if(guessResult){
-            part.content = guessResult.content;
-            part.checked = true;
-        }        
+    let guessResult;
 
-        parts2.push(part);
+    let options = { };
+    let transforms;
     
+    if(!guessResult){
+        if(part.lineBreak){
+            guessResult = guessWordOfCrossLine(checkWord, originalContent, part.mask);
+        } 
     }
 
-    return parts2;
-}
-
-function detectAbbreviationWords(checkWord, parts){
-    let parts2 = [];
-    for(const part of parts){
-        /* detected abbreviation words anyway
-        if(part.checked){
-            parts2.push(part);
-            continue;
-        }
-            */    
-        
-        let originalContent = part.content;
-        
-        //console.log("originalContent:"+originalContent);
-        
-        let options = { };
-        let transforms = ['abbreviation'];
+    if(!guessResult){
+        transforms = ['abbreviation'];
 
         if(containsAbbreviation(originalContent)){
-            let guessResult = guessWord(originalContent, options, checkWord, transforms);
-            //console.log("guessResult:"+JSON.stringify(guessResult));
-            if(guessResult){
-                part.content = guessResult.content;
-                part.checked = true;
-            }
+            guessResult = guessWord(originalContent, options, checkWord, transforms);
         }
-
-        parts2.push(part);
+    }
     
+
+    if(!guessResult){
+        //ending dot
+        transforms = ['endingDot'];
+        
+        if(contentWithoutPunctuation && contentWithoutPunctuation.endsWith('.')){
+            guessResult = guessWord(contentWithoutPunctuation, buildGuessWordOptions(part), checkWord, transforms);
+        }
     }
 
-    return parts2;
+    if(!guessResult){
+        transforms = ['punctuation', 'apostrophe'];
+        guessResult = guessWord(originalContent, options, checkWord, transforms);        
+    }
+
+    
+    if(guessResult){
+        part.content = guessResult.content;
+        part.checked = true;
+    }
+}
+
+function buildGuessWordOptions(part){
+    let options = {};
+    if(part.isSentenceLastWord){
+        options.isSentenceLastWord = true;
+    }
+    return options;
 }
 
 function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMaskedChar, checkWord) {
@@ -443,6 +415,8 @@ function _splitPartByNewLines(checkWord, part, positions) {
         let submask = mask.substring(startTextIndex, endTextIndex);
 
         let originalContent = subtext;
+        let content;
+        /*
         let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
         let content;
         let checked;
@@ -455,6 +429,10 @@ function _splitPartByNewLines(checkWord, part, positions) {
             content = originalContent;
             checked = false;
         }
+            */
+
+        content = originalContent;
+        let checked = false;
 
         let subpart = {
             originalContent: originalContent,
@@ -463,6 +441,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
             checked: checked,
             offset: startTextIndex + part.offset,
             length: subtext.length,
+            lineBreak: true,
         };
         parts2.push(subpart);        
 
@@ -515,11 +494,12 @@ function _splitPartByNewWords(checkWord, part, positions) {
 
         let subtextWithoutPunctuation = trimPunctuations(subtext);
         
-        let checkWordResult = checkWord(subtextWithoutPunctuation);
+        //let checkWordResult = checkWord(subtextWithoutPunctuation);
         
         let originalContent = subtext;
         
         let content, checked;
+        /*
         if(checkWordResult){
             content = checkWordResult;
             checked = true;
@@ -527,6 +507,9 @@ function _splitPartByNewWords(checkWord, part, positions) {
             content = originalContent;
             checked = false;
         }
+            */
+        content = originalContent;
+        checked = false;
 
         let subpart = {
             originalContent: originalContent,
