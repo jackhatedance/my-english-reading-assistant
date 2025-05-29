@@ -19,13 +19,26 @@ function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions 
         let firstPart = parts[0];
         firstPart.isSentenceFirstWord = true;
 
-        let lastPart = parts[parts.length - 1];
-        lastPart.isSentenceLastWord = true;
+        let lastPart = findLastEffectiveToken(parts);
+        if(lastPart){
+            lastPart.isSentenceLastWord = true;
+        }
     }
     
     guessPartsWord(checkWord, parts);
     
     return parts;
+}
+
+function findLastEffectiveToken(parts){
+    let currentNonBlankPart;
+    for(let part of parts){
+        let blank = part.originalContent.trim().length == 0;
+        if(!blank){
+            currentNonBlankPart = part;
+        }
+    }
+    return currentNonBlankPart;
 }
 
 function tokenizeNodeText(checkWord, sentence) {

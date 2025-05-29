@@ -203,6 +203,27 @@ describe('tokenizer', function () {
             
     });
 
+    it('dot at end of line followed by line break', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['of.', 'of', 'think', 'me.', 'me'];
+        if(words.includes(text)){
+          return text;
+        }else {
+          return null;
+        }
+      }, '“You told him that you told me.”\n', 0 , { });
+      
+      
+      assert.equal(tokens.length, 14);
+      
+
+      assert.equal(tokens[12].content, "me");
+      assert.equal(tokens[12].originalContent, 'me.”');
+            
+    });
+
     it('camel word', async function () {
       
       let tokens = tokenizeSentence((text)=> {
