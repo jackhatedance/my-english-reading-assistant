@@ -91,6 +91,11 @@ async function _lookup(query, dicts){
             }
 
         } 
+
+        //fallback to text mode
+        if(!lookupResult.html && definitionFormat.value == 'html'){
+            definitionFormat.value = 'text';
+        }
     } 
     lookupResultRef.value = lookupResult; 
 }
