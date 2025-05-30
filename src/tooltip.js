@@ -279,7 +279,11 @@ function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciat
     let wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
     let baseHtml = '';
     if(hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)){
-      baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, false);
+      if(searchResult.deepLookupResult){
+        baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, false);
+      }else{
+        console.log(`deepLookupResultof ${word} is null`);
+      }
     }
     html = `${wordHtml} <br> ${baseHtml}`;
   } else{
