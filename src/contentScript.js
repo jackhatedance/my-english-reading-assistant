@@ -225,7 +225,10 @@ async function domMonitor() {
   //check body attribute flag.  
   let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
 
-  gLogger.debug(`DOM changes:${gDomChanges}`);
+  if(gDomChanges > 0){
+    gLogger.debug(`DOM changes:${gDomChanges}`);
+  }
+  
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
       //no more changes in this interval. now we can reset annotations
