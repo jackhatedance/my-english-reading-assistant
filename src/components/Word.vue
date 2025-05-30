@@ -28,12 +28,12 @@ const dictionaryIframeText = ref(null);
 const definitionFormat = ref('text');
 const lookupResultRef = ref(null);
 watch(() => props.word, async (newValue) => {
-      
-    await _lookup(newValue, [props.dictionary]);
+    lookupResultRef.value = null;    
+    _lookup(newValue, [props.dictionary]);
 });
 
 watch(() => lookupResultRef.value, async (newValue) => {
-      
+    
     refreshHtml();
 });
 function refreshHtml(){
