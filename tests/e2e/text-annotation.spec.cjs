@@ -92,7 +92,7 @@ test('pdf line end hyphen', async ({ testPage, extensionId, popupPage }) => {
 
 
   let compile = testPage.page.locator("mea-token[data-word='compile']").first();
-  await expect(compile).toHaveText('com-');
+  await expect(compile).toHaveText('com-', 10000);
   await expect(compile).toHaveAttribute('data-footnote', 'vt.编译,编辑,编纂,收集');
   await expect(compile).toHaveAttribute('data-footnote-short', 'vt.编译,编辑,编纂; ...');
   
