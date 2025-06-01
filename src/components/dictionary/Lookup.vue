@@ -28,7 +28,17 @@ const activeDictionaryName = ref();
 const queryRef = ref(null);
 const lookupResultRef = ref(null);
 
+var gDictionaryInstanceCache = {};
+
 async function getDictionary(meta){
+    let name = meta.name;
+    if(!gDictionaryInstanceCache.hasOwnProperty(name)){
+        gDictionaryInstanceCache[name] = await loadDictionary(meta)
+    }
+    return gDictionaryInstanceCache[name];
+}
+
+async function loadDictionary(meta){
     let dictionaryInstance;
     if(meta.type =='system'){
         dictionaryInstance = await loadSystemDictionary(meta.name);
@@ -123,7 +133,8 @@ const init = async () => {
     
 //    await doLookup(dictionary, query);
 
-    dictionaryMetas.value = await getAllDictionaryMetas();
+    let allMetas = await getAllDictionaryMetas();
+    dictionaryMetas.value = allMetas;
 
     if(route.query.dictionary){
         let meta = dictionaryMetas.value.find(item => item.name == route.query.dictionary);
