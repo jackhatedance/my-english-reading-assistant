@@ -226,7 +226,7 @@
         "message": "可用"
     },
     "optionsEditDictionaryIndexColorTipsLightGreen": {
-        "message": "可用,建议重新倒入"
+        "message": "可用,建议重新导入"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
         "message": "不可用,需要重新导入"
