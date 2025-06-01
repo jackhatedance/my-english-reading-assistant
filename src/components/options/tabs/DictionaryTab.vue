@@ -359,7 +359,7 @@ init();
       </div>
       <div class="input dictionary">
         <div class="list">
-          <select class="dictionaries" v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
+          <select class="dictionaries" v-model="selectedDictionary" :size="dictionaryMetas.length > 10 ? 10 : dictionaryMetas.length" @change="onChangeSelectedDictionary">
             <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser != true, support_ok_upgradable: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser == true, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
           </select>          
         </div>
