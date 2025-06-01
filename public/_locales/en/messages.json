@@ -584,5 +584,11 @@
     },
     "dictionaryPageTitle":{
         "message":"Dictionary"
+    },
+    "dictionaryPage_no_result_tips":{
+        "message":"Type a word to lookup in..."
+    },
+    "dictionaryPage_button_lookup":{
+        "message":"Lookup"
     }
 }

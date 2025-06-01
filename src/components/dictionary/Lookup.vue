@@ -12,7 +12,7 @@ const props = defineProps({
 });
 
 const route = useRoute();
-
+const t = chrome.i18n.getMessage;
 
 const query = inject('query');
 watch(() => query.value, (newValue) => {
@@ -158,7 +158,7 @@ init();
     <div class="lookup-container">     
         <div class="toolbar">
             <input type="text" v-model="queryRef" @keyup.enter="onLookup">
-            <button @click="onLookup">lookup</button>   
+            <button @click="onLookup">{{ t('dictionaryPage_button_lookup') }}</button>   
         </div>
         <div class="body">
             <div class="sidebar">
@@ -166,7 +166,13 @@ init();
             </div>
             <div class="content">
                 <Definition v-if="lookupResultRef" :query="lookupResultRef?.query" :text="lookupResultRef?.text" :html="lookupResultRef?.embeddedHtml"></Definition>
-                <p v-if="!lookupResultRef">no result</p>
+                <div v-if="!lookupResultRef" class="no-lookup-result">
+                    <h2>{{ t('dictionaryPage_no_result_tips') }}</h2>
+                    <br>
+                    <h3 v-for="(meta, index) in dictionaryMetas" >
+                        {{ meta.displayName }}
+                    </h3>
+                </div>
             </div>
         </div>
     </div>
@@ -218,6 +224,10 @@ init();
         background-color: white;
         
         border-width: 0;
+
+        .no-lookup-result {
+            text-align: center;
+        }
     }
 }
 

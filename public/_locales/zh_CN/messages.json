@@ -584,5 +584,11 @@
     },
     "dictionaryPageTitle":{
         "message":"词典"
+    },
+    "dictionaryPage_no_result_tips":{
+        "message":"输入单词从这些词典里查找"
+    },
+    "dictionaryPage_button_lookup":{
+        "message":"查找"
     }
 }
