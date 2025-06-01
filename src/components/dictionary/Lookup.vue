@@ -176,11 +176,12 @@ init();
 
 .lookup-container {
     height: 100%;
-    background-color: rgb(229, 229, 229);
-
+    
     .toolbar {
         text-align: center;
         padding: 20px;
+        border-bottom: solid grey 1px;
+        height: 40px;
         input, button {
             margin: 5px;
             font-size: x-large;
@@ -192,7 +193,8 @@ init();
 
 .body{
     display: flex;
-    height: 100%;
+    height: calc(100% - 80px);
+    background-color: rgb(229, 229, 229);
 
     .sidebar {
         padding: 10px;
@@ -202,7 +204,7 @@ init();
         box-sizing: border-box;
         position: fixed;
 
-        border-top: solid grey 1px;
+        
     }
 
     .content {
@@ -214,9 +216,8 @@ init();
         text-align: justify;
 
         background-color: white;
-        border-color: grey;
-        border-style: solid;
-        border-width: 1px 1px 1px 0;
+        
+        border-width: 0;
     }
 }
 
