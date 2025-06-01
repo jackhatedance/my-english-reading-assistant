@@ -12,6 +12,7 @@ import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
 import { getEntryFromLink, isAllUpperCaseEntry, getLink } from './mdict-definition-utils.js'
 import { PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../dictConstants.js'
+import { decode } from 'html-entities'
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
 
@@ -30,6 +31,9 @@ class MdictDictionary extends Dictionary {
             
             this.size = this.mdx.keyHeader?.keywordNum ?? 0;
             this.title = this.mdx.header?.Title ?? name;
+            if(this.title){
+                this.title = decode(this.title);
+            }
             
             let headers = Object.assign({}, this.mdx.header);
             this.rawMeta = { headers };
