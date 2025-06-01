@@ -211,7 +211,7 @@
         "message":"词典"
     },
     "optionsEditDictionaryTips": {
-        "message": "* 上面的词典的优先级高\n* 词典导入以后，需要启用并且最好移到上面以获得较高优先级\n* 未导入的词典不能作为正文词典，但是仍然可以在词典页面使用\n* Mdict词典占用系统资源比较多，如果导致系统缓慢则建议不要启用\n* 软件升级可能需要重新导入"
+        "message": "* 上面的词典的优先级高\n* 词典导入以后，需要启用并且最好移到上面以获得较高优先级\n* 不含结构化数据的词典不能作为正文词典，但是仍然可以在词典页面使用\n* Mdict词典占用系统资源比较多，如果导致系统缓慢则建议不要启用\n* 软件升级可能需要重新提取"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "建议至少启用一本词典"
@@ -222,17 +222,20 @@
     "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
         "message": "创建索引时请不要关闭浏览器"
     },
+    "optionsEditDictionaryIndexColorTipsTitle": {
+        "message": "结构化数据"
+    },
     "optionsEditDictionaryIndexColorTipsGreen": {
         "message": "可用"
     },
     "optionsEditDictionaryIndexColorTipsLightGreen": {
-        "message": "可用,建议重新导入"
+        "message": "可用,建议重新提取"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
-        "message": "不可用,需要重新导入"
+        "message": "不可用,需要重新提取"
     },
     "optionsEditDictionaryIndexColorTipsRed": {
-        "message": "不支持导入"
+        "message": "不支持提取"
     },
     "options_dictionary_detail": {
         "message": "详情"
@@ -259,7 +262,7 @@
         "message": "启用"
     },
     "options_dictionary_detail_index": {
-        "message": "索引"
+        "message": "结构化数据"
     },
     "options_dictionary_detail_parser_has_newer_version": {
         "message": "解析器有新版本"
@@ -267,8 +270,8 @@
     "options_dictionary_detail_job": {
         "message": "任务"
     },
-    "options_dictionary_detail_job_parse": {
-        "message": "导入"
+    "options_dictionary_detail_job_extract": {
+        "message": "提取"
     },
     "options_dictionary_detail_job_extract_resource_data": {
         "message": "提取资源数据"
@@ -295,13 +298,13 @@
         "message": "哪里可以找到词典"
     },
     "optionsAddDictionaryAction":{
-        "message":"添加"
+        "message":"导入"
     },
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"删除"
     },  
     "optionsImportDictionaryAction":{
-        "message":"(重新)导入"
+        "message":"(重新)提取"
     },
     "optionsDictionaryMoveUpAction":{
         "message":"上移"
