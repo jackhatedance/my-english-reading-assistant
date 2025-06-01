@@ -40,6 +40,7 @@ async function getDictionary(meta){
 }
 
 async function search(query){
+    let activeDictionaryHasResult = false;
     for(let meta of toRaw(dictionaryMetas.value)){
         let result = await searchSingle(meta, query);
         if(result){
@@ -47,7 +48,15 @@ async function search(query){
 
             if(meta.name == activeDictionaryName.value){
                 showDefinition(activeDictionaryName.value);
+                activeDictionaryHasResult = true;
             }
+        }
+    }
+
+    if(!activeDictionaryHasResult){
+        if(searchResults.value.length > 0){
+            activeDictionaryName.value = searchResults.value[0].name;
+            showDefinition(activeDictionaryName.value);
         }
     }
 }
