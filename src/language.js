@@ -1,7 +1,7 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition, createEntryForLink } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
@@ -134,25 +134,32 @@ function searchWordWithDict(query, options, dicts){
         lookupResult = lookup(word, options, dicts);
     }
 
+    let baseWord = '';
+    let baseSearchType = '';
 
     if(!lookupResult) {
         if(options.allowLemma){
             transformResult = transformLemmatize(input, options, dicts);
 
             if(transformResult) {
-                word = transformResult.word;
-                lookupResult = transformResult.lookupResult;
+                //create a result for the transform
+                let entry = createEntryForLink(transformResult.word);
+                lookupResult = {
+                    query: input,
+                    json: [entry],
+                    dictionaryName: transformResult.lookupResult.dictionaryName
+                };
+
+                baseWord = transformResult.word;
+                deepLookupResult = transformResult;
 
                 searchType='lemma';
             }
         }
     }
 
-    let baseWord = '';
-    let baseSearchType = '';
-
     if(lookupResult) {
-        if(options.lookupBaseWhenNecessary){
+        if(!baseWord && options.lookupBaseWhenNecessary){
             if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
                 deepLookupResult = deepLookup(lookupResult, options);
 

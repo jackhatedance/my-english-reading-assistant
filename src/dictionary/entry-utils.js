@@ -172,4 +172,28 @@ function hasOnlyLinkOrFormDefinition(entries){
     return false;
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions }
+function createLinkDefinition(link){
+    let text = `见${link}`;
+
+    return {
+        text: text,
+        subdefinitions: [text],
+        type: 'link',
+        link: link,
+    };
+}
+
+function createEntryForLink(link){
+    let definition = createLinkDefinition(link);        
+    let definitions = [definition];
+    let definitionGroup = { name: 'link', "definitions": definitions };        
+    
+    let pronunciations = [];
+    let headword = { pronunciations };
+    let definitionGroups = [ definitionGroup ];
+    
+    let entry = { headword, definitionGroups, type: 'link' };
+    return entry;
+}
+
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions, createLinkDefinition, createEntryForLink }
