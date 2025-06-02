@@ -5,11 +5,11 @@ import './side-panel-component.css';
 import { loadKnownWords } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
-import { refreshOptionsCache, } from './service/optionService.js';
+import { getOptionsFromCache, refreshOptionsCache, } from './service/optionService.js';
 import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
-import { getWordFromElement, getBaseWordFromElement} from './word.js';
+import { getTargetWordFromElement, getQueryFromElement} from './word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
 import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
@@ -18,7 +18,10 @@ import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnn
 import { MenuItems } from './menu.js';
 import { MEA_TAG_PREFIX } from './html.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
-
+import { addTooltipEventListener } from './tooltip.js'
+import { searchWord, buildDictionaryOptions } from './language.js'
+import log from 'loglevel'
+import { initLog } from './log.js'
 
 //used to check if title changed
 var gUrl;
@@ -32,6 +35,13 @@ var gDocumentArticleMap;
 var gDomChanges=0;
 var gDomChangesMonitored=0;
 
+var gDomMonitorInterval=2000;
+const DOM_MONITOR_INTERVAL_MIN = 2000;
+const DOM_MONITOR_INTERVAL_MAX = 5000;
+
+initLog();
+const gLogger = log.getLogger("contentScript");
+
 window.addEventListener("load", myMain, false);
 function myMain() {
   //console.log('page on load');
@@ -44,7 +54,7 @@ function myMain() {
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -71,7 +81,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized(gSiteProfile)) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           gDocumentArticleMap = documentArticleMap;
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -93,7 +103,7 @@ function messageListener(request, sender, sendResponse) {
       }
 
       //init all documents
-      initPageAnnotations(gSiteProfile, addDocumentEventListener).then((documentArticleMap) => {
+      initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
         gDocumentArticleMap = documentArticleMap;
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -193,9 +203,20 @@ function messageListener(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(messageListener);
 
 
+function adjustDomMonitorInterval(workTime){
+  let interval = workTime * 0.5
+
+  if(interval < DOM_MONITOR_INTERVAL_MIN){
+    interval = DOM_MONITOR_INTERVAL_MIN;
+  } else if(interval > DOM_MONITOR_INTERVAL_MAX){
+    interval = DOM_MONITOR_INTERVAL_MAX;
+  }
+  
+  gDomMonitorInterval = interval;
+}
 
 async function domMonitor() {
-
+  //console.log('domMonitor begin');
   let siteInfoSame = checkSiteInfoChanges();
   if(!gSiteProfile || !siteInfoSame){
     gSiteProfile = findSiteProfile(document);
@@ -204,11 +225,15 @@ async function domMonitor() {
   //check body attribute flag.  
   let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
 
+  if(gDomChanges > 0){
+    gLogger.debug(`DOM changes:${gDomChanges}`);
+  }
+  
   if (gDomChanges > 0) {
     if(gDomChanges === gDomChangesMonitored){
       //no more changes in this interval. now we can reset annotations
       
-      //console.log('DOM changed, auto refresh page annotation');
+      gLogger.debug(`DOM stop changing, ${gDomChanges} changes accumulated`);
       
       //reset
       gDomChanges =0;
@@ -223,13 +248,22 @@ async function domMonitor() {
   }
   
   if(needRefresh) {
-    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener);
-
+    gLogger.debug('start refresh page annotation');
+    
     let startTime = new Date().getTime();
+
+    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
+    let endTime1 = new Date().getTime();
+    let elapseTime1 = endTime1 - startTime;
+    gLogger.debug(`initPageAnnotations time costs: ${elapseTime1} ms`);
+
     await resetPageAnnotationVisibilityAndNotify(true);
-    let endTime = new Date().getTime();
-    let elapseTime = endTime - startTime;
-    //console.log('elapseTime：'+ elapseTime);
+    let endTime2 = new Date().getTime();
+    let elapseTime2 = endTime2 - endTime1;
+    let elapseTimeTotal = endTime2 - startTime;
+    adjustDomMonitorInterval(elapseTimeTotal);
+    gLogger.debug(`resetPageAnnotationVisibilityAndNotify time costs: ${elapseTime2} ms`);
+
   }
 
   let url = gSiteProfile.getUrl(document);
@@ -241,15 +275,18 @@ async function domMonitor() {
   //update gloabl variable
   gUrl = url;
 
+  //console.log('domMonitor end');
 }
 
 //enahnced version of setInterval(), make sure tasks are exectued sequentially.
 (function domMonitorLoop() {
-  setTimeout(async () => {    
-    await domMonitor();
-
-    domMonitorLoop();
-  }, 2000);
+  setTimeout(async () => {
+    try {
+      await domMonitor();
+    } finally {
+      domMonitorLoop();
+    }
+  }, gDomMonitorInterval);
 })();
 
 function checkSiteInfoChanges(){
@@ -262,13 +299,43 @@ function checkSiteInfoChanges(){
   return same;
 }
 
-async function addDocumentEventListener(document, documentConfig) {
-  
+async function addWordHoverEventListener(document, documentConfig, currentSiteOption) {
+  let options = getOptionsFromCache();
+  addTooltipEventListener(document, documentConfig,
+    (word, dictionary) => {
+      //console.log(`click tooltip of ${word}`);
+      let request = {
+        type: 'SELECTION_CHANGE',
+        payload: {
+          word: word,
+          dictionary: dictionary,
+          type: 'search-note',            
+          selectedText: '',
+          sentenceSelection: null,
+          paragraphSelection: null,
+          notes: [],
+        },
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      //console.log('selection change:'+JSON.stringify(request));
+      sendMessageToApp(request, sender, sendResponse);
+      showDialog([MenuItems.Vocabulary]);
+    }, 
+    currentSiteOption,
+    options,
+    resetPageAnnotationVisibilityAndNotify
+  );
+}
+
+async function addDocumentEventListener(document, currentSiteOption) {  
   document.addEventListener("mouseup", async (event) => {
-    
+    //console.log(event);
     //mouse up event on dialog itself, ignore
-    let dialog = event.target.closest('.mea-dialog');
-    if(dialog){
+    let supplementary = event.target.closest('.mea-supplementary');
+    if(supplementary){
       return;
     }
 
@@ -307,6 +374,7 @@ async function addDocumentEventListener(document, documentConfig) {
       let type;
       let menuItems = [];
       let word;
+      let dictionaryName;
       
       let filteredNotes = [];
       if (isSelectionCollapsed) {
@@ -314,7 +382,11 @@ async function addDocumentEventListener(document, documentConfig) {
         let targetElement = event.target;
         let highlightElement = targetElement.closest('.mea-word');
         if(highlightElement){//find word
-          word = getWordFromElement(highlightElement);
+          let query = getQueryFromElement(highlightElement);
+          let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
+          dictionaryName = searchResult?.lookupResult?.dictionaryName;
+
+          word = getTargetWordFromElement(highlightElement);
 
           let knownWords = await loadKnownWords();
           if(isKnown(word, knownWords)){
@@ -368,6 +440,7 @@ async function addDocumentEventListener(document, documentConfig) {
           type: 'SELECTION_CHANGE',
           payload: {
             word: word,
+            dictionary: dictionaryName,
             type: type,            
             selectedText: selectedText,
             sentenceSelection: sentenceHashSelection,
@@ -394,18 +467,44 @@ async function addDocumentEventListener(document, documentConfig) {
   const targetNode = document.body;
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
+    let domChangesStart = gDomChanges;
     for (const mutation of mutationList) {
-      if (mutation.type === "childList"
-        //skip the mutations that triggered by itself.
-        && !(mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX))
-      ) {
+      if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
         //console.log(mutation);
-        gDomChanges ++;
+        let nodeTextContentArray = [];
+        for(let node of mutation.addedNodes){
+          if(node.textContent && node.textContent != ''){
+            nodeTextContentArray.push(node.textContent);
+          }          
+        }
+        let nodeTextContents = '';
+        if(nodeTextContentArray.length>0){
+          nodeTextContents = nodeTextContentArray.join('')
+        } 
+        let nodeTextContentsIsEmpty = nodeTextContents == '';
+
+        //skip the mutations that triggered by itself.
+        let triggeredByTokenize = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
+        
+        let targetId = mutation.target?.id;
+        let triggeredInMeaElement = false;
+        if(targetId){
+          triggeredInMeaElement = targetId.toUpperCase().startsWith(MEA_TAG_PREFIX);
+        }
+        
+        let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
+        if(!triggeredBySelf && !nodeTextContentsIsEmpty){
+          gDomChanges ++;
+        }        
       } else if (mutation.type === "attributes") {
         //console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
     }
+    let domChangesCount = gDomChanges - domChangesStart;
+    if(domChangesCount>0){
+      //console.log(`DOM changes: ${domChangesCount}`);
+    }    
   };
   const observer = new MutationObserver(callback);
 

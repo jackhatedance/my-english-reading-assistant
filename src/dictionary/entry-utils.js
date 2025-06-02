@@ -1,3 +1,7 @@
+'use strict'
+
+import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictConstants.js'
+
 /**
  * remove duplicates
  * @param {*} pronunciations 
@@ -68,4 +72,104 @@ function mergeEntries(entries){
     return mergedEntry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions }
+function hasLinkEntryOnly(entries){
+    try{
+        if(entries.length ==1){
+            let entry = entries[0];
+            if(entry.type == DICTIONARY_DEFINITION_TYPE_LINK){
+                return true;                
+            }
+        }        
+    }catch(error){
+        //do nothing
+    }
+
+    return false;
+}
+
+function getTheOnlyDefinition(entries){
+    if(entries && entries.length == 1){
+        let entry = entries[0];
+        let definitionGroups = entry.definitionGroups;
+        if(definitionGroups && definitionGroups.length == 1){
+            let definitionGroup = definitionGroups[0];
+            let definitions = definitionGroup.definitions;
+            if(definitions && definitions.length == 1){
+                let definition = definitions[0];
+                return definition;
+            }
+        }
+    }
+    return null;
+}
+
+function findTransformDefinitions(entries){
+    let result = [];
+
+    for(let entry of entries){
+        let definitionGroups = entry.definitionGroups;
+        for(let definitionGroup of definitionGroups){
+            let definitions = definitionGroup.definitions;
+            for(let definition of definitions){
+                if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM)
+                result.push(definition);
+            }
+        }
+    }
+    return result;
+}
+
+function hasLinkDefinitionOnly(entries){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+        return true;                
+    }
+
+    return false;
+}
+
+function getTheOnlyLinkDefintion(entries){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
+        //console.log(`get the only link of ${lookupResult.query}: ${definition.link}`);
+        return definition;                
+    }
+}
+
+function isOnlyTransform(entries, form){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+        if(!form){
+            return true;
+        } else if(definition.form == form) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+function getTheOnlyBaseForm(entries){    
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
+        //console.log(`get the only base form of ${lookupResult.query}: ${definition.base}`);
+        return definition.base;
+    }
+}
+
+function hasOnlyLinkOrFormDefinition(entries){
+    let definition = getTheOnlyDefinition(entries);
+    if(definition && 
+        (
+            definition.type == DICTIONARY_DEFINITION_TYPE_LINK ||
+            definition.type == DICTIONARY_DEFINITION_TYPE_FORM
+        )
+    ){
+        return true;                
+    }
+
+    return false;
+}
+
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions }

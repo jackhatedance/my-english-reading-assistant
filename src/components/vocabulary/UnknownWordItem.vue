@@ -24,7 +24,11 @@ const wordStr = computed(() => {
     let fromArray = from;
     let fromStr = '';
     if (fromArray) {
-        fromStr = fromArray.join(',');
+        if(fromArray.length >3){
+            fromStr = fromArray.slice(0, 3).join(',') + '...';    
+        } else {
+            fromStr = fromArray.join(',');
+        }
     }
     
     let wordStr = fromStr ? `${word} (${fromStr})` : word;
@@ -44,6 +48,7 @@ const definition = computed(() => {
     //query root word
     let searchResult = searchWord(word, {
       allowLemma: true,
+      lookupBaseWhenNecessary: false,
       dictionaryOptions: dictionaryOptions,
       pronunciationRegion: props.options.pronunciation.region
     });
@@ -178,20 +183,20 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 }
 
 .word-and-actions{
-  clear:both;
-  line-height: 1.8em;
-}
+    clear:both;
+    line-height: 1.8em;
 
-.actions {
-  float:right;
-    
-  button {
-    font-size: 5px;
-    margin-right: 2px;
-  }
-}
-.word {
-    font-weight: bold;
+    .actions {
+    float:right;
+        
+    button {
+        font-size: 5px;
+        margin-right: 2px;
+    }
+    }
+    .word {
+        font-weight: bold;
+    }
 }
 .word-and-actions .word.known {
     text-decoration: line-through;

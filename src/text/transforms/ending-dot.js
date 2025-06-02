@@ -14,11 +14,19 @@ function guess(token, options){
         };
         candicates.push(token2);
     }
-    
-    candicates.push({
+
+    let tokenWithDot = {
         content: token.content,
         checkType: 'content',
-    });
+    };
+
+    if(options.isSentenceLastWord){
+        candicates.push(tokenWithDot);    
+    } else {
+        candicates.unshift(tokenWithDot);    
+    }
+
+    
 
     return candicates;
 }

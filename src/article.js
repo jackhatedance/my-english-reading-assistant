@@ -1,19 +1,21 @@
 'use strict';
 
 import { split } from "sentence-splitter";
-import { tokenize } from "./text/tokenizer.js";
+import { tokenizeSentence, tokenizeNodeText } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword, updateWordAnnotation } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord, buildDictionaryOptions } from './language.js';
 import { isTextTag } from './html.js';
-import { TEXT_TAG } from './html.js';
+import { TEXT_TAG, MEA_TAG_PREFIX } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
+import log from 'loglevel'
 
+const gLogger = log.getLogger('article');
 /**
  * split text node to words, wrapped by span.
  * in order to show unknown word definition
@@ -24,6 +26,7 @@ function tokenizeTextNode(document, siteOptions) {
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
+    var tokenCount = 0;
 
     traverseNode(document.body, (node) => {
         //avoid re-enter
@@ -47,9 +50,9 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 return;
             }
-            
-
-            let tokens = tokenize((text)=>checkWord(siteOptions, text), textContent);
+            //console.log(node.parentElement.nodeName);
+            //console.log(textContent);
+            let tokens = tokenizeNodeText((text)=>checkWord(siteOptions, text), textContent);
             //console.log(siteOptions);
 
             let tokenHtmls = [];
@@ -59,10 +62,11 @@ function tokenizeTextNode(document, siteOptions) {
                 let query = token.content; 
                 //console.log('before trim punctuation:'+query);
                 query = trimPunctuations(query);
-                //console.log('after trim punctuation:'+query);
+                //console.log('token to query:'+query);
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
+                    lookupBaseWhenNecessary: true,
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
@@ -83,6 +87,8 @@ function tokenizeTextNode(document, siteOptions) {
                 }
                 //let tokenHtml = `<span class="mea-container mea-token">${token.content}</span>`;
                 tokenHtmls.push(tokenHtml);
+
+                tokenCount ++;
             }
             let tokensHtml = tokenHtmls.join('');
             let textTag = document.createElement(TEXT_TAG);
@@ -97,6 +103,8 @@ function tokenizeTextNode(document, siteOptions) {
             node.parentNode.replaceChild(textTag, node);
         }
     });
+
+    gLogger.debug(`tokenized ${tokenCount} tokens`);
 }
 
 
@@ -150,10 +158,10 @@ function parseDocument(document, siteOptions, skip = false) {
     if(!skip) {    
         //let lines = getParagraphLines2(document.body);
         let lines = breakString(document.body.textContent, '\n');
-        let newLinePositions = getNewLinePositions(document.body);
-        //console.log('newLinePositions');
+        let newTagPositions = getTagPositions(document.body);
+        //console.log('newTagPositions');
         //parse paragraph, token
-        parseArticleContent(siteOptions, article, lines, newLinePositions);
+        parseArticleContent(siteOptions, article, lines, newTagPositions);
         //parse text node(offset)
         parseArticleTextNodes(article, document.body, siteOptions);
 
@@ -164,41 +172,51 @@ function parseDocument(document, siteOptions, skip = false) {
     return article;
 }
 
-function getNewLinePositions(bodyElement){
+function getTagPositions(bodyElement){
     const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
+    const NEW_WORD_ELEMENTS = ['SUP'];
+    
+    let newLinePositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
 
-    let positions = [];
-    let text = '';
-    //let lines = [];
-    let line = '';
+    let newWordPositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
     
     traverseNode(bodyElement, (node) => {
-
-        if(NEW_LINE_ELEMENTS.includes(node.nodeName) && line.length >0){
-            
-            text += line;
-            //lines.push(line);
-            line = '';
-
-            
-            let pos = text.length;
-            if(pos > 0){
-                positions.push(pos);
-            }
-        }
-
-        if (node.nodeName === '#text') {
-            line += node.textContent;
-        }
-
+        collectNodePositions(node, NEW_LINE_ELEMENTS, newLinePositionCollection);
+        collectNodePositions(node, NEW_WORD_ELEMENTS, newWordPositionCollection);
     });
 
-    //lines.push(line);
-    //console.log(lines);
-    return positions;
+    return {
+        newLinePositions: newLinePositionCollection.positions,
+        newWordPositions: newWordPositionCollection.positions,
+    };
 }
 
-function parseArticleContent(siteOptions, article, lines, newLinePositions){
+function collectNodePositions(node, tags, collection){
+    
+    if(tags.includes(node.nodeName) && collection.content.length >0){
+            
+        collection.pos += collection.content.length;
+        collection.content = '';
+        
+        if(collection.pos > 0){
+            collection.positions.push(collection.pos);
+        }
+    }
+
+    if (node.nodeName === '#text') {
+        collection.content += node.textContent;
+    }
+}
+
+function parseArticleContent(siteOptions, article, lines, newTagPositions){
     
     let offset =0;
     var paragraphNumber = 0;
@@ -212,7 +230,7 @@ function parseArticleContent(siteOptions, article, lines, newLinePositions){
             sentences: [],
         };
 
-        parseParagraphContent(siteOptions, article, paragraphInfo, line, newLinePositions);
+        parseParagraphContent(siteOptions, article, paragraphInfo, line, newTagPositions);
         addParagraph(article, paragraphInfo);
 
         offset += line.length;
@@ -241,7 +259,7 @@ function extractIsbn(content) {
     return isbns;
 }
 
-function parseParagraphContent(siteOptions, article, paragraphInfo, content, newLinePositions){
+function parseParagraphContent(siteOptions, article, paragraphInfo, content, newTagPositions){
     //search isbn
     let isbns = extractIsbn(content);
     if(isbns){
@@ -265,7 +283,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenize((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newLinePositions);
+        let tokens = tokenizeSentence((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -287,7 +305,8 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
 function checkWord(siteOptions, text){
     let searchResult = searchWord(text, {
-        allowLemma: true,
+        allowLemma: false,
+        lookupBaseWhenNecessary: false,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });
@@ -324,21 +343,15 @@ function parseArticleTextNodes(article, element, siteOptions){
             
             //debug purpose
             
-            /*
-            if(node.textContent === 'Ne-'){
-                //console.log(node.textContent);
-                //console.log(token);
-            }
-            */  
             
-           
-            if(token 
-                //&& token.originalContent.includes('-')
-                //&& !token.content.includes('-')
-                && token.content !== nodeContent
-                && nodeInfo.offset >= token.articleOffset
-                && nodeInfo.offset < token.articleOffset + token.length
+            if(node.textContent.includes('lord.')){
+                console.log(node.textContent);
+                console.log(token);
+            }
+             
+            if(token
                 && node.parentElement.tagName == 'MEA-TOKEN'
+                && getWordFromElement(node.parentElement) != token.content
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showShortDefinition = firstNodeOfTheToken;
@@ -348,6 +361,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
+                        lookupBaseWhenNecessary: true,
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {
@@ -358,6 +372,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                         //console.log('deleteUnrecognizedWord, node content:'+nodeContent + '; token content:'+token.content);
                         deleteUnrecognizedWord(nodeContent);
                     } else {
+                        updateNonWordAnnotation(node.parentElement, contentWithoutPunctuation);
                         //console.log('search not found:' + token.content);
                     }
                 }
@@ -477,6 +492,12 @@ function isInMeaElement(element) {
         console.log('null element');
         return false;
     }
+
+    let isMeaElement = element.tagName.startsWith(MEA_TAG_PREFIX);
+    if(isMeaElement){
+        return true;
+    }        
+
     let meaElement = element.closest('.mea-element');
     if (meaElement) {
         return true;

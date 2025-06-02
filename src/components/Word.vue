@@ -1,17 +1,16 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { lookup } from '../dictionaries.js';
-import { getWordClassAbbreviation } from '../dictionary/wordClass.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../message.js'; 
 import { isKnown } from '../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-import { pronunciationsToText, REGION_ALL } from '../dictionary/definition-formatter.js'
 import { getOptions } from '../service/optionService.js'
-import { mergeEntries } from '../dictionary/entry-utils.js'
+import { entriesToHtml } from '../dictionary/definition-formatter.js'
 
 const props = defineProps({
+    dictionary: String,
     word: String,
     siteOptions: Object,
 });
@@ -24,27 +23,27 @@ const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 let tickImgUrl = chrome.runtime.getURL("icons/tick.png");
 let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
-const dictionaryIframe = ref(null);
+const dictionaryIframeHtml = ref(null);
+const dictionaryIframeText = ref(null);
 const definitionFormat = ref('text');
 const lookupResultRef = ref(null);
 watch(() => props.word, async (newValue) => {
-      
-    await _lookup(newValue);
+    lookupResultRef.value = null;    
+    _lookup(newValue, [props.dictionary]);
 });
 
 watch(() => lookupResultRef.value, async (newValue) => {
-      
+    
     refreshHtml();
 });
-
 function refreshHtml(){
-    const iframe = dictionaryIframe.value;
-
-    let embeddedHtml = lookupResultRef.value?.embeddedHtml;
-
+    refreshDefinitionHtml(dictionaryIframeHtml.value, lookupResultRef.value?.embeddedHtml);
+    refreshDefinitionHtml(dictionaryIframeText.value, lookupResultRef.value?.formattedText);
+}
+function refreshDefinitionHtml(iframe, html){
     let htmlContent = '';
-    if(embeddedHtml){
-        htmlContent = embeddedHtml;
+    if(html){
+        htmlContent = html;
     }
 
     let request = { html: htmlContent };
@@ -54,19 +53,22 @@ function refreshHtml(){
     }  
 }
 
-async function _lookup(query){
-    let dicts = getEnabledDictionaryNamesFromCache();
+async function _lookup(query, dicts){
+    
     let options = await getOptions(); 
     //use default dicts
 
     //console.log(props.siteOptions);
-    let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
-    for(let additionalDictionary of additionalDictionaries){
-        if(additionalDictionary && !dicts.includes(additionalDictionary)){
-            dicts.unshift(additionalDictionary);
+    if(!dicts || dicts.length == 0){
+        dicts = getEnabledDictionaryNamesFromCache();
+        let additionalDictionaries = props.siteOptions.other.additionalDictionaries;
+        for(let additionalDictionary of additionalDictionaries){
+            if(additionalDictionary && !dicts.includes(additionalDictionary)){
+                dicts.unshift(additionalDictionary);
+            }
         }
     }
-    
+
     //console.log(dicts);
     let lookupResult = lookup(query, { fromRaw: true, outputFormats: ['json', { name: 'html', optional: true }], pronunciationRegion: options.pronunciation.region }, dicts);
     if(lookupResult) {
@@ -77,8 +79,8 @@ async function _lookup(query){
             lookupResult.alias = lookupResult.dictionaryName;
         }
 
-        let json = lookupResult.json;
-        lookupResult.formattedText = jsonToText(json, options.pronunciation.region);
+        let entries = lookupResult.json;
+        lookupResult.formattedText = entriesToHtml(lookupResult.query, entries, options.pronunciation.region);
         
         if(lookupResult.html){
             let html = lookupResult.html;
@@ -88,7 +90,12 @@ async function _lookup(query){
                 lookupResult.embeddedHtml = html;
             }
 
-        }   
+        } 
+
+        //fallback to text mode
+        if(!lookupResult.html && definitionFormat.value == 'html'){
+            definitionFormat.value = 'text';
+        }
     } 
     lookupResultRef.value = lookupResult; 
 }
@@ -101,43 +108,6 @@ const dictionaryName = computed(() => {
     return name;    
 });
 
-function jsonToText(entries, pronunciationRegion){
-    if(!entries || entries.length == 0){
-        return '';
-    }
-
-    let entry = mergeEntries(entries);
-
-    let definitionObj = entry;
-
-    let groupTexts = [];
-    for(let definitionGroup of definitionObj.definitionGroups){
-        let wordClass = definitionGroup.name;
-
-        let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
-
-        let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
-        if(shortDefinitions.length >= 3){
-            definitions = shortDefinitions;
-        }
-        let definitionTexts = definitions.map(item => item.text );
-        
-        let definitionsText = definitionTexts.join(',');
-        let groupText = `${wordClass} ${definitionsText}`;
-        groupTexts.push(groupText);
-    }
-    let groupsText = groupTexts.join('<br> ');
-
-    let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, pronunciationRegion);    
-
-    let text = groupsText;
-    if(pronunciation){
-        text = `${pronunciation}<br>${groupsText}`;
-    }        
-    
-    //console.log(text);
-    return text;
-}
 
 const knownRef = new ref(false);
 watch(() => props.word, (newValue) => {
@@ -250,7 +220,7 @@ function onIframeLoad(){
 
 function init() {
     //console.log(`watch word, new value: ${props.word}`); 
-    _lookup(props.word);
+    _lookup(props.word, [props.dictionary]);
 }
 
 
@@ -259,11 +229,12 @@ init();
 
 <template>
     <div class="word-container">
+        <h3 class="title">{{ t('sidepanelActionsTabWordLabelWord') }}</h3>
         <div class="word-definition">
-            <p><span class="word">{{ props.word }}</span><span class="dictionary">[{{ dictionaryName }}]</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_text') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_html') }}</button> <button v-if="lookupResultRef?.html" @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></p>
+            <div class="dictionary"><span>{{ dictionaryName }}</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_concise') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_full') }}</button> <button @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></div>
             
-            <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="definition.html" ></iframe>
-            <p v-if="definitionFormat == 'text'" v-html="lookupResultRef?.formattedText"></p>
+            <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeHtml" id="dictionary-iframe-html" class="content-iframe" src="definition.html" ></iframe>
+            <iframe v-if="definitionFormat == 'text'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeText" id="dictionary-iframe-text" class="content-iframe" src="definition.html" ></iframe>
         </div>
         <div class="word-mark-actions">
             <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
@@ -277,18 +248,15 @@ init();
 </template>
 
 <style>
-.word-container {
-    height: 400px;
-}
+
 
 .word-definition {
-    border: solid black 1px;
-    height: 85%;
-    .word {
-        font-size: large;
-    }
+    
+    
+    
     .dictionary {
         font-size: smaller;
+        margin: 5px;
     }
     .word-definition-content {
         white-space: pre-line;
@@ -296,7 +264,15 @@ init();
 
     .content-iframe {
         width: 100%;
-        height: 80%;
+        
+    }
+
+    iframe {
+        border: solid gray 1px;
+    }
+
+    #dictionary-iframe-html {
+        height: 300px;
     }
 }
 

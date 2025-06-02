@@ -14,7 +14,7 @@
 
             anchors.forEach(anchor => {
                 anchor.addEventListener('click', function(event) {
-                    let href = anchor.href;
+                    let href = anchor.getAttribute('href');
                     if(href && href.startsWith('entry://')){
                         event.preventDefault(); // Prevents the default link behavior
                         // Add your custom logic here

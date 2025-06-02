@@ -3,7 +3,7 @@
         "message":"My English Reading Assistant"
     },
     "extensionDescription":{
-        "message":"Automatically display the meaning of unfamiliar words, so you can understand English articles without looking up a dictionary."
+        "message":"Automatically look up new words and display their meanings, so you can read English without stopping"
     },
     "popupDictionary":{
         "message":"Dictionary"
@@ -212,7 +212,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* Dictionaries are used from top to bottom\n* After the dictionary is imported, it needs to be enabled and moved to the top to be effective\n* dictionaries have not been imported cannot be used for text, but can be used as ordinary dictionaries\n* Mdict dictionary takes up a lot of system resources. If it causes system slowdown, it is recommended not to use it\n* Software upgrades may require re-import"
+        "message": "* Dictionaries are used from top to bottom\n* After the dictionary is imported, it needs to be enabled and is best moved to the top to have a higher priority\n* dictionaries without structured data cannot be used for text, but can be used on the dictionary page\n* Mdict dictionary takes up a lot of system resources. If it causes system slowdown, it is recommended not to use it\n* Software upgrades may require re-extract"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"
@@ -223,14 +223,20 @@
     "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
         "message": "Please do not close your browser while the index is being created."
     },
+    "optionsEditDictionaryIndexColorTipsTitle": {
+        "message": "Structured data"
+    },
     "optionsEditDictionaryIndexColorTipsGreen": {
-        "message": "Import success"
+        "message": "Valid"
+    },
+    "optionsEditDictionaryIndexColorTipsLightGreen": {
+        "message": "Valid and recommend to re-extract"
     },
     "optionsEditDictionaryIndexColorTipsYellow": {
-        "message": "need to (re)import"
+        "message": "Invalid and require re-extract"
     },
     "optionsEditDictionaryIndexColorTipsRed": {
-        "message": "unable to import"
+        "message": "extract is not supported"
     },
     "options_dictionary_detail": {
         "message": "Detail"
@@ -257,13 +263,16 @@
         "message": "Enabled"
     },
     "options_dictionary_detail_index": {
-        "message": "Index"
+        "message": "Structured data"
+    },
+    "options_dictionary_detail_parser_has_newer_version": {
+        "message": "Parser has newer version"
     },
     "options_dictionary_detail_job": {
         "message": "Job"
     },
-    "options_dictionary_detail_job_parse": {
-        "message": "Parse"
+    "options_dictionary_detail_job_extract": {
+        "message": "Extract"
     },
     "options_dictionary_detail_job_extract_resource_data": {
         "message": "extract resource data"
@@ -290,13 +299,13 @@
         "message": "Where to find dictionary"
     },
     "optionsAddDictionaryAction":{
-        "message":"Add"
+        "message":"Import"
     },
     "optionsDeleteAdditionalDictionaryAction":{
         "message":"Delete"
     },
     "optionsImportDictionaryAction":{
-        "message":"(re)Import"
+        "message":"(re)Extract"
     },  
     "optionsDictionaryMoveUpAction":{
         "message":"Move Up"
@@ -354,16 +363,16 @@
         "message":"Unknown words"
     },
     "sidepanelWordStatisticsLabel":{
-        "message":"ratio:"
+        "message":"Unknown words:"
     },
     "sidepanelTitleDesc":{
-        "message":"marking the words that you known"
+        "message":"mark the words you know below"
     },
     "sidepanelShowDefinitions":{
-        "message":"Show Definitions"
+        "message":"Show All Definitions"
     },
     "sidepanelHideDefinitions":{
-        "message":"Hide Definitions"
+        "message":"Hide All Definitions"
     },
     "sidepanelReadingDifficultyLabel": {
         "message":"Difficulty"
@@ -393,14 +402,14 @@
     "sidepanelWordActionClearMark":{
         "message":"I am not sure"
     },
-    "sidepanel_word_action_dictionary_text":{
-        "message":"Text"
+    "sidepanel_word_action_dictionary_concise":{
+        "message":"Concise"
     },
-    "sidepanel_word_action_dictionary_html":{
-        "message":"Html"
+    "sidepanel_word_action_dictionary_full":{
+        "message":"Full"
     },
     "sidepanel_word_action_dictionary_open_in_dictionary":{
-        "message":"Open in Dictionary"
+        "message":"Dictionary Page"
     },
 
     "sidepanelAddAction":{
@@ -420,11 +429,11 @@
     },
 
     "sidepanelActionsTabNotesLabelNotes":{
-        "message":"Notes:"
+        "message":"Notes"
     },
 
     "sidepanelActionsTabWordLabelWord":{
-        "message":"Word:"
+        "message":"Word"
     },
     "sidepanelActionsTabWordMarkAsUnknownAction":{
         "message":"Unknown"
@@ -575,5 +584,11 @@
     },
     "dictionaryPageTitle":{
         "message":"Dictionary"
+    },
+    "dictionaryPage_no_result_tips":{
+        "message":"Type a word to lookup in..."
+    },
+    "dictionaryPage_button_lookup":{
+        "message":"Lookup"
     }
 }

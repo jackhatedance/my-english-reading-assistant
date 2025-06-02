@@ -1,6 +1,9 @@
 import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 import { findMostAccurateTypedDefinition } from '../../typed-definition.js'
+import { PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../../dictConstants.js'
+import { getLink } from '../mdict-definition-utils.js'
+import { getEntryFromLink, isAllUpperCaseEntry } from '../mdict-definition-utils.js'
 class JsonSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
@@ -25,21 +28,29 @@ class JsonSelectorParser extends MdictDefinitionParser {
         if(selector.includes('/')){
             let array = selector.split('/');
             let elementName = array[0];
-            selector = array[1];
+            if(array.length >= 2){
+                selector = array[1];
+            } else {
+                selector = null;
+            }
 
             baseElement = context[elementName];                        
         }
 
         if(baseElement){
-            return $(baseElement).find(selector);        
+            if(selector){
+                return $(baseElement).find(selector);        
+            }else {
+                return [baseElement];        
+            }            
         }else{
             return $(selector);        
         }
     }
 
-    findElements($, containerElement, entitySelectors, context){    
+    findElements($, containerElement, entitySelectors, name, context){    
         if(!entitySelectors){
-            return null;
+            return [];
         }    
         
         let entitySelectorArray;
@@ -49,21 +60,61 @@ class JsonSelectorParser extends MdictDefinitionParser {
             entitySelectorArray = [ entitySelectors ];
         }
 
+        let result = [];
+        let groupSet = new Set();
         
         for(let entitySelector of entitySelectorArray){    
-            let elements = this.findElementsByOneSelector($, containerElement, entitySelector.selector, context);
-            if(elements.length>0){
-                return {elements, entitySelector };
+            let group = 'default';
+            if(entitySelector.hasOwnProperty('group')){
+                group = entitySelector.group;
             }
+            if(groupSet.has(group)){
+                continue;
+            }
+
+            let item = null;
+            if(entitySelector.hasOwnProperty('testSelector')){
+                let elements = this.findElementsByOneSelector($, containerElement, entitySelector.testSelector, context);
+                if(elements.length>0){
+                    let elements = this.findElementsByOneSelector($, containerElement, entitySelector.selector, context);
+                    if(elements.length>0){
+                        item = { elements, entitySelector };
+                    }
+                }
+            } else {
+                let elements = this.findElementsByOneSelector($, containerElement, entitySelector.selector, context);
+                if(elements.length>0){
+                    item = { elements, entitySelector };
+                }
+            }
+            
+            if(item){
+                result.push(item);
+                groupSet.add(group);
+                this.logFindResult(name, item);                    
+            }
+            
         }        
 
-        return null;
+        return result;
+    }
+
+    logFindResult(name, result){
+        if(result && this.options[PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND] == true){
+            if(result.entitySelector.name){
+                console.log(`find [${name}], name: ${result.entitySelector.name}`);
+            } else if(result.entitySelector.testSelector){
+                console.log(`find [${name}], testSelector: ${result.entitySelector.testSelector}`);                
+            } else{
+                console.log(`find [${name}], selector: ${result.entitySelector.selector}`);                
+            }
+        }
     }
         
     parse(rawDefinition) {
         rawDefinition = this.beforeParse(rawDefinition);
 
-        let link = this.getLink(rawDefinition);
+        let link = getLink(rawDefinition);
         if (link) {
             let linkEntry = this.createEntryForLink(link);
             return [ linkEntry ];
@@ -90,8 +141,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseEntries($, context){
         let entries = [];
 
-        let findElementsResult = this.findElements($, null, this.entriesSelector[this.ENTRY], context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, null, this.entriesSelector[this.ENTRY], this.ENTRY, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let entryElement of findElementsResult.elements){  
                 let baseElement = this.getBaseElementForChild(null, entryElement, childEntitySelector);          
@@ -107,11 +158,11 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
         let headword = { pronunciations: [] };
         if(this.hasSelector(entitySelector, this.HEADWORD)){
-            let findElementsResult = this.findElements($, element, entitySelector[this.HEADWORD], context);
+            let findElementsResults = this.findElements($, element, entitySelector[this.HEADWORD], this.HEADWORD, context);
             
-            if(findElementsResult){
-                let childEntitySelector = findElementsResult.entitySelector;
-                let headWordElement = findElementsResult.elements[0];
+            if(findElementsResults.length > 0){
+                let childEntitySelector = findElementsResults[0].entitySelector;
+                let headWordElement = findElementsResults[0].elements[0];
                 let baseElement = this.getBaseElementForChild(element, headWordElement, childEntitySelector); 
                 headword = this.parseHeadword($, baseElement, context, childEntitySelector);
             }
@@ -134,8 +185,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parsePronunciations($, element, context, entitySelector){
         let pronunciations = [];
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.PRONUNCIATION], context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, element, entitySelector[this.PRONUNCIATION], this.PRONUNCIATION, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let pronunciationElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, pronunciationElement, childEntitySelector); 
@@ -168,9 +219,9 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
     parserPronunciationName($, element, context, entitySelector){
         if(this.hasSelector(entitySelector, this.PRONUNCIATION_NAME)){
-            let findElementsResult = this.findElements($, element, entitySelector[this.PRONUNCIATION_NAME], context);
-            if(findElementsResult){
-                let pronunciationNameElements = findElementsResult.elements;
+            let findElementsResults = this.findElements($, element, entitySelector[this.PRONUNCIATION_NAME], this.PRONUNCIATION_NAME, context);
+            if(findElementsResults.length > 0){
+                let pronunciationNameElements = findElementsResults[0].elements;
                 return pronunciationNameElements.text();
             }
         } else {
@@ -180,9 +231,9 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
     parserPronunciationPhonetics($, element, context, entitySelector){
         if(this.hasSelector(this.PRONUNCIATION_PHONETICSNAME)){
-            let findElementsResult = this.findElements($, element, this.selector(this.PRONUNCIATION_PHONETICS), context);
-            if(findElementsResult){
-                let pronunciationPhoneticsElements = findElementsResult.elements;
+            let findElementsResults = this.findElements($, element, this.selector(this.PRONUNCIATION_PHONETICS), this.PRONUNCIATION_PHONETICS, context);
+            if(findElementsResults.length > 0){
+                let pronunciationPhoneticsElements = findElementsResults[0].elements;
                 return pronunciationPhoneticsElements.text();
             }
         } else {
@@ -193,8 +244,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseDefinitionGroups($, element, context, entitySelector){
         let definitionGroups = [];
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.DEFINITION_GROUP], context);
-        if(findElementsResult){
+        let findElementsResults = this.findElements($, element, entitySelector[this.DEFINITION_GROUP], this.DEFINITION_GROUP, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let groupElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, groupElement, childEntitySelector); 
@@ -208,33 +259,36 @@ class JsonSelectorParser extends MdictDefinitionParser {
     parseDefinitionGroup($, element, context, entitySelector){
         context[this.DEFINITION_GROUP] = element;
 
-        let findElementsResult = this.findElements($, element, entitySelector[this.GROUP_NAME], context);
+        let findElementsResults = this.findElements($, element, entitySelector[this.GROUP_NAME], this.GROUP_NAME, context);
         let name = '';
-        if(findElementsResult){
-            let definitionGroupNameElements = findElementsResult.elements;
+        if(findElementsResults.length > 0){
+            let definitionGroupNameElements = findElementsResults[0].elements;
 
-            name = definitionGroupNameElements.text();            
+            if(definitionGroupNameElements.length>0){
+                name = $(definitionGroupNameElements[0]).text();    
+            }
+            
             name= name.trim();
         }
 
         let inflection;
         
-        findElementsResult = this.findElements($, element, entitySelector[this.INFLECTION], context);
-        if(findElementsResult){
-            let inflectionElements = findElementsResult.elements;
+        findElementsResults = this.findElements($, element, entitySelector[this.INFLECTION], this.INFLECTION, context);
+        if(findElementsResults.length > 0){
+            let inflectionElements = findElementsResults[0].elements;
 
             inflection = inflectionElements.text();
         }
     
         let definitions = [];
-        findElementsResult = this.findElements($, element, entitySelector[this.DEFINITION], context);
-        if(findElementsResult){
+        findElementsResults = this.findElements($, element, entitySelector[this.DEFINITION], this.DEFINITION, context);
+        for(let findElementsResult of findElementsResults){
             let childEntitySelector = findElementsResult.entitySelector;
             for(let definitionElement of findElementsResult.elements){
                 let baseElement = this.getBaseElementForChild(element, definitionElement, childEntitySelector); 
                 let definition = this.parseDefinition($, baseElement, context, childEntitySelector);
                 definitions.push(definition);
-            }
+            }   
         }
 
         let definitionGroup = {name, inflection, definitions};
@@ -250,9 +304,14 @@ class JsonSelectorParser extends MdictDefinitionParser {
         let linkElements = $(element).find('a[href^="entry:"]');
         if(linkElements.length == 1){
             let linkElement = linkElements[0];
-            let link = $(linkElement).text();
-            let text = $(element).text();
-            return this.createLinkDefinition(link);
+            let href = $(linkElement).attr('href');
+            let entry = getEntryFromLink(href);
+            if(entry && isAllUpperCaseEntry(entry)){
+                if(this.getAllUpperCaseEntryPolicy() == ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE){
+                    entry = entry.toLowerCase();
+                }
+            }
+            return this.createLinkDefinition(entry);
         }
     }
 

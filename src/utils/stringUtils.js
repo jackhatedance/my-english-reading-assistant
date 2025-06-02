@@ -5,4 +5,18 @@ function trimByCharacters(str, chars) {
     return str.replace(regex, '');
 }
 
-export { trimByCharacters }
+function commonStart(str1, str2) {
+    let result = "";
+    const minLength = Math.min(str1.length, str2.length);
+  
+    for (let i = 0; i < minLength; i++) {
+      if (str1[i] === str2[i]) {
+        result += str1[i];
+      } else {
+        break;
+      }
+    }
+    return result;
+}
+
+export { trimByCharacters, commonStart }

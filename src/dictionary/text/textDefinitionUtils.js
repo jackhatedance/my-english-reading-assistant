@@ -1,7 +1,7 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
-function splitWordClasses(definition){
-    let matches = definition.matchAll(/([a-z]{0,6}\.)/g);
+function splitIntoDefinitionGroups(definition){
+    let matches = definition.matchAll(/(\w{1,6}\.((& ?)?\w{1,6}\.)*)|;/g);
     let matchArray = [...matches];
 
     let groups = [];
@@ -10,6 +10,14 @@ function splitWordClasses(definition){
         let match = matchArray[i];
         let start = match.index;
         let group;
+
+        //text before first word class
+        if(i==0 && start != 0){
+            group = definition.slice(0, start);
+            group = trimByCharacters(group, ';');
+            groups.push(group);
+        }
+
         if(i == matchArray.length-1){
             group = definition.slice(start);
         } else{
@@ -25,35 +33,25 @@ function splitWordClasses(definition){
     if(groups.length==0){
         groups.push(definition);
     }
+
+    groups = groups.filter(item => item.trim());
+    groups = groups.filter(item => item.length > 0);
     
     return groups;
 }
 
 function splitWordMeanings(meaningsStr){
-    let matches = meaningsStr.matchAll(/(?<subdef>(\([^)]*\))?[^,;()]+(\([^)]*\))?)/g);
-    let meanings = [];
-    if(matches){
-        for(let match of matches){
-            let meaning = match.groups['subdef'];
-            meanings.push(meaning);
-        }
+    let meanings;
+    if(meaningsStr === ''){
+        meanings = [];
+    }else {
+        meanings = meaningsStr.split(/[,;](?![^()]*\))/);
     }
-    return meanings;
-}
 
-function parseTextDefinition(definition) {
-    const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
-    let phoneticSymbols = '';
-    if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
-        phoneticSymbols = phoneticSymbolsArray[1];
-    }
-    if(phoneticSymbols){
-        definition = definition.replace(/(\[.*\]|\/.*\/)\s/, '');
-    }
-    let classes = splitWordClasses(definition);
-    
-    let result = { phoneticSymbols, classes};    
-    return result;
+    meanings = meanings.map(item => item.trim());
+    meanings = meanings.filter(item => item.length>0);
+
+    return meanings;
 }
 
 function parseWordClass(def){
@@ -68,14 +66,14 @@ function parseWordClass(def){
 
     if(def){
 
-        var rx = /^((\w{1,6}\.)+ )?(.+)$/;
+        var rx = /^(\w{1,6}\.((& ?)?\w{1,6}\.)*)?(.+)$/;
         var arr = rx.exec(def);
         //console.log(arr);
 
         if(arr && arr.length >=4 ){
             result = {
-                wordClass: arr[2] ? arr[2] : '',
-                meanings: arr[3].trim(),
+                wordClass: arr[1] ? arr[1] : '',
+                meanings: arr[4].trim(),
             };
         }
     }
@@ -84,36 +82,4 @@ function parseWordClass(def){
     return result;
 }
 
-function parseTextDefinitionV2(definition) {
-    if(!definition){
-        return [];
-    }
-
-    const phoneticSymbolsArray = definition.match(/(\[.*\]|\/.*\/)\s/);
-    let pronunciation = '';
-    if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
-        pronunciation = phoneticSymbolsArray[1];
-        pronunciation = trimByCharacters(pronunciation, '/');
-    }
-    if(pronunciation){
-        definition = definition.replace(/(\[.*\]|\/.*\/)\s/, '');
-    }
-    let classes = splitWordClasses(definition);
-
-    let definitionGroups = [];
-    for(let cls of classes){
-        let wordClassResult = parseWordClass(cls);
-        let group = wordClassResult.wordClass;    
-        let definitionTexts = splitWordMeanings(wordClassResult.meanings);    
-        let definitions = definitionTexts.map(item => { return { text: item } });
-        let definitionGroup = { "name":group, "definitions": definitions };
-        definitionGroups.push(definitionGroup);
-    }
-    
-    let entry = { pronunciation, definitionGroups};    
-    let entries = [entry];
-    return entries;
-}
-
-
-export { splitWordClasses, splitWordMeanings, parseWordClass, parseTextDefinition, parseTextDefinitionV2 }
+export { splitIntoDefinitionGroups, splitWordMeanings, parseWordClass }

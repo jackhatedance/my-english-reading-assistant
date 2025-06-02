@@ -1,12 +1,14 @@
 import { findBaseForm } from './base-forms.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
-import { standardizePunctuations } from '../text/textUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS } from './dictConstants.js'
+import { standardizePunctuations, removeParentheses, splitButIgnoreParentheses } from '../text/textUtils.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS, PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY } from './dictConstants.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
-    constructor(name, options){
+    constructor(name, version, jsonSchemaVersion, options){
         this.name = name;
+        this.version = version;
+        this.jsonSchemaVersion = jsonSchemaVersion;
         if(!options){
             options = {};
         }
@@ -18,6 +20,14 @@ class DefinitionParser {
             return this.options[PARSER_OPTION_MAX_SUBDEFINITION_NUMBER];
         }else{
             return MAX_SUBDEFINITION_NUMBER;
+        }
+    }
+
+    getAllUpperCaseEntryPolicy(){
+        if(this.options && this.options.hasOwnProperty(PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY)){
+            return this.options[PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY];
+        }else{
+            return null;
         }
     }
 
@@ -79,6 +89,11 @@ class DefinitionParser {
         if(!text){
             text = '';
         }
+
+        //too long, possibly parsed wrongly
+        if(text.length > 200){
+            console.log(`definition too long: ${text}`);
+        }
         let originalText = text;
         text = this.beforeParseDefinitionText(text);    
 
@@ -97,8 +112,10 @@ class DefinitionParser {
 
     parseSubdefinitions(text){
 
+        let noParenthesesText = removeParentheses(text);
+
         let separaters = [';', ',', '!'];
-        let separater = separaters.find(item => text.indexOf(item) >= 0);
+        let separater = separaters.find(item => noParenthesesText.indexOf(item) >= 0);
         if(!separater){
             separater = ',';
         }
@@ -109,7 +126,7 @@ class DefinitionParser {
             }
         }
         
-        let subdefinitions = text.split(separater); 
+        let subdefinitions = splitButIgnoreParentheses(text, separater); 
         subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));         
         return subdefinitions;
     }
@@ -236,6 +253,30 @@ class DefinitionParser {
         }else{
             return '';
         }
+    }
+    
+    createLinkDefinition(link){
+        let text = `见${link}`;
+
+        return {
+            text: text,
+            subdefinitions: [text],
+            type: 'link',
+            link: link,
+        };
+    }
+
+    createEntryForLink(link){
+        let definition = this.createLinkDefinition(link);        
+        let definitions = [definition];
+        let definitionGroup = { name: 'link', "definitions": definitions };        
+        
+        let pronunciations = [];
+        let headword = { pronunciations };
+        let definitionGroups = [ definitionGroup ];
+        
+        let entry = { headword, definitionGroups, type: 'link' };
+        return entry;
     }
     
 }

@@ -1,6 +1,6 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> My English Reading Assistant
+# <img src="public/icons/icon_48.png" width="45" align="left"> English Reading Assistant
 
-My Browser Extension of English reading assistant
+Browser Extension of English reading assistant
 
 
 [用户指南中文版](src/guide.md)

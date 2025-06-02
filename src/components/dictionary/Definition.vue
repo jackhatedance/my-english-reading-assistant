@@ -24,19 +24,6 @@ function sendHtmlMessage(){
     } 
 }
 
-
-function switchToText(){
-    if(definitionFormat.value != 'text'){
-        definitionFormat.value = 'text';
-    }
-}
-
-function switchToHtml(){
-    if(definitionFormat.value != 'html'){
-        definitionFormat.value = 'html';
-    }
-}
-
 function onIframeLoad(){
     //console.log('onIframeLoad');
     sendHtmlMessage();
@@ -51,7 +38,6 @@ init();
 
 <template>
     <div class="definition-container">
-        <p><span class="word">{{ props.word }}</span></p>        
         <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframe" id="dictionary-iframe" class="content-iframe" src="definition.html" ></iframe>
         <p v-if="definitionFormat == 'text'" v-html="props.text"></p>
     </div>
@@ -65,6 +51,10 @@ init();
 .content-iframe{
     width: 100%;
     height: 100%;
+}
+
+iframe {
+    border-width: 0;
 }
 
 </style>

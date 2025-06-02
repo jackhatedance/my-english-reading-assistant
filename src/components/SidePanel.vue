@@ -23,6 +23,7 @@ const isShowUnavailable = ref(false);
 const isShowTabs = ref(false);
 
 const word = ref();
+const dictionary = ref();
 const notes = ref([]);
 const page = ref();
 
@@ -131,6 +132,7 @@ async function onSelectionChange(payload){
   let { type, selectedText, paragraphSelection } = payload;
 
   word.value = payload.word;
+  dictionary.value = payload.dictionary;
 
   let noteArray = payload.notes;
 
@@ -229,7 +231,7 @@ function onClickCloseButton() {
   <div class="header">
     <button @click="onClickCloseButton">X</button>
   </div>
-  <Tabs v-if="isShowTabs" :word="word" :notes="notes" :page="page" :menuItems="menuItems" :activeTabId="activeTabId"
+  <Tabs v-if="isShowTabs" :word="word" :dictionary="dictionary" :notes="notes" :page="page" :menuItems="menuItems" :activeTabId="activeTabId"
     :changeToggle="changeToggle" @markWord="onMarkWord" @vocabulary="onVocabulary" @note="onNote"></Tabs>
 </template>
 

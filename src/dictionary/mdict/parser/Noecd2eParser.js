@@ -4,7 +4,7 @@ import { findBaseForm } from '../../base-forms.js'
 
 class Noecd2eParser extends JsonSelectorParser {
     constructor(options) {
-        super('Noecd2eParser', options);
+        super('Noecd2eParser', "1.0.2", "1.0.0", options);
 
         this.entriesSelector =
         {
@@ -19,7 +19,18 @@ class Noecd2eParser extends JsonSelectorParser {
                     },
                     definitionGroup: [
                         {
-                            selector: '.content .cont-list',
+                            group: '1',
+                            selector: '.main>.content>.odef.ext',
+                            definition:
+                                [
+                                    {
+                                        selector: 'definitionGroup/',
+                                        removeSelector: 'sup'
+                                    },
+                                ]
+                        },
+                        {
+                            selector: '.main>.content .cont-list',
 
                             groupName: {
                                 selector: '.pos',

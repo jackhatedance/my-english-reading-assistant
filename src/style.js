@@ -70,7 +70,11 @@ function generateCssRuleOfHighlight(options, extraStyle) {
     let annotationOptions = options.annotation;
     let contentOptions = options.content;
 
-    let lineHeight = `${annotationOptions.lineHeight}em`;
+    let lineHeight = `line-height: ${annotationOptions.lineHeight}em !important;`;
+    if(annotationOptions.lineHeight ==1){
+        lineHeight = "";
+    }
+    
 
     //TEST
     /*
@@ -94,7 +98,7 @@ function generateCssRuleOfHighlight(options, extraStyle) {
       margin-top: 0px;
       text-indent1: 0px;
       display1: inline-block;
-      line-height: ${lineHeight} !important;
+      ${lineHeight}
 
       ${unknownWordStyle}
 

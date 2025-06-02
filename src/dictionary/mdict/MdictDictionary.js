@@ -3,18 +3,18 @@ import { MDX, MDD, BufferedFile } from '@jackhatedance/js-mdict'
 import { Buffer } from 'safe-buffer'
 import { dataURItoArrayBuffer } from '../../utils/fileUtils.js'
 import { findMdictProfile } from './mdictProfileRegister.js'
-import { findMdictParser } from './mdictParserRegister.js'
+import { findDefinitionParser } from './mdictParserRegister.js'
 import { findDictionaryExtractedRawFile } from '../../store/dictionaryStore.js'
 import { loadDictionaryResourceFile, countDictionaryResourceFile } from '../../store/db.js'
 import * as cheerio from 'cheerio';
 import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
-import { getEntryFromLink, isAllUpperCaseEntry } from './mdict-definition-utils.js'
-
+import { getEntryFromLink, isAllUpperCaseEntry, getLink } from './mdict-definition-utils.js'
+import { PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../dictConstants.js'
+import { decode } from 'html-entities'
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
-const ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE = 'lowerCase';
 
 class MdictDictionary extends Dictionary {
     
@@ -31,15 +31,25 @@ class MdictDictionary extends Dictionary {
             
             this.size = this.mdx.keyHeader?.keywordNum ?? 0;
             this.title = this.mdx.header?.Title ?? name;
+            if(this.title){
+                this.title = decode(this.title);
+            }
             
             let headers = Object.assign({}, this.mdx.header);
             this.rawMeta = { headers };
             
+            this.allUpperCaseEntryPolicy = this.detectEntryCasePolicyFromRaw();
+            
             let profile = findMdictProfile(this.rawMeta);
             if(profile){
-                this.mdictParser = findMdictParser(profile.parser);
-                if(!this.mdictParser){
-                    //console.error(`parser not found`);    
+                this.definitionParser = findDefinitionParser(profile.parser);
+                if(this.definitionParser){
+
+                    if(this.allUpperCaseEntryPolicy) {
+                        this.definitionParser.options[PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY] = this.allUpperCaseEntryPolicy;
+                    }                    
+                } else {
+                    console.error(`parser not found`);    
                 }
             }else{
                 //console.error(`profile not found`);
@@ -52,7 +62,7 @@ class MdictDictionary extends Dictionary {
                 this.mdd = new MDD(mddBufferedFile);  
             }        
         
-            this.allUpperCaseEntryPolicy = this.detectEntryCasePolicyFromRaw();
+            
         }
         
     }
@@ -98,7 +108,7 @@ class MdictDictionary extends Dictionary {
         }
 
         let result;
-        if(key && key.endsWith('.css')){
+        if(key && key.toLowerCase().endsWith('.css')){
             result = await findDictionaryExtractedRawFile(this.name, key);
         }
 
@@ -134,16 +144,21 @@ class MdictDictionary extends Dictionary {
     }    
 
     rawToJson(definition){
-        if(!this.mdictParser){
+        if(!this.definitionParser){
             throw new Error(`no parser found`);
         }
 
         //console.log(definition);
 
-        return this.mdictParser.toJson(definition);
+        return this.definitionParser.toJson(definition);
     }
 
     async toEmbeddedHtml(html){        
+        let link = getLink(html);
+        if (link) {
+            return `见<a href="entry://${link}">${link}</a>`;
+        }
+
         const $ = cheerio.load(html, null, false);
                 
         let stylesheetElements = $('link[rel="stylesheet"]');
@@ -227,7 +242,7 @@ class MdictDictionary extends Dictionary {
 
     supportOutputFormat(format){
         if(format == 'json' || format == 'text'){
-            if(this.data.raw && !this.mdictParser){
+            if(this.data.raw && !this.definitionParser){
                 return false;
             }
         }

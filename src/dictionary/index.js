@@ -1,7 +1,8 @@
 import { Progress } from './Progress.js'
 
 // index data version should always match below program version. any change to index building should increase it.
-export const INDEX_VERSION = 24;
+export const INDEX_VERSION = 29;
+export const JSON_SCHEMA_MAJOR_VERSION = 1;
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_parse');
 
@@ -52,6 +53,11 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
 
     return {
         version: INDEX_VERSION,
+        schemaVersion: dictionary.definitionParser.jsonSchemaVersion,
+        parser: {
+            name: dictionary.definitionParser.name,
+            version: dictionary.definitionParser.version
+        },
         data: map,
     };
 }

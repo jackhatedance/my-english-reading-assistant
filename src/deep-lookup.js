@@ -1,9 +1,29 @@
-import {lookup, isOnlyTransform, getTheOnlyBaseForm } from './dictionaries.js';
+import {lookup } from './dictionaries.js';
+import { isOnlyTransform, getTheOnlyBaseForm, hasLinkDefinitionOnly, getTheOnlyLinkDefintion } from './dictionary/entry-utils.js';
 
 function deepLookup(lookupResult, options){
     let deepLookupResult;
+    const maxDepth = 2;
+    for(let i=0; i< maxDepth; i++){
+        let _deepLookupResult = _deepLookup(lookupResult, options);
+        if(_deepLookupResult){
+            deepLookupResult = _deepLookupResult;
+            lookupResult = _deepLookupResult.lookupResult;
+        } else {
+            break;
+        }
+    }
+    return deepLookupResult;
+}
+
+function _deepLookup(lookupResult, options){
+    let deepLookupResult;
     const dicts = [lookupResult.dictionaryName];
     
+    if(!deepLookupResult){        
+        deepLookupResult = deepLookupOnlyLink(lookupResult, options, dicts);
+    }
+        
     if(!deepLookupResult){        
         deepLookupResult = deepLookupOnlyTransform(lookupResult, options, dicts);
     }
@@ -20,8 +40,8 @@ function deepLookup(lookupResult, options){
 }
 
 function deepLookupOnlyTransform(originalLookupResult, options, dicts){
-    if(isOnlyTransform(originalLookupResult)){
-        let base = getTheOnlyBaseForm(originalLookupResult);
+    if(isOnlyTransform(originalLookupResult.json)){
+        let base = getTheOnlyBaseForm(originalLookupResult.json);
         let lookupResult = lookup(base, options, dicts);
         if(lookupResult) {
             let type = 'transform';
@@ -32,7 +52,21 @@ function deepLookupOnlyTransform(originalLookupResult, options, dicts){
     }  
 }
 
-function deepLookupTransformParticipleOnlyByText(originalLookupResult, dicts){
+function deepLookupOnlyLink(originalLookupResult, options, dicts){
+    if(hasLinkDefinitionOnly(originalLookupResult.json)){
+        let linkDefinition = getTheOnlyLinkDefintion(originalLookupResult.json);
+        let link = linkDefinition.link;    
+        let lookupResult = lookup(link, options, dicts); 
+        if(lookupResult) {
+            let type = 'link';
+            let word = link;
+
+            return { lookupResult, type, word};
+        }
+    }  
+}
+
+function deepLookupTransformParticipleOnlyByText(originalLookupResult, options, dicts){
     //console.log(input);
     let result = originalLookupResult.text.match('^([a-zA-Z]+)的((过去式)|(过去分词)|(过去式和过去分词)|(现在分词))'); 
         

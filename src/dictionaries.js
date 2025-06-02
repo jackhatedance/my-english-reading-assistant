@@ -1,7 +1,7 @@
 
-import { getSystemDictionary } from './dictionary/systemDictionary.js'
-import { getCustomDictionary, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
-import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictionary/dictConstants.js'                                           
+import { getSystemDictionaryFromCache } from './dictionary/systemDictionary.js'
+import { getCustomDictionaryFromCache, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
+                                          
 
 function createDefaultOptions(){
     return { outputFormats:['text', 'json']};
@@ -27,7 +27,7 @@ function lookup(word, options, dicts) {
     let lookupResult;
 
     for(let name of dicts){
-        let dict = getDict(name);
+        let dict = getDictFromCache(name);
         
         if(dict){
             lookupResult = dict.lookup(word, options);
@@ -43,94 +43,17 @@ function lookup(word, options, dicts) {
     return lookupResult;
 }
 
-function getDict(name){
-    let dict = getSystemDictionary(name);
+function getDictFromCache(name){
+    let dict = getSystemDictionaryFromCache(name);
     if(!dict){
-        dict = getCustomDictionary(name);
+        dict = getCustomDictionaryFromCache(name);
     } 
 
     return dict;
     
 }
 
-function hasLinkEntryOnly(lookupResult){
-    let entries = lookupResult.json;
-    try{
-        if(entries.length ==1){
-            let entry = entries[0];
-            if(entry.type == DICTIONARY_DEFINITION_TYPE_LINK){
-                return true;                
-            }
-        }        
-    }catch(error){
-        //do nothing
-    }
 
-    return false;
-}
 
-function hasLinkDefinitionOnly(lookupResult){
-    let entries = lookupResult.json;
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
-                return true;                
-            }
-        }        
-    }catch(error){
-        //do nothing
-    }
 
-    return false;
-}
-
-function getTheOnlyLinkDefintion(lookupResult){
-    let entries = lookupResult.json;
-    let definitions = entries[0].definitionGroups[0].definitions;
-    if(definitions.length ==1){
-        let definition = definitions[0];
-        if(definition.type == DICTIONARY_DEFINITION_TYPE_LINK){
-            return definition;                
-        }
-    }  
-}
-
-function isOnlyTransform(lookupResult, form){
-    let entries = lookupResult.json;
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
-                if(!form){
-                    return true;
-                } else if(definition.form == form) {
-                    return true;
-                }
-            }
-        }        
-    }catch(error){
-        //do nothing
-    }
-
-    return false;
-}
-
-function getTheOnlyBaseForm(lookupResult){
-    let entries = lookupResult.json;
-    try{
-        let definitions = entries[0].definitionGroups[0].definitions;
-        if(definitions.length ==1){
-            let definition = definitions[0];
-            if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM){
-                return definition.base;
-            }
-        }        
-    }catch(error){
-        //do nothing
-    }
-}
-
-export { lookup, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm };
+export { lookup };

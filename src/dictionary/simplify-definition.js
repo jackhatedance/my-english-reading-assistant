@@ -1,13 +1,14 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { removeParentheses, standardizeParenthesesPunctuations } from '../text/textUtils.js' 
 import { mergeEntries } from './entry-utils.js'
+import { hasOnlyLinkOrFormDefinition } from './entry-utils.js'
 
 function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
     const hidePhoneticSymbol = true;
     const hideParentheses = true;
-    //console.log('simplify definition:'+ JSON.stringify(originalLookupResult));
+    //console.log('originalLookupResult:'+ JSON.stringify(originalLookupResult));
 
     if(!originalLookupResult){
         return '';
@@ -15,9 +16,11 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
 
     let lookupResult = originalLookupResult;
     let prefix = '';
-    if(deepLookupResult){
+    
+    if(deepLookupResult && hasOnlyLinkOrFormDefinition(originalLookupResult.json)){
         lookupResult = deepLookupResult.lookupResult;
         //prefix = `${deepLookupResult.lookupResult.query}:`;
+        //console.log('deepLookupResult:'+ JSON.stringify(deepLookupResult));
     }
 
     let entries = lookupResult.json;
@@ -36,7 +39,13 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         let wordClass = getWordClassAbbreviation(definitionGroup.name);
 
         let meaningsArray = definitionGroup.definitions.map(item => item.subdefinitions);
+        
         let mergedMeanings = mergeMeanings(meaningsArray);
+        if(hideParentheses){
+            mergedMeanings = mergedMeanings.map(item => removeParentheses(item));            
+        }
+        mergedMeanings = mergedMeanings.filter(item => item.trim().length>0);
+
         let definition = {
             wordClass: wordClass,
             meanings: mergedMeanings,
@@ -80,12 +89,9 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
         }
 
         let visitedMeaningArray = getVisitedMeanings(def);
-        let visitedMeanings = visitedMeaningArray.join(',');
         
-        if(hideParentheses){
-            visitedMeanings = standardizeParenthesesPunctuations(visitedMeanings);
-            visitedMeanings = removeParentheses(visitedMeanings);
-        }
+        visitedMeaningArray = visitedMeaningArray.map(item => item.split('/')[0].trim());
+        let visitedMeanings = visitedMeaningArray.join(',');                
 
         definitionStr = definitionStr + visitedMeanings;
 

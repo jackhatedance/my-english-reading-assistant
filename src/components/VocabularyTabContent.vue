@@ -64,20 +64,41 @@ function clickHideDefinition(event){
 
 <template>
     <div v-if="page" class="vocabulary-list">
-        <h3 id="title" class="vocabulary-title">{{ sidepanelTitle }}</h3>
         <h4>{{ sidepanelWordStatisticsLabel }}<span id="wordStatistics">{{ props.page.unknownWordsCount }}/{{
             props.page.totalWordCount }} ({{ percentage }}%) {{ readingDifficultyLabel }}:{{ readingDifficultyMsg }}</span></h4>
-        <p>{{ sidepanelTitleDesc }}</p>
 
-        <div class="toolbar">
-            <button id="showAllDefinitions" @click="clickShowDefinition">{{ sidepanelShowDefinitions }}</button>
-            <button id="hideAllDefinitions" @click="clickHideDefinition">{{ sidepanelHideDefinitions }}</button>
+        <div class="vocabular-toolbar">
+            <div class="tips">{{ sidepanelTitleDesc }}</div>
+
+            <div class="actions">
+                <button id="showAllDefinitions" @click="clickShowDefinition" :title="sidepanelShowDefinitions">+</button>
+                <button id="hideAllDefinitions" @click="clickHideDefinition" :title="sidepanelHideDefinitions">-</button>
+            </div>    
         </div>
         <UnknownWordList :items="page.unknownWords" :showDefinition="showDefinition" :reset="reset" :siteOptions="page.siteOptions"></UnknownWordList>
     </div>
 </template>
 
 <style>
+.vocabulary-list {
 
 
+    .vocabular-toolbar {
+        clear: both;
+        display: inline-block;
+        width: 100%;
+        
+        .tips {
+            float: left;
+            margin-left: 30px;;
+        }
+        .actions {
+            float: right;
+            button {
+                margin: 2px;
+            }
+
+        }
+    }
+}
 </style>

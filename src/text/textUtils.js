@@ -1,5 +1,5 @@
 'use strict';
-
+import parse from 'parenthesis'
 
 function endsWithDot(text){
     var result = false;
@@ -11,6 +11,11 @@ function endsWithDot(text){
     return result;
 }
 
+/**
+ * ending dot not trimmed
+ * @param {*} text 
+ * @returns 
+ */
 function trimPunctuations(text){
     var result = text;
     // first or last char cannot be punctuation, some punctuations ('.-) allowed in between
@@ -40,6 +45,7 @@ function sameLengthStandardizeCharacters(text){
 
 function variableLengthStandardizeCharacters(text){
     return text.replaceAll(/[ﬁ]/g, "fi")
+        .replaceAll(/[ﬀ]/g, "ff")
         .replaceAll(/[ﬂ]/g, "fl")
 
         .replaceAll(/a¨/g, "ä")
@@ -52,6 +58,10 @@ function variableLengthStandardizeCharacters(text){
 
 function createBlankMask(str) {
     return " ".repeat(str.length);
+}
+
+function isBlankMask(str){
+    return str && str.replaceAll(' ', '').length ==0;
 }
 
 function containsMaskedChars(str){
@@ -74,18 +84,28 @@ function removeMaskedChars(str, mask){
     return replaceMaskedChars(str, mask, '')
 }
 
+function containsParenthesesPunctuations(text){
+    if(!text){
+        return false;
+    }
+
+    let punctuations = ['(', '[', '<'];
+    let findResult = punctuations.find(item => text.includes(item));
+    return findResult != null;
+}
+
 function standardizeParenthesesPunctuations(text){
     text = text.replaceAll(/（/g, '(');
     text = text.replaceAll(/）/g, ')');
 
-    text = text.replaceAll(/［/g, '(');
-    text = text.replaceAll(/］/g, ')');
+    text = text.replaceAll(/［/g, '[');
+    text = text.replaceAll(/］/g, ']');
 
-    text = text.replaceAll(/〈/g, '(');
-    text = text.replaceAll(/〉/g, ')');
+    text = text.replaceAll(/〈/g, '<');
+    text = text.replaceAll(/〉/g, '>');
 
-    text = text.replaceAll(/【/g, '(');
-    text = text.replaceAll(/】/g, ')');
+    text = text.replaceAll(/【/g, '[');
+    text = text.replaceAll(/】/g, ']');
     
     return text;
 }
@@ -111,8 +131,60 @@ function removeParentheses(text){
     }
     text = standardizeParenthesesPunctuations(text);
     
-    return text.replaceAll(/(\([^\)]*\))/g, '');
+    let tokens = parse(text, { brackets: ['{}', '[]', '()', '<>']});
+    if(tokens){
+        tokens = tokens.filter(item => !Array.isArray(item));
+        text = tokens.join('');
+    }
+    
+    
+    return text.replaceAll(/[{}[\]()<>]/g, '');
+}
+
+function getAllTextContent(token){
+    if(!Array.isArray(token)){
+        return token;
+    }else{
+        let array = token;
+        let texts = [];
+        for(let token of array){
+            let text = getAllTextContent(token);
+            texts.push(text);
+        }
+        return texts.join('');
+    }
+}
+
+function splitButIgnoreParentheses(text, separater){
+    if(!containsParenthesesPunctuations(text)){
+        return text.split(separater);
+    }
+
+    let tokens = parse(text, { brackets: ['{}', '[]', '()', '<>']});
+    //console.log(tokens);
+
+    let result = [];
+    if(tokens){
+        let part='';
+        for(let token of tokens){
+            if(Array.isArray(token)){
+                let tokenText = getAllTextContent(token);
+                part = part + tokenText;
+            }else {
+                for(let char of token){
+                    if(char == separater){
+                        result.push(part);
+                        part = '';
+                    }else{
+                        part = part + char;
+                    }
+                }
+            }            
+        }
+        result.push(part);
+    }
+    return result;
 }
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses };
+export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, isBlankMask, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };

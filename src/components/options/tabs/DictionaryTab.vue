@@ -345,11 +345,15 @@ init();
   <div class="sections dictionary">
     <div class="section">
       <div class="label">
+        <p>
+        {{ t('optionsEditDictionaryIndexColorTipsTitle') }}
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
+          <li class="lightgreen">{{ t('optionsEditDictionaryIndexColorTipsLightGreen') }}</li>
           <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
-          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么我的词典无法导入"/></li>
+          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有些词典无法提取结构化数据"/></li>
         </ul>
+        </p>
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
           <li v-for="(tip, index) in optionalTips" :key="tip" :value="tip">{{ tip }}</li>
@@ -358,8 +362,8 @@ init();
       </div>
       <div class="input dictionary">
         <div class="list">
-          <select class="dictionaries" v-model="selectedDictionary" size="10" @change="onChangeSelectedDictionary">
-            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
+          <select class="dictionaries" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
+            <option :class="{support_ok: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser != true, support_ok_upgradable: meta.data.index?.support && meta.data.index?.status == DICTIONARY_INDEX_STATUS_OK && meta.data.index?.hasNewerParser == true, support_invalid: meta.data.index.support && meta.data.index?.status != DICTIONARY_INDEX_STATUS_OK, not_support: meta.data.index?.status == DICTIONARY_INDEX_STATUS_NOT_SUPPORT}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
           </select>          
         </div>
         <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
@@ -409,24 +413,39 @@ init();
       margin-left: 5px;
     }
 
-    .dictionaries{
-      min-width: 100px;
-      
-      option.support_ok{
-        color: green;
+    .list {
+      width: 50%;
+    
+      .dictionaries{
+        
+        width: 100%;
+        overflow-y: auto;
+        
+        option.support_ok{
+          color: green;
+        }
+        option.support_ok_upgradable{
+          color: lightgreen;
+        }
+        option.support_invalid{
+          color: rgb(209, 185, 3);
+        }
+        option.not_support{
+          color: rgba(255, 89, 0, 0.933);
+        }
       }
-      option.support_invalid{
-        color: rgb(209, 185, 3);
-      }
-      option.not_support{
-        color: rgba(255, 89, 0, 0.933);
-      }
+    }
+    .detail{
+      width: 50%;
     }
   }
 
 
   .green {
     color: green;
+  }
+  .lightgreen {
+    color: lightgreen;
   }
   .yellow {
     color: rgb(209, 185, 3);

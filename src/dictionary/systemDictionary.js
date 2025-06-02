@@ -5,7 +5,6 @@ import { MapDictionary } from './MapDictionary.js'
 
 const gSystemDictionaryMap = {};
 
-var smallDictionary, largeDictionary, affixDictionary;
 
 async function getDictJson(name){
     let url = chrome.runtime.getURL(`dictionaries/dict-${name}.json`);
@@ -13,18 +12,37 @@ async function getDictJson(name){
     return await response.json();    
 }
 
+async function loadSmallDictionary(){
+    let dictSmall = await getDictJson('small');
+    return new MapDictionary({ raw: dictSmall }, '#small');
+}
+
+async function loadLargeDictionary(){
+    let dictLarge = await getDictJson('large');
+    return new MapDictionary({ raw: dictLarge }, '#large', { });
+}
+
+async function loadAffixDictionary(){
+    return new MapDictionary({ raw: dictAffix }, '#affix');
+}
+
+async function loadSystemDictionary(name){
+    if(name==='#small'){
+        return await loadSmallDictionary();
+    }else if(name==='#large'){
+        return await loadLargeDictionary();
+    }else if(name==='#affix'){
+        return await loadAffixDictionary();
+    }else {
+        return null;
+    }
+}
+
 async function loadSystemDictionariesToCache(){
 
-    let dictSmall = await getDictJson('small');
-    smallDictionary = new MapDictionary({ raw: dictSmall }, '#small');
-
-    let dictLarge = await getDictJson('large');
-    largeDictionary = new MapDictionary({ raw: dictLarge }, '#large');
-    affixDictionary = new MapDictionary({ raw: dictAffix }, '#affix');
-        
-    gSystemDictionaryMap['#small'] = smallDictionary;
-    gSystemDictionaryMap['#large'] = largeDictionary;
-    gSystemDictionaryMap['#affix'] = affixDictionary;
+    gSystemDictionaryMap['#small'] = await loadSmallDictionary();
+    gSystemDictionaryMap['#large'] = await loadLargeDictionary();
+    gSystemDictionaryMap['#affix'] = await loadAffixDictionary();
 }
 
 function isSystemDictionary(name){
@@ -41,16 +59,8 @@ function getSystemDictionaryAlias(name){
     throw new Error(`invliad system dictionary name ${name}`);
 }
 
-function getSystemDictionary(name){
-    if(name==='#small'){
-        return smallDictionary;
-    }else if(name==='#large'){
-        return largeDictionary;
-    }else if(name==='#affix'){
-        return affixDictionary;
-    }else {
-        return null;
-    }
+function getSystemDictionaryFromCache(name){
+    return gSystemDictionaryMap[name];
 }
 
 function createSystemDictionaryMeta(name){
@@ -118,4 +128,4 @@ function createDictionaryMetaAffix(){
     };
 }
 
-export { loadSystemDictionariesToCache, getSystemDictionary, createSystemDictionaryMeta, getSystemDictionaryAlias, isSystemDictionary }
+export { loadSystemDictionary, loadSystemDictionariesToCache, getSystemDictionaryFromCache, createSystemDictionaryMeta, getSystemDictionaryAlias, isSystemDictionary }

@@ -7,6 +7,7 @@ import Notes from './Notes.vue';
 const props = defineProps({
     page: Object,
     word: String,
+    dictionary: String,
     notes: Array
 
 });
@@ -24,10 +25,25 @@ init();
 </script>
 
 <template>
-    <Word v-if="props.word" :siteOptions="toRaw(page.siteOptions)" :word="props.word"></Word>
-
-
-    <Notes v-if="!isNotesEmpty" :items="props.notes">
-
-    </Notes>
+    <div class="actiontab-items">
+        <Word v-if="props.word" :siteOptions="toRaw(page.siteOptions)" :dictionary="props.dictionary" :word="props.word"></Word>
+        <Notes v-if="!isNotesEmpty" :items="props.notes" />
+    </div>
 </template>
+
+<style>
+.actiontab-items>div {
+    
+    padding: 5px;
+    margin: 5px;
+
+    .title {
+        font-size: large;
+        margin: 0;
+        padding: 0;
+    }
+}
+.actiontab-items>div:not(:first-child) {
+    border-top: solid rgb(210, 210, 210) 1px;
+}
+</style>

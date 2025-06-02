@@ -1,9 +1,14 @@
 import { DefinitionParser } from '../DefinitionParser.js'
-import { splitWordClasses, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
+import { splitIntoDefinitionGroups, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
 import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
 
 class TextDefinitionParser extends DefinitionParser {
+    
+    constructor(options){
+        super("TextParser", "1.0.0", "1.0.0", options);
+    }
+
     parse(rawDefinition) {
         if(!rawDefinition){
             return [];
@@ -11,11 +16,16 @@ class TextDefinitionParser extends DefinitionParser {
     
         let entry = this.parseEntry(rawDefinition);    
         let entries = [entry];
+        this.afterParse(entries);
         return entries;
     }
 
+    afterParse(entries){
+        
+    }
+
     parseEntry(text){
-        const phoneticSymbolsArray = text.match(/(\[.*\]|\/.*\/)\s/);
+        const phoneticSymbolsArray = text.match(/(\/.*\/)\s/);
         let pronunciationText = null;
         if(phoneticSymbolsArray && phoneticSymbolsArray.length==2){
             pronunciationText = phoneticSymbolsArray[1];            
@@ -23,7 +33,7 @@ class TextDefinitionParser extends DefinitionParser {
 
         let definitionGroupsText = text;
         if(pronunciationText){
-            definitionGroupsText = text.replace(/(\[.*\]|\/.*\/)\s/, '');
+            definitionGroupsText = text.replace(/(\/.*\/)\s/, '');
         }
         
         let pronunciations = this.parsePronunciations(pronunciationText); 
@@ -44,7 +54,7 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     parseDefinitionGroups(text){
-        let definitionGroupTexts = splitWordClasses(text);
+        let definitionGroupTexts = splitIntoDefinitionGroups(text);
     
         let definitionGroups = [];
         for(let definitionGroupText of definitionGroupTexts){

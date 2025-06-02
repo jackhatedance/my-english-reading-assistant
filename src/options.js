@@ -1,437 +1,62 @@
-'use strict';
 
-import './options.css';
-import {loadKnownWords, loadAndMergeWordLists, saveKnownWords, calculateKnownWordsCount} from './vocabularyStore.js';
-import { addCustomDictionary, deleteCustomDictionary } from './dictionary/customDictionary.js';
-import {getOptions, setOptions} from './service/optionService.js';
-import {localizeHtmlPage} from './locale.js';
-import {deleteAllReadingHistory} from './service/activityService.js';
-import { getNotes, setNotes } from './service/noteService.js';
-import { getUnrecognizedWords, updateUnrecognizedWords } from './service/dictionaryService.js';
-import { ZipReader, BlobReader, BlobWriter } from '@zip.js/zip.js'
-import { MDX, BufferedFile } from '@jackhatedance/js-mdict'
-import { Buffer } from 'safe-buffer'
+import { createApp, ref } from 'vue';
+import { createWebHashHistory, createRouter } from 'vue-router'
+
+import {LoadingPlugin} from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
+
+import Options from './components/options/Options.vue'
+import GeneralTab from './components/options/tabs/GeneralTab.vue'
+import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
+import NotesTab from './components/options/tabs/NotesTab.vue'
+import RootAndAffixTab from './components/options/tabs/RootAndAffixTab.vue'
+import ReportTab from './components/options/tabs/ReportTab.vue'
+import DictionaryTab from './components/options/tabs/DictionaryTab.vue'
+import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab.vue'
+
+import { localizeHtmlPage} from './locale.js'
 
 localizeHtmlPage();
 
-var gOldDictionaryNames = []
-//dictionary: { name:'xx', data:'yy'}
-var gNewDictionaryMap = {};
+const indexBuildingProgress = ref();
 
-  // Saves options to chrome.storage
-  const saveOptionsUI = async () => {
-    const splitter = /\r*\n/;
-    let knownWordsArray = document.getElementById('knownWords').value.split(splitter);
-    
-    //custom dictionary names
-    const dictionaryOptions = document.getElementById('dictionaries').options;
-    let additionalDictionaryNames = [];
-    for (let i = 0; i < dictionaryOptions.length; i++) {
-      additionalDictionaryNames.push(dictionaryOptions[i].value);
+const routes = [
+    { path: '/', redirect: '/general' },
+    { path: '/general', component: GeneralTab },
+    { path: '/vocabulary', component: VocabularyTab },
+    { path: '/notes', component: NotesTab },
+    { path: '/root-and-affix', component: RootAndAffixTab },
+    { path: '/report', component: ReportTab },
+    { path: '/dictionary', component: DictionaryTab },
+    { path: '/unrecognized-words', component: UnrecognizedWordsTab },
+]
+
+const router = createRouter({
+    linkActiveClass: 'active',
+    history: createWebHashHistory(),
+    routes,
+})
+
+createApp(Options, { indexBuildingProgress })
+    .use(router)
+    .use(LoadingPlugin)
+    .mount('#app');
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    //console.log('DOMContentLoaded');
+
+
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //console.log(`rcv msg: ${request.type}`);
+    if(request.type == 'DICTIONARY_JOB_PROGRESS'){
+        const { name, progress } = request.payload;
+        const { job, rate } = progress;
+        //console.log(`dictinary ${name} ${job} progress: ${rate}`);
+        indexBuildingProgress.value = { name, progress };
     }
 
-    let notesArray = JSON.parse(document.getElementById('notes').value);
-    let wordMarkRootMode = document.getElementById('rootMode').checked;
-    let enableReport = document.getElementById('enableReport').checked;
-    let additionalDictionaryEnabled = document.getElementById('additionalDictionaryEnabled').checked;
-    let enableUnrecognizedWords = document.getElementById('enableUnrecognizedWords').checked;
-    
-    let unrecognizedWordsStr = document.getElementById('unrecognizedWords').value;
-    let unrecognizedWordArray = [];
-    if(unrecognizedWordsStr.length > 0){
-      
-      unrecognizedWordArray = unrecognizedWordsStr.split(splitter);
-    }
-    
-    
-    await save({
-      knownWords: knownWordsArray,
-      notes: notesArray,
-      options: {
-        rootAndAffix:{
-          enabled:wordMarkRootMode,
-        },
-        report:{
-          enabled: enableReport,
-        },
-        dictionary:{
-          additionalDictionaryEnabled: additionalDictionaryEnabled,
-          additionalDictionaries: additionalDictionaryNames,
-        },        
-        unrecognizedWords:{
-          enabled: enableUnrecognizedWords,
-          unrecognizedWords: unrecognizedWordArray,
-        }
-      }
-    });
-
-    //notify backgroud
-    chrome.runtime.sendMessage(
-      {
-        type: 'OPTIONS_CHANGED',
-        payload: {          
-        },
-      },
-      (response) => {
-        //console.log(response.message);
-      }
-    );
-
-    //notify all tabs
-    chrome.tabs.query({}, (tabs) => {
-      for(const tab of tabs){
-        chrome.tabs.sendMessage(
-          tab.id,
-          {
-            type: 'OPTIONS_CHANGED',
-            payload: {            
-            },
-          },
-          (response) => {          
-            
-          }
-        );
-      }
-    });
-
-  };
-
-  function deleteReadingHistoryUI(){
-    deleteAllReadingHistory();
-  }
-  
-  function clearNotes(){
-    updateNotes([]);
-  }
-
-  function clearUnrecognizedWordsAction(){
-    //clear UI
-    updateUnrecognizedWordsUI([]);    
-  }
-
-  // Restores select box and checkbox state using the preferences
-  // stored in chrome.storage.
-  const restoreOptions = async () => {
-    let knownWordsResult = await loadKnownWords();
-    let notes  = await getNotes();
-    let knownWords = knownWordsResult;
-    if(!knownWords){
-      knownWords= [];
-    }    
-
-    updateVocabulary(knownWords);
-    updateNotes(notes);
-    
-
-    //word mark
-    let options = await getOptions();
-
-    
-    let dictionaryOptions = options.dictionary;
-    if(dictionaryOptions.additionalDictionaries){
-      gOldDictionaryNames = dictionaryOptions.additionalDictionaries;
-      updateDictionaries(dictionaryOptions);
-    }
-    
-    updateWordMark(options.rootAndAffix?.enabled);
-    updateReport(options.report);
-
-    let unrecognizedWords = await getUnrecognizedWords();
-    updateUnrecognizedWordsUI(unrecognizedWords, options.unrecognizedWords);
-    
-  };
-
-  const resetVocabulary = async () => {
-    var options = document.getElementById('wordLists').selectedOptions;
-    var wordLists = Array.from(options).map(({ value }) => value);
-
-    if(wordLists.length==0){
-        alert('please select word lists.');
-    }
-
-    let knownWordsResult = await loadAndMergeWordLists(wordLists);
-    let knownWords = knownWordsResult;
-    if(!knownWords){
-      knownWords= [];
-    }    
-
-    updateVocabulary(knownWords);
-  };
-
-  const deleteDictionary = async () => {
-    let selectElement = document.getElementById('dictionaries')
-    
-    let selectedDictionary = selectElement.value;
-    
-    await deleteCustomDictionary(selectedDictionary);
-    selectElement.remove(selectElement.selectedIndex);
-  };
-
-  function backupVocabulary() {
-    
-    let vocabulary = document.getElementById('knownWords').value;
-    saveTextAsFile(vocabulary, 'vocabulary');
-
-  };
-  
-  function backupNotes() {
-    
-    let notes = document.getElementById('notes').value;
-    saveTextAsFile(notes, 'notes');
-
-  };
-
-  function loadFromFile() {
-    
-    var file = document.getElementById("file").files[0];
-    if(!file){
-        alert('pick file first.');
-        return;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function(e){
-      //console.log(e.target.result);
-      let array = e.target.result.split(/\r*\n/);
-      updateVocabulary(array);
-    }
-    reader.readAsText(file);
-
-  };
-
-  function loadNotesFromFile() {
-    
-    var file = document.getElementById("notesFile").files[0];
-    if(!file){
-        alert('pick notes file first.');
-        return;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function(e){
-      //console.log(e.target.result);
-      let array = JSON.parse(e.target.result);
-      updateNotes(array);
-    }
-    reader.readAsText(file);
-
-  };
-
-  function loadAdditionalDictionaryFromFile() {
-    
-    var file = document.getElementById("additionalDictionaryFile").files[0];
-    if(!file){
-        alert('pick file first.');
-        return;
-    }
-
-    let fileName = file.name;
-    let name = fileName.slice(0, -4);
-    if(fileName.endsWith('.txt')){
-      
-      processTextDictionary(name, file);
-    } else if(fileName.endsWith('.zip')){
-      processZipDictionary(name, file);
-    }
-    
-    //add dictionary name to select element
-    var dictionaries = document.getElementById('dictionaries');
-    const optionExists = Array.from(dictionaries.options).some(option => option.value === name);
-    if(!optionExists){
-      const opt1 = document.createElement("option");
-    
-      opt1.value = name;
-      opt1.text = name;
-      dictionaries.add(opt1);
-    }
-  };
-
-  function processTextDictionary(name, file){
-    var reader = new FileReader();
-    reader.onload = function(e){
-      //console.log(e.target.result);
-      let array = e.target.result.split(/\r*\n/);
-      //save dict data to memory temporarily
-      gNewDictionaryMap[name] = array;
-    }
-    reader.readAsText(file);
-  }
-
-  async function processZipDictionary(name, file){
-    const options = {"filenameEncoding":"gbk"}
-    var entries = await (new ZipReader(new BlobReader(file))).getEntries(options);
-    for(let entry of entries){
-      
-      if(!entry.directory){
-        console.log(entry.filename);
-        //const file = BufferedFile()
-        if(entry.filename.endsWith('.mdx')){
-          const blob = await entry.getData(new BlobWriter());          
-          const arrayBuffer = await blob.arrayBuffer();
-          const buffer = Buffer.from(arrayBuffer);
-          const  bufferedFile = new BufferedFile(entry.filename, buffer);
-          const mdx = new MDX(bufferedFile);
-          const def = mdx.lookup("ask");
-          console.log(def.definition);
-        }
-        
-      }
-    }
-    
-  }
-
-  function updateVocabulary(wordArray){
-    document.getElementById('knownWords').value = wordArray.join('\n');
-
-    const knownCount = calculateKnownWordsCount(wordArray);   
-    
-    document.getElementById('count').innerHTML = knownCount;
-  }
-
-  function updateNotes(wordArray){
-    document.getElementById('notes').value = JSON.stringify(wordArray);
-    document.getElementById('noteCount').innerHTML = wordArray.length;
-  }
-
-  function updateDictionaries(dictionaryOptions){
-    document.getElementById('additionalDictionaryEnabled').checked = dictionaryOptions.additionalDictionaryEnabled;
-    //(dictionaryOptions);
-    var dictionaries = document.getElementById('dictionaries');
-    for(let name of dictionaryOptions.additionalDictionaries) {
-      const opt1 = document.createElement("option");
-      
-      opt1.value = name;
-      opt1.text = name;
-      dictionaries.add(opt1);
-    }    
-  }
-
-  function updateWordMark(rootMode){
-    document.getElementById('rootMode').checked = rootMode;
-  }
-
-  function updateReport(reportOptions){
-    document.getElementById('enableReport').checked = reportOptions.enabled;
-  }
-
-  function updateUnrecognizedWordsUI(unrecognizedWords, unrecognizedWordsOptions) {
-    if(unrecognizedWords){
-      document.getElementById('unrecognizedWords').value = unrecognizedWords.join('\n');
-      document.getElementById('unrecognizedWordsCount').innerHTML = unrecognizedWords.length;
-    }
-    
-    if(unrecognizedWordsOptions){
-      document.getElementById('enableUnrecognizedWords').checked = unrecognizedWordsOptions.enabled;
-    }
-    
-  }
-
-  async function save(settings){
-    if(settings.knownWords){
-      let uw = settings.knownWords;
-      await saveKnownWords(uw);
-      settings.knownWords = null;
-    }
-
-    if(settings.options.dictionary){
-      let dictionaryOptions = settings.options.dictionary;
-      await saveDictionaries(dictionaryOptions.additionalDictionaries);        
-    }
-
-    if(settings.options.unrecognizedWords){
-      let unrecognizedWordsOptions = settings.options.unrecognizedWords;
-      await updateUnrecognizedWords(unrecognizedWordsOptions.unrecognizedWords, true);    
-    }
-
-    if(settings.notes){
-      let notes = settings.notes;
-      await setNotes(notes);
-      settings.notes = null;
-    }
-
-    if(settings.options){
-      let options = settings.options;
-      await setOptions(options);
-    }
-  }
-
-  async function saveDictionaries(dictionaryNames){
-    //deleted
-    for(let name of gOldDictionaryNames){
-      if(!dictionaryNames.includes(name)){
-        deleteCustomDictionary(name);
-      }
-    }    
-
-    //added
-    for(let name of dictionaryNames){
-      if(!gOldDictionaryNames.includes(name)){
-        let data = gNewDictionaryMap[name];
-        addCustomDictionary(name, data);
-      }
-    }
-
-    //updated
-    for(let name of dictionaryNames){
-      if(gOldDictionaryNames.includes(name)){
-        let data = gNewDictionaryMap[name];
-        if(data){//just uploaded
-          addCustomDictionary(name, data);
-        }        
-      }
-    }
-
-  }
-
-  function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [year, month, day].join('-');
-  }
- 
-
-  function saveTextAsFile(text, name) {
-    var textToWrite = text;
-    var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
-
-    let yyyymmdd = formatDate(new Date());
-    var fileNameToSaveAs = `my-${name}-${yyyymmdd}.txt`; //filename.extension
-  
-    var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    if (window.webkitURL != null) {
-      // Chrome allows the link to be clicked without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    } else {
-      // Firefox requires the link to be added to the DOM before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-    }
-  
-    downloadLink.click();
-  }
-  
-  
-  document.addEventListener('DOMContentLoaded', restoreOptions);
-  document.getElementById('backupVocabulary').addEventListener('click', backupVocabulary);
-  document.getElementById('resetVocabulary').addEventListener('click', resetVocabulary);
-  document.getElementById('deleteDictionary').addEventListener('click', deleteDictionary);
-  document.getElementById('backupNotes').addEventListener('click', backupNotes);
-  document.getElementById('save').addEventListener('click', saveOptionsUI);
-  document.getElementById('loadFromFile').addEventListener('click', loadFromFile);
-  document.getElementById('loadNotesFromFile').addEventListener('click', loadNotesFromFile);
-  document.getElementById('clearNotes').addEventListener('click', clearNotes);
-  document.getElementById('deleteReadingHistory').addEventListener('click', deleteReadingHistoryUI);
-  document.getElementById('importDictionary').addEventListener('click', loadAdditionalDictionaryFromFile);
-  document.getElementById('clearUnrecognizedWords').addEventListener('click', clearUnrecognizedWordsAction);
+    sendResponse({});
+});

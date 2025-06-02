@@ -1,13 +1,14 @@
 'use strict';
 
-import {lookup, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion } from './dictionaries.js';
+import {lookup } from './dictionaries.js';
+import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
 import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
-import { endsWithDot, trimPunctuations, variableLengthStandardizeCharacters } from './text/textUtils.js';
+import { variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { deepLookup } from './deep-lookup.js'
 
@@ -17,6 +18,7 @@ var gPrefixes, gSuffixes;
 function createDefaultSearchWordOptions(){
     return {
         allowLemma: true,
+        lookupBaseWhenNecessary: false,
         simplifyDefinition: {},
         dictionaryOptions: {},
         anonymous: true,
@@ -33,22 +35,36 @@ function searchWord(query, options){
     if(!query){
         return;
     }
-
-    query = variableLengthStandardizeCharacters(query);
-    options = patchSearchOptionDefaultValues(options);
-
+    query = query.trim();
+    if(query.length == 0){
+        return;
+    }
+    
     let result;
     
     //too long
     if(query.length > 45){
         return;
     }
-    
+
+    query = variableLengthStandardizeCharacters(query);
+
     //no alphabet at all
     if(query.match(/^[^a-zA-Z]+$/)){
         return result;
     }
-    
+
+    /*
+    //non pure Enlgish
+    if(query.match(/[^a-zA-Z\-\.']+/)){
+        console.log(`non pure English word: ${query}`);
+    }
+    */
+
+    //console.log(`search word: ${query}`);
+
+    options = patchSearchOptionDefaultValues(options);
+
     if(!result) {        
         let dicts = getDicts(options);
         result = searchWordWithDict(query, options, dicts);
@@ -133,36 +149,18 @@ function searchWordWithDict(query, options, dicts){
     }
 
     let baseWord = '';
+    let baseSearchType = '';
 
     if(lookupResult) {
-        let bHasLinkEntryOnly = hasLinkEntryOnly(lookupResult);
-        let bHasLinkDefinitionOnly = hasLinkDefinitionOnly(lookupResult);
+        if(options.lookupBaseWhenNecessary){
+            if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
+                deepLookupResult = deepLookup(lookupResult, options);
 
-        if(bHasLinkDefinitionOnly){            
-            let linkDefinition = getTheOnlyLinkDefintion(lookupResult);   
-            let link = linkDefinition.link;    
-            let linkLookupResult = lookup(link, options, dicts);                  
-            
-            if(linkLookupResult) {
-                //replace
-                lookupResult = linkLookupResult;
-
-                if(bHasLinkEntryOnly){
-                    word = link;
-                } else {
-                    baseWord = link;        
-                }                
-            }        
-        }    
-        
-        //lemma
-        if(options.allowLemma){
-            deepLookupResult = deepLookup(lookupResult, options);
-
-            if(deepLookupResult){
-                searchType='lemma';
-                baseWord = deepLookupResult.word;
-            }        
+                if(deepLookupResult){
+                    baseSearchType='lemma';
+                    baseWord = deepLookupResult.word;
+                }
+            }
         }
     }
 
@@ -176,7 +174,9 @@ function searchWordWithDict(query, options, dicts){
             searchType: searchType,
             lemmaType: lemmaType,
             word: word,
+            searchType: searchType,
             baseWord: baseWord,
+            baseSearchType: baseSearchType,
             definition: definition,
             lookupResult: lookupResult,
             deepLookupResult: deepLookupResult,
@@ -366,6 +366,13 @@ function singularize(word) {
 
 function isKnown(baseWord, vocabulary){
     //console.log('isKnow:'+baseWord);
+    const singleCharacterWordAsKnown = true;
+
+    if(singleCharacterWordAsKnown){
+        if(baseWord && baseWord.length==1){
+            return true;
+        }
+    }
     
     //check if has unknown record
     let foundUnknownRecord = existWordRecord('#'+baseWord, vocabulary);

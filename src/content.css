@@ -27,25 +27,6 @@
     }
   }
 
-  &:hover, &.mea-hide:hover {
-    &::after{
-      background-color: white;
-      border: solid 1px;
-      opacity: 1;
-      z-index: 99;
-      visibility: visible;
-
-      content: attr(data-footnote);
-    }
-  }
-
-  &:not([data-parts='']) {
-    &:hover, &.mea-hide:hover {
-      &::after{
-        content: attr(data-footnote) ' [' attr(data-parts) ']';
-      }
-    }
-  } 
 }
 
 
@@ -100,7 +81,7 @@
   padding: 0px;
   #mea-vueapp-iframe {
     width: 500px;
-    height: 610px;
+    height: 520px;
     border: none;
   }
 

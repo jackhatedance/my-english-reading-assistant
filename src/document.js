@@ -5,7 +5,7 @@ import { traverseElement, traverseNode } from './dom.js';
 import { findStyleSheet, changeStyle, indexOfMeaAnnotation } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
-import { getWordFromElement, getBaseWordFromElement} from './word.js';
+import { getTargetWordFromElement } from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
 
@@ -127,25 +127,6 @@ function addStyle(document) {
           }
         }
 
-        &:hover, &.mea-hide:hover {
-          &::after{
-            background-color: white;
-            border: solid 1px;
-            opacity: 1;
-            z-index: 99;
-            visibility: visible;
-
-            content: attr(data-footnote);
-          }
-        }
-
-        &:not([data-parts='']) {
-          &:hover, &.mea-hide:hover {
-            &::after{
-              content: attr(data-footnote) ' [' attr(data-parts) ']';
-            }
-          }
-        } 
       }
 
 
@@ -212,6 +193,7 @@ function addStyle(document) {
         all: revert;
       }
       #mea-vue-container {
+        background: #efefef;
         border: none;
         border-radius: 10px;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -220,7 +202,7 @@ function addStyle(document) {
         padding: 0px;
         #mea-vueapp-iframe {
           width: 500px;
-          height: 610px;
+          height: 520px;
           border: none;
         }
 
@@ -228,6 +210,20 @@ function addStyle(document) {
           width: 400px;
           
         }
+      }
+
+      #mea-definition-tooltip {
+        position: absolute;
+        min-width: 20px;
+        max-width: 400px;
+        background-color: rgb(226, 225, 225);
+        color: black;
+        border-radius: 4px;
+        border: 1px solid black !important;
+        font-size: 14px;
+        visibility: hidden;
+        z-index: 100;
+        padding: 2px;
       }
 
     `;
@@ -302,7 +298,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       //show hide unknown word annotation
       document.querySelectorAll('.mea-word').forEach((element) => {
   
-        let targetWord = getWordFromElement(element);
+        let targetWord = getTargetWordFromElement(element);
   
         if (enabled) {
           let hide = element.classList.contains("mea-hide");

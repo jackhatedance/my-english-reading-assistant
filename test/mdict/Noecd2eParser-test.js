@@ -1,19 +1,29 @@
 
 import { strict as assert } from 'assert';
 import { Noecd2eParser } from '../../src/dictionary/mdict/parser/Noecd2eParser.js'
-import fs from 'fs'
+import { MDX } from '@jackhatedance/js-mdict'
 
 describe('mdict new-oxford-ec-dual parser', function () {
   
   describe('Noecd2eParser parse', function () {
     before(function() {
-      this.parser = new Noecd2eParser();
+      
+      this.parser = new Noecd2eParser({
+        allUpperCaseEntryPolicy: 'lowerCase',
+        debugPrintSelectorFind: false
+      });
+
+      this.mdx = new MDX('./test/mdict/mdx/新牛津英汉双解大词典（第2版）.mdx');
+      this.lookup = function(word) {
+        return this.mdx.lookup(word).definition;
+      };
+
     });
 
     it('noecd2e good', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/good.html', 'utf8');
+      let html = this.lookup('good');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -21,12 +31,12 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "合格的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "善的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "让人高兴的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的,满意的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "合格的,胜任的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "善的,有德行的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "让人高兴的,令人愉快的,令人满意的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "彻底的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "天哪");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "天哪,啊呀");      
       
       assert.equal(parseResult[0].definitionGroups[1].name, "noun");      
       assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "善,正义");      
@@ -34,15 +44,14 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "商品,所有物");      
       
       assert.equal(parseResult[0].definitionGroups[2].name, "adverb");      
-      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "(非正式)好地");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "<非正式>好地");      
       
     });
 
     it('noecd2e draggle', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/draggle.html', 'utf8');
-
+      let html = this.lookup('draggle');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -54,10 +63,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e titter', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/titter.html', 'utf8');
-
+      let html = this.lookup('titter');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -70,10 +78,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
     it('noecd2e -et', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/-et.html', 'utf8');
-
+      let html = this.lookup('-et');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -84,10 +91,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e feathers link', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/feathers.html', 'utf8');
-
+      let html = this.lookup('feathers');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
@@ -95,11 +101,21 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
-    it('noecd2e twelve', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/twelve.html', 'utf8');
-
+    it('noecd2e prentice link uppercase', async function () {
+      let html = this.lookup('prentice');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "apprentice");      
+      
+    });
+
+    it('noecd2e twelve', async function () {
+      let html = this.lookup('twelve');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -111,10 +127,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e musty', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/musty.html', 'utf8');
-
+      let html = this.lookup('musty');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -127,10 +142,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e these - plual', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/these.html', 'utf8');
-
+      let html = this.lookup('these');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       
@@ -145,10 +159,9 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
     it('noecd2e is - third person singular', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/is.html', 'utf8');
-
+      let html = this.lookup('is');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -163,26 +176,24 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e but - parentheses, subdefinitions', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/but.html', 'utf8');
-
+      let html = this.lookup('but');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "(澳/新西兰,苏格兰,非正式)(用于句尾)但是,然而");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰, 苏格兰, 非正式>[用于句尾]但是,然而");
       
       
     });
 
     it('noecd2e rode - merge pronunciations', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/rode.html', 'utf8');
-
+      let html = this.lookup('rode');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
@@ -194,17 +205,59 @@ describe('mdict new-oxford-ec-dual parser', function () {
     });
 
     it('noecd2e zoophyte', async function () {
-      let html = fs.readFileSync('./test/mdict/newOxfordEnglishChinese/zoophyte.html', 'utf8');
-
+      let html = this.lookup('zoophyte');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈzəʊəfaɪt");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(动)(旧)植形动物,植虫(如珊瑚、海葵、海绵、海百合等)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[动]<旧>植形动物,植虫(如珊瑚、海葵、海绵、海百合等)");
       
+      
+    });
+
+    it('noecd2e Nabokov', async function () {
+      let html = this.lookup('Nabokov');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "nəˈbəʊkɒf");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "纳巴科夫,弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "纳巴科夫");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      
+    });
+
+    it('noecd2e said', async function () {
+      let html = this.lookup('said');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "sed");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past and past participle of say. SAY的过去式和过去分词");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的,该(用于法律语言或幽默中)");
+      
+    });
+
+    it('noecd2e woven', async function () {
+      let html = this.lookup('woven');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, "");
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈwəʊvən");
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past participle of weave. WEAVE的过去分词");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "编织的,机织的");
       
     });
 

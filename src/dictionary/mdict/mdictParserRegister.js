@@ -5,9 +5,9 @@ import { MwalecdParser } from './parser/MwalecdParser.js'
 
 const parsers = [ new Noecd2eParser(), new Oalecd9eParser(), new YhdParser(), new MwalecdParser() ];
 
-function findMdictParser(name) {
+function findDefinitionParser(name) {
     return parsers.find(item => item.name == name);    
 }
 
 
-export { findMdictParser }
+export { findDefinitionParser }

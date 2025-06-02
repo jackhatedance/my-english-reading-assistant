@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
+import rehypeImageSize from './rehype/image-size.js'
 
 localizeHtmlPage();
 
@@ -19,6 +20,7 @@ async function setup(){
   .use(remarkGfm)
   .use(remarkRehype)
   .use(rehypeSlug)
+  .use(rehypeImageSize)
   .use(rehypeStringify)
   .process(faq);
 
