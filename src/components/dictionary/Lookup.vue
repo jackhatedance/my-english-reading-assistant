@@ -119,13 +119,20 @@ async function onChangeDictionary(dictionaryName){
     await showDefinition(dictionaryName, queryRef.value);
 }
 
+var inProgress = false;
 async function onLookup(){
     //console.log(`lookup dict: ${selectedDictionary.value}, query: ${queryRef.value}`);
+    if(inProgress){
+        return;
+    }
     
+    inProgress = true;
+
     clearSearchResult();
 
     await search(queryRef.value);
-
+    
+    inProgress = false;
     //await doLookup(null, queryRef.value);
 }
 
