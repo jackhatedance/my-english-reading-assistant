@@ -256,7 +256,7 @@ class DefinitionParser {
     }
     
     createLinkDefinition(link){
-        let text = `转${link}`;
+        let text = `见${link}`;
 
         return {
             text: text,
