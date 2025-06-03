@@ -31,7 +31,7 @@ class TextDefinitionParser extends DefinitionParser {
         let group = groups.find(item => item.name == 'phr.');
         if(group){
             let index = groups.indexOf(group);
-            groups.slice(index, 1);
+            groups.splice(index, 1);
         
             entry.phrases = group.definitions.map(item => item.text);
         }

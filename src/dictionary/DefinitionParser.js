@@ -176,6 +176,10 @@ class DefinitionParser {
                                 
     }
 
+    afterParseEntry(entry){
+                                
+    }
+
     afterParse(entries){
         //subclass can process entries here
     }

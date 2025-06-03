@@ -137,6 +137,8 @@ describe('TextDefinitionParser test', function () {
       
       assert.equal(parseResult[0].headword.pronunciations.length, 0);
       
+      assert.equal(parseResult[0].definitionGroups.length, 3);
+
       assert.equal(parseResult[0].definitionGroups[0].name, "n.");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "弹性");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "适应性");      
@@ -146,6 +148,9 @@ describe('TextDefinitionParser test', function () {
       assert.equal(parseResult[0].definitionGroups[1].definitions[1].text, "授予");      
       assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "供给");      
       assert.equal(parseResult[0].definitionGroups[1].definitions[3].text, "产生");
+      
+      assert.equal(parseResult[0].definitionGroups[2].name, "vi.");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "捐赠");      
       
       assert.equal(parseResult[0].phrases[0], "give in");
       assert.equal(parseResult[0].phrases[1], "give up");
