@@ -2,6 +2,12 @@
 
 import { DICTIONARY_DEFINITION_TYPE_LINK, DICTIONARY_DEFINITION_TYPE_FORM } from './dictConstants.js'
 
+function deduplicatePhrases(phrases){
+    let set = new Set(phrases);
+    let array = [...set];
+    return array;
+}
+
 /**
  * remove duplicates
  * @param {*} pronunciations 
@@ -35,10 +41,14 @@ function deduplicateSubdefinitions(definitionGroup){
 }
 
 function mergeEntries(entries){
+    let mergedPhraseArray = [];
     let mergedPronunciationArray = [];
     let mergedDefinitionGroupMap = {};
     
     for(let entry of entries){
+        if(entry.phrases){
+            mergedPhraseArray.push(...entry.phrases);
+        }
         if(entry.headword?.pronunciations) {
             mergedPronunciationArray.push(...entry.headword.pronunciations);
         }        
@@ -56,6 +66,7 @@ function mergeEntries(entries){
             mergedDefinitionGroupMap[name] = mergedGroupDefinitions.concat(definitions);
         }
     }
+    mergedPhraseArray = deduplicatePhrases(mergedPhraseArray);
     mergedPronunciationArray= deduplicatePronunciations(mergedPronunciationArray);
     
     let mergedDefinitionGroups = [];
@@ -66,6 +77,7 @@ function mergeEntries(entries){
 
     let mergedHeadword = { pronunciations: mergedPronunciationArray };
     let mergedEntry = {
+        phrases: mergedPhraseArray,
         headword: mergedHeadword,
         definitionGroups : mergedDefinitionGroups,
     };
