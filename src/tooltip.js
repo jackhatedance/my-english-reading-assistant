@@ -5,6 +5,8 @@ import { sendMessageMarkWordToBackground } from './message.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
 import { isPageAnnotationVisible } from './page.js'
 import { getTargetWord } from './word.js'
+import { findTokenInfoByNode } from './article.js'
+import { findPhrase } from './phrase.js'
 
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
@@ -168,7 +170,7 @@ function getTooltipElement(){
   return topDocument.getElementById(DEFINITION_TOOLTIP_ID);
 }
 
-function addTooltipEventListener(document, documentConfig, clickHandler, siteOptions, options, resetPageAnnotationVisibilityAndNotifyFunction) {
+function addTooltipEventListener(document, documentConfig, getArticleFunction, clickHandler, siteOptions, options, resetPageAnnotationVisibilityAndNotifyFunction) {
   resetPageAnnotationVisibilityAndNotify = resetPageAnnotationVisibilityAndNotifyFunction;
 
   //console.log('addTooltipEventListener');
@@ -215,7 +217,8 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
           lookupBaseWhenNecessary: true,
           dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
-        showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, options);
+        let phraseSearchResult = getPhraseSearchResult(document, ele, searchResult, getArticleFunction, siteOptions);
+        showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
       }, 500); 
       clearAndSetTooltipTimeout(timeout);      
     
@@ -231,7 +234,54 @@ function addTooltipEventListener(document, documentConfig, clickHandler, siteOpt
   });
 }
 
-function showTooltip(documentConfig, tooltipElement, targetElement, searchResult, options){
+function getPhraseSearchResult(document, element, wordSearchResult, getArticleFunction, siteOptions){
+  let { sentenceInfo, tokenIndex }  = findTokenInfoByNode(getArticleFunction(document), element.firstChild);
+        
+  let baseWords = [];
+  let baseWordIndex;
+  for(let i=0;i<sentenceInfo.tokens.length; i++){
+    let part = sentenceInfo.tokens[i];
+    
+    if(part.checkWordResult){
+      if(tokenIndex ==i){
+        baseWordIndex = baseWords.length;
+      }
+      let word = part.checkWordResult.baseWord? part.checkWordResult.baseWord: part.checkWordResult.word;
+      baseWords.push(word);
+    }
+    
+  }
+
+  let baseWord = baseWords[baseWordIndex];
+  let lookupResult;
+  if(baseWord == wordSearchResult.word){
+    lookupResult = wordSearchResult.lookupResult;
+  }else if(baseWord == wordSearchResult.baseWord){
+    lookupResult = wordSearchResult.deepLookupResult.lookupResult;
+  }
+  let phrases;
+  if(lookupResult){
+    let entry = mergeEntries(lookupResult.json);
+    phrases = entry.phrases;
+  }
+
+  if(phrases){
+    let sentence = baseWords.join(' ');
+    
+    let phrase = findPhrase(sentence, baseWordIndex, phrases);
+    
+    if(phrase){
+      let phraseSearchResult = searchWord(phrase, { 
+        allowLemma: false,
+        lookupBaseWhenNecessary: false,
+        dictionaryOptions: buildDictionaryOptions(siteOptions) });  
+        //console.log(phraseSearchResult);
+      return phraseSearchResult;
+    }
+  }  
+}
+
+function showTooltip(documentConfig, tooltipElement, targetElement, searchResult, phraseSearchResult, options){
   
   let iframeLeft=0;
   let iframeTop=0;
@@ -247,7 +297,7 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
   let unknown = !targetElement.classList.contains('mea-hide');
   let targetWord = getTargetWord(searchResult);
   
-  searchResultToHtml(tooltipElement, searchResult, targetWord, options.pronunciation.region, unknown);
+  searchResultToHtml(tooltipElement, searchResult, targetWord, options.pronunciation.region, phraseSearchResult, unknown);
   tooltipElement.setAttribute('data-word', targetWord);
   tooltipElement.setAttribute('data-dictionary', searchResult.lookupResult.dictionaryName);
   //left top
@@ -269,7 +319,7 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
 }
 
 
-function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciationRegion, unknown){
+function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciationRegion, phraseSearchResult, unknown){
   
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
@@ -285,12 +335,25 @@ function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciat
         console.log(`deepLookupResultof ${word} is null`);
       }
     }
-    html = `${wordHtml} <br> ${baseHtml}`;
+
+    if(baseHtml){
+      html = `${wordHtml} <br> ${baseHtml}`;
+    }else{
+      html = `${wordHtml}`;
+    }
+    
   } else{
     let baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, true);
     html = baseHtml;
   }
-  
+
+  if(phraseSearchResult){
+    let phrase = phraseSearchResult.query;
+    let phraseHtml = lookupResultToHtml(phrase, phraseSearchResult.lookupResult, pronunciationRegion, true);
+
+    html = html +'<br>'+ phraseHtml;
+  }
+
   updateUI(tooltipElement, html, unknown);
 }
 

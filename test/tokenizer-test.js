@@ -10,7 +10,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -32,7 +32,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -54,7 +54,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -76,7 +76,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['good-bye', 'world'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -98,7 +98,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['national', 'secu', 'security'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -119,7 +119,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['his', 'son-in-law', 'son', 'in', 'law'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -140,7 +140,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['public', 'in', 'formation', 'information'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -163,7 +163,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -186,7 +186,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think', 'any'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -209,7 +209,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think', 'me.', 'me'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -230,7 +230,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['Hello','World'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -251,7 +251,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['TikTok', 'Tik', 'Tok'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -271,7 +271,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['yes','no'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -293,7 +293,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['Russia'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -314,7 +314,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['he'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -334,7 +334,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['he'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -354,7 +354,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['hello', 'Buendía'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -375,7 +375,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['C¸atal', 'Hu¨yu¨k', 'Çatalhöyük'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -399,7 +399,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['CEO', 'CEOs'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -418,7 +418,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['D.C.'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -437,7 +437,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['U.S.', 'designated'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -459,7 +459,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['the'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -478,7 +478,7 @@ describe('tokenizer', function () {
         //console.log('checkWord:'+text);
         let words = ['boy', 'at'];
         if(words.includes(text)){
-          return text;
+          return { word: text };
         }else {
           return null;
         }
@@ -499,7 +499,7 @@ describe('tokenizer', function () {
       //console.log('checkWord:'+text);
       let words = ['tower'];
       if(words.includes(text)){
-        return text;
+        return { word: text };
       }else {
         return null;
       }

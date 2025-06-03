@@ -80,9 +80,10 @@ function splitWords(checkWord, parts){
 function splitCamelWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation);            
+    let checkWordResult = checkWord(contentWithoutPunctuation, true);            
     if(checkWordResult){
-        part.content = checkWordResult;
+        part.content = checkWordResult.word;
+        part.checkWordResult = checkWordResult;
         part.checked = true;
         parts.push(part);
     } else {
@@ -98,9 +99,10 @@ function splitCamelWords(checkWord, part, parts){
 function splitSlashWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation);            
+    let checkWordResult = checkWord(contentWithoutPunctuation, true);            
     if(checkWordResult){
-        part.content = checkWordResult;
+        part.content = checkWordResult.word;
+        part.checkWordResult = checkWordResult;
         part.chcked = true;
         parts.push(part);
     } else {
@@ -209,7 +211,11 @@ function guessPartWord(checkWord, part){
     
     if(guessResult){
         part.content = guessResult.content;
-        part.checked = true;
+        
+        if(!part.checked){
+            part.checkWordResult = checkWord(guessResult.content, true);
+            part.checked = true;
+        }
     }
 }
 
@@ -248,12 +254,13 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
         let partContent = contentWithoutPunctuation;
+        let checkWordResult;
         let checked = false;
         if(checkWord){
-            let checkWordResult = checkWord(contentWithoutPunctuation);
+            checkWordResult = checkWord(contentWithoutPunctuation,true);
             
             if(checkWordResult){
-                partContent = checkWordResult;
+                partContent = checkWordResult.word;
                 checked = true;
             } else {
                 partContent = contentWithoutPunctuation;
@@ -266,6 +273,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
             originalContent: originalContent,
             mask: submask,
             content: partContent,
+            checkWordResult: checkWordResult,
             checked: checked,
             //relative to sentence
             offset: match.index + baseIndex,
@@ -522,12 +530,10 @@ function _splitPartByNewWords(checkWord, part, positions) {
         }
             */
         content = originalContent;
-        checked = false;
-
+        
         let subpart = {
             originalContent: originalContent,
             content: content,
-            checked: checked,
             offset: startTextIndex + part.offset,
             length: originalContent.length,
         };
@@ -541,13 +547,13 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let subtext = text.substring(startTextIndex);
     let subtextWithoutPunctuation = trimPunctuations(subtext);
         
-    let checkWordResult = checkWord(subtextWithoutPunctuation);
+    let checkWordResult = checkWord(subtextWithoutPunctuation, true);
     
     let originalContent = subtext;
     
     let content, checked;
     if(checkWordResult){
-        content = checkWordResult;
+        content = checkWordResult.word;
         checked = true;
     } else {
         content = originalContent;
@@ -557,6 +563,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let subpart = {
         originalContent: originalContent,
         content: content,
+        checkWordResult: checkWordResult,
         checked: checked,
         offset: startTextIndex + part.offset,
         length: originalContent.length,
