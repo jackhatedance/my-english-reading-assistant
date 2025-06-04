@@ -130,8 +130,9 @@ function searchWordWithDict(query, options, dicts){
 
     //try captialize, such god -> God
     if(!lookupResult && input.length > 1){
-        word = input[0].toUpperCase() + input.substring(1);
-        lookupResult = lookup(word, options, dicts);
+        transformResult = transformUppercaseFirstLetter(input, options, dicts);
+        word = transformResult.word;
+        lookupResult = transformResult.lookupResult;
     }
 
     let baseWord = '';
@@ -199,6 +200,18 @@ function searchWordWithDict(query, options, dicts){
 
 function transformLowercase(input, options, dicts){
     let word = input.toLowerCase();
+    let lookupResult;
+    if(word !== input){
+        lookupResult = lookup(word, options, dicts);
+    }
+    return {
+        word,
+        lookupResult,
+    }
+}
+
+function transformUppercaseFirstLetter(input, options, dicts){
+    let word = input[0].toUpperCase() + input.substring(1);
     let lookupResult;
     if(word !== input){
         lookupResult = lookup(word, options, dicts);
