@@ -46,6 +46,30 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].definitionGroups[2].name, "adverb");      
       assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "<非正式>好地");      
       
+      assert.equal(parseResult[0].phrases.length, 28);
+      assert.equal(parseResult[0].phrases[0], "all to the good");      
+    });
+
+    it('noecd2e phrase good for', async function () {
+      let html = this.lookup('good for');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+        
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "对…有好处");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "总能提供的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "足够支付的");   
+    });
+
+    it('noecd2e phrase take after', async function () {
+      let html = this.lookup('take after');
+      let parseResult = this.parser.parse(html);
+      console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+        
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "与(父母, 先辈)相像");
     });
 
     it('noecd2e draggle', async function () {

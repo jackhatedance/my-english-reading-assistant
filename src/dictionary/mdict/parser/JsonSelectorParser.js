@@ -16,7 +16,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
     GROUP_NAME = 'groupName';
     INFLECTION = "inflection";
     DEFINITION = 'definition';
-    
+    PHRASE = 'phrase';
     LINK_ENTRY = 'linkEntry';
 
     
@@ -135,6 +135,13 @@ class JsonSelectorParser extends MdictDefinitionParser {
         return entries; 
     }
 
+    /**
+     * virtual means base element of its children is not itself, but its parent.
+     * @param {*} parentElement 
+     * @param {*} childElement 
+     * @param {*} childEntitySelector 
+     * @returns 
+     */
     getBaseElementForChild(parentElement, childElement, childEntitySelector){
         return childEntitySelector.virtual == true ? parentElement : childElement;            
     }
@@ -170,8 +177,21 @@ class JsonSelectorParser extends MdictDefinitionParser {
         }
         
         let definitionGroups = this.parseDefinitionGroups($, element, context, entitySelector);
-            
-        return { headword, definitionGroups };        
+        
+        let phrases = [];
+        if(this.hasSelector(entitySelector, this.PHRASE)){
+            let findElementsResults = this.findElements($, element, entitySelector[this.PHRASE], this.PHRASE, context);
+            for(let findElementsResult of findElementsResults){
+                
+                for(let phraseElement of findElementsResult.elements){
+                    let phrase = $(phraseElement).text();    
+                    phrases.push(phrase);
+                }   
+            }
+
+        }
+
+        return { headword, definitionGroups, phrases };        
     }
 
     parseHeadword($, element, context, entitySelector){
