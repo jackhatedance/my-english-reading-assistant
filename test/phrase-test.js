@@ -3,8 +3,12 @@ import { findPhrase } from '../src/phrase.js'
 
 describe('phrase', function () {
   describe('findPhrase', function () {
-    it('give up', function () {
+    it('phrase give up', function () {
       assert.equal(findPhrase("I give up swiming", 1, ['give up','give in']), 'give up');
+    });
+
+    it('phrase all in', function () {
+      assert.equal(findPhrase("I am all in swiming", 3, ['all in','in on']), 'all in');
     });
 
   });

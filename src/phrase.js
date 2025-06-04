@@ -4,10 +4,31 @@ function findPhrase(sentence, index, phrases){
     return phrase;
 }
 
-function matchPhrase(tokens, index, phrase){
+function matchPhrase(tokensOfSentence, mainWordIndexOfSentence, phrase){
+    let mainWord = tokensOfSentence[mainWordIndexOfSentence];
+    
     let phaseTokens = phrase.split(' ');
+    let mainWordIndexOfPhrase = phaseTokens.indexOf(mainWord);
 
-    return compareSubStrings(tokens, index, phaseTokens, 0, phaseTokens.length);
+    if(mainWordIndexOfPhrase>0){
+        //has left part
+        let leftLength = mainWordIndexOfPhrase;
+        let leftSame = compareSubStrings(tokensOfSentence, mainWordIndexOfSentence - leftLength, phaseTokens, 0, leftLength);
+        if(!leftSame){
+            return false;
+        }
+    }
+
+    if(mainWordIndexOfPhrase < phaseTokens.length-1){
+        //has left part
+        let rightLength = phaseTokens.length - mainWordIndexOfPhrase -1;
+        let rightSame = compareSubStrings(tokensOfSentence, mainWordIndexOfSentence + 1, phaseTokens, mainWordIndexOfPhrase+1, rightLength);
+        if(!rightSame){
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function compareSubStrings(array1, index1, array2, index2, length){
