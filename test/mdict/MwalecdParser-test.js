@@ -91,8 +91,38 @@ describe('mdict mwalecd parser', function () {
       assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "彻底地,完全地");      
       assert.equal(parseResult[2].definitionGroups[0].definitions[1].text, "用于long、many等词前,表强调");
       
+      assert.equal(parseResult[0].phrases.length, 30);
+      assert.equal(parseResult[0].phrases[0], "all in good time"); 
     });
 
+    it('json mwalecd phrase good for', async function () {
+      let html = this.lookup('good for');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "somewhat informal");        
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "能提供…的,能生产…的");      
+      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "⇒ Main Entry:  1 good");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].link, "good");  
+    });
+
+    it('json mwalecd phrase give in', async function () {
+      let html = this.lookup('give in');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].name, "phrasal verb");        
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "放弃,屈服");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "呈上,上交");      
+      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "⇒ Main Entry:  1 give");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].type, "link");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].link, "give");  
+    });
 
     it('json mwalecd rang', async function () {
       let html = this.lookup('rang');

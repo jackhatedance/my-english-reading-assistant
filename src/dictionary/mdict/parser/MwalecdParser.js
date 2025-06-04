@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 export class MwalecdParser extends JsonSelectorParser {
     constructor(options) {
-        super('MwalecdParser', "1.0.0", "1.0.0", options);
+        super('MwalecdParser', "1.1.0", "1.0.0", options);
 
         this.entriesSelector =
         {
@@ -76,16 +76,37 @@ export class MwalecdParser extends JsonSelectorParser {
                                 },                                
                             ]
                         },
+                    ],
+                    phrase: [
+                        {
+                            selector: '.dros .dro .dro_line .dre'
+                        }
                     ]
                 },
                 {
                     selector: '.sms',
                     virtual: true,
-                    headword: {                        
-                        selector: '.uro .ure',
-                    },
+                    
                     definitionGroup: [
                         {
+                            selector: '.dro',  
+                            virtual: true,
+                            groupName: [
+                                {
+                                    selector: '.dro_line .sl',
+                                },
+                                {
+                                    selector: '.dro_line .gram_internal',
+                                },
+                            ],        
+                            definition: [
+                                {
+                                    selector: '.sblocks .sblock.sblock_dro .sblock_c .scnt .sense .def_text .mw_zh',
+                                },                                
+                            ]                        
+                        },
+                        {
+                            group: 'main-entry',
                             selector: '.sms',  
                             virtual: true,        
                             definition: [
