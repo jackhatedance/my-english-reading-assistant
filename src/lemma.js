@@ -32,7 +32,7 @@ function _isRegularTransform(base, transform) {
 
     let suffix = transform.slice(common.length);
 
-    const suffixes = ['ed', 'ing', 'es', 's'];
+    const suffixes = ['ed', 'd', 'ing', 'es', 's'];
     return suffixes.includes(suffix);
 }
 

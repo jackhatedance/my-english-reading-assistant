@@ -22,6 +22,10 @@ describe('lemma', function () {
     it('digging', function () {
       assert.equal(isRegularTransform("dig", "digging"), true);
     });
+
+    it('wiped', function () {
+      assert.equal(isRegularTransform("wipe", "wiped"), true);
+    });
   });
   
 });
