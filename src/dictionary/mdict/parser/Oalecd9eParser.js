@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 class Oalecd9eParser extends JsonSelectorParser {
     constructor(options) {
-        super('Oalecd9eParser',"1.0.0", "1.0.0", options);
+        super('Oalecd9eParser',"1.1.0", "1.0.0", options);
 
         this.entriesSelector =
         {
@@ -59,6 +59,16 @@ class Oalecd9eParser extends JsonSelectorParser {
                                     },
                                 ]
                         },
+                    ],
+                    phrase: [
+                        {
+                            group: 'phrase',
+                            selector: 'pv-gs-blk pv-gs pvp-g-blk pvp-g pv-g-blk pv-g top-g pv-blk pv',
+                        },
+                        {
+                            group: 'idiom',
+                            selector: 'idm-gs-blk idm-gs idm-g top-g idm-blk idm',
+                        }
                     ]
                 },
                 {
@@ -181,6 +191,21 @@ class Oalecd9eParser extends JsonSelectorParser {
 
                     ]
                 },
+                {
+                    selector: 'idm-g',
+                    definitionGroup: [
+                        {
+                            selector: 'sn-gs',
+                            definition:
+                                [
+                                    {
+                                        selector: 'sn-blk sn-g def chn'
+                                    },
+                                ]
+                        },
+
+                    ]
+                }
 
             ]
         };
@@ -205,6 +230,12 @@ class Oalecd9eParser extends JsonSelectorParser {
 
     trimPronounciation(text) {
         return super.trimPronounciation(text);
+    }
+
+    beforeParsePhraseText(text){
+        let result = super.beforeParseDefinitionText(text);
+        result = result.replaceAll(/[ˈˌ]/g, '');
+        return result;
     }
 }
 

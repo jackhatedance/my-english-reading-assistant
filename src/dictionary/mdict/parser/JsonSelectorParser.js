@@ -184,7 +184,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
             for(let findElementsResult of findElementsResults){
                 
                 for(let phraseElement of findElementsResult.elements){
-                    let phrase = $(phraseElement).text();    
+                    let childEntitySelector = findElementsResult.entitySelector;
+                    let phrase = this.parsePhrase($, phraseElement, childEntitySelector);    
                     phrases.push(phrase);
                 }   
             }
@@ -363,7 +364,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
             typedDefinitions.push(typedDefinitionOfElement);
         }
 
-        let text = $(element).text(); 
+        let text = this.getDefinitionText($, element, entitySelector); 
         
         let definition = this.parseDefinitionText(text);    
 
@@ -380,6 +381,24 @@ class JsonSelectorParser extends MdictDefinitionParser {
         this.afterParseDefinition(definition);
 
         return definition;
+    }
+
+    getDefinitionText($, element, entitySelector){
+        let text;
+        text = $(element).text(); 
+        
+        return text;
+    }
+
+    beforeParsePhraseText(text){
+        return text;
+    }
+
+    parsePhrase($, element, entitySelector){
+        let phrase = $(element).text();  
+
+        phrase = this.beforeParsePhraseText(phrase);
+        return phrase;
     }
         
 }
