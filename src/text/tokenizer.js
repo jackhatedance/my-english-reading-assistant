@@ -162,7 +162,7 @@ function guessWordOfNormal(checkWord, content){
 
 function guessPartsWord(checkWord, parts){
     for(const part of parts){
-        if(part.checked){
+        if(part.checked && part.checkWordResult?.baseWord){
             continue;
         }
 
@@ -211,9 +211,10 @@ function guessPartWord(checkWord, part){
     
     if(guessResult){
         part.content = guessResult.content;
-        
-        if(!part.checked){
-            part.checkWordResult = checkWord(guessResult.content, true);
+        if(!part.checked ||
+            (part.checked && !part.checkWordResult?.baseWord)
+        ){
+            part.checkWordResult = checkWord(guessResult.content, 'Must');
             part.checked = true;
         }
     }

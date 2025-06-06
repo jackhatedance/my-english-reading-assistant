@@ -52,7 +52,7 @@ function tokenizeTextNode(document, siteOptions) {
             }
             //console.log(node.parentElement.nodeName);
             //console.log(textContent);
-            let tokens = tokenizeNodeText((text, lookupBase=false)=>checkWord(siteOptions, text, lookupBase), textContent);
+            let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
             //console.log(siteOptions);
 
             let tokenHtmls = [];
@@ -66,7 +66,7 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
-                    lookupBaseWhenNecessary: true,
+                    lookupBase: 'WhenNecessary',
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
@@ -283,7 +283,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenizeSentence((text, lookupBase=false)=>checkWord(siteOptions, text, lookupBase), sentence.raw, offsetOfArticle, newTagPositions);
+        let tokens = tokenizeSentence((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), sentence.raw, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -306,7 +306,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 function checkWord(siteOptions, text, lookupBase){
     let searchResult = searchWord(text, {
         allowLemma: false,
-        lookupBaseWhenNecessary: lookupBase,
+        lookupBase: lookupBase,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });
@@ -364,7 +364,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        lookupBaseWhenNecessary: true,
+                        lookupBase: 'WhenNecessary',
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {

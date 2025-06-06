@@ -18,7 +18,7 @@ var gPrefixes, gSuffixes;
 function createDefaultSearchWordOptions(){
     return {
         allowLemma: true,
-        lookupBaseWhenNecessary: false,
+        lookupBase: 'Never',
         simplifyDefinition: {},
         dictionaryOptions: {},
         anonymous: true,
@@ -160,7 +160,7 @@ function searchWordWithDict(query, options, dicts){
     }
 
     if(lookupResult) {
-        if(!baseWord && options.lookupBaseWhenNecessary){
+        if(!baseWord && options.lookupBase == 'WhenNecessary'){
             if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
                 deepLookupResult = deepLookup(lookupResult, options);
 
@@ -169,6 +169,19 @@ function searchWordWithDict(query, options, dicts){
                     baseWord = deepLookupResult.word;
                 }
             }
+        }
+
+        if(!baseWord && options.lookupBase == 'Must'){
+            
+            let baseWordResult = getBaseWord(word, options, dicts);
+            
+            if(baseWordResult){
+                console.log(baseWordResult);
+                baseSearchType='lemma';
+                baseWord = baseWordResult.word;
+                deepLookupResult = baseWordResult;
+            }
+        
         }
     }
 
@@ -274,6 +287,50 @@ function transformLemmatize(input, options, dicts){
     if(lookupResult) {
         result = {
             word,
+            lookupResult,
+        }
+    }
+    return result;
+    
+}
+
+function getBaseWord(word, options, dicts){
+    let baseWord;
+    let lookupResult;
+    
+    if(!lookupResult) {
+        baseWord = singularize(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    //word-parts dictionary has higher priority than lemmatize lib
+    if(!lookupResult) {
+        baseWord = getBaseFromWordParts(word)
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    if(!lookupResult) {
+        baseWord = lemmatize.noun(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }                
+    }
+
+    if(!lookupResult) {
+        baseWord = lemmatize.verb(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    let result = null;
+    if(lookupResult) {
+        result = {
+            word: baseWord,
             lookupResult,
         }
     }

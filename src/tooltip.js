@@ -214,7 +214,7 @@ function addTooltipEventListener(document, documentConfig, getArticleFunction, c
       
         let searchResult = searchWord(query, { 
           allowLemma: true,
-          lookupBaseWhenNecessary: true,
+          lookupBase: 'Must',
           dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
         let phraseSearchResult = getPhraseSearchResult(document, ele, searchResult, getArticleFunction, siteOptions);
@@ -273,7 +273,7 @@ function getPhraseSearchResult(document, element, wordSearchResult, getArticleFu
     if(phrase){
       let phraseSearchResult = searchWord(phrase, { 
         allowLemma: false,
-        lookupBaseWhenNecessary: false,
+        lookupBase: 'Never',
         dictionaryOptions: buildDictionaryOptions(siteOptions) });  
         //console.log(phraseSearchResult);
       return phraseSearchResult;
