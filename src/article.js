@@ -3,7 +3,7 @@
 import { split } from "sentence-splitter";
 import { tokenizeSentence, tokenizeNodeText } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement, getBaseWordFromElement } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
@@ -354,7 +354,10 @@ function parseArticleTextNodes(article, element, siteOptions){
              
             if(token
                 && node.parentElement.tagName == 'MEA-TOKEN'
-                && getWordFromElement(node.parentElement) != token.content
+                && (
+                    getWordFromElement(node.parentElement) != token.content
+                    || getBaseWordFromElement(node.parentElement) != token.checkWordResult?.baseWord
+                )
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showShortDefinition = firstNodeOfTheToken;
@@ -364,7 +367,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        lookupBase: 'WhenNecessary',
+                        lookupBase: 'Must',
                         dictionaryOptions: buildDictionaryOptions(siteOptions),	
                     });
                     if(searchResult) {

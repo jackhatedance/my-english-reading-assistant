@@ -83,6 +83,66 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+test('phrase base form give up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-base-form mea-token[data-query='give']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
+test('phrase transform irregular gave up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-tranform-irregular mea-token[data-query='gave']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`gave  
+give的过去式
+give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
+test('phrase transform present tense gaving up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-present-tense mea-token[data-query='giving']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`giving  
+give的过去式
+give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
 test('pdf line end hyphen', async ({ testPage, extensionId, popupPage }) => {
   
   await testPage.gotoPdf();

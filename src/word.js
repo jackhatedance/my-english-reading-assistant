@@ -7,6 +7,7 @@ import { createSimplifyDefinitionOptions } from './service/optionService.js'
 import { encode } from 'html-entities';
 import { getSearchTypeDescription } from './dictionary/search-type.js'
 import { isRegularTransform } from './lemma.js'
+import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     let query = searchResult.query;
@@ -25,7 +26,7 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
         middleDefinition = simplifyDefinition(searchResult.lookupResult, searchResult.deepLookupResult, createSimplifyDefinitionOptions(6, false));
     }
 
-    if(baseWord) {
+    if(searchResult.deepLookupResult && hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)) {
         middleDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, middleDefinition);
     } else {
         middleDefinition = addPrefixBySearchType(searchType, searchResult.word, middleDefinition);
