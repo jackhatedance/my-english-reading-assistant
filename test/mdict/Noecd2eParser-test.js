@@ -65,7 +65,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     it('noecd2e phrase take after', async function () {
       let html = this.lookup('take after');
       let parseResult = this.parser.parse(html);
-      console.log(parseResult);
+      //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
         
