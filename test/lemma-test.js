@@ -15,12 +15,16 @@ describe('lemma', function () {
       assert.equal(isRegularTransform("levy", "levies"), true);
     });
 
-    it('harasing', function () {
+    it('harassing', function () {
       assert.equal(isRegularTransform("harass", "harassing"), true);
     });
 
     it('digging', function () {
       assert.equal(isRegularTransform("dig", "digging"), true);
+    });
+
+    it('giving', function () {
+      assert.equal(isRegularTransform("give", "giving"), true);
     });
 
     it('wiped', function () {

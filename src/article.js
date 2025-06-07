@@ -368,7 +368,8 @@ function parseArticleTextNodes(article, element, siteOptions){
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
                         lookupBase: 'Must',
-                        dictionaryOptions: buildDictionaryOptions(siteOptions),	
+                        transform: token.transform,
+                        dictionaryOptions: buildDictionaryOptions(siteOptions),
                     });
                     if(searchResult) {
                         updateWordAnnotation(node.parentElement, searchResult, showShortDefinition, simplifyDefinitionOptions);

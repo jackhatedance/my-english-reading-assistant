@@ -210,14 +210,19 @@ function addTooltipEventListener(document, documentConfig, getArticleFunction, c
       
       let timeout = setTimeout(() => {
         //console.log('timer 2');
-        let query = ele.getAttribute('data-query');      
+        let query = ele.getAttribute('data-query');
+        
+        let tokenInfo  = findTokenInfoByNode(getArticleFunction(document), ele.firstChild);
+        let { sentenceInfo, tokenIndex } =  tokenInfo;
+        let token = sentenceInfo.tokens[tokenIndex];
       
         let searchResult = searchWord(query, { 
           allowLemma: true,
           lookupBase: 'Must',
+          transform: token.transform,
           dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
-        let phraseSearchResult = getPhraseSearchResult(document, ele, searchResult, getArticleFunction, siteOptions);
+        let phraseSearchResult = getPhraseSearchResult(tokenInfo, searchResult, siteOptions);
         showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
       }, 500); 
       clearAndSetTooltipTimeout(timeout);      
@@ -234,8 +239,8 @@ function addTooltipEventListener(document, documentConfig, getArticleFunction, c
   });
 }
 
-function getPhraseSearchResult(document, element, wordSearchResult, getArticleFunction, siteOptions){
-  let { sentenceInfo, tokenIndex }  = findTokenInfoByNode(getArticleFunction(document), element.firstChild);
+function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
+  let { sentenceInfo, tokenIndex }  = tokenInfo;
         
   let baseWords = [];
   let baseWordIndex;

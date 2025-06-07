@@ -195,6 +195,17 @@ function createLinkDefinition(link){
     };
 }
 
+function createTransformDefinition(type, base){
+    let text = `${base}的${type}`;
+
+    return {
+        text: text,
+        subdefinitions: [text],
+        type: DICTIONARY_DEFINITION_TYPE_FORM,
+        base: base,
+    };
+}
+
 function createEntryForLink(link){
     let definition = createLinkDefinition(link);        
     let definitions = [definition];
@@ -208,4 +219,4 @@ function createEntryForLink(link){
     return entry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions, createLinkDefinition, createEntryForLink }
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions, createLinkDefinition, createTransformDefinition, createEntryForLink }

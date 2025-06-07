@@ -1,7 +1,7 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasOnlyLinkOrFormDefinition, createEntryForLink } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition, findTransformDefinitions, createEntryForLink, createTransformDefinition } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
@@ -160,6 +160,10 @@ function searchWordWithDict(query, options, dicts){
     }
 
     if(lookupResult) {
+        if(options.transform){
+            addTransformDefinition(lookupResult, options.transform);
+        }
+
         if(!baseWord && options.lookupBase == 'WhenNecessary'){
             if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
                 deepLookupResult = deepLookup(lookupResult, options);
@@ -173,10 +177,10 @@ function searchWordWithDict(query, options, dicts){
 
         if(!baseWord && options.lookupBase == 'Must'){
             
-            let baseWordResult = getBaseWord(word, options, dicts);
+            let baseWordResult = getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options);
             
             if(baseWordResult){
-                console.log(baseWordResult);
+                //console.log(baseWordResult);
                 baseSearchType='lemma';
                 baseWord = baseWordResult.word;
                 deepLookupResult = baseWordResult;
@@ -294,44 +298,49 @@ function transformLemmatize(input, options, dicts){
     
 }
 
-function getBaseWord(word, options, dicts){
-    let baseWord;
-    let lookupResult;
+function addTransformDefinition(lookupResult, transform){
+    let existingTransformDefinitions = findTransformDefinitions(lookupResult.json);
+    if(existingTransformDefinitions.length>0){
+        return;
+    }
+
+    let transformDefinition = createTransformDefinition(transform.type, transform.base);        
+    let transformDefinitions = [ transformDefinition];
+    let transformDefinitionGroup = { name: '', "definitions": transformDefinitions };  
     
-    if(!lookupResult) {
-        baseWord = singularize(word);
-        if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
+    let entries = lookupResult.json;
+    entries[0].definitionGroups.push(transformDefinitionGroup);
+}
+
+function getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options){
+    let baseLookupResult;
+    let baseWord;
+
+    if(!baseLookupResult){
+        if(options.baseWord){
+            baseLookupResult = lookup(options.baseWord, options, [lookupResult.dictionaryName]);    
+            if(baseLookupResult){
+                baseWord = options.baseWord;
+            }
         }
     }
 
-    //word-parts dictionary has higher priority than lemmatize lib
-    if(!lookupResult) {
-        baseWord = getBaseFromWordParts(word)
-        if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
-        }
-    }
-
-    if(!lookupResult) {
-        baseWord = lemmatize.noun(word);
-        if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
-        }                
-    }
-
-    if(!lookupResult) {
-        baseWord = lemmatize.verb(word);
-        if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
+    if(!baseLookupResult){
+        let definitions = findTransformDefinitions(lookupResult.json);
+        if(definitions.length > 0){
+            let definition = definitions[0];
+            baseLookupResult = lookup(definition.base, options, [lookupResult.dictionaryName]);
+            if(baseLookupResult){
+                baseWord = definition.base;
+            }
         }
     }
 
     let result = null;
-    if(lookupResult) {
+    if(baseLookupResult) {
         result = {
             word: baseWord,
-            lookupResult,
+            lookupResult: baseLookupResult,
         }
     }
     return result;

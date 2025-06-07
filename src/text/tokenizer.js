@@ -2,6 +2,7 @@ import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.j
 import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
+import * as lemmatize from 'wink-lemmatizer';
 
 function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
     //split by space, dash (dash is not hyphen)
@@ -120,17 +121,19 @@ function splitCompoundWord(checkWord, part, parts){
     let contentWithoutPunctuation = trimPunctuations(content);
 
     //step 1: check original word
-    let checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
-    if(checkWordResult){
-        part.content = checkWordResult;
+    let guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
+    if(guessWordResult){
+        part.content = guessWordResult;
+        part.checkWordResult = checkWord(guessWordResult, true);
         part.checked = true;
         parts.push(part);
     } else {
         //step 2: eliminate hyphen then check word
         const contentWithoutPunctuationAndHyphen = contentWithoutPunctuation.replaceAll(/[-]/g, '');
-        checkWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
-        if(checkWordResult){
-            part.content = checkWordResult;
+        guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
+        if(guessWordResult){
+            part.content = guessWordResult;
+            part.checkWordResult = checkWord(guessWordResult, true);
             part.checked = true;
             parts.push(part);
         } else {
@@ -162,12 +165,46 @@ function guessWordOfNormal(checkWord, content){
 
 function guessPartsWord(checkWord, parts){
     for(const part of parts){
-        if(part.checked && part.checkWordResult?.baseWord){
+        if(part.checked){
             continue;
         }
 
         guessPartWord(checkWord, part);
     }
+
+    //round 2
+    let nonEmptyParts = parts.filter(item => item.content.trim().length >0);
+    for(const part of nonEmptyParts){
+        if(part.checked && !part.checkWordResult?.baseWord){
+            guessPartWord2(checkWord, nonEmptyParts, part);
+        }
+    }
+}
+
+function guessPartWord2(checkWord, parts, part){
+
+    let index = parts.indexOf(part);
+    let word = part.checkWordResult.word;
+
+    //be doing
+    let previousIndex = index -1;
+    if(previousIndex>=0){
+        let previousPart = parts[previousIndex];
+        
+        if(previousPart.checkWordResult?.baseWord == 'be' && part.checkWordResult.word && part.checkWordResult.word.endsWith('ing')){
+            let baseWord = lemmatize.verb(word);
+            if(baseWord != word){
+                let checkWordResult = checkWord(baseWord, 'Never');
+                if(checkWordResult){
+                    part.transform ={
+                        type : '进行时',
+                        base : checkWordResult.word,
+                    };
+                    part.checkWordResult.baseWord = checkWordResult.word; 
+                }
+            }
+        }
+    }        
 }
 
 function guessPartWord(checkWord, part){
@@ -479,10 +516,12 @@ function _splitPartByNewLines(checkWord, part, positions) {
     let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
     let content;
     let checked;
+    let checkWordResult;
     if(guessWordResult){
         content = guessWordResult.content;
         if(guessWordResult.checkType=='content'){
             checked = true;
+            checkWordResult = checkWord(content, true);
         }
     }else {
         content = originalContent;
@@ -494,6 +533,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
         mask: submask,
         content: content,
         checked: checked,
+        checkWordResult: checkWordResult,
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
