@@ -1,7 +1,7 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasOnlyLinkOrFormDefinition, findTransformDefinitions, createEntryForLink, createTransformDefinition } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createEntryForLink, createTransformDefinition } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
@@ -299,7 +299,7 @@ function transformLemmatize(input, options, dicts){
 }
 
 function addTransformDefinition(lookupResult, transform){
-    let existingTransformDefinitions = findTransformDefinitions(lookupResult.json);
+    let existingTransformDefinitions = findDefinitionsByTypes(lookupResult.json, ['form', 'link']);
     if(existingTransformDefinitions.length>0){
         return;
     }
@@ -317,21 +317,20 @@ function getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options){
     let baseWord;
 
     if(!baseLookupResult){
-        if(options.baseWord){
-            baseLookupResult = lookup(options.baseWord, options, [lookupResult.dictionaryName]);    
-            if(baseLookupResult){
-                baseWord = options.baseWord;
-            }
-        }
-    }
-
-    if(!baseLookupResult){
-        let definitions = findTransformDefinitions(lookupResult.json);
+        let definitions = findDefinitionsByTypes(lookupResult.json, ['form', 'link']);
         if(definitions.length > 0){
             let definition = definitions[0];
-            baseLookupResult = lookup(definition.base, options, [lookupResult.dictionaryName]);
+
+            let query;
+            if(definition.type=='link'){
+                query = definition.link;
+            }else if(definition.type=='form'){
+                query = definition.base;
+            }
+
+            baseLookupResult = lookup(query, options, [lookupResult.dictionaryName]);
             if(baseLookupResult){
-                baseWord = definition.base;
+                baseWord = query;
             }
         }
     }

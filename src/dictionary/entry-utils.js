@@ -115,7 +115,7 @@ function getTheOnlyDefinition(entries){
     return null;
 }
 
-function findTransformDefinitions(entries){
+function findDefinitionsByTypes(entries, types){
     let result = [];
 
     for(let entry of entries){
@@ -123,8 +123,9 @@ function findTransformDefinitions(entries){
         for(let definitionGroup of definitionGroups){
             let definitions = definitionGroup.definitions;
             for(let definition of definitions){
-                if(definition.type == DICTIONARY_DEFINITION_TYPE_FORM)
-                result.push(definition);
+                if(types.includes(definition.type)){
+                    result.push(definition);
+                }
             }
         }
     }
@@ -219,4 +220,4 @@ function createEntryForLink(link){
     return entry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findTransformDefinitions, createLinkDefinition, createTransformDefinition, createEntryForLink }
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createLinkDefinition, createTransformDefinition, createEntryForLink }
