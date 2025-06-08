@@ -81,7 +81,7 @@ function splitWords(checkWord, parts){
 function splitCamelWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation, true);            
+    let checkWordResult = checkWord(contentWithoutPunctuation, 'WhenNecessary');            
     if(checkWordResult){
         part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
@@ -100,7 +100,7 @@ function splitCamelWords(checkWord, part, parts){
 function splitSlashWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation, true);            
+    let checkWordResult = checkWord(contentWithoutPunctuation, 'WhenNecessary');            
     if(checkWordResult){
         part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
@@ -124,7 +124,7 @@ function splitCompoundWord(checkWord, part, parts){
     let guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
     if(guessWordResult){
         part.content = guessWordResult;
-        part.checkWordResult = checkWord(guessWordResult, true);
+        part.checkWordResult = checkWord(guessWordResult, 'WhenNecessary');
         part.checked = true;
         parts.push(part);
     } else {
@@ -133,7 +133,7 @@ function splitCompoundWord(checkWord, part, parts){
         guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
         if(guessWordResult){
             part.content = guessWordResult;
-            part.checkWordResult = checkWord(guessWordResult, true);
+            part.checkWordResult = checkWord(guessWordResult, 'WhenNecessary');
             part.checked = true;
             parts.push(part);
         } else {
@@ -164,7 +164,9 @@ function guessWordOfNormal(checkWord, content){
 }
 
 function guessPartsWord(checkWord, parts){
-    for(const part of parts){
+    let nonEmptyParts = parts.filter(item => item.content.trim().length >0);
+
+    for(const part of nonEmptyParts){
         if(part.checked){
             continue;
         }
@@ -172,11 +174,18 @@ function guessPartsWord(checkWord, parts){
         guessPartWord(checkWord, part);
     }
 
-    //round 2
-    let nonEmptyParts = parts.filter(item => item.content.trim().length >0);
+    //round 2, more complex cases
+    
     for(const part of nonEmptyParts){
         if(part.checked && !part.checkWordResult?.baseWord){
             guessPartWord2(checkWord, nonEmptyParts, part);
+        }
+    }
+
+    //for phrase
+    for(const part of nonEmptyParts){
+        if(part.checked){
+            guessPartPhraseBaseWord(checkWord, nonEmptyParts, part);
         }
     }
 }
@@ -205,6 +214,55 @@ function guessPartWord2(checkWord, parts, part){
             }
         }
     }        
+}
+
+function guessPartPhraseBaseWord(checkWord, parts, part){
+
+    let index = parts.indexOf(part);
+    let word = part.checkWordResult.word;
+
+    let baseWordOfPhrase;
+
+    if(!baseWordOfPhrase){
+        baseWordOfPhrase = part.checkWordResult.baseWord;
+    }
+
+    if(!baseWordOfPhrase){
+        let checkWordResult = checkWord(word, 'Must');
+        if(checkWordResult && checkWordResult.baseWord){
+            baseWordOfPhrase = checkWordResult.baseWord;
+        }
+    }
+
+    if(!baseWordOfPhrase){
+        //be doing
+        let previousIndex = index -1;
+        if(previousIndex>=0){
+            let previousPart = parts[previousIndex];
+            
+            if(previousPart.checkWordResult?.baseWord == 'be' && part.checkWordResult.word && part.checkWordResult.word.endsWith('ing')){
+                let baseWord = lemmatize.verb(word);
+                if(baseWord != word){
+                    let checkWordResult = checkWord(baseWord, 'Never');
+                    if(checkWordResult){
+                        part.transform ={
+                            type : '进行时',
+                            base : checkWordResult.word,
+                        };
+                        baseWordOfPhrase = checkWordResult.word; 
+                    }
+                }
+            }
+        }
+    }        
+
+    if(!baseWordOfPhrase){
+        baseWordOfPhrase = word;
+    }
+
+    part.phrase = {
+        baseWord: baseWordOfPhrase,
+    };
 }
 
 function guessPartWord(checkWord, part){
@@ -248,11 +306,14 @@ function guessPartWord(checkWord, part){
     
     if(guessResult){
         part.content = guessResult.content;
-        if(!part.checked ||
-            (part.checked && !part.checkWordResult?.baseWord)
-        ){
-            part.checkWordResult = checkWord(guessResult.content, 'Must');
-            part.checked = true;
+        if(!part.checked) {
+            let checkWordResult = checkWord(guessResult.content, 'WhenNecessary');
+            if(checkWordResult){
+                part.checkWordResult = checkWordResult;
+                part.checked = true;
+                part.baseWord = checkWordResult.baseWord; 
+            }
+            
         }
     }
 }
@@ -295,7 +356,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let checkWordResult;
         let checked = false;
         if(checkWord){
-            checkWordResult = checkWord(contentWithoutPunctuation,true);
+            checkWordResult = checkWord(contentWithoutPunctuation,'WhenNecessary');
             
             if(checkWordResult){
                 partContent = checkWordResult.word;
@@ -521,7 +582,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
         content = guessWordResult.content;
         if(guessWordResult.checkType=='content'){
             checked = true;
-            checkWordResult = checkWord(content, true);
+            checkWordResult = checkWord(content, 'WhenNecessary');
         }
     }else {
         content = originalContent;
@@ -588,7 +649,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let subtext = text.substring(startTextIndex);
     let subtextWithoutPunctuation = trimPunctuations(subtext);
         
-    let checkWordResult = checkWord(subtextWithoutPunctuation, true);
+    let checkWordResult = checkWord(subtextWithoutPunctuation, 'WhenNecessary');
     
     let originalContent = subtext;
     

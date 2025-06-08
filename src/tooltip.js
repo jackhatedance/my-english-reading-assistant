@@ -218,7 +218,7 @@ function addTooltipEventListener(document, documentConfig, getArticleFunction, c
       
         let searchResult = searchWord(query, { 
           allowLemma: true,
-          lookupBase: 'Must',
+          lookupBase: 'Always',
           transform: token.transform,
           dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
@@ -241,6 +241,7 @@ function addTooltipEventListener(document, documentConfig, getArticleFunction, c
 
 function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
   let { sentenceInfo, tokenIndex }  = tokenInfo;
+  let token = sentenceInfo.tokens[tokenIndex];
         
   let baseWords = [];
   let baseWordIndex;
@@ -251,19 +252,34 @@ function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
       if(tokenIndex ==i){
         baseWordIndex = baseWords.length;
       }
-      let word = part.checkWordResult.baseWord? part.checkWordResult.baseWord: part.checkWordResult.word;
-      baseWords.push(word);
+      
+      baseWords.push(part.phrase.baseWord);
     }
     
   }
 
   let baseWord = baseWords[baseWordIndex];
   let lookupResult;
-  if(baseWord == wordSearchResult.word){
-    lookupResult = wordSearchResult.lookupResult;
-  }else if(baseWord == wordSearchResult.baseWord){
-    lookupResult = wordSearchResult.deepLookupResult.lookupResult;
-  }
+  
+  let searchResult = searchWord(baseWord, { 
+        allowLemma: true,
+        lookupBase: 'Never',
+        transform: token.transform,
+        acceptResult: (lookupResult) => {
+          let result = false;
+          if(lookupResult){
+            let entry = mergeEntries(lookupResult.json);
+            let phrases = entry.phrases;
+            if(phrases.length > 0){
+              result = true;
+            }
+          }
+          return result;
+        },
+        dictionaryOptions: buildDictionaryOptions(siteOptions) });
+
+  lookupResult = searchResult?.lookupResult;
+
   let phrases;
   if(lookupResult){
     let entry = mergeEntries(lookupResult.json);

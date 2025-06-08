@@ -140,7 +140,7 @@ vt. 放弃努力,认输
 });
 
 
-test('phrase transform present tense gaving up', async ({ testPage, extensionId, popupPage }) => {
+test('phrase transform continuous tense gaving up', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
   
   await popupPage.goto(extensionId);
@@ -171,6 +171,8 @@ test('phrase gerund giving up', async ({ testPage, extensionId, popupPage }) => 
   let definitions = testPage.page.locator("#mea-definitions");
   await expect(definitions).toHaveText(`giving   [give ing]
    n. 礼物,给予物
+   give up  
+   vt. 放弃努力,认输
 `);
   
 });

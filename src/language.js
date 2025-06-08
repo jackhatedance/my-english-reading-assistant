@@ -175,9 +175,22 @@ function searchWordWithDict(query, options, dicts){
             }
         }
 
-        if(!baseWord && options.lookupBase == 'Must'){
+        if(!baseWord && options.lookupBase == 'Always'){
             
             let baseWordResult = getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options);
+            
+            if(baseWordResult){
+                //console.log(baseWordResult);
+                baseSearchType='lemma';
+                baseWord = baseWordResult.word;
+                deepLookupResult = baseWordResult;
+            }
+        
+        }
+
+        if(!baseWord && options.lookupBase == 'Must'){
+            
+            let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName]);
             
             if(baseWordResult){
                 //console.log(baseWordResult);
@@ -291,6 +304,50 @@ function transformLemmatize(input, options, dicts){
     if(lookupResult) {
         result = {
             word,
+            lookupResult,
+        }
+    }
+    return result;
+    
+}
+
+function getBaseWord(word, options, dicts){
+    let baseWord;
+    let lookupResult;
+    
+    if(!lookupResult) {
+        baseWord = singularize(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    //word-parts dictionary has higher priority than lemmatize lib
+    if(!lookupResult) {
+        baseWord = getBaseFromWordParts(word)
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    if(!lookupResult) {
+        baseWord = lemmatize.noun(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }                
+    }
+
+    if(!lookupResult) {
+        baseWord = lemmatize.verb(word);
+        if(baseWord !== word){
+            lookupResult = lookup(baseWord, options, dicts);
+        }
+    }
+
+    let result = null;
+    if(lookupResult) {
+        result = {
+            word: baseWord,
             lookupResult,
         }
     }

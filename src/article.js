@@ -367,7 +367,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        lookupBase: 'Must',
+                        lookupBase: 'Always',
                         transform: token.transform,
                         dictionaryOptions: buildDictionaryOptions(siteOptions),
                     });
