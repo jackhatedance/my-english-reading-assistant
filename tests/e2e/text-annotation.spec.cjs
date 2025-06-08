@@ -75,6 +75,24 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
 });
 
 
+test('definition link crenels', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#definition-link mea-token[data-query='crenels']");
+  await expect(rode).toHaveText('crenels');
+  await expect(rode).toHaveAttribute('data-word', 'crenels');
+  await expect(rode).toHaveAttribute('data-base-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-target-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');
+  
+});
+
+
 test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   
   

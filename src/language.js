@@ -121,8 +121,10 @@ function searchWordWithDict(query, options, dicts){
     //try lower case
     if(!lookupResult) {
         transformResult = transformLowercase(input, options, dicts);
-        word = transformResult.word;
-        lookupResult = transformResult.lookupResult;
+        if(transformResult){
+            word = transformResult.word;
+            lookupResult = transformResult.lookupResult;
+        }
     }
 
     //use lowercase word from here
@@ -131,8 +133,10 @@ function searchWordWithDict(query, options, dicts){
     //try captialize, such god -> God
     if(!lookupResult && input.length > 1){
         transformResult = transformUppercaseFirstLetter(input, options, dicts);
-        word = transformResult.word;
-        lookupResult = transformResult.lookupResult;
+        if(transformResult){
+            word = transformResult.word;
+            lookupResult = transformResult.lookupResult;
+        }
     }
 
     let baseWord = '';
@@ -234,9 +238,12 @@ function transformLowercase(input, options, dicts){
     if(word !== input){
         lookupResult = lookup(word, options, dicts);
     }
-    return {
-        word,
-        lookupResult,
+
+    if(lookupResult){
+        return {
+            word,
+            lookupResult,
+        }
     }
 }
 
@@ -246,10 +253,13 @@ function transformUppercaseFirstLetter(input, options, dicts){
     if(word !== input){
         lookupResult = lookup(word, options, dicts);
     }
-    return {
-        word,
-        lookupResult,
-    }
+
+    if(lookupResult){
+        return {
+            word,
+            lookupResult,
+        }
+    }    
 }
 
 function transformLemmatize(input, options, dicts){
