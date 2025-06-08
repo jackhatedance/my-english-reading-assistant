@@ -1,6 +1,7 @@
 import {Dictionary} from '../Dictionary.js'
 import { dataURItoText } from '../../utils/fileUtils.js'
 import { TextDefinitionParser } from './TextDefinitionParser.js'
+import { parseLine } from './textDefinitionUtils.js'
 
 class TextDictionary extends Dictionary {
     constructor(data, name, options) {
@@ -28,9 +29,7 @@ class TextDictionary extends Dictionary {
         let map = {};
         for(let line of lines){
             try{
-                const firstSpaceIndex = line.indexOf(" ");
-                let word = line.substring(0, firstSpaceIndex);
-                let definition = line.substring(firstSpaceIndex+1);
+                const { word, definition } = parseLine(line);
                 map[word] = definition;
             } catch(e){
                 console.warn('failed to parse dictionary line:'+line);
