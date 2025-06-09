@@ -347,13 +347,14 @@ init();
       <div class="label">
         <p>
         {{ t('optionsEditDictionaryIndexColorTipsTitle') }}
+        </p>
         <ul>
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
           <li class="lightgreen">{{ t('optionsEditDictionaryIndexColorTipsLightGreen') }}</li>
           <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
           <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有些词典无法提取结构化数据"/></li>
         </ul>
-        </p>
+        
         <p v-html="optionsEditDictionaryTips"></p>
         <ul class="optional-tips">
           <li v-for="(tip, index) in optionalTips" :key="tip" :value="tip">{{ tip }}</li>
