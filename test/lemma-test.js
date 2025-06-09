@@ -30,6 +30,15 @@ describe('lemma', function () {
     it('wiped', function () {
       assert.equal(isRegularTransform("wipe", "wiped"), true);
     });
+
+    it('closer', function () {
+      assert.equal(isRegularTransform("close", "closer"), true);
+    });
+
+    it('closest', function () {
+      assert.equal(isRegularTransform("close", "closest"), true);
+    });
+
   });
   
 });
