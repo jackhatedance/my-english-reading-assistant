@@ -285,6 +285,18 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
+    it('noecd2e guts', async function () {
+      let html = this.lookup('guts');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "见gut");
+      assert.equal(parseResult[0].phrases.length, 0);
+      
+    });
+
   });
   
 });
