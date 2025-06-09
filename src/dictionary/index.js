@@ -52,6 +52,10 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
     for (let key of keys) {
         let result = dictionary.lookup(key, { fromRaw: true, autoJumpLink: false, outputFormats: ['json'] });
         
+        if(!result){
+            console.log(`no result found by key: ${key}`);
+            continue;
+        }
         let definition = findDefinition(result.json);
         if(definition){
             map[key] = result;

@@ -28,8 +28,17 @@ class TextDictionary extends Dictionary {
 
         let map = {};
         for(let line of lines){
+            if(!line){
+                continue;
+            }
+            line = line.trim();
+            if(line.length==0){
+                continue;
+            }
+            
             try{
                 const { word, definition } = parseLine(line);
+
                 map[word] = definition;
             } catch(e){
                 console.warn('failed to parse dictionary line:'+line);
