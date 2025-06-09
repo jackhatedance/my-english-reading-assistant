@@ -184,9 +184,7 @@ function guessPartsWord(checkWord, parts){
 
     //for phrase
     for(const part of nonEmptyParts){
-        if(part.checked){
-            guessPartPhraseBaseWord(checkWord, nonEmptyParts, part);
-        }
+        guessPartPhraseBaseWord(checkWord, nonEmptyParts, part);
     }
 }
 
@@ -217,6 +215,13 @@ function guessPartWord2(checkWord, parts, part){
 }
 
 function guessPartPhraseBaseWord(checkWord, parts, part){
+
+    if(!part.checked){
+        part.phrase = {
+            baseWord: part.content,
+        };
+        return;
+    }
 
     let index = parts.indexOf(part);
     let word = part.checkWordResult.word;

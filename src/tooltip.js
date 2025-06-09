@@ -248,12 +248,13 @@ function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
   for(let i=0;i<sentenceInfo.tokens.length; i++){
     let part = sentenceInfo.tokens[i];
     
-    if(part.checkWordResult){
+    let phraseBaseWord = part.phrase?.baseWord;
+    if(phraseBaseWord){
       if(tokenIndex ==i){
         baseWordIndex = baseWords.length;
       }
       
-      baseWords.push(part.phrase.baseWord);
+      baseWords.push(phraseBaseWord);
     }
     
   }
