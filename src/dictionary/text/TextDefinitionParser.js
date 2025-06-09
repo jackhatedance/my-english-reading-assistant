@@ -27,14 +27,18 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     afterParseEntry(entry){
+        let phrases = [];
+
         let groups = entry.definitionGroups;
         let group = groups.find(item => item.name == 'phr.');
         if(group){
             let index = groups.indexOf(group);
             groups.splice(index, 1);
         
-            entry.phrases = group.definitions.map(item => item.text);
+            phrases = group.definitions.map(item => item.text);
         }
+
+        entry.phrases = phrases;
     }
 
     parseEntry(text){
