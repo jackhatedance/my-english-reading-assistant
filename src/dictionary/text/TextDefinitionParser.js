@@ -6,7 +6,7 @@ import { standardizePunctuations } from '../../text/textUtils.js'
 class TextDefinitionParser extends DefinitionParser {
     
     constructor(options){
-        super("TextParser", "1.0.0", "1.0.0", options);
+        super("TextParser", "1.1.0", "1.0.0", options);
     }
 
     parse(rawDefinition) {
