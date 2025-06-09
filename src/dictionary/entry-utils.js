@@ -215,8 +215,9 @@ function createEntryForLink(link){
     let pronunciations = [];
     let headword = { pronunciations };
     let definitionGroups = [ definitionGroup ];
-    
-    let entry = { headword, definitionGroups, type: 'link' };
+    let phrases = [];
+
+    let entry = { headword, definitionGroups, type: 'link', phrases: phrases };
     return entry;
 }
 

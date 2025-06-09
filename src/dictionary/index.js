@@ -33,7 +33,7 @@ function addPhrase(entries, phrase){
     let entry = entries[0];
     let phrases = entry.phrases;
 
-    if(!phrases.includes(phrase)){
+    if(phrases && !phrases.includes(phrase)){
         phrases.push(phrase);
     }    
 }
