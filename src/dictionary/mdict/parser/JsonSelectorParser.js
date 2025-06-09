@@ -2,8 +2,9 @@ import { MdictDefinitionParser } from '../MdictDefinitionParser.js'
 import * as cheerio from 'cheerio';
 import { findMostAccurateTypedDefinition } from '../../typed-definition.js'
 import { PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../../dictConstants.js'
-import { getLink } from '../mdict-definition-utils.js'
-import { getEntryFromLink, isAllUpperCaseEntry } from '../mdict-definition-utils.js'
+import { getLink, getEntryFromLink, isAllUpperCaseEntry } from '../mdict-definition-utils.js'
+import { createLinkDefinition, createEntryForLink } from '../../entry-utils.js'
+
 class JsonSelectorParser extends MdictDefinitionParser {
     ROOT = 'root';
     ENTRY = 'entry';
@@ -15,7 +16,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
     GROUP_NAME = 'groupName';
     INFLECTION = "inflection";
     DEFINITION = 'definition';
-    
+    PHRASE = 'phrase';
     LINK_ENTRY = 'linkEntry';
 
     
@@ -116,7 +117,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
 
         let link = getLink(rawDefinition);
         if (link) {
-            let linkEntry = this.createEntryForLink(link);
+            let linkEntry = createEntryForLink(link);
             return [ linkEntry ];
         }
 
@@ -134,6 +135,13 @@ class JsonSelectorParser extends MdictDefinitionParser {
         return entries; 
     }
 
+    /**
+     * virtual means base element of its children is not itself, but its parent.
+     * @param {*} parentElement 
+     * @param {*} childElement 
+     * @param {*} childEntitySelector 
+     * @returns 
+     */
     getBaseElementForChild(parentElement, childElement, childEntitySelector){
         return childEntitySelector.virtual == true ? parentElement : childElement;            
     }
@@ -169,8 +177,22 @@ class JsonSelectorParser extends MdictDefinitionParser {
         }
         
         let definitionGroups = this.parseDefinitionGroups($, element, context, entitySelector);
-            
-        return { headword, definitionGroups };        
+        
+        let phrases = [];
+        if(this.hasSelector(entitySelector, this.PHRASE)){
+            let findElementsResults = this.findElements($, element, entitySelector[this.PHRASE], this.PHRASE, context);
+            for(let findElementsResult of findElementsResults){
+                
+                for(let phraseElement of findElementsResult.elements){
+                    let childEntitySelector = findElementsResult.entitySelector;
+                    let phrase = this.parsePhrase($, phraseElement, childEntitySelector);    
+                    phrases.push(phrase);
+                }   
+            }
+
+        }
+
+        return { headword, definitionGroups, phrases };        
     }
 
     parseHeadword($, element, context, entitySelector){
@@ -311,7 +333,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
                     entry = entry.toLowerCase();
                 }
             }
-            return this.createLinkDefinition(entry);
+            return createLinkDefinition(entry);
         }
     }
 
@@ -342,7 +364,7 @@ class JsonSelectorParser extends MdictDefinitionParser {
             typedDefinitions.push(typedDefinitionOfElement);
         }
 
-        let text = $(element).text(); 
+        let text = this.getDefinitionText($, element, entitySelector); 
         
         let definition = this.parseDefinitionText(text);    
 
@@ -359,6 +381,24 @@ class JsonSelectorParser extends MdictDefinitionParser {
         this.afterParseDefinition(definition);
 
         return definition;
+    }
+
+    getDefinitionText($, element, entitySelector){
+        let text;
+        text = $(element).text(); 
+        
+        return text;
+    }
+
+    beforeParsePhraseText(text){
+        return text;
+    }
+
+    parsePhrase($, element, entitySelector){
+        let phrase = $(element).text();  
+
+        phrase = this.beforeParsePhraseText(phrase);
+        return phrase;
     }
         
 }

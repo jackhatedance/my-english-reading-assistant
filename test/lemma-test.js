@@ -15,13 +15,30 @@ describe('lemma', function () {
       assert.equal(isRegularTransform("levy", "levies"), true);
     });
 
-    it('harasing', function () {
+    it('harassing', function () {
       assert.equal(isRegularTransform("harass", "harassing"), true);
     });
 
     it('digging', function () {
       assert.equal(isRegularTransform("dig", "digging"), true);
     });
+
+    it('giving', function () {
+      assert.equal(isRegularTransform("give", "giving"), true);
+    });
+
+    it('wiped', function () {
+      assert.equal(isRegularTransform("wipe", "wiped"), true);
+    });
+
+    it('closer', function () {
+      assert.equal(isRegularTransform("close", "closer"), true);
+    });
+
+    it('closest', function () {
+      assert.equal(isRegularTransform("close", "closest"), true);
+    });
+
   });
   
 });

@@ -82,4 +82,23 @@ function parseWordClass(def){
     return result;
 }
 
-export { splitIntoDefinitionGroups, splitWordMeanings, parseWordClass }
+function parseLine(line){
+    let word, definition;
+
+    line = line.trim();
+    if(line.length>2 && line[0]=='"'){
+        //quoted
+        const endQuotationIndex = line.indexOf('"',1);
+        word = line.substring(1, endQuotationIndex);
+        definition = line.substring(endQuotationIndex+1);
+        
+    } else {
+        const firstSpaceIndex = line.indexOf(" ");
+        word = line.substring(0, firstSpaceIndex);
+        definition = line.substring(firstSpaceIndex+1);
+    }
+
+    return { word, definition };
+}
+
+export { splitIntoDefinitionGroups, splitWordMeanings, parseWordClass, parseLine }

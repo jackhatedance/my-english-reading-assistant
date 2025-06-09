@@ -129,6 +129,34 @@ describe('TextDefinitionParser test', function () {
             
     });
 
+    it('text give phrases', async function () {
+      let text = 'n. 弹性, 适应性; vt. 给, 授予, 供给, 产生, 发表, 付出, 献出, 让出; vi. 捐赠, 支持不住, 让步; phr. give in, give up';
+      let parseResult = this.parser.parse(text);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 0);
+      
+      assert.equal(parseResult[0].definitionGroups.length, 3);
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "n.");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "弹性");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "适应性");      
+      
+      assert.equal(parseResult[0].definitionGroups[1].name, "vt.");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "给");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[1].text, "授予");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[2].text, "供给");      
+      assert.equal(parseResult[0].definitionGroups[1].definitions[3].text, "产生");
+      
+      assert.equal(parseResult[0].definitionGroups[2].name, "vi.");      
+      assert.equal(parseResult[0].definitionGroups[2].definitions[0].text, "捐赠");      
+      
+      assert.equal(parseResult[0].phrases[0], "give in");
+      assert.equal(parseResult[0].phrases[1], "give up");
+            
+    });
+
   });
   
 });

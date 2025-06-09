@@ -32,7 +32,15 @@ function lookup(word, options, dicts) {
         if(dict){
             lookupResult = dict.lookup(word, options);
             
-            if(lookupResult){
+            let accepted;
+            if(options.acceptResult){
+                accepted = options.acceptResult(lookupResult);
+            } else {
+                accepted = (lookupResult != null)
+            }
+
+            if(accepted){
+
                 lookupResult.dictionaryName = name;
                 //console.log(`found ${word} in ${name}: ${JSON.stringify(lookupResult)}`);
                 break;                

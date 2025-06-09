@@ -6,7 +6,7 @@ import { standardizePunctuations } from '../../text/textUtils.js'
 class TextDefinitionParser extends DefinitionParser {
     
     constructor(options){
-        super("TextParser", "1.0.0", "1.0.0", options);
+        super("TextParser", "1.1.0", "1.0.0", options);
     }
 
     parse(rawDefinition) {
@@ -14,7 +14,9 @@ class TextDefinitionParser extends DefinitionParser {
             return [];
         }
     
-        let entry = this.parseEntry(rawDefinition);    
+        let entry = this.parseEntry(rawDefinition);
+        this.afterParseEntry(entry);
+
         let entries = [entry];
         this.afterParse(entries);
         return entries;
@@ -22,6 +24,21 @@ class TextDefinitionParser extends DefinitionParser {
 
     afterParse(entries){
         
+    }
+
+    afterParseEntry(entry){
+        let phrases = [];
+
+        let groups = entry.definitionGroups;
+        let group = groups.find(item => item.name == 'phr.');
+        if(group){
+            let index = groups.indexOf(group);
+            groups.splice(index, 1);
+        
+            phrases = group.definitions.map(item => item.text);
+        }
+
+        entry.phrases = phrases;
     }
 
     parseEntry(text){

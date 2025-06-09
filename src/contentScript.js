@@ -299,9 +299,13 @@ function checkSiteInfoChanges(){
   return same;
 }
 
+function getArticleFunc(document){
+  return gDocumentArticleMap.get(document);
+}
+
 async function addWordHoverEventListener(document, documentConfig, currentSiteOption) {
   let options = getOptionsFromCache();
-  addTooltipEventListener(document, documentConfig,
+  addTooltipEventListener(document, documentConfig, getArticleFunc,
     (word, dictionary) => {
       //console.log(`click tooltip of ${word}`);
       let request = {

@@ -4,13 +4,14 @@ import { findBaseForm } from '../../base-forms.js'
 
 class Noecd2eParser extends JsonSelectorParser {
     constructor(options) {
-        super('Noecd2eParser', "1.0.2", "1.0.0", options);
+        super('Noecd2eParser', "1.1.0", "1.0.0", options);
 
         this.entriesSelector =
         {
             entry: [
                 {
                     selector: '.ODECN',
+                    testSelector: '.ODECN>.main',
                     headword: {
                         selector: '.headword',
                         pronunciation: {
@@ -53,9 +54,36 @@ class Noecd2eParser extends JsonSelectorParser {
                                 ]
                         },
 
+                    ],
+                    phrase: [
+                        {
+                            selector: '.main>.phrase_exam .word-explain .phrase>h3',
+
+                        },
                     ]
                 },
+                {
+                    selector: '.ODECN',
+                    testSelector: '.ODECN>.extras',
+                    definitionGroup: [
+                        {
+                            selector: '.phrase',
+                            definition:
+                                [
+                                    {
+                                        selector: '.cont-list .item .defs dl dt .def',
+                                    },
+                                    {
+                                        selector: '.cont-list .defs dl dt .def',
+                                    },
+                                    {
+                                        selector: '.cont-list dl dt .def',
+                                    },
+                                ]
+                        },
 
+                    ],
+                },
             ]
         };
     }

@@ -32,8 +32,18 @@ function _isRegularTransform(base, transform) {
 
     let suffix = transform.slice(common.length);
 
-    const suffixes = ['ed', 'ing', 'es', 's'];
-    return suffixes.includes(suffix);
+    const suffixes = ['ed', 'ing', 'es', 's', 'er', 'est'];
+    let result = suffixes.includes(suffix);
+    if(!result){
+        //case of close -> closer
+        let lastCharOfBase = base.slice(-1);
+        if(lastCharOfBase == 'e'){
+            suffix = 'e' + suffix;
+        }
+        result = suffixes.includes(suffix);
+    }
+
+    return result;
 }
 
 export { isRegularTransform }

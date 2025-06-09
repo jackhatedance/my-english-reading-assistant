@@ -3,7 +3,7 @@
 import { split } from "sentence-splitter";
 import { tokenizeSentence, tokenizeNodeText } from "./text/tokenizer.js";
 import { traverseNode } from './dom.js';
-import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement } from './word.js';
+import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getWordFromElement, getBaseWordFromElement } from './word.js';
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
@@ -52,7 +52,7 @@ function tokenizeTextNode(document, siteOptions) {
             }
             //console.log(node.parentElement.nodeName);
             //console.log(textContent);
-            let tokens = tokenizeNodeText((text)=>checkWord(siteOptions, text), textContent);
+            let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
             //console.log(siteOptions);
 
             let tokenHtmls = [];
@@ -66,7 +66,7 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
-                    lookupBaseWhenNecessary: true,
+                    lookupBase: 'WhenNecessary',
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 
@@ -283,7 +283,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenizeSentence((text)=>checkWord(siteOptions, text), sentence.raw, offsetOfArticle, newTagPositions);
+        let tokens = tokenizeSentence((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), sentence.raw, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -303,17 +303,20 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
     
 }
 
-function checkWord(siteOptions, text){
+function checkWord(siteOptions, text, lookupBase){
     let searchResult = searchWord(text, {
         allowLemma: false,
-        lookupBaseWhenNecessary: false,
+        lookupBase: lookupBase,
         dictionaryOptions: buildDictionaryOptions(siteOptions),	
         anonymous: true,
     });
 
     let result ;
     if(searchResult){
-        result = searchResult.word;
+        result = {
+            word: searchResult.word,
+            baseWord: searchResult.baseWord
+        };
     }
     return result;
 }
@@ -345,13 +348,16 @@ function parseArticleTextNodes(article, element, siteOptions){
             
             
             if(node.textContent.includes('lord.')){
-                console.log(node.textContent);
-                console.log(token);
+                //console.log(node.textContent);
+                //console.log(token);
             }
              
             if(token
                 && node.parentElement.tagName == 'MEA-TOKEN'
-                && getWordFromElement(node.parentElement) != token.content
+                && (
+                    getWordFromElement(node.parentElement) != token.content
+                    || getBaseWordFromElement(node.parentElement) != token.checkWordResult?.baseWord
+                )
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showShortDefinition = firstNodeOfTheToken;
@@ -361,8 +367,9 @@ function parseArticleTextNodes(article, element, siteOptions){
                     //console.log(contentWithoutPunctuation);
                     let searchResult = searchWord(contentWithoutPunctuation, {
                         allowLemma: true,
-                        lookupBaseWhenNecessary: true,
-                        dictionaryOptions: buildDictionaryOptions(siteOptions),	
+                        lookupBase: 'Always',
+                        transform: token.transform,
+                        dictionaryOptions: buildDictionaryOptions(siteOptions),
                     });
                     if(searchResult) {
                         updateWordAnnotation(node.parentElement, searchResult, showShortDefinition, simplifyDefinitionOptions);
@@ -506,19 +513,29 @@ function isInMeaElement(element) {
     }
 }
 
-function findTokenInSentence(sentence, offset) {
-
-
-    for (let token of sentence.tokens) {
+function findTokenIndexOfSentence(sentence, offset) {
+    for (let i =0; i< sentence.tokens.length; i++) {
+        let token = sentence.tokens[i];
         let tokenArtileOffset = sentence.offset + token.offset;
 
         if (tokenArtileOffset <= offset && offset < (tokenArtileOffset + token.length)) {
-            let result = Object.assign({}, token);
-            result.articleOffset = tokenArtileOffset;
-            //console.log('find token in sentence');
-            return result;
+            return i;
         }
     }
+    return -1;
+}
+
+function findTokenInSentence(sentence, offset) {
+    let index = findTokenIndexOfSentence(sentence, offset);
+    if(index>=0){
+        let token = sentence.tokens[index];
+        let tokenArtileOffset = sentence.offset + token.offset;
+        let result = Object.assign({}, token);
+        result.articleOffset = tokenArtileOffset;
+        //console.log('find token in sentence');
+        return result;
+    }
+    
     return null;
 }
 
@@ -802,6 +819,13 @@ function findSentenceInfo(article, articleOffset) {
     return null;
 }
 
+function findTokenInfoByNode(article, node){
+    let nodeInfo = article.textNodeMap.get(node);
+    let sentenceInfo = findSentenceInfo(article, nodeInfo.offset);
+    let tokenIndexOfSentence = findTokenIndexOfSentence(sentenceInfo, nodeInfo.offset);
+    return { sentenceInfo: sentenceInfo, tokenIndex: tokenIndexOfSentence };
+}
+
 function getArticleSelectionFromNodeSelection(article, nodeSelection) {
     let { anchorNode, anchorOffset, focusNode, focusOffset } = nodeSelection;
 
@@ -887,4 +911,4 @@ function getSelectedTextOfNoteOfSentence(article, note) {
 
 
 
-export { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote };
+export { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode };

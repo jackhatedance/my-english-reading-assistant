@@ -51,6 +51,27 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[2].definitionGroups[0].definitions.length, 1);
       assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "好");  
 
+      assert.equal(parseResult[0].phrases.length, 6);
+      assert.equal(parseResult[0].phrases[0], "as good as");
+      assert.equal(parseResult[0].phrases[5], "good for you, sb, them, etc");
+
+      assert.equal(parseResult[1].phrases.length, 11);
+      assert.equal(parseResult[1].phrases[0], "all to the good");
+      assert.equal(parseResult[1].phrases[5], "for good");
+
+      assert.equal(parseResult[2].phrases.length, 0);
+      
+    });
+
+    it('oalecd9e phrase do good', async function () {
+      let html = this.lookup('do good');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(对某人)有好处,有用处,有益");      
+      
     });
 
     it('oalecd9e you', async function () {

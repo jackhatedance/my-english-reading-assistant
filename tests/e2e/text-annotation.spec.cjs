@@ -3,6 +3,23 @@ import { test, expect } from './fixtures';
 
 
 
+test('base form this', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='this']");
+  await expect(rode).toHaveAttribute('data-target-word', 'this');
+  await expect(rode).toHaveAttribute('data-footnote', 'pron.这,本; a.这,本; ad.这么');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'pron.这; a.这; ad.这么; ...');
+  
+});
+
+
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
@@ -58,6 +75,24 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
 });
 
 
+test('definition link crenels', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#definition-link mea-token[data-query='crenels']");
+  await expect(rode).toHaveText('crenels');
+  await expect(rode).toHaveAttribute('data-word', 'crenels');
+  await expect(rode).toHaveAttribute('data-base-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-target-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');
+  
+});
+
+
 test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   
   
@@ -80,6 +115,83 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   await expect(word).toHaveAttribute('data-target-word', 'at');
   await expect(word).toHaveAttribute('data-footnote', 'prep.在,向,对');
   await expect(word).toHaveAttribute('data-footnote-short', 'prep.在,向,对');
+  
+});
+
+test('phrase base form give up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-base-form mea-token[data-query='give']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
+test('phrase transform irregular gave up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-tranform-irregular mea-token[data-query='gave']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`gave  
+give的过去式
+give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
+test('phrase transform continuous tense gaving up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-continuous-tense mea-token[data-query='giving']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
+test('phrase gerund giving up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-gerund mea-token[data-query='giving']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`giving   [give ing]
+   n. 礼物,给予物
+   give up  
+   vt. 放弃努力,认输
+`);
   
 });
 

@@ -3,7 +3,7 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 
 class YhdParser extends JsonSelectorParser {
     constructor(options) {
-        super('YhdParser', "1.0.2", "1.0.0", options);
+        super('YhdParser', "1.1.2", "1.0.0", options);
 
         this.entriesSelector =
         {
@@ -32,6 +32,9 @@ class YhdParser extends JsonSelectorParser {
                         ]
                         
                     },
+                    phrase: {
+                        selector: '.subentryblock .phrase .l'
+                    }
                 },
                 {
                     selector: '.table',
@@ -52,6 +55,19 @@ class YhdParser extends JsonSelectorParser {
                         
                     },
                 },
+                {
+                    selector: '.phrase',
+                    testSelector: '.mainentry',
+                    definitionGroup: {
+                        selector: '.se2',
+                        definition:[
+                            {
+                                selector: '.df',
+                            },                            
+                        ]
+                        
+                    },
+                }
             ]
         };
     }
