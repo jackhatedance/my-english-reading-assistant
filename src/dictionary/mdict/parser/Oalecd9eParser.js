@@ -106,6 +106,16 @@ class Oalecd9eParser extends JsonSelectorParser {
                                     },
                                 ]
                         },
+                    ],
+                    phrase: [
+                        {
+                            group: 'phrase',
+                            selector: 'pv-gs-blk pv-gs pvp-g-blk pvp-g pv-g-blk pv-g top-g pv-blk pv',
+                        },
+                        {
+                            group: 'idiom',
+                            selector: 'idm-gs-blk idm-gs idm-g top-g idm-blk idm',
+                        }
                     ]
                 },
                 {
@@ -133,6 +143,9 @@ class Oalecd9eParser extends JsonSelectorParser {
                             },
                             definition:
                                 [
+                                    {
+                                        selector: '>shcut-blk>shcut>chn'
+                                    },
                                     {
                                         selector: '>sn-blk>xhtml\\:ol sn-g def chn'
                                     },
@@ -189,10 +202,37 @@ class Oalecd9eParser extends JsonSelectorParser {
                                 ]
                         },
 
+                    ],
+                    phrase: [
+                        {
+                            group: 'phrase',
+                            selector: 'pv-gs-blk pv-gs pvp-g-blk pvp-g pv-g-blk pv-g top-g pv-blk pv',
+                        },
+                        {
+                            group: 'idiom',
+                            selector: 'idm-gs-blk idm-gs idm-g top-g idm-blk idm',
+                        }
                     ]
                 },
                 {
+                    /* phrase */
                     selector: 'idm-g',
+                    definitionGroup: [
+                        {
+                            selector: 'sn-gs',
+                            definition:
+                                [
+                                    {
+                                        selector: 'sn-blk sn-g def chn'
+                                    },
+                                ]
+                        },
+
+                    ]
+                },
+                {
+                    /* phrase */
+                    selector: 'pv-g',
                     definitionGroup: [
                         {
                             selector: 'sn-gs',

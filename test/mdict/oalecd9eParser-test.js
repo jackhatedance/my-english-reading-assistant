@@ -282,6 +282,52 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "将…送交给(以求获得帮助等)");
     });
 
+    it('oalecd9e get', async function () {
+      let html = this.lookup('get');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations[0].region, 'uk');
+      assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ɡet");
+
+      assert.equal(parseResult[0].headword.pronunciations[1].region, 'us');
+      assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "ɡet");
+      
+      assert.equal(parseResult[0].definitionGroups.length, 21);
+
+      assert.equal(parseResult[0].definitionGroups[0].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "接到,得到");
+      
+      assert.equal(parseResult[0].definitionGroups[1].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[1].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "带来");
+
+      assert.equal(parseResult[0].definitionGroups[20].name, "verb");
+      assert.equal(parseResult[0].definitionGroups[20].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[20].definitions[0].text, "使困惑／烦恼");
+
+      //console.log(JSON.stringify(parseResult[0].phrases));
+      assert.equal(parseResult[0].phrases.length, 105);
+      assert.equal(parseResult[0].phrases[0], "get about");
+      assert.equal(parseResult[0].phrases[1], "get above yourself");
+      assert.equal(parseResult[0].phrases[104], "what has got into sb?");
+    });
+
+    it('oalecd9e phrase wrap up', async function () {
+      let html = this.lookup('wrap up');
+      let parseResult = this.parser.parse(html);
+      //console.log(JSON.stringify(parseResult));
+      //assert(tokens.length === 2,"test");
+
+      assert.equal(parseResult[0].definitionGroups.length, 1);
+
+      assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(使)穿得暖和");
+      
+    });
+
     it('oalecd9e used', async function () {
       let html = this.lookup('used');
       let parseResult = this.parser.parse(html);
