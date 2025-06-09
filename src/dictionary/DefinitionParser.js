@@ -1,4 +1,5 @@
 import { findBaseForm } from './base-forms.js'
+import { findLink } from './links.js'
 import { trimByCharacters } from '../utils/stringUtils.js'
 import { standardizePunctuations, removeParentheses, splitButIgnoreParentheses } from '../text/textUtils.js'
 import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS, PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY } from './dictConstants.js'
@@ -155,6 +156,21 @@ class DefinitionParser {
             definition.base=lowerCaseBase;
 
             definition.text = text.replace(base, lowerCaseBase);
+
+            return definition;
+        }
+
+        let link = findLink(text);
+        if(link){
+            
+            let definition = {};
+            definition.type= DICTIONARY_DEFINITION_TYPE_LINK;
+            definition.form= link;
+            
+            let lowerCaseLink = link.toLowerCase();
+            definition.link = lowerCaseLink;
+
+            definition.text = text.replace(link, lowerCaseLink);
 
             return definition;
         }
