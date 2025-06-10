@@ -39,7 +39,7 @@ function addPhrase(entries, phrase){
 }
 
 //sleepWorkRatio: sleep time / work time. the larger the slower
-async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
+async function generateIndex(dictionary, updateProgress, addPhraseToMainEntry, sleepWorkRatio = 0.1) {
     let map = {};
 
     
@@ -71,15 +71,18 @@ async function generateIndex(dictionary, updateProgress, sleepWorkRatio = 0.1) {
         await progress.count();
     }
 
-    for(let phrase of phrases){
-        let phraseWords = phrase.split(' ');
-        for(let word of phraseWords){
-            let lookupResult = map[word];
-            if(lookupResult){
-                addPhrase(lookupResult.json, phrase);
+    if(addPhraseToMainEntry){
+        for(let phrase of phrases){
+            let phraseWords = phrase.split(' ');
+            for(let word of phraseWords){
+                let lookupResult = map[word];
+                if(lookupResult){
+                    addPhrase(lookupResult.json, phrase);
+                }
             }
         }
     }
+    
 
     return {
         version: INDEX_VERSION,

@@ -334,6 +334,7 @@ async function migrateDictionary(dictionary, updateProgress){
         let raw = await loadDictionaryRawData(name);            
         let dictionaryInstance = createDictionaryInstance(meta, { raw }, '', false);
 
+        let addPhraseToMainEntry = true;
         if(meta.format == 'mdict'){
             console.log('extract dictionary resource data: '+ name);
 
@@ -345,10 +346,11 @@ async function migrateDictionary(dictionary, updateProgress){
                 let extractedResourceData = await dictionaryInstance.extractResourceData(updateProgress);
                 await saveDictionaryExtractedResourceData(name, extractedResourceData, updateProgress);            
             }
+            addPhraseToMainEntry = false;
         }        
         
         if(dictionaryInstance.supportOutputFormat('json')){
-            let index = await generateIndex(dictionaryInstance, updateProgress);
+            let index = await generateIndex(dictionaryInstance, updateProgress, addPhraseToMainEntry);
         
             await saveDictionaryIndexData(name, index);
     
