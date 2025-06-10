@@ -39,6 +39,10 @@ describe('lemma', function () {
       assert.equal(isRegularTransform("close", "closest"), true);
     });
 
+    it('densely', function () {
+      assert.equal(isRegularTransform("dense", "densely"), true);
+    });
+
   });
   
 });

@@ -32,7 +32,7 @@ function _isRegularTransform(base, transform) {
 
     let suffix = transform.slice(common.length);
 
-    const suffixes = ['ed', 'ing', 'es', 's', 'er', 'est'];
+    const suffixes = ['ed', 'ing', 'es', 's', 'er', 'est', 'ly'];
     let result = suffixes.includes(suffix);
     if(!result){
         //case of close -> closer
