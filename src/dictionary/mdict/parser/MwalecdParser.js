@@ -106,7 +106,6 @@ export class MwalecdParser extends JsonSelectorParser {
                             ]                        
                         },
                         {
-                            group: 'main-entry',
                             selector: '.sms',  
                             virtual: true,        
                             definition: [

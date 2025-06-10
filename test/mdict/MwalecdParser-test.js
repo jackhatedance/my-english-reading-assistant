@@ -101,12 +101,11 @@ describe('mdict mwalecd parser', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
+      assert.equal(parseResult[0].definitionGroups.length, 1);
+
       assert.equal(parseResult[0].definitionGroups[0].name, "somewhat informal");        
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "能提供…的,能生产…的");      
       
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "⇒ Main Entry:  1 good");
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].type, "link");
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].link, "good");  
     });
 
     it('json mwalecd phrase give in', async function () {
@@ -115,13 +114,12 @@ describe('mdict mwalecd parser', function () {
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
+      assert.equal(parseResult[0].definitionGroups.length, 1);
+
       assert.equal(parseResult[0].definitionGroups[0].name, "phrasal verb");        
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "放弃,屈服");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "呈上,上交");      
       
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "⇒ Main Entry:  1 give");
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].type, "link");
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].link, "give");  
     });
 
     it('json mwalecd rang', async function () {
