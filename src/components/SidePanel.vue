@@ -121,7 +121,10 @@ function messageListener(request, sender, sendResponse) {
     if(entry){
       word.value = entry;
     }
-  }
+  } else if (request.type === 'CLOSE_DIALOG_FROM_BACKGROUND') {
+    onClickCloseButton();
+
+  } 
   
   sendResponse(response);
 }

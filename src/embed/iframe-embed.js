@@ -22,7 +22,20 @@ function addVueApp() {
 
   //click background of dialog to close dialog.
   dialog.addEventListener('click', function(event) {
-      dialog.close();                        
+      //dialog.close();                        
+
+      let request = {
+        type: 'CLOSE_DIALOG_FROM_BACKGROUND',
+        payload: {
+        },
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      //console.log('selection change:'+JSON.stringify(request));
+      sendMessageToEmbeddedApp(request, sender, sendResponse);
+
   });
 
   let sidePanelUrl = chrome.runtime.getURL("side-panel.html");
