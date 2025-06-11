@@ -157,6 +157,25 @@ describe('tokenizer', function () {
             
     });
 
+    it('end of line hyphenation: lo-cal', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['local', 'lo-cal'];
+        if(words.includes(text)){
+          return { word: text };
+        }else {
+          return null;
+        }
+      }, "lo-cal", 0 , { newLinePositions: [3] });
+      
+      
+      assert.equal(tokens.length, 1);
+      
+      assert.equal(tokens[0].content, "local");
+            
+    });
+
     it('dot at end of line', async function () {
       
       let tokens = tokenizeSentence((text)=> {

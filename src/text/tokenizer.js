@@ -280,12 +280,6 @@ function guessPartWord(checkWord, part){
     let transforms;
     
     if(!guessResult){
-        if(part.lineBreak){
-            guessResult = guessWordOfCrossLine(checkWord, originalContent, part.mask);
-        } 
-    }
-
-    if(!guessResult){
         transforms = ['abbreviation'];
 
         if(containsAbbreviation(originalContent)){
@@ -541,21 +535,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
 
         let originalContent = subtext;
         let content;
-        /*
-        let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
-        let content;
-        let checked;
-        if(guessWordResult){
-            content = guessWordResult.content;
-            if(guessWordResult.checkType=='content'){
-                checked = true;
-            }            
-        }else {
-            content = originalContent;
-            checked = false;
-        }
-            */
-
+        
         content = originalContent;
         let checked = false;
 
@@ -685,10 +665,17 @@ function guessWordOfCrossLine(checkWord, originalContent, submask){
         lineEndHyphenMask : submask,
     };
 
-    let transforms = ['punctuation', 'endingDot', 'line-end-hyphen', 'compound', 'apostrophe'];
+    let originalContentWithoutPuncutation = trimPunctuations(originalContent);
+    let transforms = ['line-end-hyphen', 'compound', 'apostrophe'];
 
-    let guessResult = guessWord(originalContent, options, checkWord, transforms);
-        
+    let guessResult = guessWord(originalContentWithoutPuncutation, options, checkWord, transforms);
+    
+    if(!guessResult){
+        transforms = ['punctuation', 'endingDot', 'line-end-hyphen', 'compound', 'apostrophe'];
+
+        guessResult = guessWord(originalContent, options, checkWord, transforms);
+    }
+
     //console.log('guess result:'+ JSON.stringify(guessResult));
     return guessResult;
 }
