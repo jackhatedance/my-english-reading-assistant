@@ -189,29 +189,86 @@ function guessPartsWord(checkWord, parts){
 }
 
 function guessPartWord2(checkWord, parts, part){
+    if(part.checkWordResult.word && part.checkWordResult.word.endsWith('ing')){
+
+        //preposition doing
+        let done = guessGerund(checkWord, parts, part);
+
+        if(!done){
+            //be doing
+            done = guessContinuousTense(checkWord, parts, part);
+        }        
+    }       
+}
+
+function guessGerund(checkWord, parts, part){
 
     let index = parts.indexOf(part);
     let word = part.checkWordResult.word;
+    let previousIndex1 = index -1;
 
-    //be doing
-    let previousIndex = index -1;
-    if(previousIndex>=0){
-        let previousPart = parts[previousIndex];
-        
-        if(previousPart.checkWordResult?.baseWord == 'be' && part.checkWordResult.word && part.checkWordResult.word.endsWith('ing')){
-            let baseWord = lemmatize.verb(word);
-            if(baseWord != word){
-                let checkWordResult = checkWord(baseWord, 'Never');
-                if(checkWordResult){
-                    part.transform ={
-                        type : '进行时',
-                        base : checkWordResult.word,
-                    };
-                    part.checkWordResult.baseWord = checkWordResult.word; 
-                }
+    let previousPart1 = null;
+    if(previousIndex1 >=0){
+        previousPart1 = parts[previousIndex1];
+    }    
+
+    let previousIndex2 = index -2;
+
+    let previousPart2 = null;
+    if(previousIndex2 >=0){
+        previousPart2 = parts[previousIndex2];
+    }    
+    
+    if((previousPart1 && previousPart1.checkWordResult?.isPreposition)
+        || (previousPart2 && previousPart2.checkWordResult?.isPreposition)){
+        let baseWord = lemmatize.verb(word);
+        if(baseWord != word){
+            let checkWordResult = checkWord(baseWord, 'Never');
+            if(checkWordResult){
+                part.transform ={
+                    type : '动名词',
+                    base : checkWordResult.word,
+                };
+                part.checkWordResult.baseWord = checkWordResult.word; 
+
+                return true;
             }
         }
-    }        
+    }
+
+        
+    return false;
+}
+
+function guessContinuousTense(checkWord, parts, part){
+
+    let index = parts.indexOf(part);
+    let word = part.checkWordResult.word;
+    let previousIndex = index -1;
+
+    let previousPart = null;
+    if(previousIndex >=0){
+        previousPart = parts[previousIndex];
+    }    
+    
+    if(previousPart && previousPart.checkWordResult?.baseWord == 'be'){
+        let baseWord = lemmatize.verb(word);
+        if(baseWord != word){
+            let checkWordResult = checkWord(baseWord, 'Never');
+            if(checkWordResult){
+                part.transform ={
+                    type : '进行时',
+                    base : checkWordResult.word,
+                };
+                part.checkWordResult.baseWord = checkWordResult.word; 
+
+                return true;
+            }
+        }
+    }
+
+        
+    return false;
 }
 
 function guessPartPhraseBaseWord(checkWord, parts, part){
@@ -669,7 +726,7 @@ function guessWordOfCrossLine(checkWord, originalContent, submask){
     let transforms = ['line-end-hyphen', 'compound', 'apostrophe'];
 
     let guessResult = guessWord(originalContentWithoutPuncutation, options, checkWord, transforms);
-    
+
     if(!guessResult){
         transforms = ['punctuation', 'endingDot', 'line-end-hyphen', 'compound', 'apostrophe'];
 

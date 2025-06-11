@@ -14,6 +14,7 @@ import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'
+import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
 
 const gLogger = log.getLogger('article');
 /**
@@ -313,9 +314,12 @@ function checkWord(siteOptions, text, lookupBase){
 
     let result ;
     if(searchResult){
+
+        let isPreposition = containsDefinitionGroupNames(searchResult.lookupResult.json, ['prep.', 'preposition']);
         result = {
             word: searchResult.word,
-            baseWord: searchResult.baseWord
+            baseWord: searchResult.baseWord,
+            isPreposition: isPreposition,
         };
     }
     return result;
