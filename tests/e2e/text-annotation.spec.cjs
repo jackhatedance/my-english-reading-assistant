@@ -177,6 +177,25 @@ vt. 放弃努力,认输
 });
 
 
+test('phrase transform continuous tense 2 gaving up', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.hover("#phrase-continuous-tense2 mea-token[data-query='giving']");
+
+  let definitions = testPage.page.locator("#mea-definitions");
+  await expect(definitions).toHaveText(`give  
+n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
+give up  
+vt. 放弃努力,认输
+`);
+  
+});
+
+
 test('phrase gerund giving up', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
   

@@ -205,15 +205,14 @@ function guessGerund(checkWord, parts, part){
 
     let index = parts.indexOf(part);
     let word = part.checkWordResult.word;
-    let previousIndex1 = index -1;
 
+    let previousIndex1 = index -1;
     let previousPart1 = null;
     if(previousIndex1 >=0){
         previousPart1 = parts[previousIndex1];
     }    
 
     let previousIndex2 = index -2;
-
     let previousPart2 = null;
     if(previousIndex2 >=0){
         previousPart2 = parts[previousIndex2];
@@ -244,14 +243,21 @@ function guessContinuousTense(checkWord, parts, part){
 
     let index = parts.indexOf(part);
     let word = part.checkWordResult.word;
-    let previousIndex = index -1;
 
-    let previousPart = null;
-    if(previousIndex >=0){
-        previousPart = parts[previousIndex];
-    }    
+    let previousIndex1 = index -1;
+    let previousPart1 = null;
+    if(previousIndex1 >=0){
+        previousPart1 = parts[previousIndex1];
+    }
     
-    if(previousPart && previousPart.checkWordResult?.baseWord == 'be'){
+    let previousIndex2 = index -2;
+    let previousPart2 = null;
+    if(previousIndex2 >=0){
+        previousPart2 = parts[previousIndex2];
+    }
+    
+    if((previousPart1 && previousPart1.checkWordResult?.baseWord == 'be')
+        || (previousPart2 && previousPart2.checkWordResult?.baseWord == 'be')){
         let baseWord = lemmatize.verb(word);
         if(baseWord != word){
             let checkWordResult = checkWord(baseWord, 'Never');
