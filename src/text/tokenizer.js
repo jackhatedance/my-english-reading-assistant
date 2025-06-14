@@ -89,7 +89,7 @@ function splitWords(checkWord, parts){
 function splitCamelWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation, 'WhenNecessary');            
+    let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
         part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
@@ -108,7 +108,7 @@ function splitCamelWords(checkWord, part, parts){
 function splitSlashWords(checkWord, part, parts){
     let content = part.content;
     let contentWithoutPunctuation = trimPunctuations(content);
-    let checkWordResult = checkWord(contentWithoutPunctuation, 'WhenNecessary');            
+    let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
         part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
@@ -132,7 +132,7 @@ function splitCompoundWord(checkWord, part, parts){
     let guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
     if(guessWordResult){
         part.content = guessWordResult;
-        part.checkWordResult = checkWord(guessWordResult, 'WhenNecessary');
+        part.checkWordResult = checkWord(guessWordResult, 'Always');
         part.checked = true;
         parts.push(part);
     } else {
@@ -141,7 +141,7 @@ function splitCompoundWord(checkWord, part, parts){
         guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
         if(guessWordResult){
             part.content = guessWordResult;
-            part.checkWordResult = checkWord(guessWordResult, 'WhenNecessary');
+            part.checkWordResult = checkWord(guessWordResult, 'Always');
             part.checked = true;
             parts.push(part);
         } else {
@@ -377,7 +377,7 @@ function guessPartWord(checkWord, part){
     if(guessResult){
         part.content = guessResult.content;
         if(!part.checked) {
-            let checkWordResult = checkWord(guessResult.content, 'WhenNecessary');
+            let checkWordResult = checkWord(guessResult.content, 'Always');
             if(checkWordResult){
                 part.checkWordResult = checkWordResult;
                 part.checked = true;
@@ -426,7 +426,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let checkWordResult;
         let checked = false;
         if(checkWord){
-            checkWordResult = checkWord(contentWithoutPunctuation,'WhenNecessary');
+            checkWordResult = checkWord(contentWithoutPunctuation,'Always');
             
             if(checkWordResult){
                 partContent = checkWordResult.word;
@@ -638,7 +638,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
         content = guessWordResult.content;
         if(guessWordResult.checkType=='content'){
             checked = true;
-            checkWordResult = checkWord(content, 'WhenNecessary');
+            checkWordResult = checkWord(content, 'Always');
         }
     }else {
         content = originalContent;
@@ -705,7 +705,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let subtext = text.substring(startTextIndex);
     let subtextWithoutPunctuation = trimPunctuations(subtext);
         
-    let checkWordResult = checkWord(subtextWithoutPunctuation, 'WhenNecessary');
+    let checkWordResult = checkWord(subtextWithoutPunctuation, 'Always');
     
     let originalContent = subtext;
     

@@ -67,7 +67,7 @@ function tokenizeTextNode(document, siteOptions) {
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
-                    lookupBase: 'WhenNecessary',
+                    lookupBase: 'Always',
                     dictionaryOptions: buildDictionaryOptions(siteOptions),
                 });
 

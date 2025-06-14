@@ -189,6 +189,17 @@ function searchWordWithDict(query, options, dicts){
                 baseWord = baseWordResult.word;
                 deepLookupResult = baseWordResult;
             }
+
+            if(!baseWordResult){
+                let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName]);
+                
+                if(baseWordResult){
+                    //console.log(baseWordResult);
+                    baseSearchType='lemma';
+                    baseWord = baseWordResult.word;
+                    deepLookupResult = baseWordResult;
+                }
+            }
         
         }
 

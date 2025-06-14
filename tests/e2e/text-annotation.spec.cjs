@@ -206,8 +206,8 @@ test('phrase gerund giving up', async ({ testPage, extensionId, popupPage }) => 
   let word = testPage.page.hover("#phrase-gerund mea-token[data-query='giving']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`giving   [give ing]
-   n. 礼物,给予物
+  await expect(definitions).toHaveText(`give  
+   n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
    give up  
    vt. 放弃努力,认输
 `);
