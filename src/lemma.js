@@ -1,4 +1,5 @@
 import { commonStart } from './utils/stringUtils.js'
+import * as lemmatize from 'wink-lemmatizer';
 
 function isRegularTransform(base, transform){
     let result = _isRegularTransform(base, transform);
@@ -46,4 +47,8 @@ function _isRegularTransform(base, transform) {
     return result;
 }
 
-export { isRegularTransform }
+function lemmatizeVerb(word){
+    return lemmatize.verb(word);
+}
+
+export { isRegularTransform, lemmatizeVerb }

@@ -2,7 +2,7 @@ import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.j
 import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
-import * as lemmatize from 'wink-lemmatizer';
+import { lemmatizeVerb } from '../lemma.js'
 //import posTagger from 'wink-pos-tagger'
 
 
@@ -228,7 +228,7 @@ function guessGerund(checkWord, parts, part){
     
     if((previousPart1 && previousPart1.checkWordResult?.isPreposition)
         || (previousPart2 && previousPart2.checkWordResult?.isPreposition)){
-        let baseWord = lemmatize.verb(word);
+        let baseWord = lemmatizeVerb(word);
         if(baseWord != word){
             let checkWordResult = checkWord(baseWord, 'Never');
             if(checkWordResult){
@@ -266,7 +266,7 @@ function guessContinuousTense(checkWord, parts, part){
     
     if((previousPart1 && previousPart1.checkWordResult?.baseWord == 'be')
         || (previousPart2 && previousPart2.checkWordResult?.baseWord == 'be')){
-        let baseWord = lemmatize.verb(word);
+        let baseWord = lemmatizeVerb(word);
         if(baseWord != word){
             let checkWordResult = checkWord(baseWord, 'Never');
             if(checkWordResult){
@@ -317,7 +317,7 @@ function guessPartPhraseBaseWord(checkWord, parts, part){
             let previousPart = parts[previousIndex];
             
             if(previousPart.checkWordResult?.baseWord == 'be' && part.checkWordResult.word && part.checkWordResult.word.endsWith('ing')){
-                let baseWord = lemmatize.verb(word);
+                let baseWord = lemmatizeVerb(word);
                 if(baseWord != word){
                     let checkWordResult = checkWord(baseWord, 'Never');
                     if(checkWordResult){
