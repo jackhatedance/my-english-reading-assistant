@@ -3,8 +3,16 @@ import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
 import * as lemmatize from 'wink-lemmatizer';
+//import posTagger from 'wink-pos-tagger'
+
 
 function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
+    /*
+    var tagger = posTagger();
+    let tags = tagger.tagSentence(sentence);
+    console.log(tags);
+    */
+   
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
     let parts = _splitTextByRegex(sentence, regexp, 0, null, null);
