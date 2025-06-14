@@ -346,35 +346,33 @@ function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciat
   let word = searchResult.word;
   let baseWord = searchResult.baseWord;
   
+  let paragraphs = [];
+  let wordHtml = null;
+  wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
+  
+  let baseHtml = null;
+  if(searchResult.deepLookupResult){
+    baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, true);
+  }
+
   let html;
   if(targetWord == word){
-    let wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
-    let baseHtml = '';
-    if(hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)){
-      if(searchResult.deepLookupResult){
-        baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, false);
-      }else{
-        console.log(`deepLookupResultof ${word} is null`);
-      }
-    }
-
-    if(baseHtml){
-      html = `${wordHtml} <br> ${baseHtml}`;
-    }else{
-      html = `${wordHtml}`;
-    }
-    
-  } else{
-    let baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, true);
-    html = baseHtml;
+    paragraphs.push(wordHtml);
+    paragraphs.push(baseHtml);
+  } else {
+    paragraphs.push(baseHtml);
+    paragraphs.push(wordHtml);
   }
 
   if(phraseSearchResult){
     let phrase = phraseSearchResult.query;
     let phraseHtml = lookupResultToHtml(phrase, phraseSearchResult.lookupResult, pronunciationRegion, true);
 
-    html = html +'<br>'+ phraseHtml;
+    paragraphs.push(phraseHtml);
   }
+
+  paragraphs = paragraphs.filter(item => item!=null);
+  html = paragraphs.join('<br>');
 
   updateUI(tooltipElement, html, unknown);
 }
