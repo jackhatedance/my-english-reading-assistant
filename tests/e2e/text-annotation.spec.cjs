@@ -133,6 +133,25 @@ test('transform interesting', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+
+test('transform buckled', async ({ testPage, extensionId, popupPage }) => {
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.locator("#transform mea-token[data-query='buckled']");
+  await expect(word).toHaveText('buckled');
+  await expect(word).toHaveAttribute('data-word', 'buckled');
+  await expect(word).toHaveAttribute('data-base-word', 'buckle');
+  await expect(word).toHaveAttribute('data-target-word', 'buckle');
+  await expect(word).toHaveAttribute('data-footnote', 'a.有扣的');
+  await expect(word).toHaveAttribute('data-footnote-short', 'a.有扣的');
+  
+});
+
 test('definition link crenels', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
   
