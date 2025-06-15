@@ -297,6 +297,19 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
+    it('noecd2e underscore', async function () {
+      let html = this.lookup('underscore');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "同UNDERLINE");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "同UNDERLINE(义项1)");
+      assert.equal(parseResult[0].phrases.length, 0);
+      
+    });
+
   });
   
 });
