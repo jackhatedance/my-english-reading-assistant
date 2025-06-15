@@ -1,7 +1,7 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
 function splitIntoDefinitionGroups(definition){
-    let matches = definition.matchAll(/(\w{1,6}\.((& ?)?\w{1,6}\.)*)|;/g);
+    let matches = definition.matchAll(/((\w{1,6}\.((& ?)?\w{1,6}\.)*)|;)(?![^()]*\))/g);
     let matchArray = [...matches];
 
     let groups = [];

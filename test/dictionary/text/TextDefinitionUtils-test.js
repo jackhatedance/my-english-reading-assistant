@@ -67,6 +67,14 @@ describe('TextDefinitionUtils test', function () {
       assert.equal(parseResult[3], "aux. 将, 愿意, 必须");
     });
 
+    it("splitIntoDefinitionGroups here's sysLarge", async function () {
+      let parseResult = splitIntoDefinitionGroups("abbr. (=here is. Here's to you)! 干杯;[网络] 这里有；这里是；用");
+      
+      assert.equal(parseResult.length, 2);
+      assert.equal(parseResult[0], "abbr. (=here is. Here's to you)! 干杯");
+      assert.equal(parseResult[1], "[网络] 这里有；这里是；用");
+    });
+
 
   });
   
