@@ -114,6 +114,25 @@ test('transform giving', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+
+test('transform interesting', async ({ testPage, extensionId, popupPage }) => {
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.locator("#transform mea-token[data-query='interesting']");
+  await expect(word).toHaveText('interesting');
+  await expect(word).toHaveAttribute('data-word', 'interesting');
+  await expect(word).toHaveAttribute('data-base-word', 'interest');
+  await expect(word).toHaveAttribute('data-target-word', 'interest');
+  await expect(word).toHaveAttribute('data-footnote', 'a.有趣的');
+  await expect(word).toHaveAttribute('data-footnote-short', 'a.有趣的');
+  
+});
+
 test('definition link crenels', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
   
