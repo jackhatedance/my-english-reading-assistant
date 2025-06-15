@@ -14,6 +14,7 @@ test('base form this', async ({ testPage, extensionId, popupPage }) => {
 
   let rode = testPage.page.locator("#base-form mea-token[data-query='this']");
   await expect(rode).toHaveAttribute('data-target-word', 'this');
+  await expect(rode).toHaveAttribute('data-base-word', '');
   await expect(rode).toHaveAttribute('data-footnote', 'pron.这,本; a.这,本; ad.这么');
   await expect(rode).toHaveAttribute('data-footnote-short', 'pron.这; a.这; ad.这么; ...');
   
@@ -49,6 +50,7 @@ test('iregular not only tranform abode', async ({ testPage, extensionId, popupPa
 
   let rode = testPage.page.locator("#transform mea-token[data-query='abode']");
   await expect(rode).toHaveAttribute('data-word', 'abode');
+  await expect(rode).toHaveAttribute('data-base-word', 'abide');
   await expect(rode).toHaveAttribute('data-target-word', 'abode');
   await expect(rode).toHaveAttribute('data-footnote', 'n.住所,住处; abide的过去式和过去分词');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.住所,住处; abide的过去式和过去分词');
@@ -68,12 +70,30 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
   let rode = testPage.page.locator("#transform mea-token[data-query='boys']");
   await expect(rode).toHaveText('boys');
   await expect(rode).toHaveAttribute('data-word', 'boys');
+  await expect(rode).toHaveAttribute('data-base-word', 'boy');
   await expect(rode).toHaveAttribute('data-target-word', 'boy');
   await expect(rode).toHaveAttribute('data-footnote', '原boy:n.男孩; 男孩,少年,儿子');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
   
 });
 
+test('transform giving', async ({ testPage, extensionId, popupPage }) => {
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.locator("#transform mea-token[data-query='giving']");
+  await expect(word).toHaveText('giving');
+  await expect(word).toHaveAttribute('data-word', 'giving');
+  await expect(word).toHaveAttribute('data-base-word', 'give');
+  await expect(word).toHaveAttribute('data-target-word', 'give');
+  await expect(word).toHaveAttribute('data-footnote', 'n.礼物,给予物');
+  await expect(word).toHaveAttribute('data-footnote-short', 'n.礼物,给予物');
+  
+});
 
 test('definition link crenels', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
@@ -105,6 +125,7 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   let word = testPage.page.locator("#new-word-tag-sup mea-token[data-query='boys']");
   await expect(word).toHaveText('boys');
   await expect(word).toHaveAttribute('data-word', 'boys');
+  await expect(word).toHaveAttribute('data-base-word', 'boy');
   await expect(word).toHaveAttribute('data-target-word', 'boy');
   await expect(word).toHaveAttribute('data-footnote', '原boy:n.男孩; 男孩,少年,儿子');
   await expect(word).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
@@ -112,6 +133,7 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   word = testPage.page.locator("#new-word-tag-sup mea-token[data-query='at']");
   await expect(word).toHaveText('at');
   await expect(word).toHaveAttribute('data-word', 'at');
+  await expect(word).toHaveAttribute('data-base-word', '');
   await expect(word).toHaveAttribute('data-target-word', 'at');
   await expect(word).toHaveAttribute('data-footnote', 'prep.在,向,对');
   await expect(word).toHaveAttribute('data-footnote-short', 'prep.在,向,对');
