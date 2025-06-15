@@ -7,6 +7,7 @@ import { isPageAnnotationVisible } from './page.js'
 import { getTargetWord } from './word.js'
 import { findTokenInfoByNode } from './article.js'
 import { findPhrase } from './phrase.js'
+import { isRegularTransform } from './lemma.js'
 
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
@@ -348,8 +349,19 @@ function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciat
   
   let paragraphs = [];
   let wordHtml = null;
-  wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
+
+  let linkOrDefinitionOnly = hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json);
+  let regular = baseWord && isRegularTransform(baseWord, word);
   
+  let hideWordHtml = false;
+  if(linkOrDefinitionOnly && regular){
+    hideWordHtml = true;
+  }
+
+  if(!hideWordHtml) {
+    wordHtml = lookupResultToHtml(word, searchResult.lookupResult, pronunciationRegion, true);
+  }
+
   let baseHtml = null;
   if(searchResult.deepLookupResult){
     baseHtml = lookupResultToHtml(baseWord, searchResult.deepLookupResult.lookupResult, pronunciationRegion, true);
