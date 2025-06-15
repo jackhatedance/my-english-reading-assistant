@@ -310,6 +310,28 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
+    it('noecd2e could', async function () {
+      let html = this.lookup('could');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "can的过去式");
+      
+    });
+
+    it('noecd2e woke', async function () {
+      let html = this.lookup('woke');
+      let parseResult = this.parser.parse(html);
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "wake的过去式");
+      
+    });
+
   });
   
 });
