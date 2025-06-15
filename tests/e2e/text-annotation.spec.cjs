@@ -39,6 +39,25 @@ test('iregular only transform rode', async ({ testPage, extensionId, popupPage }
 });
 
 
+test('transform riding', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#transform mea-token[data-query='riding']");
+  await expect(rode).toHaveAttribute('data-word', 'riding');
+  await expect(rode).toHaveAttribute('data-base-word', 'ride');
+  await expect(rode).toHaveAttribute('data-target-word', 'ride');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.骑,乘车,乘,骑术,骑马');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.骑,乘车,乘; ...');
+  
+});
+
+
 test('iregular not only tranform abode', async ({ testPage, extensionId, popupPage }) => {
   
   

@@ -11,6 +11,7 @@ import { addUnrecognizedWord } from './service/dictionaryService.js';
 import { variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { deepLookup } from './deep-lookup.js'
+import { isRegularTransform } from './lemma.js'
 
 
 var gPrefixes, gSuffixes;
@@ -486,13 +487,8 @@ function getBaseFromWordParts(word){
     if(parts){
         if(parts.length === 3 && parts[0] === '' && parts[1] !== '' && parts[2] !== ''){
             let base = parts[1];
-            let suffix = parts[2];
-
-            let lastChar = base.charAt(base.length - 1);
-
-            if(suffix === 'ed' || suffix === 'd' || suffix === lastChar + 'ed'
-                //|| suffix === 's' || suffix === 'es'
-             ) {
+            
+            if(isRegularTransform(base, word)){
                 return base;     
             }
 
