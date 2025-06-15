@@ -197,6 +197,27 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+
+
+test('tokenize punctuation double quotation am', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.locator("#tokenize-punctuation-last-word-double-quotation mea-token[data-query='am']");
+  await expect(word).toHaveText('am.”');
+  await expect(word).toHaveAttribute('data-word', 'am');
+  await expect(word).toHaveAttribute('data-base-word', 'be');
+  await expect(word).toHaveAttribute('data-target-word', 'am');
+  await expect(word).toHaveAttribute('data-footnote', '原be:vt.是,表示,在; vi.是,表示,在');
+  await expect(word).toHaveAttribute('data-footnote-short', 'vt.是,表示; vi.是; ...');
+  
+});
+
 test('phrase base form give up', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
   
