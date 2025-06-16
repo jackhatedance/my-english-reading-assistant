@@ -498,7 +498,8 @@ async function addDocumentEventListener(document, currentSiteOption) {
         }
         
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
-        if(!triggeredBySelf && !nodeTextContentsIsEmpty){
+        let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation);
+        if(!triggeredBySelf && !nodeTextContentsIsEmpty && !siteIgnoreDomChange){
           gDomChanges ++;
         }        
       } else if (mutation.type === "attributes") {

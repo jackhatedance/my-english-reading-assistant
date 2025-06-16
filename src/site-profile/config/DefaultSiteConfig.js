@@ -43,6 +43,9 @@ class DefaultSiteConfig {
     needRefreshPageAnnotation(topDocument){
         return false;
     }
+    ignoreDomChange(mutation){
+        return false;
+    }
     //the url to identify the real page (could be in in iframe)
     getUrl(topDocument){
         return topDocument.location.href;

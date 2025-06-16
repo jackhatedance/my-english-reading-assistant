@@ -31,6 +31,9 @@ class DefaultSiteProfile {
     needRefreshPageAnnotation(topDocument){
         return this._config.needRefreshPageAnnotation(topDocument);
     }
+    ignoreDomChange(mutation){
+        return this._config.ignoreDomChange(mutation);
+    }
     //the url to identify the real page (could be in in iframe)
     getUrl(topDocument){
         return this._config.getUrl(topDocument);
