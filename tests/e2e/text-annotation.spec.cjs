@@ -34,7 +34,7 @@ test('iregular only transform rode', async ({ testPage, extensionId, popupPage }
   await expect(rode).toHaveAttribute('data-base-word', 'ride');
   await expect(rode).toHaveAttribute('data-target-word', 'rode');
   await expect(rode).toHaveAttribute('data-footnote', '原ride:n.骑马,乘坐; vt.骑,乘坐; vi.骑马,乘车; ...');
-  await expect(rode).toHaveAttribute('data-footnote-short', 'n.骑马; vt.骑; vi.骑马; ...');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'ride:n.骑马; vt.骑; vi.骑马; ...');
   
 });
 
@@ -92,7 +92,7 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
   await expect(rode).toHaveAttribute('data-base-word', 'boy');
   await expect(rode).toHaveAttribute('data-target-word', 'boy');
   await expect(rode).toHaveAttribute('data-footnote', '原boy:n.男孩; 男孩,少年,儿子');
-  await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'boy:n.男孩; 男孩,少年; ...');
   
 });
 
@@ -185,7 +185,7 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   await expect(word).toHaveAttribute('data-base-word', 'boy');
   await expect(word).toHaveAttribute('data-target-word', 'boy');
   await expect(word).toHaveAttribute('data-footnote', '原boy:n.男孩; 男孩,少年,儿子');
-  await expect(word).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
+  await expect(word).toHaveAttribute('data-footnote-short', 'boy:n.男孩; 男孩,少年; ...');
   
   word = testPage.page.locator("#new-word-tag-sup mea-token[data-query='at']");
   await expect(word).toHaveText('at');
@@ -214,7 +214,7 @@ test('tokenize punctuation double quotation am', async ({ testPage, extensionId,
   await expect(word).toHaveAttribute('data-base-word', 'be');
   await expect(word).toHaveAttribute('data-target-word', 'am');
   await expect(word).toHaveAttribute('data-footnote', '原be:vt.是,表示,在; vi.是,表示,在');
-  await expect(word).toHaveAttribute('data-footnote-short', 'vt.是,表示; vi.是; ...');
+  await expect(word).toHaveAttribute('data-footnote-short', 'be:vt.是,表示; vi.是; ...');
   
 });
 

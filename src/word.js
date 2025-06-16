@@ -27,9 +27,11 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     }
 
     if(searchResult.deepLookupResult && hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)) {
-        middleDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, middleDefinition);
+        shortDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, shortDefinition, false);
+        middleDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, middleDefinition, true);
     } else {
-        middleDefinition = addPrefixBySearchType(searchType, searchResult.word, middleDefinition);
+        shortDefinition = addPrefixBySearchType(searchType, searchResult.word, shortDefinition, false);
+        middleDefinition = addPrefixBySearchType(searchType, searchResult.word, middleDefinition, true);
     }
 
     let effectiveWord = baseWord? baseWord : word;
@@ -64,11 +66,14 @@ function getTargetWord(searchResult){
 
 }
 
-function addPrefixBySearchType(searchType, word, definition){
+function addPrefixBySearchType(searchType, word, definition, addDesc){
     let result = definition;
     let desc = getSearchTypeDescription(searchType, false);
+
+    let descStr =  addDesc? desc :'';
+    
     if(desc){
-        result = desc + word + ':' + definition;
+        result = descStr + word + ':' + definition;
     }
 
     return result;
