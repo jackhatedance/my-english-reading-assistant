@@ -43,6 +43,20 @@ initLog();
 const gLogger = log.getLogger("contentScript");
 
 window.addEventListener("load", myMain, false);
+
+function updateDocumentArticleMap(documentArticleMap, n){
+  if(gDocumentArticleMap==null){
+    gDocumentArticleMap = new Map();
+  }
+  for (const [key, value] of documentArticleMap) {
+    gDocumentArticleMap.set(key, value);
+  }
+  
+  //console.log("updateDocumentArticleMap:"+n);
+  //console.log(documentArticleMap);
+  //console.log(gDocumentArticleMap);  
+}
+
 function myMain() {
   //console.log('page on load');
   var jsInitChecktimer = setTimeout(checkForJS_Finish, 100);
@@ -55,7 +69,7 @@ function myMain() {
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
         initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
-          gDocumentArticleMap = documentArticleMap;
+          updateDocumentArticleMap(documentArticleMap, 1);
           resetPageAnnotationVisibilityAndNotify(true);
         });
       }
@@ -82,7 +96,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized(gSiteProfile)) {
         initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
-          gDocumentArticleMap = documentArticleMap;
+          updateDocumentArticleMap(documentArticleMap, 2);
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
       } else {
@@ -104,7 +118,7 @@ function messageListener(request, sender, sendResponse) {
 
       //init all documents
       initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
-        gDocumentArticleMap = documentArticleMap;
+        updateDocumentArticleMap(documentArticleMap, 3);
         resetPageAnnotationVisibilityAndNotify(visible);
       });
     }
@@ -252,7 +266,8 @@ async function domMonitor() {
     
     let startTime = new Date().getTime();
 
-    gDocumentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
+    let documentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
+    updateDocumentArticleMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
     gLogger.debug(`initPageAnnotations time costs: ${elapseTime1} ms`);

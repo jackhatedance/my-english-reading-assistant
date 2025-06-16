@@ -125,9 +125,15 @@ function isPageAnnotationInitialized() {
     return isDocumentAnnotationInitialized(document)
 }
 
+var gServiceInitialized = false;
+async function initializeServiceOnlyOnce(){
+    if(!gServiceInitialized){
+        await doInitializeService();
+        gServiceInitialized = true;
+    }
+}
 
-async function initPageAnnotations(siteProfile, addDocumentEventListener, addWordHoverEventListener) {
-    //console.log('initPageAnnotations');
+async function doInitializeService(){
     await initializeOptionService();
     let options = getOptionsFromCache();
 
@@ -138,6 +144,12 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener, addWor
     await initializeCustomDictionaryService(additionalDictionaryNames, ['index'], {});
     
     await initializeDictionaryService(options.unrecognizedWords.enabled);
+
+}
+
+async function initPageAnnotations(siteProfile, addDocumentEventListener, addWordHoverEventListener) {
+    //console.log('initPageAnnotations');
+    await initializeServiceOnlyOnce();
 
     let documentArticleMap = new Map();
     /*
