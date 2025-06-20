@@ -45,9 +45,8 @@
 
 #### 词典哪里找？
 * [mdict.org](https://mdx.mdict.org)
-* [freemdict.com](https://freemdict.com/)
 
-支持导入的Mdict词典列表(陆续添加中)
+支持提取结构化数据的Mdict词典列表(陆续添加中)
 |名称|发布时间|更新时间|大小|发音|图片|支持度|下载链接|
 |-|-|-|-|-|-|-|-|
 |新牛津英汉双解大词典（第2版）|2015||30MB|无|无|良好|[mdict.org](https://mdx.mdict.org/Recommend/%E6%96%B0%E7%89%9B%E6%B4%A5%E8%8B%B1%E6%B1%89%E5%8F%8C%E8%A7%A3%E5%A4%A7%E8%AF%8D%E5%85%B8%EF%BC%88%E7%AC%AC2%E7%89%88%EF%BC%89.zip)|
