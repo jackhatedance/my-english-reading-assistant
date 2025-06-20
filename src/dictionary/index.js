@@ -4,7 +4,7 @@ import { Progress } from './Progress.js'
 export const INDEX_VERSION = 29;
 export const JSON_SCHEMA_MAJOR_VERSION = 1;
 
-const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_parse');
+const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract');
 
 function findDefinition(entries){
     if(!entries){
