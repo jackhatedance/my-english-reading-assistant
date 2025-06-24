@@ -3,7 +3,7 @@
         "message":"我的英文阅读助手"
     },
     "extensionDescription":{
-        "message":"自动查生词并展示含义，阅读英文不停顿"
+        "message":"自动提示生词含义，阅读英文不停顿"
     },
     "popupDictionary":{
         "message":"词典"

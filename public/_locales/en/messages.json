@@ -3,7 +3,7 @@
         "message":"My English Reading Assistant"
     },
     "extensionDescription":{
-        "message":"Automatically look up new words and display their meanings, so you can read English without stopping"
+        "message":"Automatically prompt the meaning of new words, so you can read English without pausing"
     },
     "popupDictionary":{
         "message":"Dictionary"
