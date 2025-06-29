@@ -9,7 +9,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
     before(function() {
       
       this.parser = new Noecd2eParser({
-        allUpperCaseEntryPolicy: 'lowerCase',
+        //allUpperCaseEntryPolicy: 'lowerCase',
         debugPrintSelectorFind: false
       });
 

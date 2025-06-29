@@ -10,9 +10,10 @@ import * as cheerio from 'cheerio';
 import { eliminateFontFaces } from './css/css.js'
 import { dataURItoText, base64ToDataUrl } from '../../utils/fileUtils.js'
 import { Progress } from '../Progress.js'
-import { getEntryFromLink, isAllUpperCaseEntry, getLink } from './mdict-definition-utils.js'
+import { getEntryFromLink, getLink } from './mdict-definition-utils.js'
 import { PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../dictConstants.js'
 import { decode } from 'html-entities'
+import { isAllUpperCase } from '../../utils/stringUtils.js'
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract_resource_data');
 
@@ -220,7 +221,7 @@ class MdictDictionary extends Dictionary {
         for(let element of linkElements){
             let href = $(element).attr('href');
             let entry = getEntryFromLink(href);
-            if(entry && isAllUpperCaseEntry(entry)){
+            if(entry && isAllUpperCase(entry)){
                 if(this.allUpperCaseEntryPolicy == ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE){
                     href = `entry://${entry.toLowerCase()}`;
                     $(element).attr('href', href);

@@ -1,8 +1,8 @@
 import { findBaseForm } from './base-forms.js'
 import { findLink } from './links.js'
-import { trimByCharacters } from '../utils/stringUtils.js'
+import { trimByCharacters, isAllUpperCase } from '../utils/stringUtils.js'
 import { standardizePunctuations, removeParentheses, splitButIgnoreParentheses } from '../text/textUtils.js'
-import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS, PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY } from './dictConstants.js'
+import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS, PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from './dictConstants.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
 class DefinitionParser {
@@ -152,11 +152,17 @@ class DefinitionParser {
             definition.type= DICTIONARY_DEFINITION_TYPE_FORM;
             definition.form= form;
             
-            let lowerCaseBase = base.toLowerCase();
-            definition.base=lowerCaseBase;
+            definition.base = base;
+            definition.text = text;
 
-            definition.text = text.replace(base, lowerCaseBase);
-
+            if(base && isAllUpperCase(base)){
+                if(this.getAllUpperCaseEntryPolicy() == ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE){
+                    let lowerCaseBase = base.toLowerCase();
+            
+                    definition.base = lowerCaseBase;
+                    definition.text = text.replace(base, lowerCaseBase);
+                }
+            }
             return definition;
         }
 

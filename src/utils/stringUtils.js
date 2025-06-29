@@ -19,4 +19,8 @@ function commonStart(str1, str2) {
     return result;
 }
 
-export { trimByCharacters, commonStart }
+function isAllUpperCase(entry){
+    return (entry && entry.match(/[^a-z]+/));
+}
+
+export { trimByCharacters, commonStart, isAllUpperCase }

@@ -2,6 +2,9 @@ import { commonStart } from './utils/stringUtils.js'
 import * as lemmatize from 'wink-lemmatizer';
 
 function isRegularTransform(base, transform){
+    base = base.toLowerCase();
+    transform = transform.toLowerCase();
+
     let result = _isRegularTransform(base, transform);
 
     if(result){

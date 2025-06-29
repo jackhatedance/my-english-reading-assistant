@@ -36,6 +36,20 @@ describe('TextDefinitionParser test', function () {
     
     });
 
+    it('text spaniards', async function () {
+      let parseResult = this.parser.parse("/ˈspænjədz/ Spaniard的复数");
+      
+      //console.log(parseResult);
+      //assert(tokens.length === 2,"test");
+      
+      assert.equal(parseResult[0].headword.pronunciations.length, 1);
+      assert.equal(parseResult[0].definitionGroups[0].name, "");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "Spaniard的复数");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].type, "form");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].base, "Spaniard");      
+    
+    });
+
     it('text boys SysLarge', async function () {
       let parseResult = this.parser.parse('n. 男孩子们；小伙子们（boy的复数）');
       

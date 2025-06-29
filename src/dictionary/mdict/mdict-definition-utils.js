@@ -7,10 +7,6 @@ function getEntryFromLink(href){
     }
 }
 
-function isAllUpperCaseEntry(entry){
-    return (entry && entry.match(/[^a-z]+/));
-}
-
 function getLink(raw) {
   if(raw){
       let matchResult = raw.trim().match(/^@@@LINK=(.*)\r*\n*\u0000*$/);
@@ -21,4 +17,4 @@ function getLink(raw) {
   return null;    
 }
 
-export { getEntryFromLink, isAllUpperCaseEntry, getLink }
+export { getEntryFromLink, getLink }
