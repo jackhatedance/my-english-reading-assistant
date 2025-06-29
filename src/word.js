@@ -5,9 +5,7 @@ import {  TOKEN_TAG } from './html.js';
 import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/optionService.js'
 import { encode } from 'html-entities';
-import { getSearchTypeDescription } from './dictionary/search-type.js'
 import { isRegularTransform } from './lemma.js'
-import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     let query = searchResult.query;
@@ -22,16 +20,8 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     let shortDefinition = definition;
     let middleDefinition = definition;
     if(simplifyDefinitionOptions){
-        shortDefinition = simplifyDefinition(searchResult.lookupResult, searchResult.deepLookupResult, simplifyDefinitionOptions);
-        middleDefinition = simplifyDefinition(searchResult.lookupResult, searchResult.deepLookupResult, createSimplifyDefinitionOptions(6, false));
-    }
-
-    if(searchResult.deepLookupResult && hasOnlyLinkOrFormDefinition(searchResult.lookupResult.json)) {
-        shortDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, shortDefinition, false);
-        middleDefinition = addPrefixBySearchType(baseSearchType, searchResult.baseWord, middleDefinition, true);
-    } else {
-        shortDefinition = addPrefixBySearchType(searchType, searchResult.word, shortDefinition, false);
-        middleDefinition = addPrefixBySearchType(searchType, searchResult.word, middleDefinition, true);
+        shortDefinition = simplifyDefinition(word, searchType, searchResult.lookupResult, baseWord, baseSearchType, searchResult.deepLookupResult, simplifyDefinitionOptions);
+        middleDefinition = simplifyDefinition(word, searchType, searchResult.lookupResult, baseWord, baseSearchType, searchResult.deepLookupResult, createSimplifyDefinitionOptions(6, false));
     }
 
     let effectiveWord = baseWord? baseWord : word;
@@ -64,19 +54,6 @@ function getTargetWord(searchResult){
         return word;
     }
 
-}
-
-function addPrefixBySearchType(searchType, word, definition, addDesc){
-    let result = definition;
-    let desc = getSearchTypeDescription(searchType, false);
-
-    let descStr =  addDesc? desc :'';
-    
-    if(desc){
-        result = descStr + word + ':' + definition;
-    }
-
-    return result;
 }
 
 function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions) {

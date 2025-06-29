@@ -2,8 +2,9 @@ import { getWordClassAbbreviation } from './wordClass.js'
 import { removeParentheses, standardizeParenthesesPunctuations } from '../text/textUtils.js' 
 import { mergeEntries } from './entry-utils.js'
 import { hasOnlyLinkOrFormDefinition } from './entry-utils.js'
+import { isRegularTransform } from '../lemma.js'
 
-function simplifyDefinition(originalLookupResult, deepLookupResult, options){
+function simplifyDefinition(word, searchType, originalLookupResult, baseWord, baseSearchType, deepLookupResult, options){
     let { maxMeaningNumber, hideWordClass } = options;
     //hardcode temporarily
     const hidePhoneticSymbol = true;
@@ -19,7 +20,11 @@ function simplifyDefinition(originalLookupResult, deepLookupResult, options){
     
     if(deepLookupResult && hasOnlyLinkOrFormDefinition(originalLookupResult.json)){
         lookupResult = deepLookupResult.lookupResult;
-        //prefix = `${deepLookupResult.lookupResult.query}:`;
+
+        if(!isRegularTransform(baseWord, word)){
+            prefix = `${baseWord}:`;
+        }
+        
         //console.log('deepLookupResult:'+ JSON.stringify(deepLookupResult));
     }
 
