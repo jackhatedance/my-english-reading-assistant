@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { getWebSiteDocumentUrl } from '../site.js';
 
 const t = chrome.i18n.getMessage;
 
@@ -18,11 +19,12 @@ const props = defineProps({
 
 
 const url = computed(() => {
-    let document = 'guide.html';
+    let document = getWebSiteDocumentUrl('guide.html');
     if(props.type =='faq'){
-        document = 'faq.html'
+        document = getWebSiteDocumentUrl('faq.html');
     }
-    return chrome.runtime.getURL(`${document}#${props.keyword}`);    
+    //return chrome.runtime.getURL(`${document}#${props.keyword}`);    
+    return `${document}#${props.keyword}`;    
 });
 
 const leftParenthesis = computed(() => {

@@ -352,7 +352,7 @@ init();
           <li class="green">{{ t('optionsEditDictionaryIndexColorTipsGreen') }}</li>
           <li class="lightgreen">{{ t('optionsEditDictionaryIndexColorTipsLightGreen') }}</li>
           <li class="yellow">{{ t('optionsEditDictionaryIndexColorTipsYellow') }}</li>
-          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有些词典无法提取结构化数据"/></li>
+          <li class="red">{{ t('optionsEditDictionaryIndexColorTipsRed') }}<HelpLink type="faq" keyword="为什么有些词典无法提取结构化数据？"/></li>
         </ul>
         
         <p v-html="optionsEditDictionaryTips"></p>
@@ -382,7 +382,7 @@ init();
     <div class="section">
       <div class="label">
         <p>{{ t('optionsImportDictionaryDesc') }} <HelpLink type="guide" keyword="词典格式"/></p>
-        <HelpLink type="faq" keyword="词典哪里找" :parentheses=false :message="t('options_dictionary_find_tips')"/>
+        <HelpLink type="faq" keyword="词典哪里找？" :parentheses=false :message="t('options_dictionary_find_tips')"/>
       </div>
       <div class="input">
         <input type="file" ref="file" accept=".txt, .zip">

@@ -5,6 +5,7 @@ import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVoc
 import {localizeHtmlPage} from './locale.js';
 import {initializeOptionService, getOptionsFromCache} from './service/optionService.js';
 import { getAdditionalDictionaryMetas } from './dictionary/customDictionary.js'
+import { getWebSiteDocumentUrl } from './site.js';
 
 localizeHtmlPage();
 
@@ -128,11 +129,11 @@ localizeHtmlPage();
     }
 
     document.getElementById('help').addEventListener('click', (e) => {
-      chrome.tabs.create({url: chrome.runtime.getURL('guide.html')});
+      chrome.tabs.create({url: getWebSiteDocumentUrl('guide.html')});
     });
 
     document.getElementById('faq').addEventListener('click', (e) => {
-      chrome.tabs.create({url: chrome.runtime.getURL('faq.html')});
+      chrome.tabs.create({url: getWebSiteDocumentUrl('faq.html')});
     });
 
     document.getElementById('options').addEventListener('click', (e) => {
