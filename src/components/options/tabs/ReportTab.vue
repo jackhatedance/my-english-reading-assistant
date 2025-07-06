@@ -36,7 +36,7 @@ init();
     <div class="section">
       <div class="label">
 
-
+        <p>{{ t('optionsReportLabelDesc') }}</p>  
       </div>
       <div class="input">
         <div>
