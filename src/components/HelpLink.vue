@@ -19,9 +19,9 @@ const props = defineProps({
 
 
 const url = computed(() => {
-    let document = getWebSiteDocumentUrl('guide.html');
+    let document = getWebSiteDocumentUrl('guide');
     if(props.type =='faq'){
-        document = getWebSiteDocumentUrl('faq.html');
+        document = getWebSiteDocumentUrl('faq');
     }
     //return chrome.runtime.getURL(`${document}#${props.keyword}`);    
     return `${document}#${props.keyword}`;    

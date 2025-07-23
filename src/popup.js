@@ -129,7 +129,7 @@ localizeHtmlPage();
     }
 
     document.getElementById('help').addEventListener('click', (e) => {
-      chrome.tabs.create({url: getWebSiteDocumentUrl('guide.html')});
+      chrome.tabs.create({url: getWebSiteDocumentUrl('guide')});
     });
     
     document.getElementById('options').addEventListener('click', (e) => {
