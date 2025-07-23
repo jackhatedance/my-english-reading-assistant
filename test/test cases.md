@@ -58,7 +58,6 @@
 
 * help
 * options link
-* FAQ link
 * show/hide
 * always show on this site
 * annotation adjustment
