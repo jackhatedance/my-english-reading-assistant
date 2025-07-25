@@ -113,9 +113,6 @@ function calculateKnownWordsCount(wordArray) {
 
 function existWordRecord(key, vocabulary){
     
-    if(!vocabulary){
-        vocabulary = loadKnownWords();
-    }
     
     let found = vocabulary.indexOf(key) >= 0;
     if(!found){

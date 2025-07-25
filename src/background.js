@@ -1,6 +1,6 @@
 'use strict';
 
-import {markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
@@ -90,7 +90,9 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
         }
       }
 
-      if(!await isKnown(targetWord)){
+      let vocabulary = await loadKnownWords();
+
+      if(!isKnown(targetWord, vocabulary)){
         await markWordAsKnown(targetWord);
         sendMsg('ADD_KNOWN_WORD', targetWord);
       } else {
