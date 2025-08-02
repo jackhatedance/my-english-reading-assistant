@@ -332,6 +332,18 @@ describe('mdict new-oxford-ec-dual parser', function () {
       
     });
 
+    it('noecd2e wrap', async function () {
+        let html = this.lookup('wrap');
+        let parseResult = this.parser.parse(html);
+        //console.log(JSON.stringify(parseResult));
+        //assert(tokens.length === 2,"test");
+  
+  
+        assert.equal(parseResult[0].phrases.length, 3);
+        assert.equal(parseResult[0].phrases[0], "be wrapped up in");
+        assert.equal(parseResult[0].phrases[1], "wrap up");
+        assert.equal(parseResult[0].phrases[2], "wrap something up");
+      });
   });
   
 });

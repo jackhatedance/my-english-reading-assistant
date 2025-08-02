@@ -2,10 +2,11 @@ import { JsonSelectorParser } from './JsonSelectorParser.js'
 import { trimByCharacters } from '../../../utils/stringUtils.js'
 import { findBaseForm } from '../../base-forms.js'
 import { PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from '../../dictConstants.js'
+import { removeParentheses } from '../../../text/textUtils.js'
 
 class Noecd2eParser extends JsonSelectorParser {
     constructor(options) {
-        super('Noecd2eParser', "1.1.1", "1.0.0", options);
+        super('Noecd2eParser', "1.1.3", "1.0.0", options);
 
         this.options[PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY] = ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE;
 
@@ -117,6 +118,14 @@ class Noecd2eParser extends JsonSelectorParser {
     trimDefinition(text) {
         text = trimByCharacters(text, '：。');
         return super.trimDefinition(text);
+    }
+
+    beforeParsePhraseText(text){
+        let result = super.beforeParseDefinitionText(text);
+        
+        result = removeParentheses(result);
+        
+        return result;
     }
 }
 
