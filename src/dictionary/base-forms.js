@@ -16,6 +16,10 @@ const FORM_MATCHERS = [
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,
+        suffix: '过去式和过去分词',
+    },
+    {   
+        form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,
         suffix: '((过去式)|(过去分词))',
     },
     {   
@@ -48,9 +52,10 @@ function findBaseForm(text){
         let matchResult = text.match(pattern);
         if(matchResult != null){
             let base = matchResult.groups.base;
-
+            let matchedText = matchResult[0];
             base = removeParentheses(base);
-            return { form, base };            
+            
+            return { form, base, matchedText };            
         }
     } 
 }

@@ -266,7 +266,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "sed");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past and past participle of say. SAY的过去式和过去分词");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "say的过去式和过去分词");
       assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的,该(用于法律语言或幽默中)");
       
     });
@@ -280,7 +280,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈwəʊvən");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "past participle of weave. WEAVE的过去分词");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "weave的过去分词");
       assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "编织的,机织的");
       
     });

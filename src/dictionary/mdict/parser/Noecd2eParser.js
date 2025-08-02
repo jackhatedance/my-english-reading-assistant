@@ -97,10 +97,10 @@ class Noecd2eParser extends JsonSelectorParser {
 
         let baseForm = findBaseForm(text);
         if (baseForm) {
-            const { base, form } = baseForm;
+            const { base, form, matchedText } = baseForm;
             let lowerCaseBase = base.toLowerCase();
 
-            text = text.replace(base, lowerCaseBase);
+            text = matchedText.replace(base, lowerCaseBase);
         }
 
         return super.beforeParseDefinitionText(text);
