@@ -491,17 +491,17 @@ async function addDocumentEventListener(document, currentSiteOption) {
       if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
         //console.log(mutation);
-        let nodeTextContentArray = [];
+        let addedNodeTextContentArray = [];
         for(let node of mutation.addedNodes){
           if(node.textContent && node.textContent != ''){
-            nodeTextContentArray.push(node.textContent);
+            addedNodeTextContentArray.push(node.textContent);
           }          
         }
-        let nodeTextContents = '';
-        if(nodeTextContentArray.length>0){
-          nodeTextContents = nodeTextContentArray.join('')
+        let addedNodeTextContents = '';
+        if(addedNodeTextContentArray.length>0){
+          addedNodeTextContents = addedNodeTextContentArray.join('')
         } 
-        let nodeTextContentsIsEmpty = nodeTextContents == '';
+        let addedNodeTextContentsIsEmpty = addedNodeTextContents == '';
 
         //skip the mutations that triggered by itself.
         let triggeredByTokenize = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
@@ -513,8 +513,9 @@ async function addDocumentEventListener(document, currentSiteOption) {
         }
         
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
-        let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation);
-        if(!triggeredBySelf && !nodeTextContentsIsEmpty && !siteIgnoreDomChange){
+        let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation, addedNodeTextContents);
+        if(!triggeredBySelf && !addedNodeTextContentsIsEmpty && !siteIgnoreDomChange){
+          //console.log(addedNodeTextContents);
           //console.log(mutation);
           gDomChanges ++;
         }        
