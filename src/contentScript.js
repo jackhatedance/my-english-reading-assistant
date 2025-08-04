@@ -515,6 +515,7 @@ async function addDocumentEventListener(document, currentSiteOption) {
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
         let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation);
         if(!triggeredBySelf && !nodeTextContentsIsEmpty && !siteIgnoreDomChange){
+          //console.log(mutation);
           gDomChanges ++;
         }        
       } else if (mutation.type === "attributes") {

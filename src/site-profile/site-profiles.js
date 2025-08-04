@@ -1,6 +1,7 @@
 
 import { RedditSiteProfile } from './by-domain/RedditSiteProfile.js';
 import { CnnSiteProfile } from './by-domain/CnnSiteProfile.js';
+import { YoutubeSiteProfile } from './by-domain/YoutubeSiteProfile.js';
 import { GroupdocsAppViewerEpub } from './by-url/GroupdocsAppViewerEpubProfile.js';
 import { EpubjsSiteProfile } from './by-category/EpubjsSiteProfile.js';
 
@@ -17,6 +18,7 @@ const defaultSiteProfile = new DefaultSiteProfile(name, matcher, config);
 const siteProfiles = [
     new RedditSiteProfile(),
     new CnnSiteProfile(),
+    new YoutubeSiteProfile(),
 
     new GroupdocsAppViewerEpub(),
     
