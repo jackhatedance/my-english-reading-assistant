@@ -337,7 +337,8 @@ function getBaseWord(word, options, dicts){
     let baseWord;
     let lookupResult;
     
-    /*
+    /* usually, definition of plural word contains a link to the singular word. e.g. glasses: pl. glass
+
     if(!lookupResult) {
         baseWord = singularize(word);
         if(baseWord !== word){
