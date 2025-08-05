@@ -20,6 +20,20 @@ refer to https://github.com/dutiyesh/chrome-extension-cli
 
 2024年的某一天，我决定自己动手做一个这样的软件，首先满足我自己的需求。然后分享给有相同需求的朋友们。
 
+# dev commands
+
+## unit test
+
+```
+mocha --recursive
+mocha --recursive -g xxx
+```
+
+## e2e
+```
+npx playwright test
+```
+
 # dictionaries
 
 ## stardict
