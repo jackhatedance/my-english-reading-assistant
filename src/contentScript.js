@@ -501,8 +501,11 @@ async function addDocumentEventListener(document, currentSiteOption) {
         if(addedNodeTextContentArray.length>0){
           addedNodeTextContents = addedNodeTextContentArray.join('')
         } 
-        let addedNodeTextContentsIsEmpty = addedNodeTextContents == '';
 
+        const minContentChangeSize = 10;
+        let addedNodeTextContentsLength = addedNodeTextContents.length;
+        let ignoreAddedNodeTextContentsSmallChange = addedNodeTextContentsLength < minContentChangeSize;
+        
         //skip the mutations that triggered by itself.
         let triggeredByTokenize = mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.startsWith(MEA_TAG_PREFIX);
         
@@ -514,7 +517,7 @@ async function addDocumentEventListener(document, currentSiteOption) {
         
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
         let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation, addedNodeTextContents);
-        if(!triggeredBySelf && !addedNodeTextContentsIsEmpty && !siteIgnoreDomChange){
+        if(!triggeredBySelf && !ignoreAddedNodeTextContentsSmallChange && !siteIgnoreDomChange){
           //console.log(addedNodeTextContents);
           //console.log(mutation);
           gDomChanges ++;
