@@ -337,13 +337,15 @@ function getBaseWord(word, options, dicts){
     let baseWord;
     let lookupResult;
     
+    /*
     if(!lookupResult) {
         baseWord = singularize(word);
         if(baseWord !== word){
             lookupResult = lookup(baseWord, options, dicts);
         }
     }
-
+    */
+   
     //word-parts dictionary has higher priority than lemmatize lib
     if(!lookupResult) {
         baseWord = getBaseFromWordParts(word)

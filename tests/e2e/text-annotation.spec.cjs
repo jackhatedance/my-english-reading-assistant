@@ -21,6 +21,41 @@ test('base form this', async ({ testPage, extensionId, popupPage }) => {
 });
 
 
+test('base form his', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='his']");
+  await expect(rode).toHaveAttribute('data-target-word', 'his');
+  await expect(rode).toHaveAttribute('data-base-word', '');
+  await expect(rode).toHaveAttribute('data-footnote', 'pron.他的');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'pron.他的');
+  
+});
+
+test('base form promises', async ({ testPage, extensionId, popupPage }) => {
+  
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='promises']");
+  await expect(rode).toHaveAttribute('data-target-word', 'promise');
+  await expect(rode).toHaveAttribute('data-base-word', 'promise');
+  await expect(rode).toHaveAttribute('data-footnote', 'v.允诺');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'v.允诺');
+  
+});
+
+
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
