@@ -14,7 +14,7 @@ test('options page click tabs', async ({ optionsPage, extensionId }) => {
 
 test('enable page', async ({ page, extensionId, popupPage }) => {
   
-  await page.goto(`https://example.com`);
+  await page.goto(`https://www.baidu.com`);
   
   await popupPage.goto(extensionId);  
   await popupPage.toggle();
