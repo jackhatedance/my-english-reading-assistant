@@ -32,6 +32,7 @@ mocha --recursive -g xxx
 ## e2e
 ```
 npx playwright test
+npx playwright test -g foo
 ```
 
 # dictionaries
