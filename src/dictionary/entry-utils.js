@@ -132,6 +132,21 @@ function findDefinitionsByTypes(entries, types){
     return result;
 }
 
+function getDefinitionText(entries){
+    let result = [];
+
+    for(let entry of entries){
+        let definitionGroups = entry.definitionGroups;
+        for(let definitionGroup of definitionGroups){
+            let definitions = definitionGroup.definitions;
+            for(let definition of definitions){
+                result.push(definition.text);
+            }
+        }
+    }
+    return result.join('');
+}
+
 function findAllDefinitionGroups(entries){
     let result = [];
 
@@ -240,4 +255,4 @@ function createEntryForLink(link){
     return entry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createLinkDefinition, createTransformDefinition, createEntryForLink, containsDefinitionGroupNames }
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createLinkDefinition, createTransformDefinition, createEntryForLink, containsDefinitionGroupNames, getDefinitionText }

@@ -1,18 +1,17 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createEntryForLink, createTransformDefinition } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createEntryForLink, createTransformDefinition, getDefinitionText } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
-import { getWordParts as getWordPartsFromDict } from './word-parts-utils.js';
+import { getWordParts } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
-import * as lemmatize from 'wink-lemmatizer';
 import {dict as dictAffix} from './dicts/dict-affix.js';
 import { addUnrecognizedWord } from './service/dictionaryService.js';
 import { variableLengthStandardizeCharacters } from './text/textUtils.js';
 import { getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
 import { deepLookup } from './deep-lookup.js'
-import { isRegularTransform } from './lemma.js'
-
+import { getBaseFromWordParts, singularize, lemmatizeAdjective, lemmatizeNoun, lemmatizeVerb } from './lemma.js'
+import similarity from 'similarity'
 
 var gPrefixes, gSuffixes;
 
@@ -192,7 +191,7 @@ function searchWordWithDict(query, options, dicts){
             }
 
             if(!baseWordResult){
-                let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName]);
+                let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
                 
                 if(baseWordResult){
                     //console.log(baseWordResult);
@@ -206,7 +205,7 @@ function searchWordWithDict(query, options, dicts){
 
         if(!baseWord && options.lookupBase == 'Must'){
             
-            let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName]);
+            let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
             
             if(baseWordResult){
                 //console.log(baseWordResult);
@@ -302,21 +301,21 @@ function transformLemmatize(input, options, dicts){
     }
 
     if(!lookupResult) {
-        word = lemmatize.adjective(input);
+        word = lemmatizeAdjective(input);
         if(word !== input){
             lookupResult = lookup(word, options, dicts);
         }
     }
 
     if(!lookupResult) {
-        word = lemmatize.noun(input);
+        word = lemmatizeNoun(input);
         if(word !== input){
             lookupResult = lookup(word, options, dicts);
         }                
     }
 
     if(!lookupResult) {
-        word = lemmatize.verb(input);
+        word = lemmatizeVerb(input);
         if(word !== input){
             lookupResult = lookup(word, options, dicts);
         }
@@ -333,9 +332,9 @@ function transformLemmatize(input, options, dicts){
     
 }
 
-function getBaseWord(word, options, dicts){
+function getBaseWord(word, options, dicts, lookupResult){
     let baseWord;
-    let lookupResult;
+    let baseLookupResult;
     
     /* usually, definition of plural word contains a link to the singular word. e.g. glasses: pl. glass
 
@@ -348,36 +347,75 @@ function getBaseWord(word, options, dicts){
     */
    
     //word-parts dictionary has higher priority than lemmatize lib
-    if(!lookupResult) {
+    if(!baseLookupResult) {
         baseWord = getBaseFromWordParts(word)
         if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
+            let _baseLookupResult = lookup(baseWord, options, dicts);
+            if(_baseLookupResult){
+                let _related = related(_baseLookupResult, lookupResult);
+                if(_related){
+                    baseLookupResult = _baseLookupResult;
+                }
+            }
         }
     }
 
-    if(!lookupResult) {
-        baseWord = lemmatize.noun(word);
+    if(!baseLookupResult) {
+        baseWord = lemmatizeNoun(word);
         if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
+            let _baseLookupResult = lookup(baseWord, options, dicts);
+            if(_baseLookupResult){
+                let _related = related(_baseLookupResult, lookupResult);
+                if(_related){
+                    baseLookupResult = _baseLookupResult;
+                }
+            }
         }                
     }
 
-    if(!lookupResult) {
-        baseWord = lemmatize.verb(word);
+    if(!baseLookupResult) {
+        baseWord = lemmatizeVerb(word);
         if(baseWord !== word){
-            lookupResult = lookup(baseWord, options, dicts);
+            let _baseLookupResult = lookup(baseWord, options, dicts);
+            if(_baseLookupResult){
+                let _related = related(_baseLookupResult, lookupResult);
+                if(_related){
+                    baseLookupResult = _baseLookupResult;
+                }
+            } 
         }
     }
 
     let result = null;
-    if(lookupResult) {
+    if(baseLookupResult) {
         result = {
             word: baseWord,
-            lookupResult,
+            lookupResult: baseLookupResult,
         }
     }
     return result;
+}
+
+function related(lookupResult1, lookupResult2){
+    let definitionText1 = getDefinitionText(lookupResult1.json);
+    definitionText1 = removeMeaninglessChar(definitionText1);
+
+    let definitionText2 = getDefinitionText(lookupResult2.json);
+    definitionText2 = removeMeaninglessChar(definitionText2);
     
+    let _similarity = similarity(definitionText1, definitionText2);
+
+    /*
+    console.log('similarity:'+ _similarity);
+    console.log(definitionText1);
+    console.log(definitionText2);
+    */
+
+    return _similarity > 0.03;
+}
+
+function removeMeaninglessChar(definitionText){
+    return definitionText.replaceAll(/[的地得了或和…、,()]/g, '');
 }
 
 function addTransformDefinition(lookupResult, transform){
@@ -485,22 +523,6 @@ function isSuffix(s){
     return getSuffixes().includes(s);
 }
 
-function getBaseFromWordParts(word){
-    let parts = getWordPartsFromDict(word);
-    if(parts){
-        if(parts.length === 3 && parts[0] === '' && parts[1] !== '' && parts[2] !== ''){
-            let base = parts[1];
-            
-            if(isRegularTransform(base, word)){
-                return base;     
-            }
-
-        }
-    }
-
-    return word;
-}
-
 function getBaseFromPossessive(word){
     if(word.endsWith("'s")){
         return word.substring(0, word.length - 2);
@@ -508,22 +530,6 @@ function getBaseFromPossessive(word){
         return word.substring(0, word.length - 1);
     }
     return word;
-}
-
-function singularize(word) {
-    const endings = {
-        ves: 'fe',
-        ies: 'y',
-        i: 'us',
-        zes: 'ze',
-        ses: 's',
-        es: 'e',
-        s: ''
-    };
-    return word.replace(
-        new RegExp(`(${Object.keys(endings).join('|')})$`), 
-        r => endings[r]
-    );
 }
 
 function isKnown(baseWord, vocabulary){
@@ -551,7 +557,7 @@ function isKnown(baseWord, vocabulary){
     let options = getOptionsFromCache();
     let rootAndAffixEnabled = options.rootAndAffix.enabled;
     if(rootAndAffixEnabled){
-        let parts = getWordParts(baseWord);
+        let parts = getWordPartObjects(baseWord);
         //console.log('get word parts:'+ baseWord);
         if(parts){
             if(parts.includes(baseWord)){
@@ -577,8 +583,8 @@ function isKnown(baseWord, vocabulary){
     return false;
 }
 
-function getWordParts(baseWord){
-    let parts = getWordPartsFromDict(baseWord);
+function getWordPartObjects(baseWord){
+    let parts = getWordParts(baseWord);
 
     if(!parts){
         //compouding
@@ -610,7 +616,7 @@ function getWordParts(baseWord){
         last.dictEntry = '-' + last.word;
     }
 
-    //console.log('getWordParts:'+baseWord+':'+JSON.stringify(objArray));
+    //console.log('getWordPartObjects:'+baseWord+':'+JSON.stringify(objArray));
 
     return objArray;
 }
@@ -627,4 +633,4 @@ function buildDictionaryOptions(siteOptions){
     return dictionaryOptions;
 }
   
-export {searchWord, isKnown, getWordParts, buildDictionaryOptions};
+export {searchWord, isKnown, getWordPartObjects, buildDictionaryOptions};

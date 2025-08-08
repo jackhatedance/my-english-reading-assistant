@@ -373,6 +373,10 @@ function guessPartWord(checkWord, part){
         guessResult = guessWord(originalContent, options, checkWord, transforms);        
     }
 
+    if(!guessResult){
+        transforms = ['punctuation', 'endingDot', 'lemma'];
+        guessResult = guessWord(originalContent, options, checkWord, transforms);        
+    }
     
     if(guessResult){
         part.content = guessResult.content;

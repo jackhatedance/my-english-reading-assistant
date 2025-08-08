@@ -6,6 +6,7 @@ import punctuation from "./transforms/punctuation.js";
 import compound from "./transforms/compound.js";
 import abbreviation from "./transforms/abbreviation.js";
 import endingDot from "./transforms/ending-dot.js";
+import lemma from "./transforms/lemma.js"
 
 /**
  * guess word by a sequence of transforms
@@ -43,6 +44,8 @@ function getTransform(name){
         return abbreviation();
     } else if(name === 'endingDot'){
         return endingDot();
+    } else if(name === 'lemma'){
+        return lemma();
     }
     
     throw new Error('invalid transform:'+name);    

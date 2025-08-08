@@ -531,5 +531,24 @@ describe('tokenizer', function () {
     assert.equal(tokens[1].content, '1');
   });
 
+  it('plural crows end with 2 punctuations', async function () {
+    
+    let tokens = tokenizeSentence((text)=> {
+      //console.log('checkWord:'+text);
+      let words = ['crow'];
+      if(words.includes(text)){
+        return { word: text };
+      }else {
+        return null;
+      }
+    }, '“crows.”1', 0, { newWordPositions:[8]});
+    
+    
+    assert.equal(tokens.length, 2);
+    
+    assert.equal(tokens[0].content, 'crow');
+    assert.equal(tokens[1].content, '1');
+  });
+
 
 });

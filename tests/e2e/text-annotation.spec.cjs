@@ -4,8 +4,6 @@ import { test, expect } from './fixtures';
 
 
 test('base form this', async ({ testPage, extensionId, popupPage }) => {
-  
-  
   await testPage.goto();
   
   await popupPage.goto(extensionId);
@@ -22,8 +20,6 @@ test('base form this', async ({ testPage, extensionId, popupPage }) => {
 
 
 test('base form his', async ({ testPage, extensionId, popupPage }) => {
-  
-  
   await testPage.goto();
   
   await popupPage.goto(extensionId);
@@ -39,8 +35,6 @@ test('base form his', async ({ testPage, extensionId, popupPage }) => {
 });
 
 test('base form promises', async ({ testPage, extensionId, popupPage }) => {
-  
-  
   await testPage.goto();
   
   await popupPage.goto(extensionId);
@@ -52,6 +46,22 @@ test('base form promises', async ({ testPage, extensionId, popupPage }) => {
   await expect(rode).toHaveAttribute('data-base-word', 'promise');
   await expect(rode).toHaveAttribute('data-footnote', 'v.允诺');
   await expect(rode).toHaveAttribute('data-footnote-short', 'v.允诺');
+  
+});
+
+
+test('base form number', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='number']");
+  await expect(rode).toHaveAttribute('data-target-word', 'number');
+  await expect(rode).toHaveAttribute('data-base-word', '');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.数,数字; vt.数,计算; vi.计算,报数; ...');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.数; vt.数; vi.计算; ...');
   
 });
 
@@ -194,10 +204,10 @@ test('definition link crenels', async ({ testPage, extensionId, popupPage }) => 
   await popupPage.toggle();
 
 
-  let rode = testPage.page.locator("#definition-link mea-token[data-query='crenels']");
+  let rode = testPage.page.locator("#definition-link mea-token[data-query='crenel']");
   await expect(rode).toHaveText('crenels');
-  await expect(rode).toHaveAttribute('data-word', 'crenels');
-  await expect(rode).toHaveAttribute('data-base-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-word', 'crenel');
+  await expect(rode).toHaveAttribute('data-base-word', '');
   await expect(rode).toHaveAttribute('data-target-word', 'crenel');
   await expect(rode).toHaveAttribute('data-footnote', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n.雉堞上的凹处,枪眼; vt.使...成雉堞状');

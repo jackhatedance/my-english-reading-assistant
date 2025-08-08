@@ -1,6 +1,6 @@
 'use strict';
 
-import { getWordParts } from './language.js';
+import { getWordPartObjects } from './language.js';
 import {  TOKEN_TAG } from './html.js';
 import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/optionService.js'
@@ -25,7 +25,7 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions) {
     }
 
     let effectiveWord = baseWord? baseWord : word;
-    let wordPartObjs = getWordParts(effectiveWord);
+    let wordPartObjs = getWordPartObjects(effectiveWord);
     let parts = '';
     if (wordPartObjs) {
         let partArray = [];

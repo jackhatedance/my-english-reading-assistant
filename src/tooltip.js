@@ -1,6 +1,6 @@
 import { mergeEntries, hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 import { pronunciationsToText } from './dictionary/definition-formatter.js'
-import { searchWord, buildDictionaryOptions, getWordParts, isKnown } from './language.js';
+import { searchWord, buildDictionaryOptions, getWordPartObjects, isKnown } from './language.js';
 import { sendMessageMarkWordToBackground } from './message.js'; 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
 import { isPageAnnotationVisible } from './page.js'
@@ -434,7 +434,7 @@ function generateDefinitionHtml(entry) {
 
 
 function generatePartsHtml(word) {
-  let wordPartObjs = getWordParts(word);
+  let wordPartObjs = getWordPartObjects(word);
   let parts = '';
   if (wordPartObjs) {
       let partArray = [];

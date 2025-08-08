@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue'
 
 import UnknownWordItem from './UnknownWordItem.vue';
 import { loadKnownWords } from '../../vocabularyStore.js';
-import { getWordParts, isKnown } from '../../language.js';
+import { getWordPartObjects, isKnown } from '../../language.js';
 import { lookup } from '../../dictionaries.js';
 import { getOptions } from '../../service/optionService.js'
 
@@ -25,7 +25,7 @@ async function buildTargetWords(words) {
         let target = base;
 
         //parts
-        let parts = getWordParts(base);
+        let parts = getWordPartObjects(base);
         let from = base;
 
         if (parts) {

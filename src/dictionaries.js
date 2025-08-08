@@ -1,10 +1,10 @@
 
 import { getSystemDictionaryFromCache } from './dictionary/systemDictionary.js'
 import { getCustomDictionaryFromCache, getEnabledDictionaryNamesFromCache } from './dictionary/customDictionary.js'
-                                          
+import { hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
 
 function createDefaultOptions(){
-    return { outputFormats:['text', 'json']};
+    return { outputFormats:['text', 'json'], stopOnFirstResult: true };
 }
 
 function patchOptions(options){
@@ -14,6 +14,7 @@ function patchOptions(options){
 function lookup(word, options, dicts) {
     options = patchOptions(options);
     //console.log(word);
+    //console.log(options);
     if(!dicts){
         dicts = getEnabledDictionaryNamesFromCache();
     }
@@ -24,13 +25,13 @@ function lookup(word, options, dicts) {
     }    
 
     //try small dict first, hits 90%
-    let lookupResult;
+    let lookupResults = [];
 
     for(let name of dicts){
         let dict = getDictFromCache(name);
         
         if(dict){
-            lookupResult = dict.lookup(word, options);
+            let lookupResult = dict.lookup(word, options);
             
             let accepted;
             if(options.acceptResult){
@@ -42,13 +43,49 @@ function lookup(word, options, dicts) {
             if(accepted){
 
                 lookupResult.dictionaryName = name;
-                //console.log(`found ${word} in ${name}: ${JSON.stringify(lookupResult)}`);
-                break;                
+                
+                lookupResults.push(lookupResult);
+                if(options.stopOnFirstResult){
+                    break;
+                }
             }
         }        
     }    
 
-    return lookupResult;
+    //find the best one
+    let result = null;
+    let score = -1;
+    if(lookupResults.length > 0){
+        for(let item of lookupResults){
+            let itemScore = calculateLookupResultScore(item);
+            if(itemScore > score){
+                result = item;
+                score = itemScore;
+            }
+        }
+    }
+    
+    if(result){
+        var index = lookupResults.indexOf(result);
+        if (index !== -1) {
+            lookupResults.splice(index, 1);
+        }
+
+        result.rest = lookupResults;
+
+        //console.log(`found ${word} in ${result.dictionaryName}: ${JSON.stringify(result)}`);
+
+    }
+
+    return result;
+}
+
+function calculateLookupResultScore(lookupResult) {
+    if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
+        return 10;
+    } else {
+        return 20;
+    }
 }
 
 function getDictFromCache(name){

@@ -1,5 +1,6 @@
 import { commonStart } from './utils/stringUtils.js'
-import * as lemmatize from 'wink-lemmatizer';
+import lemmatize from 'wink-lemmatizer'
+import { getWordParts } from './word-parts-utils.js'
 
 function isRegularTransform(base, transform){
     base = base.toLowerCase();
@@ -54,4 +55,45 @@ function lemmatizeVerb(word){
     return lemmatize.verb(word);
 }
 
-export { isRegularTransform, lemmatizeVerb }
+function lemmatizeAdjective(word){
+    return lemmatize.adjective(word);
+}
+
+function lemmatizeNoun(word){
+    return lemmatize.noun(word);
+}
+
+
+function singularize(word) {
+    const endings = {
+        ves: 'fe',
+        ies: 'y',
+        i: 'us',
+        zes: 'ze',
+        ses: 's',
+        es: 'e',
+        s: ''
+    };
+    return word.replace(
+        new RegExp(`(${Object.keys(endings).join('|')})$`), 
+        r => endings[r]
+    );
+}
+
+function getBaseFromWordParts(word){
+    let parts = getWordParts(word);
+    if(parts){
+        if(parts.length === 3 && parts[0] === '' && parts[1] !== '' && parts[2] !== ''){
+            let base = parts[1];
+            
+            if(isRegularTransform(base, word)){
+                return base;     
+            }
+
+        }
+    }
+
+    return word;
+}
+
+export { isRegularTransform, lemmatizeNoun, lemmatizeVerb, lemmatizeAdjective, singularize, getBaseFromWordParts }
