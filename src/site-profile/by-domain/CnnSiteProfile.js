@@ -12,12 +12,12 @@ class CnnSiteProfile extends DefaultSiteProfile {
     ignoreDomChange(mutation){
         //console.log(mutation);
         const ignoreTags = ['TIME'];
-        for(let node of mutation.addedNodes){
-            if(!ignoreTags.includes(node.parentElement.nodeName)) {
-                return false;
-            }
+        
+        if(ignoreTags.includes(mutation.target.nodeName)) {
+            return true;
         }
-        return true;
+        
+        return false;
     }
 
     
