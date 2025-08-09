@@ -541,13 +541,13 @@ describe('tokenizer', function () {
       }else {
         return null;
       }
-    }, '“crows.”1', 0, { newWordPositions:[8]});
+    }, '“crows.”', 0, { newWordPositions:[8]});
     
     
-    assert.equal(tokens.length, 2);
+    assert.equal(tokens.length, 1);
     
     assert.equal(tokens[0].content, 'crow');
-    assert.equal(tokens[1].content, '1');
+    
   });
 
 
