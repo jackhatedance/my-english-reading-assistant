@@ -22,8 +22,10 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         
         return true;
     }
-
     
+    getTagsNotLog(){
+        return super.getTagsNotLog().concat(['YT-FORMATTED-STRING', 'TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS']);
+    }
 };
 
 export { YoutubeSiteProfile };

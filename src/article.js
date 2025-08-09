@@ -22,7 +22,7 @@ const gLogger = log.getLogger('article');
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document, siteOptions) {
+function tokenizeTextNode(document, siteOptions, siteProfile) {
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
@@ -44,7 +44,7 @@ function tokenizeTextNode(document, siteOptions) {
             
             //some tags are not tokenizable, such as style, script, etc.
             if (!isTextElement(node.parentElement)) {
-                const tagsNotLog = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE', 'OPTION' , 'TIME'];
+                const tagsNotLog = siteProfile.getTagsNotLog();
                 if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
                     console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
                 }

@@ -38,6 +38,10 @@ class DefaultSiteProfile {
     getUrl(topDocument){
         return this._config.getUrl(topDocument);
     }
+
+    getTagsNotLog(){
+        return ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE', 'OPTION' , 'TIME'];
+    }
 };
 
 export { DefaultSiteProfile };

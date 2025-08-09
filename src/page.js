@@ -261,7 +261,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         //cleanElements(document);
 
         
-        tokenizeTextNode(document, currentSiteOption);
+        tokenizeTextNode(document, currentSiteOption, siteProfile);
 
         addDocumentEventListener(document, currentSiteOption);
     
