@@ -14,13 +14,21 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         //console.log('youtube ignore');
 
         //ignore time and caption(subtitle)
-        const ignoreTargetClasses = ['ytp-time-current', 'ytp-caption-segment', 'captions-text', 'caption-visual-line'];
         
-        if(!ignoreTargetClasses.includes(mutation.target.className)) {
-            return false;
+        const ignoreTargetClasses = ['ytp-time-current', 'ytp-caption-segment', 'captions-text', 'caption-visual-line', 'ytp-tooltip-text'];
+        
+        if(ignoreTargetClasses.includes(mutation.target.className)) {
+            return true;
+        }
+
+        if(mutation.target.parentElement){
+            const ignoreTargetParentClasses = ['ytp-tooltip-edu'];
+            if(ignoreTargetParentClasses.includes(mutation.target.parentElement.className)) {
+                return true;
+            }
         }
         
-        return true;
+        return false;
     }
     
     getTagsNotLog(){
