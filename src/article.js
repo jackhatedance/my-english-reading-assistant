@@ -8,7 +8,6 @@ import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord, buildDictionaryOptions } from './language.js';
-import { isTextTag } from './html.js';
 import { TEXT_TAG, MEA_TAG_PREFIX } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
@@ -43,7 +42,7 @@ function tokenizeTextNode(document, siteOptions, siteProfile) {
             }
             
             //some tags are not tokenizable, such as style, script, etc.
-            if (!isTextElement(node.parentElement)) {
+            if (!siteProfile.isTextElement(node.parentElement)) {
                 const tagsNotLog = siteProfile.getTagsNotLog();
                 if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
                     console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
@@ -491,11 +490,6 @@ function breakString(str, ch){
     }
     
     return lines;
-}
-
-
-function isTextElement(element){
-    return isTextTag(element.nodeName);
 }
 
 function isInMeaElement(element) {

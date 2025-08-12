@@ -1,4 +1,4 @@
-import { searchSubIframesRecursively, isMeaIframe } from './utils.js';
+import { isTextTag } from '../html.js';
 
 class DefaultSiteProfile {
     
@@ -41,6 +41,10 @@ class DefaultSiteProfile {
 
     getTagsNotLog(){
         return ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE', 'OPTION' , 'TIME'];
+    }
+
+    isTextElement(element){
+        return isTextTag(element.nodeName);
     }
 };
 

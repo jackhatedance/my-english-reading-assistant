@@ -48,9 +48,28 @@ const TEXT_TAGS =[
     'FIGCAPTION'
 ];
 
-function isTextTag(tag){
-    return TEXT_TAGS.includes(tag);
+function isTextTag(tag, extraTextTags = []){
+    return TEXT_TAGS.includes(tag) || extraTextTags.includes(tag);
+}
+
+function isSelfOrDecendantOfClass(element, classes, depth=3){
+    let cur = element;
+    
+    for(let i = 0; i< depth; i++){
+        if(!cur){
+            break;
+        }
+
+        let findResult = classes.find(item => cur.classList.contains(item));
+        if(findResult){
+            return true;
+        }
+
+        cur = cur.parentElement;
+    }
+
+    return false;
 }
 
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag };
+export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass };

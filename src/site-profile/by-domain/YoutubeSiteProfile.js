@@ -1,6 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
+import { isTextTag, isSelfOrDecendantOfClass } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -15,24 +16,22 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
 
         //ignore time and caption(subtitle)
         
-        const ignoreTargetClasses = ['ytp-time-current', 'ytp-caption-segment', 'captions-text', 'caption-visual-line', 'ytp-tooltip-text'];
+        const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytp-tooltip'];
         
-        if(ignoreTargetClasses.includes(mutation.target.className)) {
+        if(isSelfOrDecendantOfClass(mutation.target, ignoredClasses, 5)) {
             return true;
         }
 
-        if(mutation.target.parentElement){
-            const ignoreTargetParentClasses = ['ytp-tooltip-edu'];
-            if(ignoreTargetParentClasses.includes(mutation.target.parentElement.className)) {
-                return true;
-            }
-        }
         
         return false;
     }
     
     getTagsNotLog(){
-        return super.getTagsNotLog().concat(['YT-FORMATTED-STRING', 'TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS']);
+        return super.getTagsNotLog().concat(['TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS']);
+    }
+
+    isTextElement(element){
+        return isTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
     }
 };
 
