@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isTextTag, isSelfOrDecendantOfClass } from '../../html.js';
+import { isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -16,6 +16,11 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
 
         //ignore time and caption(subtitle)
         
+        const ignoredIds = ['title'];
+        if(isSelfOrDecendantOfIds(mutation.target, ignoredIds, 5)) {
+            return true;
+        }
+
         const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytp-tooltip'];
         
         if(isSelfOrDecendantOfClass(mutation.target, ignoredClasses, 5)) {

@@ -71,5 +71,24 @@ function isSelfOrDecendantOfClass(element, classes, depth=3){
     return false;
 }
 
+function isSelfOrDecendantOfIds(element, ids, depth=3){
+    let cur = element;
+    
+    for(let i = 0; i< depth; i++){
+        if(!cur){
+            break;
+        }
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass };
+        let findResult = ids.includes(cur.id);
+        if(findResult){
+            return true;
+        }
+
+        cur = cur.parentElement;
+    }
+
+    return false;
+}
+
+
+export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds };
