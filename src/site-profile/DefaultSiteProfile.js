@@ -46,6 +46,10 @@ class DefaultSiteProfile {
     isTextElement(element){
         return isTextTag(element.nodeName);
     }
+
+    canBeTokenized(element){
+        return true;
+    }
 };
 
 export { DefaultSiteProfile };

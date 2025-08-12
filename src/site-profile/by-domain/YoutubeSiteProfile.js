@@ -38,6 +38,15 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
     isTextElement(element){
         return isTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
     }
+
+    canBeTokenized(element){
+        const ignoredIds = ['title', 'top-row'];
+        if(isSelfOrDecendantOfIds(element, ignoredIds, 6)) {
+            return false;
+        }
+
+        return true;
+    }
 };
 
 export { YoutubeSiteProfile };

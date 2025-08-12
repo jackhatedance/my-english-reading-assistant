@@ -50,6 +50,10 @@ function tokenizeTextNode(document, siteOptions, siteProfile) {
                 
                 return;
             }
+
+            if (!siteProfile.canBeTokenized(node.parentElement)) {
+                return;
+            }
             //console.log(node.parentElement.nodeName);
             //console.log(textContent);
             let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
