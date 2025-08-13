@@ -1,6 +1,6 @@
 'use strict';
 
-import { singularize, getBaseFromWordParts, lemmatizeAdjective, lemmatizeNoun, lemmatizeVerb } from '../../lemma.js'
+import { singularCandidates, getBaseFromWordParts, lemmatizeAdjective, lemmatizeNoun, lemmatizeVerb } from '../../lemma.js'
 
 function guess(token, options){
     let candicates = [{
@@ -11,8 +11,8 @@ function guess(token, options){
     let input = token.content;
     let word;
     
-    word = singularize(input);
-    if(word !== input){
+    let words = singularCandidates(input);
+    for(const word of words){
         candicates.push({
             checkType: 'content',
             content: word,

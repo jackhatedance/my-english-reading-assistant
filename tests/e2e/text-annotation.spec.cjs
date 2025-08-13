@@ -81,6 +81,20 @@ test('base form supplicants', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+test('base form zorses', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='zorse']");
+  await expect(rode).toHaveAttribute('data-target-word', 'zorse');
+  await expect(rode).toHaveAttribute('data-base-word', '');
+  await expect(rode).toHaveAttribute('data-footnote', '雄马和雌斑马的杂交种');
+  await expect(rode).toHaveAttribute('data-footnote-short', '雄马和雌斑马的杂交种');
+  
+});
 
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   

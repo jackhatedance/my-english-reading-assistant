@@ -80,6 +80,40 @@ function singularize(word) {
     );
 }
 
+function singularCandidates(word) {
+    const endings = {
+        ves: 'fe',
+        ies: 'y',
+        i: 'us',
+        zes: 'ze',
+        ses: ['s','se'],
+        es: 'e',
+        s: ''
+    };
+
+    
+    let result = [];
+    let newEndings = [];
+    for (const [key, value] of Object.entries(endings)) {
+      if(word.endsWith(key)){
+        
+        if(Array.isArray(value)){
+            newEndings = value;
+        }else{
+            newEndings = [value];
+        }
+
+        for(const newEnding of newEndings){
+            let singular = word.replace(new RegExp(`${key}$`), newEnding);
+            result.push(singular);
+        }
+        break;
+      }
+    }
+
+    return result;
+}
+
 function getBaseFromWordParts(word){
     let parts = getWordParts(word);
     if(parts){
@@ -96,4 +130,4 @@ function getBaseFromWordParts(word){
     return word;
 }
 
-export { isRegularTransform, lemmatizeNoun, lemmatizeVerb, lemmatizeAdjective, singularize, getBaseFromWordParts }
+export { isRegularTransform, lemmatizeNoun, lemmatizeVerb, lemmatizeAdjective, singularize, singularCandidates, getBaseFromWordParts }
