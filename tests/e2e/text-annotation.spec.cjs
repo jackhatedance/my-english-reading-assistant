@@ -66,6 +66,22 @@ test('base form number', async ({ testPage, extensionId, popupPage }) => {
 });
 
 
+test('base form supplicants', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='supplicants']");
+  await expect(rode).toHaveAttribute('data-target-word', 'supplicant');
+  await expect(rode).toHaveAttribute('data-base-word', 'supplicant');
+  await expect(rode).toHaveAttribute('data-footnote', '恳求,哀求,祈求');
+  await expect(rode).toHaveAttribute('data-footnote-short', '恳求,哀求,祈求');
+  
+});
+
+
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
