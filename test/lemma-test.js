@@ -43,6 +43,10 @@ describe('lemma', function () {
       assert.equal(isRegularTransform("dense", "densely"), true);
     });
 
+    it('merchantmen', function () {
+      assert.equal(isRegularTransform("merchantman", "merchantmen"), true);
+    });
+
   });
   
 });

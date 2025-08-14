@@ -33,6 +33,11 @@ function isRegularTransform(base, transform){
 }
 
 function _isRegularTransform(base, transform) {    
+    return _isRegularTransformMethod1(base, transform) || 
+        _isRegularTransformMethod2(base, transform);
+}
+
+function _isRegularTransformMethod1(base, transform) {    
     let common = commonStart(base, transform);
 
     let suffix = transform.slice(common.length);
@@ -49,6 +54,28 @@ function _isRegularTransform(base, transform) {
     }
 
     return result;
+}
+
+function _isRegularTransformMethod2(base, transform) {
+    const suffixMap = {
+        'man' : 'men'
+    };
+
+    for (const key in suffixMap) {
+        if (suffixMap.hasOwnProperty(key)) {
+            const value = suffixMap[key];
+            //console.log(`${key}: ${person[key]}`);
+            if(base.endsWith(key) && transform.endsWith(value)){
+                const baseWithoutSuffix = base.substring(0, base.length - key.length);
+                const transformWithoutSuffix = transform.substring(0, transform.length - value.length);
+                if(baseWithoutSuffix === transformWithoutSuffix){
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 function lemmatizeVerb(word){
