@@ -76,8 +76,8 @@ test('base form supplicants', async ({ testPage, extensionId, popupPage }) => {
   let rode = testPage.page.locator("#base-form mea-token[data-query='supplicants']");
   await expect(rode).toHaveAttribute('data-target-word', 'supplicant');
   await expect(rode).toHaveAttribute('data-base-word', 'supplicant');
-  await expect(rode).toHaveAttribute('data-footnote', '恳求,哀求,祈求');
-  await expect(rode).toHaveAttribute('data-footnote-short', '恳求,哀求,祈求');
+  await expect(rode).toHaveAttribute('data-footnote', '恳求者,哀求者,恳求,哀求,祈求');
+  await expect(rode).toHaveAttribute('data-footnote-short', '恳求者,哀求者,恳求; ...');
   
 });
 
@@ -93,6 +93,22 @@ test('base form zorses', async ({ testPage, extensionId, popupPage }) => {
   await expect(rode).toHaveAttribute('data-base-word', '');
   await expect(rode).toHaveAttribute('data-footnote', '雄马和雌斑马的杂交种');
   await expect(rode).toHaveAttribute('data-footnote-short', '雄马和雌斑马的杂交种');
+  
+});
+
+
+test('base form misjudgements', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='misjudgements']");
+  await expect(rode).toHaveAttribute('data-target-word', 'misjudgement');
+  await expect(rode).toHaveAttribute('data-base-word', 'misjudgement');
+  await expect(rode).toHaveAttribute('data-footnote', '审判错误,判断错误');
+  await expect(rode).toHaveAttribute('data-footnote-short', '审判错误,判断错误');
   
 });
 
