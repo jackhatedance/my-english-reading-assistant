@@ -14,11 +14,12 @@ test('options page click tabs', async ({ optionsPage, extensionId }) => {
 
 test('enable page', async ({ page, extensionId, popupPage }) => {
   
-  await page.goto(`https://www.baidu.com`);
+  await page.goto(`https://example.com`);
   
   await popupPage.goto(extensionId);  
   await popupPage.toggle();
 
-  await expect(page.locator('body')).toHaveAttribute('mea-preprocessed', 'true');
+  const body = page.locator('body');
+  await expect(body).toHaveAttribute('mea-preprocessed', 'true');
 
 });
