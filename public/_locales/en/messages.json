@@ -302,7 +302,7 @@
         "message":"Delete"
     },
     "optionsImportDictionaryAction":{
-        "message":"(re)Extract"
+        "message":"Extract"
     },  
     "optionsDictionaryMoveUpAction":{
         "message":"Move Up"

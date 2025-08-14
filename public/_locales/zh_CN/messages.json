@@ -301,7 +301,7 @@
         "message":"删除"
     },  
     "optionsImportDictionaryAction":{
-        "message":"(重新)提取"
+        "message":"提取"
     },
     "optionsDictionaryMoveUpAction":{
         "message":"上移"
