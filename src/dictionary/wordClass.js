@@ -14,6 +14,7 @@ const wordClassMap = {
     "relative pronoun": "pron.",
     "preposition": "prep.",
     "conjunction": "conj.",
+    "contraction": "cont.",
     "determiner": "det.",
     "possessive determiner": "pos-det.",
     "interjection": "int.",
