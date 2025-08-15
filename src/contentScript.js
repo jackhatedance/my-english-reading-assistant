@@ -270,14 +270,14 @@ async function domMonitor() {
     updateDocumentArticleMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
-    gLogger.debug(`initPageAnnotations time costs: ${elapseTime1} ms`);
+    gLogger.debug(`initPageAnnotations ${elapseTime1} ms`);
 
     await resetPageAnnotationVisibilityAndNotify(true);
     let endTime2 = new Date().getTime();
     let elapseTime2 = endTime2 - endTime1;
     let elapseTimeTotal = endTime2 - startTime;
     adjustDomMonitorInterval(elapseTimeTotal);
-    gLogger.debug(`resetPageAnnotationVisibilityAndNotify time costs: ${elapseTime2} ms`);
+    gLogger.debug(`resetPageAnnotation ${elapseTime2} ms`);
 
   }
 
