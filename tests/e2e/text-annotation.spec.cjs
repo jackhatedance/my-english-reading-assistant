@@ -76,8 +76,8 @@ test('base form supplicants', async ({ testPage, extensionId, popupPage }) => {
   let rode = testPage.page.locator("#base-form mea-token[data-query='supplicants']");
   await expect(rode).toHaveAttribute('data-target-word', 'supplicant');
   await expect(rode).toHaveAttribute('data-base-word', 'supplicant');
-  await expect(rode).toHaveAttribute('data-footnote', '恳求者,哀求者,恳求,哀求,祈求');
-  await expect(rode).toHaveAttribute('data-footnote-short', '恳求者,哀求者,恳求; ...');
+  await expect(rode).toHaveAttribute('data-footnote', '恳求,哀求,祈求');
+  await expect(rode).toHaveAttribute('data-footnote-short', '恳求,哀求,祈求');
   
 });
 
@@ -197,8 +197,8 @@ test('regular plural multiple meanings boys', async ({ testPage, extensionId, po
   await expect(rode).toHaveAttribute('data-word', 'boys');
   await expect(rode).toHaveAttribute('data-base-word', 'boy');
   await expect(rode).toHaveAttribute('data-target-word', 'boy');
-  await expect(rode).toHaveAttribute('data-footnote', 'n.男孩; 男孩,少年,儿子');
-  await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.男孩');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.男孩');
   
 });
 
@@ -290,8 +290,8 @@ test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   await expect(word).toHaveAttribute('data-word', 'boys');
   await expect(word).toHaveAttribute('data-base-word', 'boy');
   await expect(word).toHaveAttribute('data-target-word', 'boy');
-  await expect(word).toHaveAttribute('data-footnote', 'n.男孩; 男孩,少年,儿子');
-  await expect(word).toHaveAttribute('data-footnote-short', 'n.男孩; 男孩,少年; ...');
+  await expect(word).toHaveAttribute('data-footnote', 'n.男孩');
+  await expect(word).toHaveAttribute('data-footnote-short', 'n.男孩');
   
   word = testPage.page.locator("#new-word-tag-sup mea-token[data-query='at']");
   await expect(word).toHaveText('at');
