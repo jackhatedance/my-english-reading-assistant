@@ -112,6 +112,21 @@ test('base form misjudgements', async ({ testPage, extensionId, popupPage }) => 
   
 });
 
+test('base form rushes', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='rush']");
+  await expect(rode).toHaveAttribute('data-target-word', 'rush');
+  await expect(rode).toHaveAttribute('data-base-word', '');
+  await expect(rode).toHaveAttribute('data-footnote', 'n.匆促,冲进; vi.冲,奔; vt.使冲; a.紧急的; ...');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n.匆促; vi.冲; vt.使冲; ...');
+  
+});
+
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
