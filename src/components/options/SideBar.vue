@@ -19,7 +19,7 @@ init();
                 <RouterLink data-testid="general" to="/general">{{ t('optionsGeneralLabel') }}</RouterLink>
                 <RouterLink to="/vocabulary">{{ t('optionsSectionVocabularyTitle') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
-                <RouterLink to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>
+                <RouterLink data-testid="root-and-affix" to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>
                 <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
                 <RouterLink to="/dictionary">{{ t('optionsSectionDictionaryTitle') }}</RouterLink>
                 <RouterLink to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>

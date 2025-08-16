@@ -13,6 +13,7 @@ export const test = base.extend<{
 }>({
   context: async ({ }, use) => {
     const pathToExtension = path.join(__dirname, '../../build');
+    //const userDataDir = path.join(__dirname, '../../playwright/.userdata');
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
       args: [

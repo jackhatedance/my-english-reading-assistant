@@ -16,7 +16,11 @@ export class OptionsPage {
 
     async setRegion(region){
         const regionSelect = this.page.getByTestId('region');
-        await regionSelect.selectOption('us');
+        await regionSelect.selectOption(region);
+    }
+
+    locateRootAndAffixMode(){
+        return this.page.getByTestId('root-and-affix-mode');
     }
 
 }

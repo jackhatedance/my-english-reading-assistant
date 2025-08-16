@@ -33,7 +33,7 @@ init();
             <div class="input">
               <div>
                 <label>{{ t('optionsRootAndAffixModeLabel') }}</label>
-                <input type="checkbox" v-model="enableRootAndAffix" @change="onChange">
+                <input data-testid="root-and-affix-mode" type="checkbox" v-model="enableRootAndAffix" @change="onChange">
               </div>
               
             </div>
