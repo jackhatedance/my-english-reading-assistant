@@ -22,7 +22,7 @@ init();
                 <RouterLink data-testid="root-and-affix" to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>
                 <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
                 <RouterLink to="/dictionary">{{ t('optionsSectionDictionaryTitle') }}</RouterLink>
-                <RouterLink to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>
+                <RouterLink data-testid="unrecognized-words" to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>
             </nav>              
         </div>
 

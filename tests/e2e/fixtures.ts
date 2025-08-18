@@ -44,8 +44,7 @@ export const test = base.extend<{
     let page = await context.newPage();
     await use(new PopupPage(page));
   },
-  optionsPage: async ({ context }, use) => {
-    let page = await context.newPage();
+  optionsPage: async ({ page }, use) => {
     await use(new OptionsPage(page));
   },
   testPage: async ({ page }, use) => {

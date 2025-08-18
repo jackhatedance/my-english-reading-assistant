@@ -54,7 +54,7 @@ init();
             <div class="input">
                 <div>
                     <label>{{ t('optionsUnrecognizedWordsToggleLabel') }}</label>
-                    <input v-model="enabled" type="checkbox" @change="onChangeEnabled">
+                    <input data-testid="unregonized-words-enabled" v-model="enabled" type="checkbox" @change="onChangeEnabled">
                 </div>
             </div>
             <div class="action">
@@ -66,7 +66,7 @@ init();
                 <p>{{ t('optionsUnrecognizedWordsLabelDesc') }}</p>
             </div>
             <div class="input">
-                <textarea v-model="unrecognizedWords" rows="10" maxlength="500000"
+                <textarea data-testid="unregonized-words" v-model="unrecognizedWords" rows="10" maxlength="500000"
                     readonly></textarea>
                 <p>{{ t('optionsUnrecognizedWordsTotal') }}<span>{{ unrecognizedWordsCount }}</span></p>
             </div>

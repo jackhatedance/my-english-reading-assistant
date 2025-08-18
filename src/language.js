@@ -21,7 +21,7 @@ function createDefaultSearchWordOptions(){
         lookupBase: 'Never',
         simplifyDefinition: {},
         dictionaryOptions: {},
-        anonymous: true,
+        anonymous: false,
         autoJumping: false,       
     };
 }

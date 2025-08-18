@@ -1,9 +1,12 @@
 import type { Page, Locator } from '@playwright/test';
 
 export class OptionsPage {
-    
+    private readonly unrecognizedWordsEnabled: Locator;
+    private readonly unrecognizedWords: Locator;
+
     constructor(public readonly page: Page) {
-    
+        this.unrecognizedWordsEnabled = this.page.getByTestId('unregonized-words-enabled');
+        this.unrecognizedWords = this.page.getByTestId('unregonized-words');
     }
 
     async goto(extensionId) {
