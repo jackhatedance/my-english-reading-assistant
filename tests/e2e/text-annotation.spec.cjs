@@ -13,8 +13,8 @@ test('base form this', async ({ testPage, extensionId, popupPage }) => {
   let rode = testPage.page.locator("#base-form mea-token[data-query='this']");
   await expect(rode).toHaveAttribute('data-target-word', 'this');
   await expect(rode).toHaveAttribute('data-base-word', '');
-  await expect(rode).toHaveAttribute('data-footnote', 'pron.这,本; a.这,本; ad.这么');
-  await expect(rode).toHaveAttribute('data-footnote-short', 'pron.这; a.这; ad.这么; ...');
+  await expect(rode).toHaveAttribute('data-footnote', 'pron.这,本; a.这,本; adv.这么');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'pron.这; a.这; adv.这么; ...');
   
 });
 
@@ -319,8 +319,8 @@ test('tokenize punctuation double quotation am', async ({ testPage, extensionId,
   await expect(word).toHaveAttribute('data-word', 'am');
   await expect(word).toHaveAttribute('data-base-word', 'be');
   await expect(word).toHaveAttribute('data-target-word', 'am');
-  await expect(word).toHaveAttribute('data-footnote', 'be:vt.是,表示,在; vi.是,表示,在');
-  await expect(word).toHaveAttribute('data-footnote-short', 'be:vt.是,表示; vi.是; ...');
+  await expect(word).toHaveAttribute('data-footnote', 'be:v.是,表示,在');
+  await expect(word).toHaveAttribute('data-footnote-short', 'be:v.是,表示,在');
   
 });
 
@@ -334,7 +334,7 @@ test('phrase base form give up', async ({ testPage, extensionId, popupPage }) =>
   let word = testPage.page.hover("#phrase-base-form mea-token[data-query='give']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`give  
+  await expect(definitions).toHaveText(`give /giv/ 
 n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
 give up  
 vt. 放弃努力,认输
@@ -353,9 +353,9 @@ test('phrase transform irregular gave up', async ({ testPage, extensionId, popup
   let word = testPage.page.hover("#phrase-tranform-irregular mea-token[data-query='gave']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`gave  
+  await expect(definitions).toHaveText(`gave /geiv/ 
 give的过去式
-give  
+give /giv/ 
 n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
 give up  
 vt. 放弃努力,认输
@@ -374,9 +374,9 @@ test('phrase transform continuous tense gaving up', async ({ testPage, extension
   let word = testPage.page.hover("#phrase-continuous-tense mea-token[data-query='giving']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`give  
+  await expect(definitions).toHaveText(`give /giv/ 
 n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
-giving   [give ing]
+giving /'giviŋ/  [give ing]
 n. 礼物,给予物
 give up  
 vt. 放弃努力,认输
@@ -395,9 +395,9 @@ test('phrase transform continuous tense 2 gaving up', async ({ testPage, extensi
   let word = testPage.page.hover("#phrase-continuous-tense2 mea-token[data-query='giving']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`give  
+  await expect(definitions).toHaveText(`give /giv/ 
       n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
-      giving   [give ing]
+      giving /'giviŋ/  [give ing]
       n. 礼物,给予物
       give up  
       vt. 放弃努力,认输
@@ -416,9 +416,9 @@ test('phrase gerund giving up', async ({ testPage, extensionId, popupPage }) => 
   let word = testPage.page.hover("#phrase-gerund mea-token[data-query='giving']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`give  
+  await expect(definitions).toHaveText(`give /giv/ 
    n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
-   giving   [give ing]
+   giving /'giviŋ/  [give ing]
    n. 礼物,给予物
    give up  
    vt. 放弃努力,认输
@@ -436,9 +436,9 @@ test('phrase prepositon gerund giving up', async ({ testPage, extensionId, popup
   let word = testPage.page.hover("#phrase-preposition-gerund mea-token[data-query='giving']");
 
   let definitions = testPage.page.locator("#mea-definitions");
-  await expect(definitions).toHaveText(`give  
+  await expect(definitions).toHaveText(`give /giv/ 
 n. 弹性,适应性 vt. 给,授予,供给,产生,发表,付出,献出,让出 vi. 捐赠,支持不住,让步
-giving   [give ing]
+giving /'giviŋ/  [give ing]
 n. 礼物,给予物
 give up  
 vt. 放弃努力,认输
