@@ -82,7 +82,7 @@ function createDictionaryMetaSmall(){
         format: 'text',
         definitionFormat: 'text',
         package: false,
-        size: 60780,
+        size: 281941,
         fromLanguage: 'en',
         toLanguage: 'cn',      
         enabled: true,  
