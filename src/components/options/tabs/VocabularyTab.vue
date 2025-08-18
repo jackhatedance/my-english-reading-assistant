@@ -98,7 +98,7 @@ init();
                 <option value="CET6-2200">CET6(2200)不含常用词汇</option>
                 <option value="GRE-8000">GRE(8000)不含常用词汇</option>
                 <option value="TOEFL-4500">TOEFL(4500)不含常用词汇</option>            
-                <option value="英语专业四八级-13000">英语专业四八级(13000)</option>        
+                <option value="英语专业八级-13000">英语专业八级(13000)</option>        
             </select>
             
         </div>
