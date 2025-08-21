@@ -255,17 +255,19 @@ class MdictDictionary extends Dictionary {
         let policy = null;
 
         let raw = this.lookupRaw('is');
-
-        const $ = cheerio.load(raw, null, false);
-        let linkElements = $('a[href^="entry:"]');
-        if(linkElements.length >= 1){
-            let linkElement = linkElements[0];
-            let href = $(linkElement).attr('href');
-            let entry = getEntryFromLink(href);
-            if(entry == 'BE'){
-                policy = ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE;
+        if(raw){
+            const $ = cheerio.load(raw, null, false);
+            let linkElements = $('a[href^="entry:"]');
+            if(linkElements.length >= 1){
+                let linkElement = linkElements[0];
+                let href = $(linkElement).attr('href');
+                let entry = getEntryFromLink(href);
+                if(entry == 'BE'){
+                    policy = ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE;
+                }
             }
         }
+        
         return policy;
     }
 }
