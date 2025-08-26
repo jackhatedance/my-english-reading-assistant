@@ -20,7 +20,7 @@ function patchAll(options) {
 
 function patch_v_0_10_1(options){
     let otherOptions = options.other;
-    if(!otherOptions.additionalDictionaries){
+    if(!otherOptions.additionalDictionaries || !Array.isArray(otherOptions.additionalDictionaries)){
         otherOptions.additionalDictionaries = [];
     }
 }
