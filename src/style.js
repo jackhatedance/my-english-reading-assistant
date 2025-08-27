@@ -31,23 +31,23 @@ function indexOfRule(styleSheet, selector) {
 }
 
 function indexOfMeaAnnotation(styleSheet) {
-    return indexOfRule(styleSheet, '.mea-highlight::after')
+    return indexOfRule(styleSheet, '.mea-highlight::after') || indexOfRule(styleSheet, '.mea-highlight::before')
 }
 
-function generateCssRuleOfAnnotation(options) {
+function generateCssRuleOfAnnotation(options, suffix, attribute) {
 
     let top = `${options.position * -1}em`;
     let fontSize = `${options.fontSize}em`;
     let opacity = `${options.opacity}`;
     let color = `${options.color}`;
 
-    let rule = `.mea-highlight::after {
-      content: attr(data-footnote-short);
+    let rule = `.mea-highlight::${suffix} {
+      content: attr(data-${attribute});
       position: absolute;
       width:max-content;
       line-height: normal;
       text-indent: 0px;
-      white-space: nowrap;
+      white-space: pre;
       left: 0;
       top: ${top};
       font-size: ${fontSize} !important;
@@ -128,43 +128,67 @@ function deleteStyleRule(styleSheet, selector){
 function changeStyle(document, siteOptions, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
-        deleteStyleRule(styleSheet, '.mea-highlight::after');
-        let rule = generateCssRuleOfAnnotation(siteOptions.annotation);
-        styleSheet.insertRule(rule, 0);
 
-        let selectors = ['mea-token:nth-child(2n+1 of .mea-word)::after',
-            'mea-token:nth-child(2n of .mea-word)::after'];
+        changeAnnotationStyle(styleSheet, siteOptions.annotation, 'after');
 
-        deleteStyleRule(styleSheet, selectors[0]);
-        deleteStyleRule(styleSheet, selectors[1]);
-        
-        
-        let ruleOdd = generateCssRuleOfSubAnnotation(siteOptions.annotation, selectors[0]);
-        styleSheet.insertRule(ruleOdd, 0);
-        const siteOptions2 = JSON.parse(JSON.stringify(siteOptions));
-        if(siteOptions.annotation.interlaced){
-            let numPosition = Number(siteOptions.annotation.position)
-            siteOptions2.annotation.position = (numPosition + 1).toString();
-        }
-        
-        let ruleEven = generateCssRuleOfSubAnnotation(siteOptions2.annotation, selectors[1]);
-        styleSheet.insertRule(ruleEven, 0);
+        let annotation2 = siteOptions.dualAnnotationEnabled? siteOptions.secondaryAnnotation : null;
+        changeAnnotationStyle(styleSheet, annotation2, 'before');
         
         //console.log('changed style, insert rule');
 
         //highlight, aka. text
         deleteStyleRule(styleSheet, '.mea-highlight');
         
+        let highlighRule;
         if(siteProfile.generateCssRuleOfHighlight){
-            rule = siteProfile.generateCssRuleOfHighlight(siteOptions);
+            highlighRule = siteProfile.generateCssRuleOfHighlight(siteOptions);
         }else{
-            rule = generateCssRuleOfHighlight(siteOptions);
+            highlighRule = generateCssRuleOfHighlight(siteOptions);
         }
         
-        styleSheet.insertRule(rule, 0);
+        styleSheet.insertRule(highlighRule, 0);
     }
 }
 
+function getAnnotationAttribute(content){
+    if(content == 'AC_PRONUNCIATION'){
+        return 'pronunciation';
+    } else if(content == 'AC_DEFINITION'){
+        return 'footnote-short';
+    }
+}
 
+function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
+
+    let selectors = [`mea-token:nth-child(2n+1 of .mea-word)::${suffix}`,
+        `mea-token:nth-child(2n of .mea-word)::${suffix}`];
+    
+    deleteStyleRule(styleSheet, `.mea-highlight::${suffix}`);
+
+    deleteStyleRule(styleSheet, selectors[0]);
+    deleteStyleRule(styleSheet, selectors[1]);
+
+    if(annotationOptions) {
+        let attribute = getAnnotationAttribute(annotationOptions.content);
+
+        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, attribute);
+        styleSheet.insertRule(rule, 0);
+
+        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0]);
+        styleSheet.insertRule(ruleOdd, 0);
+
+        const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
+        if (annotationOptions.interlaced) {
+            let numPosition = Number(annotationOptions.position);
+            annotationOptions2.position = (numPosition + 1).toString();
+        }
+
+        let ruleEven = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1]);
+        styleSheet.insertRule(ruleEven, 0);
+    }
+    
+    //return rule;
+}
 
 export { changeStyle, findStyleSheet, indexOfMeaAnnotation, generateCssRuleOfHighlight };
+

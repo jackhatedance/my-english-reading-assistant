@@ -26,8 +26,23 @@
     "popupSettings":{
         "message":"Settings"
     },
+    "popupDualAnnotationEnabledLabel": {
+        "message":"Dual Annotation"
+    },
+    "popupContentLabel": {
+        "message":"Content"
+    },
     "popupPositionLabel":{
         "message":"Position Up/Down"
+    },
+    "popup_settings_content_none":{
+        "message":"None"
+    },
+    "popup_settings_content_pronunciation":{
+        "message":"Pronunciation"
+    },
+    "popup_settings_content_definition":{
+        "message":"Definition"
     },
     "popupFontSizeLabel":{
         "message":"Font Size"

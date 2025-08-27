@@ -125,6 +125,9 @@ function addStyle(document) {
           &::after {
             visibility: hidden;
           }
+          &::before {
+            visibility: hidden;
+          }
         }
 
       }

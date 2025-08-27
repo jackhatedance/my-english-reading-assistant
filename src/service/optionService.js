@@ -12,7 +12,9 @@ async function getDefaultSiteOptions(){
     if(!options){
         options = {
             enabled: false,
+            dualAnnotationEnabled: false,
             annotation: {
+                content: 'AC_DEFINITION',
                 fontSize: 0.4,
                 lineHeight: 1.2,
                 position: 0.5,        
@@ -20,6 +22,14 @@ async function getDefaultSiteOptions(){
                 color: '#0000ff',
                 maxMeaningNumber: 3,
                 hideWordClass: false,
+                interlaced: false,
+            },
+            secondaryAnnotation: {
+                content: 'AC_PRONUNCIATION',
+                position: 0.5,   
+                fontSize: 0.4,
+                opacity: 0.5,
+                color: '#0000ff',
                 interlaced: false,
             },
             content: {

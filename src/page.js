@@ -236,6 +236,7 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         }        
     }
 
+    let options = getOptionsFromCache();
     let currentSiteOption = await getCurrentSiteOptions();
 
     let article = null;
@@ -261,18 +262,18 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         //cleanElements(document);
 
         
-        tokenizeTextNode(document, currentSiteOption, siteProfile);
+        tokenizeTextNode(document, options, currentSiteOption, siteProfile);
 
         addDocumentEventListener(document, currentSiteOption);
     
-        article = parseDocument(document, currentSiteOption);
+        article = parseDocument(document, options, currentSiteOption);
 
         //console.log(JSON.stringify(article));
         addWordHoverEventListener(document, documentConfig, currentSiteOption);
         
     } else {
         //empty article
-        article = parseDocument(document, currentSiteOption, true);
+        article = parseDocument(document, options, currentSiteOption, true);
     }
     return article;
 

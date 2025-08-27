@@ -18,14 +18,28 @@ const gQueryParams = inject('gQueryParams');
 
 
 const enabled = ref(false);
+const dualAnnotationEnabled = ref(false);
+
+const content = ref(0);
+const content2 = ref(0);
+
 const position = ref(0);
+const position2 = ref(0);
+
 const fontSize = ref(0);
+const fontSize2 = ref(0);
+
 const lineHeight = ref(1);
 
 const color = ref('');
+const color2 = ref('');
+
 const opacity = ref(0.5);
+const opacity2 = ref(0.5);
 
 const interlaced = ref(false);
+const interlaced2 = ref(false);
+
 const maxMeaningNumber = ref(3);
 const hideWordClass = ref(false);
 
@@ -64,8 +78,10 @@ function buildOptions(){
 
   let newOptions = {
     enabled: enabled.value,
+    dualAnnotationEnabled: dualAnnotationEnabled.value,
 
     annotation:{    
+      content: content.value,
       fontSize: fontSize.value,
       lineHeight: lineHeight.value,
       position: position.value,        
@@ -74,6 +90,14 @@ function buildOptions(){
       maxMeaningNumber: maxMeaningNumber.value,
       hideWordClass: hideWordClass.value,        
       interlaced: interlaced.value,
+    },
+    secondaryAnnotation: {
+        content: content2.value,
+        position: position2.value,  
+        fontSize: fontSize2.value,
+        opacity: opacity2.value,
+        color: color2.value,  
+        interlaced: interlaced2.value,
     },
     content: {
       enabled: contentStyleEnabled.value,
@@ -95,7 +119,7 @@ async function applyStyles(){
 
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
-    //console.log(newOptions);
+    console.log(newOptions);
     let queryOptions = { active: true, currentWindow: true };
     if(gQueryParams.index){
         let index = parseInt(gQueryParams.index);
@@ -191,15 +215,31 @@ function updateViewModel(siteOptions, settingsOnly = false){
     enabled.value = siteOptions.enabled;
   }
 
+  dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
+
   let annotationOptions = siteOptions.annotation;
+  let annotationOptions2 = siteOptions.secondaryAnnotation;
+
+  content.value = annotationOptions.content;
+  content2.value = annotationOptions2.content;
+
   position.value = annotationOptions.position;
+  position2.value = annotationOptions2.position;
+
   fontSize.value = annotationOptions.fontSize;
-  lineHeight.value = annotationOptions.lineHeight;
+  fontSize2.value = annotationOptions2.fontSize;
 
   color.value = annotationOptions.color;
+  color2.value = annotationOptions2.color;
+
   opacity.value = annotationOptions.opacity;
+  opacity2.value = annotationOptions2.opacity;
 
   interlaced.value = annotationOptions.interlaced;
+  interlaced2.value = annotationOptions2.interlaced;
+
+  lineHeight.value = annotationOptions.lineHeight;
+
   maxMeaningNumber.value = annotationOptions.maxMeaningNumber;
   hideWordClass.value = annotationOptions.hideWordClass;
 
@@ -249,31 +289,58 @@ init();
         <h4>{{ t('popupSettings') }}</h4>
         <div class="popup-settings">
 
-          <div class="field">
-            <label>{{ t('popupPositionLabel') }}</label>
-            <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-10" max="10" step="0.1">
-          </div>  
+          <div class="annotation-settings">
+            <div class="field">
+              <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
+              <input v-model="dualAnnotationEnabled" @change="onChangeSetting" type="checkbox" >
+            
+            </div>
 
-          <div class="field">
-            <label>{{ t('popupFontSizeLabel') }}</label>
-            <input id="fontSize" v-model="fontSize" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1">
-          </div>
-          
-          <div class="field">
-            <label for="color">{{ t('popupColorLabel') }}</label>
-            <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
-          </div>
+            <div class="field">
+              <label>{{ t('popupContentLabel') }}</label>
+              <select data-testid="content" v-model="content" @change="onChangeSetting" >
+                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
+                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
+                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+              </select>
 
-          <div class="field">
-            <label>{{ t('popupOpacityLabel') }}</label>
-            <input id="opacity" v-model="opacity" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
-          </div>
+              <select data-testid="content2" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="content2" @change="onChangeSetting" >
+                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
+                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
+                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+              </select>
+            </div>
+            
+            <div class="field">
+              <label>{{ t('popupPositionLabel') }}</label>
+              <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-10" max="10" step="0.1">
+              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="position2"  @change="onChangeSetting" type="number" value="-1" min="-10" max="10" step="0.1">
+            </div>
 
-          <div class="field">
-            <label>{{ t('popupInterlacedLabel') }}</label>
-            <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
-          </div>
+            <div class="field">
+              <label>{{ t('popupFontSizeLabel') }}</label>
+              <input id="fontSize" v-model="fontSize" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1">
+              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="fontSize2" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1"></input>
+            </div>
+            
+            <div class="field">
+              <label for="color">{{ t('popupColorLabel') }}</label>
+              <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
+              <input type="color" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting"  name="color" value="#808080">
+            </div>
 
+            <div class="field">
+              <label>{{ t('popupOpacityLabel') }}</label>
+              <input id="opacity" v-model="opacity" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="opacity2" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+            </div>
+
+            <div class="field">
+              <label>{{ t('popupInterlacedLabel') }}</label>
+              <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
+              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" type="checkbox" >
+            </div>
+          </div>
           <div class="field">
             <label>{{ t('popupLineHeightLabel') }}</label>
             <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="2" step="0.1">
@@ -323,4 +390,7 @@ init();
 </template>
 <style>
 
+.annotation-settings {
+  border: 1px solid;
+}
 </style>

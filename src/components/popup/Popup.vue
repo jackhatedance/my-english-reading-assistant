@@ -269,10 +269,12 @@ input:checked + .slider:before {
     float: right;
     width: 4em;
     height: 20px;
+    margin-left: 5px;
   }
   select {
     float: right;
     width: 4em;
+    margin-left: 5px;
   }
 }
 

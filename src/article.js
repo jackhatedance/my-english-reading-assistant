@@ -21,7 +21,7 @@ const gLogger = log.getLogger('article');
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document, siteOptions, siteProfile) {
+function tokenizeTextNode(document, options, siteOptions, siteProfile) {
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
@@ -77,7 +77,7 @@ function tokenizeTextNode(document, siteOptions, siteProfile) {
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions);
+                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciationRegion);
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
                     tokenHtml = annotatedWord;
@@ -119,7 +119,7 @@ function tokenizeTextNode(document, siteOptions, siteProfile) {
  * 
  * @param {*} document 
  */
-function parseDocument(document, siteOptions, skip = false) {
+function parseDocument(document, options, siteOptions, skip = false) {
     
     let article = {
         currentSentenceNumber: 0,
@@ -167,7 +167,7 @@ function parseDocument(document, siteOptions, skip = false) {
         //parse paragraph, token
         parseArticleContent(siteOptions, article, lines, newTagPositions);
         //parse text node(offset)
-        parseArticleTextNodes(article, document.body, siteOptions);
+        parseArticleTextNodes(article, document.body, options, siteOptions);
 
         article.contentLength = document.body.textContent.length;
         article.document = document;        
@@ -328,7 +328,7 @@ function checkWord(siteOptions, text, lookupBase){
     return result;
 }
 
-function parseArticleTextNodes(article, element, siteOptions){
+function parseArticleTextNodes(article, element, options, siteOptions){
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
 
     let offset = 0;
@@ -379,7 +379,7 @@ function parseArticleTextNodes(article, element, siteOptions){
                         dictionaryOptions: buildDictionaryOptions(siteOptions),
                     });
                     if(searchResult) {
-                        updateWordAnnotation(node.parentElement, searchResult, showShortDefinition, simplifyDefinitionOptions);
+                        updateWordAnnotation(node.parentElement, searchResult, showShortDefinition, simplifyDefinitionOptions, options.pronunciationRegion);
 
 
                         //in case the wrong word has been searched
