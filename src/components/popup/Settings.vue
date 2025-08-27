@@ -260,11 +260,6 @@ init();
           </div>
           
           <div class="field">
-            <label>{{ t('popupLineHeightLabel') }}</label>
-            <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="2" step="0.1">
-          </div>
-
-          <div class="field">
             <label for="color">{{ t('popupColorLabel') }}</label>
             <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
           </div>
@@ -277,6 +272,11 @@ init();
           <div class="field">
             <label>{{ t('popupInterlacedLabel') }}</label>
             <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
+          </div>
+
+          <div class="field">
+            <label>{{ t('popupLineHeightLabel') }}</label>
+            <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="2" step="0.1">
           </div>
 
           <div class="field">
@@ -301,7 +301,7 @@ init();
           </div>
 
           <div class="field" id="dictionaryField" v-show="additionalDictionaryEnabled">
-            <label>{{ t('popupAdditionalDictionaryLabel') }}'<span class="red">*</span></label>
+            <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
             <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="3">
                 <option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
             </select>            
