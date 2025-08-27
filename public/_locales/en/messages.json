@@ -35,6 +35,9 @@
     "popupLineHeightLabel":{
         "message":"Line Height"
     },
+    "popupUnknownWordWidthLabel":{
+        "message":"Unknown Word Width"
+    },
     "popupColorLabel":{
         "message":"Color"
     },

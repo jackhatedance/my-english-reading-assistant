@@ -25,6 +25,7 @@ async function getDefaultSiteOptions(){
             content: {
                 enabled: false,
                 unknownWordColor: '#0000ff',
+                unknownWordWidth: 1,
             },
             other:{
                 additionalDictionaries: [],

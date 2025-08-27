@@ -35,6 +35,9 @@
     "popupLineHeightLabel":{
         "message":"行高"
     },
+    "popupUnknownWordWidthLabel":{
+        "message":"生词宽度"
+    },
     "popupColorLabel":{
         "message":"颜色"
     },

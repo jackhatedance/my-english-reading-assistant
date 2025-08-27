@@ -74,7 +74,11 @@ function generateCssRuleOfHighlight(options, extraStyle) {
     if(annotationOptions.lineHeight ==1){
         lineHeight = "";
     }
-    
+
+    let unknownWordWidthStyle = '';
+    if(contentOptions.unknownWordWidth >1){
+        unknownWordWidthStyle = `padding-right: ${contentOptions.unknownWordWidth - 1}em !important;`;;
+    }    
 
     //TEST
     /*
@@ -84,11 +88,16 @@ function generateCssRuleOfHighlight(options, extraStyle) {
     };
     */
 
-    let unknownWordStyle = '';
+    let unknownWordColorStyle = '';
     if(contentOptions.enabled){
+       unknownWordColorStyle = `color: ${contentOptions.unknownWordColor} !important;`;
+    }
+
+    let unknownWordStyle = unknownWordWidthStyle + unknownWordColorStyle;
+    if(unknownWordStyle.length >0){
         unknownWordStyle = `
             &:not(.mea-hide) {
-                color: ${contentOptions.unknownWordColor} !important;
+                ${unknownWordStyle}
             }`;
     }
     

@@ -16,6 +16,7 @@ function patchDefaultSiteOptionValues(options) {
 function patchAll(options) {
     patch_v_0_10_1(options);
     patch_v_0_10_4(options);
+    patch_v_0_13_0(options);
 }
 
 function patch_v_0_10_1(options){
@@ -29,6 +30,13 @@ function patch_v_0_10_4(options){
     let annotationOptions = options.annotation;
     if(!annotationOptions.interlaced){
         annotationOptions.interlaced = false;
+    }
+}
+
+function patch_v_0_13_0(options){
+    let contentOptions = options.content;
+    if(!contentOptions.unknownWordWidth){
+        contentOptions.unknownWordWidth = 1;
     }
 }
 

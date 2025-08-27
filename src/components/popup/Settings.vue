@@ -31,6 +31,7 @@ const hideWordClass = ref(false);
 
 const contentStyleEnabled = ref(false);
 const unknownWordColor = ref('');
+const unknownWordWidth = ref(1);
 
 const additionalDictionaryMetas = ref([]);
 const additionalDictionaries = ref([]);
@@ -77,6 +78,7 @@ function buildOptions(){
     content: {
       enabled: contentStyleEnabled.value,
       unknownWordColor: unknownWordColor.value,
+      unknownWordWidth: unknownWordWidth.value,
     },
     other: {
       additionalDictionaries: toRaw(additionalDictionaries.value),
@@ -93,7 +95,7 @@ async function applyStyles(){
 
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
     await setSiteOptions(siteDomain, newOptions);
-    console.log(newOptions);
+    //console.log(newOptions);
     let queryOptions = { active: true, currentWindow: true };
     if(gQueryParams.index){
         let index = parseInt(gQueryParams.index);
@@ -205,6 +207,7 @@ function updateViewModel(siteOptions, settingsOnly = false){
 
   contentStyleEnabled.value = contentOptions.enabled;
   unknownWordColor.value = contentOptions.unknownWordColor;
+  unknownWordWidth.value = contentOptions.unknownWordWidth;
 
   let otherOptions = siteOptions.other;
   additionalDictionaries.value = otherOptions.additionalDictionaries;
@@ -290,6 +293,11 @@ init();
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
             <input id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" type="checkbox" >
             <input type="color" id="unknownWordColor" v-model="unknownWordColor" @change="onChangeSetting" name="unknownWordColor" value="#808080">
+          </div>
+
+          <div class="field">
+            <label>{{ t('popupUnknownWordWidthLabel') }}</label>
+            <input id="unknownWordWidth" v-model="unknownWordWidth" @change="onChangeSetting" type="number" value="1" min="1" max="5" step="1">
           </div>
 
           <div class="field" id="dictionaryField" v-show="additionalDictionaryEnabled">
