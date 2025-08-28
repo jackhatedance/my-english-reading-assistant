@@ -23,6 +23,27 @@
     "popupAlwaysShowDefinition":{
         "message":"总是在这个网站显示释义"
     },
+    "popupDualAnnotationEnabledLabel": {
+        "message":"Dual Annotation"
+    },
+    "popupContentLabel": {
+        "message":"内容"
+    },
+    "popup_settings_content_none":{
+        "message":"无"
+    },
+    "popup_settings_content_pronunciation":{
+        "message":"发音"
+    },
+    "popup_settings_content_definition":{
+        "message":"定义"
+    },
+    "popup_settings_content_pronunciation_and_definition":{
+        "message":"发音+定义"
+    },
+    "popup_settings_content_pronunciation_newline_definition":{
+        "message":"发音+定义(2行)"
+    },
     "popupSettings":{
         "message":"设置"
     },

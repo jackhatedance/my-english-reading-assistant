@@ -44,6 +44,12 @@
     "popup_settings_content_definition":{
         "message":"Definition"
     },
+    "popup_settings_content_pronunciation_and_definition":{
+        "message":"Pronunciation + Definition"
+    },
+    "popup_settings_content_pronunciation_newline_definition":{
+        "message":"Pronunciation + Definition(2 lines)"
+    },
     "popupFontSizeLabel":{
         "message":"Font Size"
     },

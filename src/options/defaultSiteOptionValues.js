@@ -49,16 +49,16 @@ function patch_v_0_13_1(options){
 
     let annotationOptions = options.annotation;
     if(annotationOptions.content == null){
-        annotationOptions.content = 'AC_PRONUNCIATION';
+        annotationOptions.content = 'AC_DEFINITION';
     }
 
     if(options.secondaryAnnotation == null){
         options.secondaryAnnotation = {
             content: 'AC_PRONUNCIATION',
-            position: 0.5,   
+            position: -2,   
             fontSize: 0.4,
             opacity: 0.5,
-            color: '#0000ff',
+            color: '#e56910',
             interlaced: false,
         };
     }

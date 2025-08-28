@@ -34,7 +34,7 @@ function indexOfMeaAnnotation(styleSheet) {
     return indexOfRule(styleSheet, '.mea-highlight::after') || indexOfRule(styleSheet, '.mea-highlight::before')
 }
 
-function generateCssRuleOfAnnotation(options, suffix, attribute) {
+function generateCssRuleOfAnnotation(options, suffix, contentExpr) {
 
     let top = `${options.position * -1}em`;
     let fontSize = `${options.fontSize}em`;
@@ -42,10 +42,10 @@ function generateCssRuleOfAnnotation(options, suffix, attribute) {
     let color = `${options.color}`;
 
     let rule = `.mea-highlight::${suffix} {
-      content: attr(data-${attribute});
+      content: ${contentExpr};
       position: absolute;
       width:max-content;
-      line-height: normal;
+      line-height: 90%;
       text-indent: 0px;
       white-space: pre;
       left: 0;
@@ -77,7 +77,10 @@ function generateCssRuleOfHighlight(options, extraStyle) {
 
     let unknownWordWidthStyle = '';
     if(contentOptions.unknownWordWidth >1){
-        unknownWordWidthStyle = `padding-right: ${contentOptions.unknownWordWidth - 1}em !important;`;;
+        // critical style to fix '::before' appear on end of previous line
+        unknownWordWidthStyle = `padding-right: ${contentOptions.unknownWordWidth - 1}em !important;
+            white-space: nowrap;
+            `;
     }    
 
     //TEST
@@ -150,11 +153,15 @@ function changeStyle(document, siteOptions, siteProfile) {
     }
 }
 
-function getAnnotationAttribute(content){
+function getContentExpr(content){
     if(content == 'AC_PRONUNCIATION'){
-        return 'pronunciation';
+        return `attr(data-pronunciation)`;
     } else if(content == 'AC_DEFINITION'){
-        return 'footnote-short';
+        return `attr(data-footnote-short)`;
+    } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION'){
+        return `attr(data-pronunciation) attr(data-footnote-short)`;
+    } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE'){
+        return `attr(data-pronunciation) "\\A" attr(data-footnote-short)`;
     }
 }
 
@@ -169,9 +176,9 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
     deleteStyleRule(styleSheet, selectors[1]);
 
     if(annotationOptions) {
-        let attribute = getAnnotationAttribute(annotationOptions.content);
+        let contentExpr = getContentExpr(annotationOptions.content);
 
-        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, attribute);
+        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, contentExpr);
         styleSheet.insertRule(rule, 0);
 
         let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0]);

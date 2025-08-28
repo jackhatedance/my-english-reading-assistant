@@ -36,7 +36,7 @@ function simplifyDefinition(word, searchType, originalLookupResult, baseWord, ba
     let entry = mergeEntries(entries);
         
     const { definitionGroups } = entry;
-    let pronunciation = pronunciationsToText(entry.headword.pronunciations, pronunciationRegion);    
+    //let pronunciation = pronunciationsToText(entry.headword.pronunciations, pronunciationRegion);    
 
     let totalMeaningNumber = 0;
     let definitions = [];
@@ -109,7 +109,7 @@ function simplifyDefinition(word, searchType, originalLookupResult, baseWord, ba
     }
 
     let definitionStr = definitionStrList.join('; ');   
-    return '/aaa/ \n '+ prefix + definitionStr;
+    return prefix + definitionStr;
 }
 
 function mergeMeanings(meaningsArray){

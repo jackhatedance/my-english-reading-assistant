@@ -26,7 +26,7 @@ async function getDefaultSiteOptions(){
             },
             secondaryAnnotation: {
                 content: 'AC_PRONUNCIATION',
-                position: 0.5,   
+                position: -2,   
                 fontSize: 0.4,
                 opacity: 0.5,
                 color: '#0000ff',
