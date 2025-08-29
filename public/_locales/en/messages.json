@@ -18,10 +18,10 @@
         "message":"Options"
     },
     "popupShowHideDefinition":{
-        "message":"Show/Hide Definition"
+        "message":"Show/Hide Annotation"
     },
     "popupAlwaysShowDefinition":{
-        "message":"always show definition on this site: "
+        "message":"always show: "
     },
     "popupSettings":{
         "message":"Settings"

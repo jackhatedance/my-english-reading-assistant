@@ -72,6 +72,17 @@ function onChangeSetting(){
     applyStyles();
 }
 
+function onChangeDualAnnotationEnabled(){
+  if(dualAnnotationEnabled.value == true && unknownWordWidth.value ==1){
+    //fix ::before display on end of previous line issue
+    unknownWordWidth.value = 1.1;
+  }
+  if(dualAnnotationEnabled.value == false && unknownWordWidth.value ==1.1){
+    //fix ::before display on end of previous line issue
+    unknownWordWidth.value = 1;
+  }
+  applyStyles();
+}
 
 function buildOptions(){
   //const selectedAdditionalDictionaryValues = Array.from(additionalDictionariesElement.selectedOptions).map(option => option.value);
@@ -276,13 +287,17 @@ init();
 <template>
     <div id="pageSection">
         <h3 id="site">{{ site }}</h3>
-        <p class="subtitle">{{ t('popupShowHideDefinition') }}</p>
-        <label class="switch">
-          <input type="checkbox" id="enabledCheckbox" data-testid="switch" v-model="props.pageInfo.visible" @change="onChangePageEnabled">
-          <span class="slider"></span>
-        </label>
-        <div>
-          <label>{{ t('popupAlwaysShowDefinition') }}<input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
+        <div class="toggle-container">
+          <div class="toggle-master">
+            <span class="subtitle">{{ t('popupShowHideDefinition') }}</span>
+            <label class="switch">
+              <input type="checkbox" id="enabledCheckbox" data-testid="switch" v-model="props.pageInfo.visible" @change="onChangePageEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-always">
+            <label>{{ t('popupAlwaysShowDefinition') }}<input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
+          </div>
         </div>
         <br/>
         
@@ -292,7 +307,7 @@ init();
           <div class="annotation-settings">
             <div class="field">
               <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
-              <input v-model="dualAnnotationEnabled" @change="onChangeSetting" type="checkbox" >
+              <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
             
             </div>
 
@@ -393,8 +408,20 @@ init();
       </div>
 </template>
 <style>
+.toggle-container{
+  display: flex;
+  padding-left: 10px;
+  padding-right: 10px;
 
+  .toggle-master {
+    margin-right: auto;
+  }
+  .toggle-always {
+    align-content: end;
+    margin-bottom: 10px;
+  }
+}
 .annotation-settings {
-  border: 1px solid;
+  padding:0;
 }
 </style>

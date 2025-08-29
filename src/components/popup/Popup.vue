@@ -107,7 +107,7 @@ body {
   align-items: center;
   flex-direction: column;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   
   >div{
     width: 100%;

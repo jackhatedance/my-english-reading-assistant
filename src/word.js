@@ -93,7 +93,7 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
     return formatted;
 }
 
-function updateWordAnnotation(textElement, searchResult, showShortDefinition, simplifyDefinitionOptions, pronunciationRegion){
+function updateWordAnnotation(textElement, searchResult, showAnnotation, simplifyDefinitionOptions, pronunciationRegion){
     //console.log(textElement.tagName);
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion);
     let { pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts } = annotationParameters;
@@ -115,8 +115,9 @@ function updateWordAnnotation(textElement, searchResult, showShortDefinition, si
     textElement.setAttribute('data-parts', `${parts}`);
     textElement.setAttribute('data-footnote', middleDefinition);
 
-    if(!showShortDefinition){
+    if(!showAnnotation){
         shortDefinition = '';
+        escapedPronunciation = '';
     }
     textElement.setAttribute('data-footnote-short', shortDefinition);
 
