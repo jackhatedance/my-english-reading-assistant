@@ -48,7 +48,7 @@ html, body, #app {
         padding: 10px 20px;
         margin: 4px;
         color: white;
-        background-color: #26a890;
+        background-color: #3987ec;
         font-size: 16px;
         cursor: pointer;
         border-radius: 4px;

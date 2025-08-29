@@ -140,7 +140,7 @@ code {
   margin-right: 4px;
   margin-left: 4px;
   color: white;
-  background-color: #26a890;
+  background-color: #3987ec;
   font-size: 16px;
   cursor: pointer;
   border-radius: 4px;
@@ -204,11 +204,11 @@ code {
 }
 
 input:checked + .slider {
-  background-color: #26a890;
+  background-color: #3987ec;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #26a890;
+  box-shadow: 0 0 1px #3987ec;
 }
 
 input:checked + .slider:before {
