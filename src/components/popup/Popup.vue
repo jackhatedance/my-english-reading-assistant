@@ -97,7 +97,7 @@ html {
 }
 
 body {
-  width: 350px;
+  width: 330px;
 }
 
 .app {
@@ -136,7 +136,7 @@ code {
 .button {
   border: 0;
   display: inline-block;
-  padding: 10px 20px;
+  padding: 5px 20px;
   margin-right: 4px;
   margin-left: 4px;
   color: white;
@@ -228,7 +228,7 @@ input:checked + .slider:before {
 
 .popup-settings {
   border: solid 1px;
-  padding: 10px;
+  
   div {
     padding: 5px;
     clear: both;

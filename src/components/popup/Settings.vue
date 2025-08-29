@@ -299,9 +299,7 @@ init();
             <label>{{ t('popupAlwaysShowDefinition') }} <input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
           </div>
         </div>
-        <br/>
-        
-        <h4>{{ t('popupSettings') }}</h4>
+                
         <div class="popup-settings">
 
           <div class="annotation-settings">
@@ -362,7 +360,7 @@ init();
           </div>
           <div class="field">
             <label>{{ t('popupLineHeightLabel') }}</label>
-            <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="2" step="0.1">
+            <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="3" step="0.1">
           </div>
 
           <div class="field">
@@ -404,17 +402,18 @@ init();
 
         </div>
 
-        <button id="test" class="button" style="display:none">Test</button>
       </div>
 </template>
 <style>
 .toggle-container{
   display: flex;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
 
   .toggle-master {
-    margin-right: auto;
+    width: 70%;
+    align-content: end;
   }
   .toggle-always {
     align-content: end;
@@ -422,6 +421,6 @@ init();
   }
 }
 .annotation-settings {
-  padding:0;
+  padding:0 !important;
 }
 </style>

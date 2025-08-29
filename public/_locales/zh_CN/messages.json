@@ -24,7 +24,7 @@
         "message":"总是显示"
     },
     "popupDualAnnotationEnabledLabel": {
-        "message":"Dual Annotation"
+        "message":"双注解"
     },
     "popupContentLabel": {
         "message":"内容"
@@ -36,13 +36,13 @@
         "message":"发音"
     },
     "popup_settings_content_definition":{
-        "message":"定义"
+        "message":"含义"
     },
     "popup_settings_content_pronunciation_and_definition":{
-        "message":"发音+定义"
+        "message":"发音+含义"
     },
     "popup_settings_content_pronunciation_newline_definition":{
-        "message":"发音+定义(2行)"
+        "message":"发音+含义(2行)"
     },
     "popupSettings":{
         "message":"设置"

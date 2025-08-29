@@ -55,8 +55,8 @@ function patch_v_0_13_1(options){
     if(options.secondaryAnnotation == null){
         options.secondaryAnnotation = {
             content: 'AC_PRONUNCIATION',
-            position: -2,   
-            fontSize: 0.4,
+            position: -4,   
+            fontSize: 0.3,
             opacity: 0.5,
             color: '#e56910',
             interlaced: false,
