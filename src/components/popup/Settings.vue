@@ -296,7 +296,7 @@ init();
             </label>
           </div>
           <div class="toggle-always">
-            <label>{{ t('popupAlwaysShowDefinition') }}<input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
+            <label>{{ t('popupAlwaysShowDefinition') }} <input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
           </div>
         </div>
         <br/>

@@ -21,7 +21,7 @@
         "message":"显示/隐藏注解"
     },
     "popupAlwaysShowDefinition":{
-        "message":"总是在这个网站显示释义"
+        "message":"总是显示"
     },
     "popupDualAnnotationEnabledLabel": {
         "message":"Dual Annotation"
