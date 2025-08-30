@@ -5,6 +5,7 @@ import {localizeHtmlPage} from '../../locale.js';
 import {initializeOptionService, getOptionsFromCache} from '../../service/optionService.js';
 import { getAdditionalDictionaryMetas } from '../../dictionary/customDictionary.js'
 import { getWebSiteDocumentUrl } from '../../site.js';
+import HelpLink from '../HelpLink.vue'
 
 const t = chrome.i18n.getMessage;
 
@@ -304,7 +305,7 @@ init();
 
           <div class="annotation-settings">
             <div class="field">
-              <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
+              <label>{{ t('popupDualAnnotationEnabledLabel') }} <HelpLink type="guide" keyword="双注解"/></label>
               <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
             
             </div>
