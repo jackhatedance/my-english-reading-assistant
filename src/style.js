@@ -58,7 +58,7 @@ function generateCssRuleOfAnnotation(options, suffix, contentExpr) {
 }
 
 function generateCssRuleOfSubAnnotation(options, selector) {
-    let top = `${options.position * -1}em`;
+    let top = `${(options.position * -1)/options.fontSize}em`;
 
     let rule = `${selector} {
       top: ${top};

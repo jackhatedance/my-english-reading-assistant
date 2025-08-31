@@ -331,7 +331,7 @@ init();
             
             <div class="field">
               <label>{{ t('popupPositionLabel') }}</label>
-              <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-10" max="10" step="0.1">
+              <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-5" max="5" step="0.1">
               <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="position2"  @change="onChangeSetting" type="number" value="-1" min="-10" max="10" step="0.1">
             </div>
 

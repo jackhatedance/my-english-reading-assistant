@@ -15,18 +15,19 @@ async function getDefaultSiteOptions(){
             dualAnnotationEnabled: false,
             annotation: {
                 content: 'AC_DEFINITION',
+                position: 0.1,
                 fontSize: 0.3,
-                lineHeight: 1.2,
-                position: 0.5,        
                 opacity: 0.5,
                 color: '#0000ff',
+                interlaced: false,
+                
+                lineHeight: 1.2,
                 maxMeaningNumber: 3,
                 hideWordClass: false,
-                interlaced: false,
             },
             secondaryAnnotation: {
                 content: 'AC_PRONUNCIATION',
-                position: -4,   
+                position: -1,   
                 fontSize: 0.3,
                 opacity: 0.5,
                 color: '#e56910',
