@@ -159,7 +159,7 @@ function getContentExpr(content){
     } else if(content == 'AC_DEFINITION'){
         return `attr(data-footnote-short)`;
     } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION'){
-        return `attr(data-pronunciation) attr(data-footnote-short)`;
+        return `attr(data-pronunciation) " " attr(data-footnote-short)`;
     } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE'){
         return `attr(data-pronunciation) "\\A" attr(data-footnote-short)`;
     }
@@ -187,7 +187,7 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
         const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
         if (annotationOptions.interlaced) {
             let numPosition = Number(annotationOptions.position);
-            annotationOptions2.position = (numPosition + 1).toString();
+            annotationOptions2.position = (numPosition + 1 * annotationOptions.fontSize).toString();
         }
 
         let ruleEven = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1]);
