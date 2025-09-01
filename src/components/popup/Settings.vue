@@ -306,90 +306,115 @@ init();
           <div class="annotation-settings">
             <div class="field">
               <label>{{ t('popupDualAnnotationEnabledLabel') }} <HelpLink type="guide" keyword="双注解"/></label>
-              <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
-            
+              <div class="inputs">
+                <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
+              </div>
             </div>
 
             <div class="field">
               <label>{{ t('popupContentLabel') }}</label>
-              <select data-testid="content" v-model="content" @change="onChangeSetting" >
-                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
-                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
-                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
-              </select>
-
-              <select data-testid="content2" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="content2" @change="onChangeSetting" >
-                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
-                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
-                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
-              </select>
+              <div class="inputs">
+                <select data-testid="content2" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="content2" @change="onChangeSetting" >
+                  <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
+                  <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
+                  <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+                  <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
+                  <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
+                </select>
+                <select data-testid="content" v-model="content" @change="onChangeSetting" >
+                  <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
+                  <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
+                  <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+                  <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
+                  <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
+                </select>
+              </div>
             </div>
             
             <div class="field">
               <label>{{ t('popupPositionLabel') }}</label>
-              <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
-              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="position2"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
+              <div class="inputs">
+                <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="position2"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
+                <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
+              </div>
             </div>
 
             <div class="field">
               <label>{{ t('popupFontSizeLabel') }}</label>
-              <input id="fontSize" v-model="fontSize" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1">
-              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="fontSize2" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1"></input>
+              <div class="inputs">
+                <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="fontSize2" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1"></input>
+                <input id="fontSize" v-model="fontSize" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1">
+              </div>
             </div>
             
             <div class="field">
               <label for="color">{{ t('popupColorLabel') }}</label>
-              <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
-              <input type="color" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting"  name="color" value="#808080">
+              <div class="inputs">
+                <input type="color" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting"  name="color" value="#808080">
+                <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
+              </div>
             </div>
 
             <div class="field">
               <label>{{ t('popupOpacityLabel') }}</label>
-              <input id="opacity" v-model="opacity" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
-              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="opacity2" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+              <div class="inputs">
+                <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="opacity2" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+                <input id="opacity" v-model="opacity" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+              </div>
             </div>
 
             <div class="field">
               <label>{{ t('popupInterlacedLabel') }}</label>
-              <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
-              <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" type="checkbox" >
+              <div class="inputs">
+                <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" type="checkbox" >
+                <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
+              </div>
             </div>
           </div>
           <div class="field">
             <label>{{ t('popupLineHeightLabel') }}</label>
-            <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="3" step="0.1">
+            <div class="inputs">
+              <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="3" step="0.1">
+            </div>
           </div>
 
           <div class="field">
             <label>{{ t('popupMaxMeaningNumberLabel') }}<span class="red">*</span></label>
-            <input id="maxMeaningNumber" v-model="maxMeaningNumber" @change="onChangeSetting" type="number" value="3" min="1" max="20" step="1">
+            <div class="inputs">
+              <input id="maxMeaningNumber" v-model="maxMeaningNumber" @change="onChangeSetting" type="number" value="3" min="1" max="20" step="1">
+            </div>
           </div>
 
           <div class="field">
             <label>{{ t('popupHideWordClassLabel') }}<span class="red">*</span></label>
-            <input id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" type="checkbox" >
+            <div class="inputs">
+              <input id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" type="checkbox" >
+            </div>
           </div>
 
           <div class="field">
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
-            <input id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" type="checkbox" >
-            <input type="color" id="unknownWordColor" v-model="unknownWordColor" @change="onChangeSetting" name="unknownWordColor" value="#808080">
+            <div class="inputs">
+              <input type="color" id="unknownWordColor" v-model="unknownWordColor" @change="onChangeSetting" name="unknownWordColor" value="#808080">
+              <input id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" type="checkbox" >
+              
+            </div>
           </div>
 
           <div class="field">
             <label>{{ t('popupUnknownWordWidthLabel') }}</label>
-            <input id="unknownWordWidth" v-model="unknownWordWidth" @change="onChangeSetting" type="number" value="1" min="1" max="5" step="1">
+            <div class="inputs">
+              <input id="unknownWordWidth" v-model="unknownWordWidth" @change="onChangeSetting" type="number" value="1" min="1" max="5" step="1">
+            </div>
           </div>
 
           <div class="field" id="dictionaryField" v-show="additionalDictionaryEnabled">
             <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
-            <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="3">
-                <option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
-            </select>            
+            <div class="inputs">
+              <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="3">
+                  <option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
+              </select>           
+            </div> 
           </div>
 
           <div>

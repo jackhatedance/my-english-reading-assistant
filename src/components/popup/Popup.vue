@@ -229,7 +229,7 @@ input:checked + .slider:before {
 .popup-settings {
   border: solid 1px;
   
-  div {
+  >div {
     padding: 5px;
     clear: both;
   }
@@ -259,27 +259,32 @@ input:checked + .slider:before {
 
 .field {
   text-align: left;
-  
+  clear: both;
+  padding: 5px;
 
   .red{
     color: red;
   }
 
-  input {
+  .inputs {
     float: right;
-    width: 4em;
-    height: 20px;
-    margin-left: 5px;
+    display: flex;
+
+    input {
+      width: 4em;
+      height: 20px;
+      margin-left: 5px;
+    }
+    select {
+      width: 4em;
+      margin-left: 5px;
+    }
   }
-  select {
-    float: right;
-    width: 4em;
-    margin-left: 5px;
-  }
+  
 }
 
 #additionalDictionaries {
-  width: 45%;
+  width: 10em;
 }
 
 #nothing-to-do {
