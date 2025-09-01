@@ -47,7 +47,7 @@ init();
         
         <a id="help" href="#" :title="t('popupHelp')"><img src="icons/help.png" alt="help" @click="onClickHelp"></a>
         
-        <a id="options" href="#" :title="t('_popupOptions')"><img src="icons/options.png" alt="options" @click="onClickOptions"></a>
+        <a id="options" href="#" :title="t('popupOptions')"><img src="icons/options.png" alt="options" @click="onClickOptions"></a>
     </div>
 </template>
 <style>
