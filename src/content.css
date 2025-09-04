@@ -16,8 +16,10 @@
 .mea-highlight {  
   position: relative;
   margin-top: 0px;
-  text-indent1: 0px;
-  display1: inline-block;
+  /*
+  text-indent: 0px;
+  display: inline-block;
+  */
 }
 
 .mea-highlight { 
