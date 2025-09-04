@@ -17,24 +17,29 @@ import { showDialog, closeDialog } from './dialog.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
 
-//used to check if title changed
-var gUrl;
 
-//if site info changed, need to re-search site profile 
-var gSiteInfo;
-var gSiteProfile;
 
-var gDocumentArticleMap;
-
-var gDomChanges=0;
-var gDomChangesMonitored=0;
-
-var gDomMonitorInterval=2000;
 const DOM_MONITOR_INTERVAL_MIN = 2000;
 const DOM_MONITOR_INTERVAL_MAX = 5000;
 
-var gMouseUpEventListener;
-var gObserver;
+
+var page = {
+  //used to check if title changed
+  url: null,
+  //if site info changed, need to re-search site profile 
+  siteInfo: null,
+  siteProfile: null,
+  
+  documentArticleMap: null,
+  
+  domChanges: 0,
+  domChangesMonitored:0,
+
+  domMonitorInterval:2000,
+
+  mouseUpEventListener: null,
+  observer: null
+};
 
 initLog();
 const gLogger = log.getLogger("contentScript");
@@ -42,16 +47,16 @@ const gLogger = log.getLogger("contentScript");
 window.addEventListener("load", myMain, false);
 
 function updateDocumentArticleMap(documentArticleMap, n){
-  if(gDocumentArticleMap==null){
-    gDocumentArticleMap = new Map();
+  if(page.documentArticleMap==null){
+    page.documentArticleMap = new Map();
   }
   for (const [key, value] of documentArticleMap) {
-    gDocumentArticleMap.set(key, value);
+    page.documentArticleMap.set(key, value);
   }
   
   //console.log("updateDocumentArticleMap:"+n);
   //console.log(documentArticleMap);
-  //console.log(gDocumentArticleMap);  
+  //console.log(page.documentArticleMap);  
 }
 
 function myMain() {
@@ -59,13 +64,13 @@ function myMain() {
   var jsInitChecktimer = setTimeout(checkForJS_Finish, 100);
 
   function checkForJS_Finish() {
-    if(!gSiteProfile){
-      gSiteProfile = findSiteProfile(document);
+    if(!page.siteProfile){
+      page.siteProfile = findSiteProfile(document);
     }    
 
     getCurrentSiteOptions().then(siteOptions => {
       if (siteOptions.enabled) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
+        initPageAnnotations(page.siteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           updateDocumentArticleMap(documentArticleMap, 1);
           resetPageAnnotationVisibilityAndNotify(true);
         });
@@ -91,8 +96,8 @@ function messageListener(request, sender, sendResponse) {
   } else if (request.type === 'ENABLED') {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
-      if (!isAllDocumentsAnnotationInitialized(gSiteProfile)) {
-        initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
+      if (!isAllDocumentsAnnotationInitialized(page.siteProfile)) {
+        initPageAnnotations(page.siteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           updateDocumentArticleMap(documentArticleMap, 2);
           resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
         });
@@ -105,8 +110,8 @@ function messageListener(request, sender, sendResponse) {
       //resetPageAnnotationVisibilityAndNotify(false);
 
       //remove annotation
-      if (isAnyDocumentsAnnotationInitialized(gSiteProfile)) {
-        cleanPageAnnotations(gSiteProfile, removeDocumentEventListener).then((documentArticleMap) => {
+      if (isAnyDocumentsAnnotationInitialized(page.siteProfile)) {
+        cleanPageAnnotations(page.siteProfile, removeDocumentEventListener).then((documentArticleMap) => {
           //updateDocumentArticleMap(documentArticleMap, 2);
           //resetPageAnnotationVisibilityAndNotify(false);
         });
@@ -121,11 +126,11 @@ function messageListener(request, sender, sendResponse) {
 
     if (visible) {//master document
       if (request.payload.force) {
-        clearPagePreprocessMark(gSiteProfile);
+        clearPagePreprocessMark(page.siteProfile);
       }
 
       //init all documents
-      initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
+      initPageAnnotations(page.siteProfile, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
         updateDocumentArticleMap(documentArticleMap, 3);
         resetPageAnnotationVisibilityAndNotify(visible);
       });
@@ -149,7 +154,7 @@ function messageListener(request, sender, sendResponse) {
     //let visible = isPageAnnotationVisible();
     //resetPageAnnotationVisibilityAndNotify(visible, source);
     
-    //resetPageAnnotationVisibility(gDocumentArticleMap, visible, null);
+    //resetPageAnnotationVisibility(page.documentArticleMap, visible, null);
 
   } else if (request.type === 'NOTES_UPDATED') {
     //console.log(`${request.type}`);
@@ -163,7 +168,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`${request.type}`);
 
     
-      getPageInfo(gSiteProfile, gDocumentArticleMap).then((pageInfo) => {
+      getPageInfo(page.siteProfile, page.documentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -177,7 +182,7 @@ function messageListener(request, sender, sendResponse) {
     //console.log(`${request.type}`);
 
     
-      getPageInfo(gSiteProfile, gDocumentArticleMap).then((pageInfo) => {
+      getPageInfo(page.siteProfile, page.documentArticleMap).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -212,7 +217,7 @@ function messageListener(request, sender, sendResponse) {
       //annotationOptions = request.payload;
       getCurrentSiteOptions().then(async (siteOptions) => {
         await updateAdditionalDictionariesInCache(siteOptions.other.additionalDictionaries, ['index']);
-        changeStyleForAllDocuments(gSiteProfile, siteOptions);
+        changeStyleForAllDocuments(page.siteProfile, siteOptions);
       });
     }
 
@@ -234,37 +239,37 @@ function adjustDomMonitorInterval(workTime){
     interval = DOM_MONITOR_INTERVAL_MAX;
   }
   
-  gDomMonitorInterval = interval;
+  page.domMonitorInterval = interval;
 }
 
 async function domMonitor() {
   //console.log('domMonitor begin');
   let siteInfoSame = checkSiteInfoChanges();
-  if(!gSiteProfile || !siteInfoSame){
-    gSiteProfile = findSiteProfile(document);
+  if(!page.siteProfile || !siteInfoSame){
+    page.siteProfile = findSiteProfile(document);
   }
  
   //check body attribute flag.  
-  let needRefresh = gSiteProfile.needRefreshPageAnnotation(document);
+  let needRefresh = page.siteProfile.needRefreshPageAnnotation(document);
 
-  if(gDomChanges > 0){
-    gLogger.debug(`DOM changes:${gDomChanges}`);
+  if(page.domChanges > 0){
+    gLogger.debug(`DOM changes:${page.domChanges}`);
   }
   
-  if (gDomChanges > 0) {
-    if(gDomChanges === gDomChangesMonitored){
+  if (page.domChanges > 0) {
+    if(page.domChanges === page.domChangesMonitored){
       //no more changes in this interval. now we can reset annotations
       
-      gLogger.debug(`DOM stop changing, ${gDomChanges} changes accumulated`);
+      gLogger.debug(`DOM stop changing, ${page.domChanges} changes accumulated`);
       
       //reset
-      gDomChanges =0;
+      page.domChanges =0;
       
-      clearPagePreprocessMark(gSiteProfile);
+      clearPagePreprocessMark(page.siteProfile);
 
       needRefresh = true;
     } else {
-      gDomChangesMonitored = gDomChanges;
+      page.domChangesMonitored = page.domChanges;
       needRefresh = false;
     } 
   }
@@ -274,7 +279,7 @@ async function domMonitor() {
     
     let startTime = new Date().getTime();
 
-    let documentArticleMap = await initPageAnnotations(gSiteProfile, addDocumentEventListener, addWordHoverEventListener);
+    let documentArticleMap = await initPageAnnotations(page.siteProfile, addDocumentEventListener, addWordHoverEventListener);
     updateDocumentArticleMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
@@ -289,14 +294,14 @@ async function domMonitor() {
 
   }
 
-  let url = gSiteProfile.getUrl(document);
-  //console.log('gUrl:'+gUrl +',\nurl:'+url);
-  if (gUrl && gUrl !== url) {
-    sendMessageToBackground(gSiteProfile, 'PAGE_URL_CHANGED', getPageInfo, gDocumentArticleMap);
+  let url = page.siteProfile.getUrl(document);
+  //console.log('page.url:'+page.url +',\nurl:'+url);
+  if (page.url && page.url !== url) {
+    sendMessageToBackground(page.siteProfile, 'PAGE_URL_CHANGED', getPageInfo, page.documentArticleMap);
   }
 
   //update gloabl variable
-  gUrl = url;
+  page.url = url;
 
   //console.log('domMonitor end');
 }
@@ -309,21 +314,21 @@ async function domMonitor() {
     } finally {
       domMonitorLoop();
     }
-  }, gDomMonitorInterval);
+  }, page.domMonitorInterval);
 })();
 
 function checkSiteInfoChanges(){
   let siteInfo = getSiteInfo();
-  let same = compareSiteInfo(gSiteInfo, siteInfo);
+  let same = compareSiteInfo(page.siteInfo, siteInfo);
   if(!same){
-    gSiteInfo = siteInfo;
+    page.siteInfo = siteInfo;
   }
     
   return same;
 }
 
 function getArticleFunc(document){
-  return gDocumentArticleMap.get(document);
+  return page.documentArticleMap.get(document);
 }
 
 async function addWordHoverEventListener(document, documentConfig, currentSiteOption) {
@@ -358,26 +363,26 @@ async function addWordHoverEventListener(document, documentConfig, currentSiteOp
 }
 
 function removeDocumentEventListener(document) { 
-  gObserver.disconnect();
-  document.removeEventListener("mouseup", gMouseUpEventListener);
+  page.observer.disconnect();
+  document.removeEventListener("mouseup", page.mouseUpEventListener);
   //console.log('removeDocumentEventListener');
 }
 
 function addDocumentEventListener(document, currentSiteOption) {  
   //console.log('addDocumentEventListener:' + document.baseURI);
-  if(!gMouseUpEventListener){
-    //console.log('create gMouseUpEventListener');
-    gMouseUpEventListener = function(event) {
-      mouseUpEventListenerWithParams(event, document, currentSiteOption, gDocumentArticleMap);
+  if(!page.mouseUpEventListener){
+    //console.log('create page.mouseUpEventListener');
+    page.mouseUpEventListener = function(event) {
+      mouseUpEventListenerWithParams(event, document, currentSiteOption, page.documentArticleMap);
     }
   }
-  document.addEventListener("mouseup", gMouseUpEventListener);
+  document.addEventListener("mouseup", page.mouseUpEventListener);
 
   //DOM mutation changes
   const targetNode = document.body;
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
-    let domChangesStart = gDomChanges;
+    let domChangesStart = page.domChanges;
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
@@ -407,31 +412,31 @@ function addDocumentEventListener(document, currentSiteOption) {
         }
         
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
-        let siteIgnoreDomChange = gSiteProfile.ignoreDomChange(mutation, addedNodeTextContents);
+        let siteIgnoreDomChange = page.siteProfile.ignoreDomChange(mutation, addedNodeTextContents);
         if(!triggeredBySelf && !ignoreAddedNodeTextContentsSmallChange && !siteIgnoreDomChange){
           //console.log(addedNodeTextContents);
           //console.log(mutation);
-          gDomChanges ++;
+          page.domChanges ++;
         }        
       } else if (mutation.type === "attributes") {
         //console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
     }
-    let domChangesCount = gDomChanges - domChangesStart;
+    let domChangesCount = page.domChanges - domChangesStart;
     if(domChangesCount>0){
       //console.log(`DOM changes: ${domChangesCount}`);
     }    
   };
-  gObserver = new MutationObserver(callback);
+  page.observer = new MutationObserver(callback);
 
-  gObserver.observe(targetNode, config);
+  page.observer.observe(targetNode, config);
 
 }
   
 async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
-  await resetPageAnnotationVisibility(gSiteProfile, gDocumentArticleMap, enabled, types);
+  await resetPageAnnotationVisibility(page.siteProfile, page.documentArticleMap, enabled, types);
 
-  let pageInfo = await getPageInfo(gSiteProfile, gDocumentArticleMap);
+  let pageInfo = await getPageInfo(page.siteProfile, page.documentArticleMap);
     //send message to side panel
     let request = {
         type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
