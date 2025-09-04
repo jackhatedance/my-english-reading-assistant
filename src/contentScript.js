@@ -4,7 +4,7 @@ import './content.css';
 import './side-panel-component.css';
 import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
 import { getOptionsFromCache, refreshOptionsCache, } from './service/optionService.js';
-import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
+import { sendMessageToEmbeddedApp, resizeEmbeddedApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
 import { isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
 import { mouseUpEventListenerWithParams } from './document/listener.js'
@@ -189,7 +189,7 @@ function messageListener(request, sender, sendResponse) {
               pageInfo
             }
           };
-          sendMessageToApp(request2, null, ()=>{});
+          sendMessageToEmbeddedApp(request2, null, ()=>{});
         }
        
       });
@@ -205,7 +205,7 @@ function messageListener(request, sender, sendResponse) {
     resetPageAnnotationVisibilityAndNotify(visible);
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
-    resizeVueApp(width, height);
+    resizeEmbeddedApp(width, height);
   } else if (request.type === 'CHANGE_SITE_OPTIONS') {
     //console.log(`change site options`);
     if (request.payload) {      
@@ -348,7 +348,7 @@ async function addWordHoverEventListener(document, documentConfig, currentSiteOp
         //console.log(response.message);
       };
       //console.log('selection change:'+JSON.stringify(request));
-      sendMessageToApp(request, sender, sendResponse);
+      sendMessageToEmbeddedApp(request, sender, sendResponse);
       showDialog([MenuItems.Vocabulary]);
     }, 
     currentSiteOption,
@@ -428,19 +428,6 @@ function addDocumentEventListener(document, currentSiteOption) {
 
 }
   
-
-function sendMessageToApp(request, sender, sendResponse){
-  //send message to standalone
-  /*
-  chrome.runtime.sendMessage(
-    request,
-    sendResponse,
-  );
-  */
-  
-  sendMessageToEmbeddedApp(request, sender, sendResponse);
-}
-
 async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
   await resetPageAnnotationVisibility(gSiteProfile, gDocumentArticleMap, enabled, types);
 
@@ -457,7 +444,7 @@ async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
     let sendResponse = (response) => {
       //console.log(response.message);
     };
-    sendMessageToApp(request, sender, sendResponse);
+    sendMessageToEmbeddedApp(request, sender, sendResponse);
 }
 
 

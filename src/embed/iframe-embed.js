@@ -60,10 +60,10 @@ function sendMessageToEmbeddedApp(request, sender, resolve) {
   iframe.contentWindow.postMessage(request, url);
 }
 
-function resizeVueApp(width, height) {
+function resizeEmbeddedApp(width, height) {
   let iframe = document.getElementById('mea-vueapp-iframe');
   iframe.style.width = width + 'px';
   iframe.style.height = height + 'px';
 }
 
-export { containsVueApp, addVueApp, removeVueApp, sendMessageToEmbeddedApp, resizeVueApp };
+export { containsVueApp, addVueApp, removeVueApp, sendMessageToEmbeddedApp, resizeEmbeddedApp };
