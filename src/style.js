@@ -1,10 +1,10 @@
 'use strict';
 
-
+const MEA_STYLE = "mea-style";
 
 function findStyleSheet(document) {
     for (let sheet of document.styleSheets) {
-        if (sheet.ownerNode.id === 'mea-style') {
+        if (sheet.ownerNode.id == MEA_STYLE) {
             return sheet;
         }
     }

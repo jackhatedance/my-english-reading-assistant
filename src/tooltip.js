@@ -38,6 +38,10 @@ function clearTooltipTimeout(){
   }
 }
 
+function removeTooltip(document){
+  document.getElementById(DEFINITION_TOOLTIP_ID).remove();
+}
+
 function createTooltip(document) {
   let tooltipElement = document.createElement('div');
   tooltipElement.id = DEFINITION_TOOLTIP_ID;
@@ -505,4 +509,4 @@ function hideTooltip(tooltipElement){
   tooltipElement.style.visibility = 'hidden';
 }
 
-export { addTooltipEventListener, createTooltip, showTooltip, hideTooltip }
+export { addTooltipEventListener, createTooltip, removeTooltip, showTooltip, hideTooltip }

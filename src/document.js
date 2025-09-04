@@ -92,6 +92,9 @@ function containsMeaStyle(document) {
     return false;
 }
 
+function removeMeaStyle(document) {
+  document.getElementById('mea-style').remove();
+}
 
 function addStyle(document) {
     
@@ -244,7 +247,7 @@ function isDocumentAnnotationInitialized(document) {
     }
 
     let meaInitialized = document.body.getAttribute('mea-preprocessed');
-    if (meaInitialized) {
+    if (meaInitialized == "true") {
         return true;
     }
     else {
@@ -256,6 +259,14 @@ function isAllDocumentsAnnotationInitialized(siteProfile) {
     let documents = getAllDocuments(siteProfile);
 
     return documents.every((document) => {
+        return isDocumentAnnotationInitialized(document);
+    });
+}
+
+function isAnyDocumentsAnnotationInitialized(siteProfile) {
+    let documents = getAllDocuments(siteProfile);
+
+    return documents.some((document) => {
         return isDocumentAnnotationInitialized(document);
     });
 }
@@ -358,4 +369,4 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
     //console.log('resetDocumentAnnotationVisibility end');
   }
 
-export { cleanElements, containsMeaStyle, addStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility };
+export { cleanElements, containsMeaStyle, addStyle, removeMeaStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility };

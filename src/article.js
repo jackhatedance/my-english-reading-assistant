@@ -111,6 +111,12 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
     gLogger.debug(`tokenized ${tokenCount} tokens`);
 }
 
+function detokenizeTextNode(document) {
+   document.querySelectorAll(TEXT_TAG).forEach((element) => {
+        let textContent = element.textContent;
+        element.outerHTML = textContent;
+   });
+}
 
 /**
  * parse document into sentences
@@ -913,4 +919,4 @@ function getSelectedTextOfNoteOfSentence(article, note) {
 
 
 
-export { tokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode };
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode };

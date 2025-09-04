@@ -2,8 +2,10 @@
 
 import { AppModes } from '../components/types.js';
 
+const MEA_VUE_CONTAINER = "mea-vue-container";
+
 function containsVueApp(){
-  var dialog = document.getElementById('mea-vue-container');
+  var dialog = document.getElementById(MEA_VUE_CONTAINER);
   if(dialog){
     return true;
   } else {
@@ -12,10 +14,14 @@ function containsVueApp(){
 
 }
 
+function removeVueApp(){
+  document.getElementById(MEA_VUE_CONTAINER).remove();
+}
+
 function addVueApp() {
 
   var dialog = document.createElement('dialog');
-  dialog.id = "mea-vue-container";
+  dialog.id = MEA_VUE_CONTAINER;
   dialog.classList.add('mea-element', 'mea-supplementary');
 
   document.body.appendChild(dialog);
@@ -60,4 +66,4 @@ function resizeVueApp(width, height) {
   iframe.style.height = height + 'px';
 }
 
-export { containsVueApp, addVueApp, sendMessageToEmbeddedApp, resizeVueApp };
+export { containsVueApp, addVueApp, removeVueApp, sendMessageToEmbeddedApp, resizeVueApp };

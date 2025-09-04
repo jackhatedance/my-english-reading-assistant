@@ -2,24 +2,18 @@
 
 import './content.css';
 import './side-panel-component.css';
-import { loadKnownWords } from './vocabularyStore.js';
-import { isKnown, } from './language.js';
 import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
 import { getOptionsFromCache, refreshOptionsCache, } from './service/optionService.js';
-import { searchNote } from './service/noteService.js';
 import { sendMessageToEmbeddedApp, resizeVueApp } from './embed/iframe-embed.js';
 import { sendMessageToBackground } from './message.js';
-import { getTargetWordFromElement, getQueryFromElement} from './word.js';
-import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from './sentence.js';
-import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from './paragraph.js';
-import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from './article.js';
-import { isAllDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
-import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
+import { isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
+import { mouseUpEventListenerWithParams } from './document/listener.js'
+import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
 import { MenuItems } from './menu.js';
 import { MEA_TAG_PREFIX } from './html.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
 import { addTooltipEventListener } from './tooltip.js'
-import { searchWord, buildDictionaryOptions } from './language.js'
+import { showDialog, closeDialog } from './dialog.js' 
 import log from 'loglevel'
 import { initLog } from './log.js'
 
@@ -38,6 +32,9 @@ var gDomChangesMonitored=0;
 var gDomMonitorInterval=2000;
 const DOM_MONITOR_INTERVAL_MIN = 2000;
 const DOM_MONITOR_INTERVAL_MAX = 5000;
+
+var gMouseUpEventListener;
+var gObserver;
 
 initLog();
 const gLogger = log.getLogger("contentScript");
@@ -104,7 +101,18 @@ function messageListener(request, sender, sendResponse) {
       }
 
     } else {
-      resetPageAnnotationVisibilityAndNotify(false);
+      //hide annotation
+      //resetPageAnnotationVisibilityAndNotify(false);
+
+      //remove annotation
+      if (isAnyDocumentsAnnotationInitialized(gSiteProfile)) {
+        cleanPageAnnotations(gSiteProfile, removeDocumentEventListener).then((documentArticleMap) => {
+          //updateDocumentArticleMap(documentArticleMap, 2);
+          //resetPageAnnotationVisibilityAndNotify(false);
+        });
+      } else {
+        //resetPageAnnotationVisibilityAndNotify(false);
+      }
     }
 
   } else if (request.type === 'REFRESH_PAGE') {
@@ -349,138 +357,21 @@ async function addWordHoverEventListener(document, documentConfig, currentSiteOp
   );
 }
 
-async function addDocumentEventListener(document, currentSiteOption) {  
-  document.addEventListener("mouseup", async (event) => {
-    //console.log(event);
-    //mouse up event on dialog itself, ignore
-    let supplementary = event.target.closest('.mea-supplementary');
-    if(supplementary){
-      return;
+function removeDocumentEventListener(document) { 
+  gObserver.disconnect();
+  document.removeEventListener("mouseup", gMouseUpEventListener);
+  //console.log('removeDocumentEventListener');
+}
+
+function addDocumentEventListener(document, currentSiteOption) {  
+  //console.log('addDocumentEventListener:' + document.baseURI);
+  if(!gMouseUpEventListener){
+    //console.log('create gMouseUpEventListener');
+    gMouseUpEventListener = function(event) {
+      mouseUpEventListenerWithParams(event, document, currentSiteOption, gDocumentArticleMap);
     }
-
-    //wont show dialog on a link
-    let aLink = event.target.closest('a');
-    if(aLink){
-      let href = aLink.getAttribute('href');
-      if(href) {
-        return;
-      }      
-    }
-
-    let nodeSelection = document.getSelection();
-    let { anchorNode, focusNode } = nodeSelection;
-    let bothTextNode = (anchorNode && focusNode && anchorNode.nodeName === '#text' && focusNode.nodeName === '#text');
-    let selectedText = nodeSelection.toString();
-
-    let article = gDocumentArticleMap.get(document);
-    if(article && nodeSelection.type !== 'None' && bothTextNode){
-
-      
-      let sentenceInstanceSelection = getSentenceInstanceSelectionFromNodeSelection(article, nodeSelection);
-      //console.log('mouse up, sentence instance selection:'+JSON.stringify(sentenceInstanceSelection));
-
-      let paragraphInstanceSelection = getParagraphInstanceSelectionFromNodeSelection(article, nodeSelection);
-      //console.log('mouse up, paragraph instance selection:'+JSON.stringify(paragraphInstanceSelection));
-      
-      let sentenceHashSelection = getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, (sentenceNumber) => article.sentences[sentenceNumber].sentenceId);
-      //console.log('mouse up, sentence hash selection:'+JSON.stringify(sentenceHashSelection));
-      
-      let paragraphHashSelection = getParagraphHashSelectionFromInstanceSelection(paragraphInstanceSelection, (paragraphNumber) => article.paragraphs[paragraphNumber].paragraphId);
-      //console.log('mouse up, paragraph hash selection:'+JSON.stringify(paragraphHashSelection));
-      
-      let isSelectionCollapsed = nodeSelection.isCollapsed;
-      
-      let type;
-      let menuItems = [];
-      let word;
-      let dictionaryName;
-      
-      let filteredNotes = [];
-      if (isSelectionCollapsed) {
-        //1. mark the word
-        let targetElement = event.target;
-        let highlightElement = targetElement.closest('.mea-word');
-        if(highlightElement){//find word
-          let query = getQueryFromElement(highlightElement);
-          let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
-          dictionaryName = searchResult?.lookupResult?.dictionaryName;
-
-          word = getTargetWordFromElement(highlightElement);
-
-          let knownWords = await loadKnownWords();
-          if(isKnown(word, knownWords)){
-            menuItems.push(MenuItems.MarkAsUnknown);
-          } else {
-            menuItems.push(MenuItems.MarkAsKnown);
-          }
-          menuItems.push(MenuItems.ClearMark);   
-          menuItems.push(MenuItems.Vocabulary);
-        }
-
-        //2. search note of the position
-        type = 'search-note';
-        
-
-        let noteArray = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
-
-        for (let note of noteArray) {
-          let isContainsPosition;
-
-          let selectionType = note.selection.type;
-          if(selectionType === 'paragraph'){
-            let paragraphInstanceSelections = getParagraphInstanceSelectionsFromParagraphHashSelection(article, note.selection);
-            isContainsPosition = paragraphInstanceSelections.some((s) => containsParagraphInstancePosition(s, paragraphInstanceSelection.start));
-          } else {
-          let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(article, note.selection);
-            isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
-          }
-          
-          if(!isContainsPosition){
-            continue;
-          }
-
-          let selectedText = getSelectedTextOfNote(article, note);
-          note.selectedText = selectedText;
-
-          filteredNotes.push(note);
-        }
-        //console.log('search notes:' + JSON.stringify(filteredNotes));
-        if(filteredNotes.length>0){
-          menuItems.push(MenuItems.ViewNote);
-        }
-      } else {
-        type = 'select-text';
-        menuItems.push(MenuItems.AddNote);
-      }
-      
-
-      if (sentenceHashSelection || paragraphSelection) {
-        let request = {
-          type: 'SELECTION_CHANGE',
-          payload: {
-            word: word,
-            dictionary: dictionaryName,
-            type: type,            
-            selectedText: selectedText,
-            sentenceSelection: sentenceHashSelection,
-            paragraphSelection: paragraphHashSelection,
-            notes: filteredNotes,
-          },
-        };
-        let sender = null;
-        let sendResponse = (response) => {
-          //console.log(response.message);
-        };
-        //console.log('selection change:'+JSON.stringify(request));
-        sendMessageToApp(request, sender, sendResponse);
-
-        if(menuItems.length>0){
-          showDialog(menuItems);
-        }
-        
-      }
-    }
-  });
+  }
+  document.addEventListener("mouseup", gMouseUpEventListener);
 
   //DOM mutation changes
   const targetNode = document.body;
@@ -531,37 +422,12 @@ async function addDocumentEventListener(document, currentSiteOption) {
       //console.log(`DOM changes: ${domChangesCount}`);
     }    
   };
-  const observer = new MutationObserver(callback);
+  gObserver = new MutationObserver(callback);
 
-  observer.observe(targetNode, config);
+  gObserver.observe(targetNode, config);
 
-  //observer.disconnect();
 }
   
-function closeDialog(){
-  let topDocument = window.top.document;
-  let dialog = topDocument.querySelector('#mea-vue-container');
-  
-  dialog.close();
-}
-
-function showDialog(menuItems = []){
-  let request = {
-    type: 'ACTIVE_APP_TAB',
-    payload: {      
-      activeAppTabId: 'actions-tab',
-      menuItems: menuItems,        
-    },
-  };
-  let sender = null;
-  let sendResponse = (response) => { };
-  sendMessageToApp(request, sender, sendResponse);
-
-  let topDocument = window.top.document;
-  let dialog = topDocument.querySelector('#mea-vue-container');
-  
-  dialog.showModal();  
-}
 
 function sendMessageToApp(request, sender, sendResponse){
   //send message to standalone

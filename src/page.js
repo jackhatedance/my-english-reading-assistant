@@ -2,15 +2,15 @@
 
 import { getSiteOptions, } from './service/optionService.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
-import { tokenizeTextNode, parseDocument, } from './article.js';
-import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, resetDocumentAnnotationVisibility } from './document.js';
+import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
+import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, removeMeaStyle, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
 import { sendMessageToBackground } from './message.js';
 import { findStyleSheet, changeStyle } from './style.js';
-import { containsVueApp, addVueApp, } from './embed/iframe-embed.js';
+import { containsVueApp, addVueApp, removeVueApp } from './embed/iframe-embed.js';
 import { getIsbn } from './service/pageService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
-import { createTooltip } from './tooltip.js'
+import { createTooltip, removeTooltip } from './tooltip.js'
 import { getTargetWordFromElement } from './word.js';
 
 /**
@@ -190,6 +190,30 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener, addWor
     return documentArticleMap;
 }
 
+async function cleanPageAnnotations(siteProfile, removeDocumentEventListener){
+    let documentArticleMap = new Map();
+    console.log('cleanPageAnnotations');
+    if (isDocumentAnnotationInitialized(document)) {
+        let documentConfig = siteProfile.getDocumentConfig(window, document);
+
+        await cleanDocumentAnnotations(document, false, siteProfile, documentConfig, removeDocumentEventListener);
+        //documentArticleMap.set(document, article);
+    }
+
+    let iframeDocumentConfigs = siteProfile.getIframeDocumentConfigs(document);
+    //console.log('start iframe annotattion');
+    for (var iframeDocumentConfig of iframeDocumentConfigs) {
+        let iframeDocument = iframeDocumentConfig.document;
+        if (iframeDocument) {
+            if (isDocumentAnnotationInitialized(iframeDocument)) {
+                //console.log('start iframe preprocess document');
+                await cleanDocumentAnnotations(iframeDocument, true, siteProfile, iframeDocumentConfig, removeDocumentEventListener);
+                //documentArticleMap.set(iframeDocument, article);
+            }
+        }
+    }
+    //return documentArticleMap;
+}
 
 function getAllWindows(siteProfile) {
     
@@ -279,6 +303,37 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 
 }
 
+async function cleanDocumentAnnotations(document, isIframe, siteProfile, documentConfig, removeDocumentEventListener) {
+    console.log('clean document annotations '+ document.baseURI);
+    let { window } = documentConfig;
+
+    document.body.removeAttribute('mea-preprocessed');
+    document.body.removeAttribute('mea-visible');
+
+    if (findStyleSheet(document)) {
+        removeMeaStyle(document);
+    }
+
+    if (!isIframe) {
+        if(containsVueApp()){
+            removeVueApp();
+            removeTooltip(document);
+        }        
+    }
+
+    let options = getOptionsFromCache();
+    let currentSiteOption = await getCurrentSiteOptions();
+
+    if (documentConfig.canProcess) {
+        detokenizeTextNode(document);
+
+        //mouseup event
+        removeDocumentEventListener(document);
+        
+        //no word token at all
+        //removeWordHoverEventListener(document, documentConfig, currentSiteOption);
+    }
+}
 
 function clearPagePreprocessMark(siteProfile) {
     let documents = getAllDocuments(siteProfile);
@@ -288,4 +343,4 @@ function clearPagePreprocessMark(siteProfile) {
     });
 }
 
-export { getPageInfo, initPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark };
+export { getPageInfo, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark };
