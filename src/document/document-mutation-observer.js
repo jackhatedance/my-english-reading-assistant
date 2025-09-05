@@ -48,7 +48,7 @@ function createMutationObserver(document, page){
     }
     let domChangesCount = page.domChanges - domChangesStart;
     if(domChangesCount>0){
-      //console.log(`DOM changes: ${domChangesCount}`);
+      //console.log(`MutationObserver find DOM changes: ${domChangesCount}`);
     }    
   };
   let observer = new MutationObserver(callback);

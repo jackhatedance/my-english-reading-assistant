@@ -176,7 +176,7 @@ function getTooltipElement(){
   return topDocument.getElementById(DEFINITION_TOOLTIP_ID);
 }
 
-function addTooltipEventListener(page, document, documentConfig, getArticleFunction, clickHandler, siteOptions, options) {
+function addTooltipEventListener(page, document, documentConfig, clickHandler, siteOptions, options) {
   gPage = page;
   //console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
@@ -217,7 +217,8 @@ function addTooltipEventListener(page, document, documentConfig, getArticleFunct
         //console.log('timer 2');
         let query = ele.getAttribute('data-query');
         
-        let tokenInfo  = findTokenInfoByNode(getArticleFunction(document), ele.firstChild);
+        let article = page.documentArticleMap.get(document);
+        let tokenInfo  = findTokenInfoByNode(article, ele.firstChild);
         let { sentenceInfo, tokenIndex } =  tokenInfo;
         let token = sentenceInfo.tokens[tokenIndex];
       

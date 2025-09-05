@@ -12,7 +12,11 @@ import { getIsbn } from './service/pageService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
 import { createTooltip, removeTooltip } from './tooltip.js'
 import { getTargetWordFromElement } from './word.js';
+import { addDocumentEventListener, removeDocumentEventListener } from './document.js'
+import { addWordHoverEventListener } from './document/document-listener.js'
+import log from 'loglevel'
 
+const gLogger = log.getLogger("page");
 /**
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
@@ -147,7 +151,7 @@ async function doInitializeService(){
 
 }
 
-async function initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener) {
+async function initPageAnnotations(page) {
     
     const { siteProfile, documentArticleMap } = page;
 
@@ -165,7 +169,7 @@ async function initPageAnnotations(page, addDocumentEventListener, addWordHoverE
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(document, false, siteProfile, documentConfig, addDocumentEventListener, addWordHoverEventListener);
+        let article = await preprocessDocument(page, document, false, siteProfile, documentConfig);
         newDocumentArticleMap.set(document, article);
     } else {
         let article = newDocumentArticleMap.get(document);
@@ -179,7 +183,7 @@ async function initPageAnnotations(page, addDocumentEventListener, addWordHoverE
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(iframeDocument, true, siteProfile, iframeDocumentConfig, addDocumentEventListener, addWordHoverEventListener);
+                let article = await preprocessDocument(page, iframeDocument, true, siteProfile, iframeDocumentConfig);
                 
                 newDocumentArticleMap.set(iframeDocument, article);
             }else {
@@ -199,13 +203,14 @@ async function initPageAnnotations(page, addDocumentEventListener, addWordHoverE
     return newDocumentArticleMap;
 }
 
-async function cleanPageAnnotations(siteProfile, removeDocumentEventListener){
-    let documentArticleMap = new Map();
-    console.log('cleanPageAnnotations');
+async function cleanPageAnnotations(page){
+    const { siteProfile } = page; 
+    
+    gLogger.debug('cleanPageAnnotations');
     if (isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        await cleanDocumentAnnotations(document, false, siteProfile, documentConfig, removeDocumentEventListener);
+        await cleanDocumentAnnotations(page, document, false, siteProfile, documentConfig);
         //documentArticleMap.set(document, article);
     }
 
@@ -216,7 +221,7 @@ async function cleanPageAnnotations(siteProfile, removeDocumentEventListener){
         if (iframeDocument) {
             if (isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                await cleanDocumentAnnotations(iframeDocument, true, siteProfile, iframeDocumentConfig, removeDocumentEventListener);
+                await cleanDocumentAnnotations(page, iframeDocument, true, siteProfile, iframeDocumentConfig);
                 //documentArticleMap.set(iframeDocument, article);
             }
         }
@@ -252,7 +257,7 @@ async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, en
     }    
 }
 
-async function preprocessDocument(document, isIframe, siteProfile, documentConfig, addDocumentEventListener, addWordHoverEventListener) {
+async function preprocessDocument(page, document, isIframe, siteProfile, documentConfig) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -297,12 +302,18 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
         
         tokenizeTextNode(document, options, currentSiteOption, siteProfile);
 
-        addDocumentEventListener(document, currentSiteOption);
+        let documentInfo = page.getDocumentInfo(document);
+        if(!documentInfo.mouseUpEventListener){
+            addDocumentEventListener(page, document, currentSiteOption);
+        }else {
+            gLogger.debug('already has mouseUpEventListener, skip adding');
+        }
+        
     
         article = parseDocument(document, options, currentSiteOption);
 
         //console.log(JSON.stringify(article));
-        addWordHoverEventListener(document, documentConfig, currentSiteOption);
+        addWordHoverEventListener(page, document, documentConfig, currentSiteOption);
         
     } else {
         //empty article
@@ -312,8 +323,8 @@ async function preprocessDocument(document, isIframe, siteProfile, documentConfi
 
 }
 
-async function cleanDocumentAnnotations(document, isIframe, siteProfile, documentConfig, removeDocumentEventListener) {
-    console.log('clean document annotations '+ document.baseURI);
+async function cleanDocumentAnnotations(page, document, isIframe, siteProfile, documentConfig) {
+    gLogger.debug('clean document annotations '+ document.URL+', isIframe '+isIframe);
     let { window } = documentConfig;
 
     document.body.removeAttribute('mea-preprocessed');
@@ -337,7 +348,7 @@ async function cleanDocumentAnnotations(document, isIframe, siteProfile, documen
         detokenizeTextNode(document);
 
         //mouseup event
-        removeDocumentEventListener(document);
+        removeDocumentEventListener(page, document);
         
         //no word token at all
         //removeWordHoverEventListener(document, documentConfig, currentSiteOption);

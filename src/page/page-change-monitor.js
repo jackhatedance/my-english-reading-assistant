@@ -32,7 +32,7 @@ function adjustDomMonitorInterval(page, workTime){
 }
 
 
-async function domMonitor(page, addDocumentEventListener, addWordHoverEventListener) {
+async function domMonitor(page) {
   //console.log('domMonitor begin');
   let siteInfoSame = checkSiteInfoChanges(page);
   if(!page.siteProfile || !siteInfoSame){
@@ -41,9 +41,10 @@ async function domMonitor(page, addDocumentEventListener, addWordHoverEventListe
  
   //check body attribute flag.  
   let needRefresh = page.siteProfile.needRefreshPageAnnotation(document);
-
+  gLogger.debug(`needRefresh:${needRefresh}`);
+  
   if(page.domChanges > 0){
-    gLogger.debug(`DOM changes:${page.domChanges}`);
+    gLogger.debug(`domMonitor DOM changes:${page.domChanges}`);
   }
   
   if (page.domChanges > 0) {
@@ -69,18 +70,18 @@ async function domMonitor(page, addDocumentEventListener, addWordHoverEventListe
     
     let startTime = new Date().getTime();
 
-    let documentArticleMap = await initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener);
+    let documentArticleMap = await initPageAnnotations(page);
     page.initDocumentMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
-    gLogger.debug(`initPageAnnotations ${elapseTime1} ms`);
+    gLogger.info(`initPageAnnotations ${elapseTime1} ms`);
 
     await resetPageAnnotationVisibilityAndNotify(page, true);
     let endTime2 = new Date().getTime();
     let elapseTime2 = endTime2 - endTime1;
     let elapseTimeTotal = endTime2 - startTime;
     adjustDomMonitorInterval(page, elapseTimeTotal);
-    gLogger.debug(`resetPageAnnotationVisibility ${elapseTime2} ms`);
+    gLogger.info(`resetPageAnnotationVisibility ${elapseTime2} ms`);
 
   }
 

@@ -1,8 +1,13 @@
 import log from 'loglevel'
 
 function initLog(){
-    log.getLogger("contentScript").setLevel("debug");
-    log.getLogger("article").setLevel("debug");
+    log.setDefaultLevel('info');
+    log.getLogger("contentScript").setLevel("warn");
+    log.getLogger("article").setLevel("info");
+    log.getLogger("page").setLevel("warn");
+    log.getLogger("page-change-monitor").setLevel("info");
+    log.getLogger("document").setLevel("warn");
+    
 }
 
 export { initLog }

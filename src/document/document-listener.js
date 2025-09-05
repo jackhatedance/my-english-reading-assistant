@@ -8,6 +8,8 @@ import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSele
 import { MenuItems } from '../menu.js';
 import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
+import { getOptionsFromCache, } from '../service/optionService.js';
+import { addTooltipEventListener } from '../tooltip.js'
 
 async function mouseUpEventListenerWithParams(event, document, currentSiteOption, gDocumentArticleMap) {
   //console.log(event);
@@ -141,5 +143,34 @@ async function mouseUpEventListenerWithParams(event, document, currentSiteOption
   }
 }
 
+async function addWordHoverEventListener(page, document, documentConfig, currentSiteOption) {
+  let options = getOptionsFromCache();
+  addTooltipEventListener(page, document, documentConfig,
+    (word, dictionary) => {
+      //console.log(`click tooltip of ${word}`);
+      let request = {
+        type: 'SELECTION_CHANGE',
+        payload: {
+          word: word,
+          dictionary: dictionary,
+          type: 'search-note',            
+          selectedText: '',
+          sentenceSelection: null,
+          paragraphSelection: null,
+          notes: [],
+        },
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      //console.log('selection change:'+JSON.stringify(request));
+      sendMessageToEmbeddedApp(request, sender, sendResponse);
+      showDialog([MenuItems.Vocabulary]);
+    }, 
+    currentSiteOption,
+    options
+  );
+}
 
-export { mouseUpEventListenerWithParams }
+export { mouseUpEventListenerWithParams, addWordHoverEventListener }

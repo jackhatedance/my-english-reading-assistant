@@ -108,7 +108,7 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
         }
     });
 
-    gLogger.debug(`tokenized ${tokenCount} tokens`);
+    gLogger.info(`tokenized ${tokenCount} tokens`);
 }
 
 function detokenizeTextNode(document) {

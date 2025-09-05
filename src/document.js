@@ -8,8 +8,13 @@ import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
+import { mouseUpEventListenerWithParams } from './document/document-listener.js'
+import { createMutationObserver } from './document/document-mutation-observer.js'
+import log from 'loglevel'
 
 var knownWords;
+
+const gLogger = log.getLogger("document");
 
 function isElementLeaf(element) {
 
@@ -368,5 +373,44 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
   
     //console.log('resetDocumentAnnotationVisibility end');
   }
+function addDocumentEventListener(page, document, currentSiteOption) {  
+  gLogger.debug('addDocumentEventListener:' + document.URL);
+  let documentInfo = page.getDocumentInfo(document);
+  let mouseUpEventListener = documentInfo.mouseUpEventListener;
+  if(!mouseUpEventListener){
+    gLogger.debug('create mouseUpEventListener');
+    mouseUpEventListener = function(event) {
+      mouseUpEventListenerWithParams(event, document, currentSiteOption, page.documentArticleMap);
+    }
+    documentInfo.mouseUpEventListener = mouseUpEventListener;
+  }
 
-export { cleanElements, containsMeaStyle, addStyle, removeMeaStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility };
+  gLogger.debug('add mouseup event listener');
+  document.addEventListener("mouseup", mouseUpEventListener);
+
+  //DOM mutation changes
+  const targetNode = document.body;
+  const config = { attributes: false, childList: true, subtree: true };
+  
+  let mutationObserver = createMutationObserver(document, page);
+  documentInfo.mutationObserver = mutationObserver;
+
+  gLogger.debug('start observing document mutation');
+  mutationObserver.observe(targetNode, config);
+
+}  
+
+function removeDocumentEventListener(page, document) { 
+  gLogger.debug(`disconnect mutation observer of document: ${document.URL}`);
+  let documentInfo = page.getDocumentInfo(document);
+  let mutationObserver = documentInfo.mutationObserver;
+  mutationObserver.disconnect();
+
+  gLogger.debug('remove mouseup event listener');
+  let mouseUpEventListener = documentInfo.mouseUpEventListener;
+  document.removeEventListener("mouseup", mouseUpEventListener);
+  
+}
+
+
+export { cleanElements, containsMeaStyle, addStyle, removeMeaStyle, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener };
