@@ -147,11 +147,14 @@ async function doInitializeService(){
 
 }
 
-async function initPageAnnotations(siteProfile, addDocumentEventListener, addWordHoverEventListener) {
+async function initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener) {
+    
+    const { siteProfile, documentArticleMap } = page;
+
     //console.log('initPageAnnotations');
     await initializeServiceOnlyOnce();
 
-    let documentArticleMap = new Map();
+    let newDocumentArticleMap = new Map();
     /*
     knownWords = await loadKnownWords();
     if (!knownWords) {
@@ -163,7 +166,10 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener, addWor
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
         let article = await preprocessDocument(document, false, siteProfile, documentConfig, addDocumentEventListener, addWordHoverEventListener);
-        documentArticleMap.set(document, article);
+        newDocumentArticleMap.set(document, article);
+    } else {
+        let article = newDocumentArticleMap.get(document);
+        newDocumentArticleMap.set(document, article);
     }
 
     let iframeDocumentConfigs = siteProfile.getIframeDocumentConfigs(document);
@@ -175,7 +181,10 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener, addWor
                 //console.log('start iframe preprocess document');
                 let article = await preprocessDocument(iframeDocument, true, siteProfile, iframeDocumentConfig, addDocumentEventListener, addWordHoverEventListener);
                 
-                documentArticleMap.set(iframeDocument, article);
+                newDocumentArticleMap.set(iframeDocument, article);
+            }else {
+                let article = documentArticleMap.get(iframeDocument);
+                newDocumentArticleMap.set(iframeDocument, article);
             }
         }
     }
@@ -187,7 +196,7 @@ async function initPageAnnotations(siteProfile, addDocumentEventListener, addWor
     sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo, documentArticleMap);
 
 
-    return documentArticleMap;
+    return newDocumentArticleMap;
 }
 
 async function cleanPageAnnotations(siteProfile, removeDocumentEventListener){
