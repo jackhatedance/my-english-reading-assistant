@@ -180,7 +180,7 @@ async function onMarkWord(type) {
     }
 
     let visible = isPageAnnotationVisible();
-    //resetPageAnnotationVisibilityAndNotify(visible);
+    //resetPageAnnotationVisibilityAndNotify(page, visible);
     props.sendMessageToContentPage({
       type: 'KNOWN_WORDS_UPDATED',
       payload: {

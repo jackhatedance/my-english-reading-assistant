@@ -2,10 +2,9 @@
 
 import './content.css';
 import './side-panel-component.css';
-import { findSiteProfile, getSiteInfo, compareSiteInfo } from './site-profile/site-profiles.js';
+import { findSiteProfile } from './site-profile/site-profiles.js';
 import { getOptionsFromCache, refreshOptionsCache, } from './service/optionService.js';
 import { sendMessageToEmbeddedApp, resizeEmbeddedApp } from './embed/iframe-embed.js';
-import { sendMessageToBackground } from './message.js';
 import { isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, changeStyleForAllDocuments } from './document.js';
 import { mouseUpEventListenerWithParams } from './document/listener.js'
 import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark } from './page.js'
@@ -13,14 +12,14 @@ import { MenuItems } from './menu.js';
 import { updateAdditionalDictionariesInCache } from './dictionary/customDictionary.js'
 import { addTooltipEventListener } from './tooltip.js'
 import { showDialog, closeDialog } from './dialog.js' 
-import { createMutationObserver } from './document/dom-change-monitor.js'
+import { createMutationObserver } from './document/mutation-observer.js'
+import { domMonitor } from './page/page-change-monitor.js'
+import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
 
 
 
-const DOM_MONITOR_INTERVAL_MIN = 2000;
-const DOM_MONITOR_INTERVAL_MAX = 5000;
 
 
 var page = {
@@ -87,7 +86,7 @@ function myMain() {
       if (siteOptions.enabled) {
         initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 1);
-          resetPageAnnotationVisibilityAndNotify(true);
+          resetPageAnnotationVisibilityAndNotify(page, true);
         });
       }
     });
@@ -114,24 +113,24 @@ function messageListener(request, sender, sendResponse) {
       if (!isAllDocumentsAnnotationInitialized(page.siteProfile)) {
         initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 2);
-          resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
+          resetPageAnnotationVisibilityAndNotify(page, request.payload.enabled);
         });
       } else {
-        resetPageAnnotationVisibilityAndNotify(request.payload.enabled);
+        resetPageAnnotationVisibilityAndNotify(page, request.payload.enabled);
       }
 
     } else {
       //hide annotation
-      //resetPageAnnotationVisibilityAndNotify(false);
+      //resetPageAnnotationVisibilityAndNotify(page, false);
 
       //remove annotation
       if (isAnyDocumentsAnnotationInitialized(page.siteProfile)) {
         cleanPageAnnotations(page.siteProfile, removeDocumentEventListener).then((documentArticleMap) => {
           //page.initDocumentMap(documentArticleMap, 2);
-          //resetPageAnnotationVisibilityAndNotify(false);
+          //resetPageAnnotationVisibilityAndNotify(page, false);
         });
       } else {
-        //resetPageAnnotationVisibilityAndNotify(false);
+        //resetPageAnnotationVisibilityAndNotify(page, false);
       }
     }
 
@@ -147,7 +146,7 @@ function messageListener(request, sender, sendResponse) {
       //init all documents
       initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener).then((documentArticleMap) => {
         page.initDocumentMap(documentArticleMap, 3);
-        resetPageAnnotationVisibilityAndNotify(visible);
+        resetPageAnnotationVisibilityAndNotify(page, visible);
       });
     }
 
@@ -156,7 +155,7 @@ function messageListener(request, sender, sendResponse) {
     if (request.payload.word) {
       //hideAnnotation(request.payload.word);
       let visible = isPageAnnotationVisible();
-      resetPageAnnotationVisibilityAndNotify(visible);
+      resetPageAnnotationVisibilityAndNotify(page, visible);
     }
 
   } else if (request.type === 'KNOWN_WORDS_UPDATED') {
@@ -167,7 +166,7 @@ function messageListener(request, sender, sendResponse) {
     
     //won't refresh UI until dialog closed
     //let visible = isPageAnnotationVisible();
-    //resetPageAnnotationVisibilityAndNotify(visible, source);
+    //resetPageAnnotationVisibilityAndNotify(page, visible, source);
     
     //resetPageAnnotationVisibility(page.documentArticleMap, visible, null);
 
@@ -176,7 +175,7 @@ function messageListener(request, sender, sendResponse) {
     let source = request.payload.source;
     //hideAnnotation(request.payload.word);
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible, source, 'note');
+    resetPageAnnotationVisibilityAndNotify(page, visible, source, 'note');
   } else if (request.type === 'GET_PAGE_INFO') {
     //it is from popup page
 
@@ -222,7 +221,7 @@ function messageListener(request, sender, sendResponse) {
 
     //in case some word marked, refresh UI anyway
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(visible);
+    resetPageAnnotationVisibilityAndNotify(page, visible);
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
     resizeEmbeddedApp(width, height);
@@ -245,102 +244,18 @@ function messageListener(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(messageListener);
 
 
-function adjustDomMonitorInterval(workTime){
-  let interval = workTime * 0.5
-
-  if(interval < DOM_MONITOR_INTERVAL_MIN){
-    interval = DOM_MONITOR_INTERVAL_MIN;
-  } else if(interval > DOM_MONITOR_INTERVAL_MAX){
-    interval = DOM_MONITOR_INTERVAL_MAX;
-  }
-  
-  page.domMonitorInterval = interval;
-}
-
-async function domMonitor() {
-  //console.log('domMonitor begin');
-  let siteInfoSame = checkSiteInfoChanges();
-  if(!page.siteProfile || !siteInfoSame){
-    page.siteProfile = findSiteProfile(document);
-  }
- 
-  //check body attribute flag.  
-  let needRefresh = page.siteProfile.needRefreshPageAnnotation(document);
-
-  if(page.domChanges > 0){
-    gLogger.debug(`DOM changes:${page.domChanges}`);
-  }
-  
-  if (page.domChanges > 0) {
-    if(page.domChanges === page.domChangesMonitored){
-      //no more changes in this interval. now we can reset annotations
-      
-      gLogger.debug(`DOM stop changing, ${page.domChanges} changes accumulated`);
-      
-      //reset
-      page.domChanges =0;
-      
-      clearPagePreprocessMark(page.siteProfile);
-
-      needRefresh = true;
-    } else {
-      page.domChangesMonitored = page.domChanges;
-      needRefresh = false;
-    } 
-  }
-  
-  if(needRefresh) {
-    gLogger.debug('start refresh page annotation');
-    
-    let startTime = new Date().getTime();
-
-    let documentArticleMap = await initPageAnnotations(page, addDocumentEventListener, addWordHoverEventListener);
-    page.initDocumentMap(documentArticleMap, 4);
-    let endTime1 = new Date().getTime();
-    let elapseTime1 = endTime1 - startTime;
-    gLogger.debug(`initPageAnnotations ${elapseTime1} ms`);
-
-    await resetPageAnnotationVisibilityAndNotify(true);
-    let endTime2 = new Date().getTime();
-    let elapseTime2 = endTime2 - endTime1;
-    let elapseTimeTotal = endTime2 - startTime;
-    adjustDomMonitorInterval(elapseTimeTotal);
-    gLogger.debug(`resetPageAnnotationVisibility ${elapseTime2} ms`);
-
-  }
-
-  let url = page.siteProfile.getUrl(document);
-  //console.log('page.url:'+page.url +',\nurl:'+url);
-  if (page.url && page.url !== url) {
-    sendMessageToBackground(page.siteProfile, 'PAGE_URL_CHANGED', getPageInfo, page.documentArticleMap);
-  }
-
-  //update gloabl variable
-  page.url = url;
-
-  //console.log('domMonitor end');
-}
 
 //enahnced version of setInterval(), make sure tasks are exectued sequentially.
 (function domMonitorLoop() {
   setTimeout(async () => {
     try {
-      await domMonitor();
+      await domMonitor(page, addDocumentEventListener, addWordHoverEventListener);
     } finally {
       domMonitorLoop();
     }
   }, page.domMonitorInterval);
 })();
 
-function checkSiteInfoChanges(){
-  let siteInfo = getSiteInfo();
-  let same = compareSiteInfo(page.siteInfo, siteInfo);
-  if(!same){
-    page.siteInfo = siteInfo;
-  }
-    
-  return same;
-}
 
 function getArticleFunc(document){
   return page.documentArticleMap.get(document);
@@ -348,7 +263,7 @@ function getArticleFunc(document){
 
 async function addWordHoverEventListener(document, documentConfig, currentSiteOption) {
   let options = getOptionsFromCache();
-  addTooltipEventListener(document, documentConfig, getArticleFunc,
+  addTooltipEventListener(page, document, documentConfig, getArticleFunc,
     (word, dictionary) => {
       //console.log(`click tooltip of ${word}`);
       let request = {
@@ -372,8 +287,7 @@ async function addWordHoverEventListener(document, documentConfig, currentSiteOp
       showDialog([MenuItems.Vocabulary]);
     }, 
     currentSiteOption,
-    options,
-    resetPageAnnotationVisibilityAndNotify
+    options
   );
 }
 
@@ -410,25 +324,7 @@ function addDocumentEventListener(document, currentSiteOption) {
   mutationObserver.observe(targetNode, config);
 
 }
-  
-async function resetPageAnnotationVisibilityAndNotify(enabled, source, types){
-  await resetPageAnnotationVisibility(page.siteProfile, page.documentArticleMap, enabled, types);
 
-  let pageInfo = await getPageInfo(page.siteProfile, page.documentArticleMap);
-    //send message to side panel
-    let request = {
-        type: 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED',
-        payload: {
-          pageInfo: pageInfo,
-          source: source,
-        },
-      };
-    let sender = null;
-    let sendResponse = (response) => {
-      //console.log(response.message);
-    };
-    sendMessageToEmbeddedApp(request, sender, sendResponse);
-}
 
 
 

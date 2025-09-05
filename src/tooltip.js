@@ -8,6 +8,7 @@ import { getTargetWord } from './word.js'
 import { findTokenInfoByNode } from './article.js'
 import { findPhrase } from './phrase.js'
 import { isRegularTransform } from './lemma.js'
+import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
@@ -20,7 +21,7 @@ const clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 const markToggleTips = chrome.i18n.getMessage('sidepanelWordActionMarkToggle');
 const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 
-var resetPageAnnotationVisibilityAndNotify;
+var gPage;
 
 var gTooltipTimeout;
 
@@ -124,7 +125,7 @@ async function onMarkAsKnown(tooltipElement, word) {
   updateWordMarkToogle(tooltipElement, false);
 
   let visible = isPageAnnotationVisible();
-  resetPageAnnotationVisibilityAndNotify(visible);
+  resetPageAnnotationVisibilityAndNotify(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);
 }
@@ -135,7 +136,7 @@ async function onMarkAsUnknown(tooltipElement, word) {
   updateWordMarkToogle(tooltipElement, true);
 
   let visible = isPageAnnotationVisible();
-  resetPageAnnotationVisibilityAndNotify(visible);
+  resetPageAnnotationVisibilityAndNotify(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);
 }
@@ -149,7 +150,7 @@ async function onClearMark(tooltipElement, word) {
   updateWordMarkToogle(tooltipElement, !known);
 
   let visible = isPageAnnotationVisible();
-  resetPageAnnotationVisibilityAndNotify(visible);
+  resetPageAnnotationVisibilityAndNotify(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);
 }
@@ -175,9 +176,8 @@ function getTooltipElement(){
   return topDocument.getElementById(DEFINITION_TOOLTIP_ID);
 }
 
-function addTooltipEventListener(document, documentConfig, getArticleFunction, clickHandler, siteOptions, options, resetPageAnnotationVisibilityAndNotifyFunction) {
-  resetPageAnnotationVisibilityAndNotify = resetPageAnnotationVisibilityAndNotifyFunction;
-
+function addTooltipEventListener(page, document, documentConfig, getArticleFunction, clickHandler, siteOptions, options) {
+  gPage = page;
   //console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
   
