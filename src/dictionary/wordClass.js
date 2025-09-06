@@ -1,5 +1,6 @@
 
 const wordClassMap = {
+    "abbreviation": "abbr.",
     "article": "art.",
     "definite article": "art.",
     "noun": "n.",
