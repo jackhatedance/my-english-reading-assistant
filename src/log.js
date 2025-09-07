@@ -2,7 +2,7 @@ import log from 'loglevel'
 
 function initLog(){
     log.setDefaultLevel('info');
-    log.getLogger("contentScript").setLevel("warn");
+    log.getLogger("mera").setLevel("warn");
     log.getLogger("article").setLevel("info");
     log.getLogger("page").setLevel("warn");
     log.getLogger("page-change-monitor").setLevel("info");

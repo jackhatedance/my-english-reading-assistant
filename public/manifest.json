@@ -31,7 +31,7 @@
       ],
       "run_at": "document_idle",
       "js": [
-        "contentScript.js"
+        "mera.js"
       ],
       "css": []
     }
@@ -43,7 +43,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "contentScript.css", "svg/*", "icons/*", "images/*", "*.html", "dictionaries/*" ],
+      "resources": [ "mera.css", "svg/*", "icons/*", "images/*", "*.html", "dictionaries/*" ],
       "matches": [ "<all_urls>" ]
     }
     

@@ -12,7 +12,7 @@ const config = (env, argv) =>
       popup: PATHS.src + '/popup.js',
       popup2: PATHS.src + '/popup2.js',
       options: PATHS.src + '/options.js',
-      contentScript: PATHS.src + '/contentScript.js',
+      mera: PATHS.src + '/mera.js',
       background: PATHS.src + '/background.js',
       sidePanel: PATHS.src + '/side-panel-iframe.js',
       guide: PATHS.src + '/guide.js',

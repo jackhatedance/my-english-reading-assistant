@@ -71,7 +71,7 @@ var page = {
 };
 
 initLog();
-const gLogger = log.getLogger("contentScript");
+const gLogger = log.getLogger("mera");
 
 window.addEventListener("load", myMain, false);
 
