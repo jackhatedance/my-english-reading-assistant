@@ -2,15 +2,23 @@
 'use strict';
 
 import { traverseElement, traverseNode } from './dom.js';
-import { changeStyle } from './style.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
-import { mouseUpEventListenerWithParams } from './document/document-listener.js'
-import { createMutationObserver } from './document/document-mutation-observer.js'
+import { getCurrentSiteOptions } from './page.js'
+import { mouseUpEventListenerWithParams } from './document/listener.js'
+import { createMutationObserver } from './document/mutation-observer.js'
 import log from 'loglevel'
+
+
+import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
+import { getOptionsFromCache } from './service/optionService.js';
+import { addMeaStyle, removeMeaStyle, findStyleSheet, changeStyle, containsMeaStyle } from './style.js';
+import { containsVueApp, addVueApp, removeVueApp } from './embed/iframe-embed.js';
+import { createTooltip, removeTooltip } from './tooltip.js'
+import { addWordHoverEventListener } from './document/listener.js'
 
 var knownWords;
 
@@ -251,4 +259,102 @@ function removeDocumentEventListener(page, document) {
 }
 
 
-export { cleanElements, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener };
+async function preprocessDocument(page, document, isIframe, siteProfile, documentConfig) {
+    //console.log('preprocess document');
+    let { window } = documentConfig;
+
+    document.body.setAttribute('mea-preprocessed', true);
+
+    if (!findStyleSheet(document)) {
+        addMeaStyle(document);
+    }
+
+    if (!isIframe) {
+        if(!containsVueApp()){
+            addVueApp();
+            createTooltip(document);
+        }        
+    }
+
+    let options = getOptionsFromCache();
+    let currentSiteOption = await getCurrentSiteOptions();
+
+    let article = null;
+    if (documentConfig.canProcess) {
+
+
+        //console.log('preprocess document');
+        
+        var x = 0;
+        var intervalID = window.setInterval(async function () {
+
+            if (containsMeaStyle(document)) {
+                //console.log('containsMeaStyle');
+                changeStyle(document, currentSiteOption, siteProfile);
+                window.clearInterval(intervalID);
+            };
+
+            if (++x === 30) {
+                window.clearInterval(intervalID);
+            }
+        }, 1000);
+
+        //cleanElements(document);
+
+        
+        tokenizeTextNode(document, options, currentSiteOption, siteProfile);
+
+        let documentInfo = page.getDocumentInfo(document);
+        if(!documentInfo.mouseUpEventListener){
+            addDocumentEventListener(page, document, currentSiteOption);
+        }else {
+            gLogger.debug('already has mouseUpEventListener, skip adding');
+        }
+        
+    
+        article = parseDocument(document, options, currentSiteOption);
+
+        //console.log(JSON.stringify(article));
+        addWordHoverEventListener(page, document, documentConfig, currentSiteOption);
+        
+    } else {
+        //empty article
+        article = parseDocument(document, options, currentSiteOption, true);
+    }
+    return article;
+
+}
+
+async function cleanDocumentAnnotations(page, document, isIframe, siteProfile, documentConfig) {
+    gLogger.debug('clean document annotations '+ document.URL+', isIframe '+isIframe);
+    let { window } = documentConfig;
+
+    document.body.removeAttribute('mea-preprocessed');
+    document.body.removeAttribute('mea-visible');
+
+    if (findStyleSheet(document)) {
+        removeMeaStyle(document);
+    }
+
+    if (!isIframe) {
+        if(containsVueApp()){
+            removeVueApp();
+            removeTooltip(document);
+        }        
+    }
+
+    let options = getOptionsFromCache();
+    let currentSiteOption = await getCurrentSiteOptions();
+
+    if (documentConfig.canProcess) {
+        detokenizeTextNode(document);
+
+        //mouseup event
+        removeDocumentEventListener(page, document);
+        
+        //no word token at all
+        //removeWordHoverEventListener(document, documentConfig, currentSiteOption);
+    }
+}
+
+export { cleanElements, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };
