@@ -2,6 +2,18 @@
 
 const MEA_STYLE = "mea-style";
 
+
+function containsMeaStyle(document) {
+    let styleSheet = findStyleSheet(document);
+    if (styleSheet) {
+        let index = indexOfMeaAnnotation(styleSheet);
+        if (index >= 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function findStyleSheet(document) {
     for (let sheet of document.styleSheets) {
         if (sheet.ownerNode.id == MEA_STYLE) {
@@ -11,6 +23,150 @@ function findStyleSheet(document) {
     return null;
 }
 
+function removeMeaStyle(document) {
+  document.getElementById(MEA_STYLE).remove();
+}
+
+function addMeaStyle(document) {
+    
+    //dynamic style
+    var style = document.createElement("style");    
+    style.id = MEA_STYLE;
+    style.innerHTML = `    
+      .mea-sentence {
+        
+        &::before {
+          content: '[';
+        }
+        &::after {
+          content: ']';
+        }
+      }
+
+      .mea-nonword {
+        display:inline !important;
+      }
+
+      .mea-highlight {  
+        position: relative;
+        margin-top: 0px;
+        text-indent1: 0px;
+        display1: inline-block;
+      }
+
+      .mea-highlight { 
+        &.mea-hide {
+          &::after {
+            visibility: hidden;
+          }
+          &::before {
+            visibility: hidden;
+          }
+        }
+
+      }
+
+
+      .mea-highlight::after {
+        content: attr(data-footnote-short);
+        position: absolute;
+        width: max-content;
+        line-height: normal;
+        text-indent: 0px;
+        
+        white-space: nowrap;
+        left: 0;
+        font-size: 0.5em;
+        color: grey;
+        opacity: 0.5;
+        visibility: hidden;
+      }
+
+      mea-token:nth-child(2n+1 of .mea-word)::after {        
+        top: -1.5em;        
+      }
+      
+      mea-token:nth-child(2n of .mea-word)::after {        
+        top: -2.5em;        
+      }
+
+
+      .mea-toolbar {
+        position: absolute;
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height:auto;
+        background: white;
+        text-align: center;
+        color: black;
+        z-index: 100;
+
+      }
+
+      .mea-toolbar-button {
+        border: none;
+        margin-right: 2px;
+        padding:0px;
+        padding-inline: none;
+        background: white;
+
+        
+      }
+
+      .mea-icon {
+        width: 16px;
+        height: 16px;
+
+      }
+
+      ::highlight(user-1-highlight) {
+        background-color: rgb(255, 241, 92);
+        color: black;
+      }
+      #mea-vue-container * {
+        all: revert;
+      }
+      #mea-vue-container {
+        background: #efefef;
+        border: none;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        width: fit-content;
+        height: fit-content;
+        padding: 0px;
+        #mea-vueapp-iframe {
+          width: 500px;
+          height: 520px;
+          border: none;
+        }
+
+        #vue {
+          width: 400px;
+          
+        }
+      }
+
+      #mea-definition-tooltip {
+        position: absolute;
+        min-width: 20px;
+        max-width: 400px;
+        background-color: rgb(226, 225, 225);
+        color: black;
+        border-radius: 4px;
+        border: 1px solid black !important;
+        font-size: 14px;
+        visibility: hidden;
+        z-index: 100;
+        padding: 2px;
+      }
+
+    `;
+    document.getElementsByTagName("head")[0].appendChild(style);
+    //console.log('add style');
+}
 
 function indexOfRule(styleSheet, selector) {
     try {
@@ -197,5 +353,5 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
     //return rule;
 }
 
-export { changeStyle, findStyleSheet, indexOfMeaAnnotation, generateCssRuleOfHighlight };
+export { addMeaStyle, removeMeaStyle, changeStyle, findStyleSheet, containsMeaStyle, indexOfMeaAnnotation, generateCssRuleOfHighlight };
 

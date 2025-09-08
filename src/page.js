@@ -3,10 +3,10 @@
 import { getSiteOptions, } from './service/optionService.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
-import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, containsMeaStyle, addStyle, removeMeaStyle, resetDocumentAnnotationVisibility } from './document.js';
+import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
 import { sendMessageToBackground } from './message.js';
-import { findStyleSheet, changeStyle } from './style.js';
+import { addMeaStyle, removeMeaStyle, findStyleSheet, changeStyle, containsMeaStyle } from './style.js';
 import { containsVueApp, addVueApp, removeVueApp } from './embed/iframe-embed.js';
 import { getIsbn } from './service/pageService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
@@ -264,7 +264,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
     document.body.setAttribute('mea-preprocessed', true);
 
     if (!findStyleSheet(document)) {
-        addStyle(document);
+        addMeaStyle(document);
     }
 
     if (!isIframe) {
