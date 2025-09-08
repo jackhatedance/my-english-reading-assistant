@@ -510,6 +510,25 @@ describe('tokenizer', function () {
       assert.equal(tokens[1].content, 'at');            
     });
 
+    it('new word positions compound', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['spin', 'off'];
+        if(words.includes(text)){
+          return { word: text };
+        }else {
+          return null;
+        }
+      }, 'spin-offs.[7]', 0, { newWordPositions:[10]});
+      
+      
+      assert.equal(tokens.length, 4);
+      
+      assert.equal(tokens[0].content, 'spin');
+      assert.equal(tokens[2].content, 'off');            
+    });
+
   });
 
   it('tower end with 2 punctuations', async function () {
