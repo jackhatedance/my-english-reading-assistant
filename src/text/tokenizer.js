@@ -667,15 +667,17 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let parts2 = [];
 
     let text = sameLengthStandardizeCharacters(part.originalContent);
-    
+    let mask = createBlankMask(text);
+
     let startTextIndex =0;
     for(let i=0;i<positions.length;i++){
         let absolutePos = positions[i];
     
         let endTextIndex = absolutePos - part.offset - part.sentenceOffsetOfArticle;
         let subtext = text.substring(startTextIndex, endTextIndex);
+        let submask = mask.substring(startTextIndex, endTextIndex);
 
-        let subtextWithoutPunctuation = trimPunctuations(subtext);
+        //let subtextWithoutPunctuation = trimPunctuations(subtext);
         
         //let checkWordResult = checkWord(subtextWithoutPunctuation);
         
@@ -696,6 +698,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
         let subpart = {
             originalContent: originalContent,
             content: content,
+            mask: submask,
             offset: startTextIndex + part.offset,
             length: originalContent.length,
         };
@@ -707,6 +710,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
 
     //last subpart
     let subtext = text.substring(startTextIndex);
+    let submask = mask.substring(startTextIndex);
     let subtextWithoutPunctuation = trimPunctuations(subtext);
         
     let checkWordResult = checkWord(subtextWithoutPunctuation, 'Always');
@@ -725,6 +729,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
     let subpart = {
         originalContent: originalContent,
         content: content,
+        mask: submask,
         checkWordResult: checkWordResult,
         checked: checked,
         offset: startTextIndex + part.offset,
