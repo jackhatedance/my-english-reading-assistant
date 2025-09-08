@@ -45,6 +45,12 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
             return false;
         }
 
+        const ignoredClasses = ['more-button', 'less-button'];
+        
+        if(isSelfOrDecendantOfClass(element, ignoredClasses, 3)) {
+            return false;
+        }
+
         return true;
     }
 };
