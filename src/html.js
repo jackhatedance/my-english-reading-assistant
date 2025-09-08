@@ -26,9 +26,10 @@ const TAGS_NOT_LOG = [
     'G', 
     'SVG', 
     'PRE', 
-    'OPTION' , 
+    'OPTION', 
     'TIME', 
-    'CODE'
+    'CODE',
+    'BDI'
 ];
 
 const TEXT_TAGS =[
@@ -38,6 +39,7 @@ const TEXT_TAGS =[
     'ARTICLE',
     'B',
     'BLOCKQUOTE',
+    'CAPTION',
     'CITE',
     'DIV',
     'EM',
