@@ -42,11 +42,11 @@ function findBaseForm(text){
 
         let pattern;
         if(prefix){
-            pattern = `${prefix} ?(?<base>[a-zA-Z]+)`;
+            pattern = `${prefix} ?(?<base>[a-zA-Z-]+)`;
         }
 
         if(suffix){
-            pattern = String.raw`(?<base>[a-zA-Z]+(\(.*\))?)( ?)的${suffix}`;
+            pattern = String.raw`(?<base>[a-zA-Z-]+(\(.*\))?)( ?)的${suffix}`;
         }
         
         let matchResult = text.match(pattern);

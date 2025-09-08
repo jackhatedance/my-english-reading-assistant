@@ -39,6 +39,16 @@ describe('base-forms test', function () {
 
         });
 
+        it('sysLarge spin-offs', async function () {
+            let result = findBaseForm("spin-off的复数");
+
+            //console.log(parseResult);
+            //assert(tokens.length === 2,"test");
+
+            assert.equal(result.base, 'spin-off');
+
+        });
+
 
     });
 
