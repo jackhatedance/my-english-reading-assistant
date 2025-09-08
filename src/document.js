@@ -1,6 +1,7 @@
 
 'use strict';
 
+import log from 'loglevel'
 import { traverseElement, traverseNode } from './dom.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
@@ -10,15 +11,14 @@ import { getNotes } from './service/noteService.js';
 import { getCurrentSiteOptions } from './page.js'
 import { mouseUpEventListenerWithParams } from './document/listener.js'
 import { createMutationObserver } from './document/mutation-observer.js'
-import log from 'loglevel'
-
-
 import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
 import { getOptionsFromCache } from './service/optionService.js';
 import { addMeaStyle, removeMeaStyle, findStyleSheet, changeStyle, containsMeaStyle } from './style.js';
 import { containsVueApp, addVueApp, removeVueApp } from './embed/iframe-embed.js';
 import { createTooltip, removeTooltip } from './tooltip.js'
-import { addWordHoverEventListener } from './document/listener.js'
+import { addTooltipEventListener } from './tooltip.js'
+import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
+import { showDialog } from './dialog.js' 
 
 var knownWords;
 
@@ -355,6 +355,36 @@ async function cleanDocumentAnnotations(page, document, isIframe, siteProfile, d
         //no word token at all
         //removeWordHoverEventListener(document, documentConfig, currentSiteOption);
     }
+}
+
+async function addWordHoverEventListener(page, document, documentConfig, currentSiteOption) {
+  let options = getOptionsFromCache();
+  addTooltipEventListener(page, document, documentConfig,
+    (word, dictionary) => {
+      //console.log(`click tooltip of ${word}`);
+      let request = {
+        type: 'SELECTION_CHANGE',
+        payload: {
+          word: word,
+          dictionary: dictionary,
+          type: 'search-note',            
+          selectedText: '',
+          sentenceSelection: null,
+          paragraphSelection: null,
+          notes: [],
+        },
+      };
+      let sender = null;
+      let sendResponse = (response) => {
+        //console.log(response.message);
+      };
+      //console.log('selection change:'+JSON.stringify(request));
+      sendMessageToEmbeddedApp(request, sender, sendResponse);
+      showDialog([MenuItems.Vocabulary]);
+    }, 
+    currentSiteOption,
+    options
+  );
 }
 
 export { cleanElements, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };
