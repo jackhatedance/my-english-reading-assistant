@@ -1,4 +1,4 @@
-import { isTextTag } from '../html.js';
+import { isTextTag, TAGS_NOT_LOG } from '../html.js';
 
 class DefaultSiteProfile {
     
@@ -40,7 +40,7 @@ class DefaultSiteProfile {
     }
 
     getTagsNotLog(){
-        return ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TITLE', 'BUTTON', 'G', 'SVG', 'PRE', 'OPTION' , 'TIME'];
+        return TAGS_NOT_LOG;
     }
 
     isTextElement(element){

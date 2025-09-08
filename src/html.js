@@ -17,6 +17,20 @@ function isInlineTag(tag){
     return INLINE_TAGS.includes(tag);
 }
 
+const TAGS_NOT_LOG = [
+    'STYLE', 
+    'SCRIPT', 
+    'NOSCRIPT', 
+    'TITLE', 
+    'BUTTON', 
+    'G', 
+    'SVG', 
+    'PRE', 
+    'OPTION' , 
+    'TIME', 
+    'CODE'
+];
+
 const TEXT_TAGS =[
     'A', 
     'ABBR',
@@ -24,6 +38,7 @@ const TEXT_TAGS =[
     'ARTICLE',
     'B',
     'BLOCKQUOTE',
+    'CITE',
     'DIV',
     'EM',
     'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
@@ -91,4 +106,4 @@ function isSelfOrDecendantOfIds(element, ids, depth=3){
 }
 
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds };
+export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds };
