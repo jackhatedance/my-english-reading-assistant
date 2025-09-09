@@ -19,6 +19,7 @@ import { createTooltip, removeTooltip } from './tooltip.js'
 import { addTooltipEventListener } from './tooltip.js'
 import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
 import { showDialog } from './dialog.js' 
+import { MenuItems } from './menu.js';
 
 var knownWords;
 
