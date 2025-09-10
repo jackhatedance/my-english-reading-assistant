@@ -24,7 +24,7 @@ const FORM_MATCHERS = [
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PRESENT_PARTICIPLE,
-        suffix: '现在分词',
+        suffix: '((现在分词)|(ing形式))',
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,
