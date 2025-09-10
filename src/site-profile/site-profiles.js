@@ -2,6 +2,7 @@
 import { RedditSiteProfile } from './by-domain/RedditSiteProfile.js';
 import { CnnSiteProfile } from './by-domain/CnnSiteProfile.js';
 import { YoutubeSiteProfile } from './by-domain/YoutubeSiteProfile.js';
+import { QuoraSiteProfile } from './by-domain/QuoraSiteProfile.js';
 import { XSiteProfile } from './by-domain/XSiteProfile.js';
 
 import { GroupdocsAppViewerEpub } from './by-url/GroupdocsAppViewerEpubProfile.js';
@@ -21,6 +22,7 @@ const siteProfiles = [
     new RedditSiteProfile(),
     new CnnSiteProfile(),
     new YoutubeSiteProfile(),
+    new QuoraSiteProfile(),
     new XSiteProfile(),
 
     new GroupdocsAppViewerEpub(),
