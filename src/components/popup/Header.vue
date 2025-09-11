@@ -65,6 +65,10 @@ init();
 <style>
 .options-container a {
     margin-right: 10px;
+
+    img:hover {
+        transform: scale(1.2);
+    }
 }
 
 </style>
