@@ -9,8 +9,8 @@ const init = async () => {
 
     var manifestData = chrome.runtime.getManifest();
     version = manifestData.version;
-    let tag = version.replaceAll('.','');
-    releaseNotesUrl = chrome.runtime.getURL('release-notes.html#'+tag);
+    
+    releaseNotesUrl = chrome.runtime.getURL('release-notes.html');
 };
 
 init();
