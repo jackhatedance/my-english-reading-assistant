@@ -5,6 +5,12 @@
     "extensionDescription":{
         "message":"自动提示生词含义，阅读英文不停顿"
     },
+    "popupEpub":{
+        "message":"Epub阅读器"
+    },
+    "popupPdf":{
+        "message":"PDF阅读器"
+    },
     "popupDictionary":{
         "message":"词典"
     },
@@ -93,16 +99,7 @@
     "popupNothingToDoTitle":{
         "message":"当前页面无事可做"
     },
-    "popupNothingToDoQuickActionsTitle":{
-        "message":"快速操作"
-    },
-    "popupNothingToDoQuickActionsEpubReader":{
-        "message":"打开Epub阅读器"
-    },
-    "popupNothingToDoQuickActionsPdfReader":{
-        "message":"打开PDF阅读器"
-    },  
-
+    
     "optionsPageTitle":{
         "message":"设置"
     },

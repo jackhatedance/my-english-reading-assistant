@@ -5,6 +5,12 @@
     "extensionDescription":{
         "message":"Automatically prompt the meaning of new words, so you can read English without pausing"
     },
+    "popupEpub":{
+        "message":"Epub Reader"
+    },
+    "popupPdf":{
+        "message":"PDF Reader"
+    },
     "popupDictionary":{
         "message":"Dictionary"
     },
@@ -93,16 +99,7 @@
     "popupNothingToDoTitle":{
         "message":"Nothing to do on this page"
     },
-    "popupNothingToDoQuickActionsTitle":{
-        "message":"Quick Actions"
-    },
-    "popupNothingToDoQuickActionsEpubReader":{
-        "message":"Open epub reader"
-    },
-    "popupNothingToDoQuickActionsPdfReader":{
-        "message":"Open PDF reader"
-    },    
-
+    
     "optionsPageTitle":{
         "message":"Options"
     },
