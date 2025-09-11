@@ -354,6 +354,10 @@
         "message":"保存"
     },
 
+    "options_sidebar_bottom_version":{
+        "message":"版本"
+    },
+
     "sidepanelPageTitle":{
         "message":"侧栏"
     },
@@ -576,6 +580,9 @@
 
     "faqPageTitle":{
         "message":"常见问题"
+    },
+    "releaseNotesPageTitle":{
+        "message":"发布说明"
     },
 
     "dictionary_system_small_alias":{

@@ -43,7 +43,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [ "mera.css", "svg/*", "icons/*", "images/*", "*.html", "dictionaries/*" ],
+      "resources": [ "*.css", "svg/*", "icons/*", "images/*", "*.html", "dictionaries/*" ],
       "matches": [ "<all_urls>" ]
     }
     

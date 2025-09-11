@@ -17,6 +17,7 @@ const config = (env, argv) =>
       sidePanel: PATHS.src + '/side-panel-iframe.js',
       guide: PATHS.src + '/guide.js',
       faq: PATHS.src + '/faq.js',
+      "release-notes": PATHS.src + '/release-notes.js',
       report: PATHS.src + '/report.js',
       dictionary: PATHS.src + '/dictionary.js',
     },

@@ -355,6 +355,10 @@
         "message":"Save"
     },
 
+    "options_sidebar_bottom_version":{
+        "message":"Version"
+    },
+
     "sidepanelPageTitle":{
         "message":"Side Panel"
     },
@@ -576,6 +580,9 @@
 
     "faqPageTitle":{
         "message":"FAQ"
+    },
+    "releaseNotesPageTitle":{
+        "message":"Release Notes"
     },
 
     "dictionary_system_small_alias":{
