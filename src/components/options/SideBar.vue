@@ -37,18 +37,17 @@ init();
             <div class="sns">
                 <ul class="sns-list">
                     <li>
-                        <a target="_blank" href="https://www.zhihu.com/people/ding-jack-94" :title="t('popupEpub')"><img src="icons/zhihu.png" alt="Zhihu"></a>
+                        <a target="_blank" href="https://space.bilibili.com/410137399" title="Bilibili"><img src="icons/bilibili.png" alt="Bilibili"></a>
                     </li>
                     <li>
-                        <a target="_blank" href="https://tieba.baidu.com/f?ie=utf-8&kw=%E6%88%91%E7%9A%84%E8%8B%B1%E6%96%87%E9%98%85%E8%AF%BB%E5%8A%A9%E6%89%8B&fr=search" :title="t('popupEpub')"><img src="icons/tieba.png" alt="Tieba"></a>
+                        <a target="_blank" href="https://tieba.baidu.com/f?ie=utf-8&kw=%E6%88%91%E7%9A%84%E8%8B%B1%E6%96%87%E9%98%85%E8%AF%BB%E5%8A%A9%E6%89%8B&fr=search" title="贴吧"><img src="icons/tieba.png" alt="Tieba"></a>
                     </li>
                     <li>
-                        <a target="_blank" href="https://github.com/jackhatedance/my-english-reading-assistant/issues/new" :title="t('popupEpub')"><img src="icons/github.jpeg" alt="Github"></a>
+                        <a target="_blank" href="https://github.com/jackhatedance/my-english-reading-assistant/issues/new" title="Github"><img src="icons/github.jpeg" alt="Github"></a>
                     </li>
                     <li>
-                        <a target="_blank" href="https://space.bilibili.com/410137399" :title="t('popupEpub')"><img src="icons/bilibili.png" alt="Bilibili"></a>
+                        <a target="_blank" href="https://www.zhihu.com/people/ding-jack-94" title="知乎"><img src="icons/zhihu.png" alt="Zhihu"></a>
                     </li>
-
                 </ul>
             </div>
             <hr></hr>
