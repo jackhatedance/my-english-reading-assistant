@@ -44,11 +44,14 @@ init();
 </script>
 
 <template>
-    <a class="help" target=_blank :href="url">{{ leftParenthesis }}{{ props.message }}❓{{ rightParenthesis }}</a>
+    <a class="help" target=_blank :href="url">{{ leftParenthesis }}{{ props.message }}<span class="question-mark">?</span>{{ rightParenthesis }}</a>
 </template>
 <style>
    a.help {
     text-decoration: none;
+    .question-mark {
+        color: red;
+    }
    }
 
 </style>
