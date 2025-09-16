@@ -1,8 +1,8 @@
 'use strict';
 
 import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from '../vocabularyStore.js';
-import { patchDefaultOptionValues } from '../options/defaultOptionValues.js';
-import { patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
+import { createDefaultOptions, patchDefaultOptionValues } from '../options/defaultOptionValues.js';
+import { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
 
 var gOptions;
 
@@ -10,39 +10,12 @@ async function getDefaultSiteOptions(){
 
     let options = await loadSiteOptionsFromStorage('default');
     if(!options){
-        options = {
-            enabled: false,
-            dualAnnotationEnabled: false,
-            annotation: {
-                content: 'AC_DEFINITION',
-                position: 0.1,
-                fontSize: 0.3,
-                opacity: 0.5,
-                color: '#0000ff',
-                interlaced: false,
-                
-                lineHeight: 1.2,
-                maxMeaningNumber: 3,
-                hideWordClass: false,
-            },
-            secondaryAnnotation: {
-                content: 'AC_PRONUNCIATION',
-                position: -1,   
-                fontSize: 0.3,
-                opacity: 0.5,
-                color: '#e56910',
-                interlaced: false,
-            },
-            content: {
-                enabled: false,
-                unknownWordColor: '#0000ff',
-                unknownWordWidth: 1,
-            },
-            other:{
-                additionalDictionaries: [],
-            }
-        };
+        options = createFactoryDefaultSiteOptions();
     }
+    
+    //exclude enable section
+    delete options.enable;
+
     
     patchDefaultSiteOptionValues(options);
     //force to false, otherwise all unsaved sites will be enabled by default, bad experience
@@ -108,29 +81,9 @@ function getOptions(){
         chrome.storage.local.get(['options'], (result) => {
             let options = result.options;
             if(!options){
-                options = {};
-            }
-            if(!options.rootAndAffix) {
-                options.rootAndAffix = {
-                    enabled: false,
-                };
+                options = createDefaultOptions();
             }
             
-            if(!options.report){
-                options.report = {
-                    enabled:false,
-                };
-            }
-            if(!options.dictionary){
-                options.dictionary = {
-                    enabled:false,
-                    dictionaries:[]
-                };
-            }
-
-            if(!options.unrecognizedWords){
-                options.unrecognizedWords = { enabled:false};
-            }
 
             patchDefaultOptionValues(options);
             resolve(options);
@@ -159,7 +112,7 @@ function setSiteOptionsAsDefault(options){
 async function getSiteOptions(siteDomain){
     
     let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
-        if(!options){
+    if(!options){
         options ={};
     }
 

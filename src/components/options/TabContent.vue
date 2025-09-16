@@ -42,6 +42,10 @@ init();
                 padding: 5px;   
                 min-width: 450px;  
                 max-width: 550px;   
+
+                input, select {
+                    margin: 5px;
+                }
             }
             .action {
                 width: 150px;  

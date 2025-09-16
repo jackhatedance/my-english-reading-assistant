@@ -24,10 +24,13 @@
         "message":"Options"
     },
     "popupShowHideDefinition":{
-        "message":"Show/Hide Annotation"
+        "message":"Enable"
     },
-    "popupAlwaysShowDefinition":{
-        "message":"always show"
+    "popupSiteAutoEnable":{
+        "message":"switch mode"
+    },
+    "popupSiteAutoEnableUnset":{
+        "message":"default"
     },
     "popupSettings":{
         "message":"Settings"
@@ -225,6 +228,23 @@
     "options_general_pronunciation_region_all":{
         "message":"Both"
     },
+
+    "options_general_enable_label":{
+        "message":"Switch"
+    },
+    "options_general_enable_auto_label":{
+        "message":"Default switch mode"
+    },
+    "options_general_enable_auto_english":{
+        "message":"auto"
+    },
+    "options_general_enable_auto_all":{
+        "message":"always on"
+    },
+    "options_general_enable_auto_none":{
+        "message":"always off"
+    },
+    
 
     "optionsSectionDictionaryTitle":{
         "message":"Dictionary"

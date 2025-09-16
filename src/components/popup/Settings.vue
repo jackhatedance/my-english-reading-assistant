@@ -19,6 +19,8 @@ const gQueryParams = inject('gQueryParams');
 
 
 const enabled = ref(false);
+
+const autoEnable = ref('');
 const dualAnnotationEnabled = ref(false);
 
 const content = ref(0);
@@ -62,6 +64,19 @@ const site = computed(() => {
     return props.pageInfo?.domain;
 });
 
+const globalAutoEnable = computed(() => {
+  let options = getOptionsFromCache();
+  let autoEnable = options.enable.auto;
+
+  if(autoEnable=='all'){
+    return t('options_general_enable_auto_' + autoEnable);
+  }else if(autoEnable=='english'){
+    return t('options_general_enable_auto_english');
+  }else {
+    return t('options_general_enable_auto_none');
+  }
+});
+
 function onChangePageEnabled(){
     //emit('reload-page-info');
     getPageInfo((pageInfo) => {
@@ -89,7 +104,7 @@ function buildOptions(){
   //const selectedAdditionalDictionaryValues = Array.from(additionalDictionariesElement.selectedOptions).map(option => option.value);
 
   let newOptions = {
-    enabled: enabled.value,
+    enable: { auto: autoEnable.value },
     dualAnnotationEnabled: dualAnnotationEnabled.value,
 
     annotation:{    
@@ -224,7 +239,7 @@ function getPageInfo(resolve){
 
 function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
-    enabled.value = siteOptions.enabled;
+    autoEnable.value = siteOptions.enable.auto;
   }
 
   dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
@@ -296,8 +311,16 @@ init();
               <span class="slider"></span>
             </label>
           </div>
-          <div class="toggle-always">
-            <label>{{ t('popupAlwaysShowDefinition') }} <input type="checkbox" id="enabled" v-model="enabled" @change="onChangeSetting"></label>
+          <div class="auto-enable">
+            <label>{{ t('popupSiteAutoEnable') }}<HelpLink type="guide" keyword="站点开关模式"/>
+            
+              <select data-testid="auto-enable" class="auto-enable" v-model="autoEnable" @change="onChangeSetting" >
+                <option value="">{{ t('popupSiteAutoEnableUnset') }} - {{ globalAutoEnable }}</option>
+                <option value="all">{{ t('options_general_enable_auto_all') }}</option>
+                <option value="none">{{ t('options_general_enable_auto_none') }}</option>
+                <option value="english">{{ t('options_general_enable_auto_english') }}</option>
+              </select>    
+            </label>
           </div>
         </div>
                 
@@ -441,9 +464,13 @@ init();
     width: 70%;
     align-content: end;
   }
-  .toggle-always {
+  .auto-enable {
     align-content: end;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+
+    select {
+      text-align: center;
+    }
   }
 }
 .annotation-settings {

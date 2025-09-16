@@ -9,12 +9,15 @@ import { pageMessageListenerWithParams } from './page/page-message-listener.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
+import { getOptions } from './service/optionService.js'
+import { getEnabled } from './enable.js'
 
 
 
 
 
 var page = {
+  language: document.documentElement.lang,
   //used to check if title changed
   url: null,
   //if site info changed, need to re-search site profile 
@@ -85,8 +88,12 @@ function myMain() {
       page.siteProfile = findSiteProfile(document);
     }    
 
-    getCurrentSiteOptions().then(siteOptions => {
-      if (siteOptions.enabled) {
+    Promise.all([getOptions(), getCurrentSiteOptions()]).then((values) => {
+      let options = values[0];
+      let siteOptions = values[1];
+
+      let enabled = getEnabled(options.enable.auto, siteOptions.enable.auto, page.language);
+      if (enabled) {
         initPageAnnotations(page).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 1);
           resetPageAnnotationVisibilityAndNotify(page, true);

@@ -24,10 +24,13 @@
         "message":"设置"
     },
     "popupShowHideDefinition":{
-        "message":"显示/隐藏注解"
+        "message":"启用"
     },
-    "popupAlwaysShowDefinition":{
-        "message":"总是显示"
+    "popupSiteAutoEnable":{
+        "message":"开关模式"
+    },
+    "popupSiteAutoEnableUnset":{
+        "message":"默认"
     },
     "popupDualAnnotationEnabledLabel": {
         "message":"双注解"
@@ -223,6 +226,22 @@
     },
     "options_general_pronunciation_region_all":{
         "message":"都要"
+    },
+
+    "options_general_enable_label":{
+        "message":"开关"
+    },
+    "options_general_enable_auto_label":{
+        "message":"默认开关模式"
+    },
+    "options_general_enable_auto_english":{
+        "message":"自动"
+    },
+    "options_general_enable_auto_all":{
+        "message":"常开"
+    },
+    "options_general_enable_auto_none":{
+        "message":"常关"
     },
 
     "optionsSectionDictionaryTitle":{

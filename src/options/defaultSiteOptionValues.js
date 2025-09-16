@@ -1,5 +1,42 @@
 'use strict';
 
+function createFactoryDefaultSiteOptions(){
+    return {
+        //enabled: false,
+        dualAnnotationEnabled: false,
+        annotation: {
+            content: 'AC_DEFINITION',
+            position: 0.1,
+            fontSize: 0.3,
+            opacity: 0.5,
+            color: '#0000ff',
+            interlaced: false,
+            
+            lineHeight: 1.2,
+            maxMeaningNumber: 3,
+            hideWordClass: false,
+        },
+        secondaryAnnotation: {
+            content: 'AC_PRONUNCIATION',
+            position: -1,   
+            fontSize: 0.3,
+            opacity: 0.5,
+            color: '#e56910',
+            interlaced: false,
+        },
+        content: {
+            enabled: false,
+            unknownWordColor: '#0000ff',
+            unknownWordWidth: 1,
+        },
+        other:{
+            additionalDictionaries: [],
+        },
+        enable:{
+            auto:''
+        }
+    };
+}
 /**
  * make sure all new added fields are not undefined, and assigned with default value
  * 
@@ -18,6 +55,7 @@ function patchAll(options) {
     patch_v_0_10_4(options);
     patch_v_0_13_0(options);
     patch_v_0_13_1(options);
+    patch_v_0_13_4(options);
 }
 
 function patch_v_0_10_1(options){
@@ -64,4 +102,19 @@ function patch_v_0_13_1(options){
     }
 }
 
-export { patchDefaultSiteOptionValues };
+
+function patch_v_0_13_4(options){
+
+    if(options.enable == null){
+        let auto = '';
+        if(options.enabled==true){
+            auto = 'all';
+            delete options.enabled;
+        }
+        options.enable = {
+            auto: auto
+        };
+    }
+}
+
+export { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues };
