@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds } from '../../html.js';
+import { hasAnyClass } from '../../html.js';
 
 class QuoraSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -15,18 +15,15 @@ class QuoraSiteProfile extends DefaultSiteProfile {
         return false;
     }
     
-
-    canNodeBeTokenized(node){
-        let element = node.parentElement;
-
+    canElementBeTokenized(element){
         const ignoredClasses = ['qt_read_more'];
-        
-        if(isSelfOrDecendantOfClass(element, ignoredClasses, 3)) {
+        if(hasAnyClass(element, ignoredClasses)){
             return false;
         }
 
-        return super.canNodeBeTokenized(node);
+        return super.canElementBeTokenized(element);
     }
+
 };
 
 export { QuoraSiteProfile };

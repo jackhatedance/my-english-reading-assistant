@@ -69,6 +69,15 @@ function isLeafTextTag(tag, extraTextTags = []){
     return LEAF_TEXT_TAGS.includes(tag) || extraTextTags.includes(tag);
 }
 
+function hasAnyClass(element, classes){
+    
+    let findResult = classes.find(item => element.classList.contains(item));
+    if(findResult){
+        return true;
+    }
+    return false;
+}
+
 function isSelfOrDecendantOfClass(element, classes, depth=3){
     let cur = element;
     
@@ -85,6 +94,14 @@ function isSelfOrDecendantOfClass(element, classes, depth=3){
         cur = cur.parentElement;
     }
 
+    return false;
+}
+
+function hasAnyId(element, ids){
+    let findResult = ids.includes(element.id);
+    if(findResult){
+        return true;
+    }
     return false;
 }
 
@@ -127,4 +144,4 @@ function isInMeaElement(element) {
 }
 
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement };
+export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement, hasAnyId, hasAnyClass };

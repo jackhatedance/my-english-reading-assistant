@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds } from '../../html.js';
+import { isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, hasAnyId, hasAnyClass } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -39,21 +39,17 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         return isLeafTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
     }
 
-    canNodeBeTokenized(node){
-        let element = node.parentElement;
-
+    canElementBeTokenized(element){
         const ignoredIds = ['title', 'top-row'];
-        if(isSelfOrDecendantOfIds(element, ignoredIds, 6)) {
+        if(hasAnyId(element, ignoredIds)) {
             return false;
         }
-
         const ignoredClasses = ['more-button', 'less-button'];
-        
-        if(isSelfOrDecendantOfClass(element, ignoredClasses, 3)) {
+        if(hasAnyClass(element, ignoredClasses)){
             return false;
         }
 
-        return super.canNodeBeTokenized(node);
+        return super.canElementBeTokenized(element);
     }
 };
 
