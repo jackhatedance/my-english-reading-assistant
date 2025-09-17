@@ -27,7 +27,7 @@
         "message":"Enable"
     },
     "popupSiteAutoEnable":{
-        "message":"switch mode"
+        "message":"Site switch mode"
     },
     "popupSiteAutoEnableUnset":{
         "message":"default"

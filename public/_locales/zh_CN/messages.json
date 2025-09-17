@@ -27,7 +27,7 @@
         "message":"启用"
     },
     "popupSiteAutoEnable":{
-        "message":"开关模式"
+        "message":"站点开关模式"
     },
     "popupSiteAutoEnableUnset":{
         "message":"默认"
