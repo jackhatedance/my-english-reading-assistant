@@ -3,7 +3,10 @@
 
 function traverseNode(node, visitor) {
     let result = visitor(node);
-
+    if(result === 'stop'){
+      return;
+    }
+    
     if(node.childNodes){
        for (var i = 0; i < node.childNodes.length; i++) {
             let childNode = node.childNodes[i];
