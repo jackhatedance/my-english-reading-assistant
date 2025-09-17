@@ -8,7 +8,7 @@ import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord, buildDictionaryOptions } from './language.js';
-import { TEXT_TAG, MEA_TAG_PREFIX } from './html.js';
+import { TEXT_TAG } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/optionService.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
@@ -29,31 +29,17 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
     var tokenCount = 0;
 
     traverseNode(document.body, (node) => {
-        //avoid re-enter
-        if (isInMeaElement(node.parentElement)) {
-            return;
-        }
         
+        //return 'stop' will no longer process it internal content
+        if(!siteProfile.canElementBeTokenized(node.parentElement)){
+            return 'stop';
+        }
 
         if (node.nodeName === '#text') {
+            if (!siteProfile.canNodeBeTokenized(node)) {
+                return;
+            }
             let textContent = node.textContent;
-            if(!textContent || textContent.trim().length === 0) {
-                return;//blank
-            }
-            
-            //some tags are not tokenizable, such as style, script, etc.
-            if (!siteProfile.isTextElement(node.parentElement)) {
-                const tagsNotLog = siteProfile.getTagsNotLog();
-                if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
-                    console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
-                }
-                
-                return;
-            }
-
-            if (!siteProfile.canBeTokenized(node.parentElement)) {
-                return;
-            }
             //console.log(node.parentElement.nodeName);
             //console.log(textContent);
             let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
@@ -500,25 +486,6 @@ function breakString(str, ch){
     }
     
     return lines;
-}
-
-function isInMeaElement(element) {
-    if (!element) {
-        console.log('null element');
-        return false;
-    }
-
-    let isMeaElement = element.tagName.startsWith(MEA_TAG_PREFIX);
-    if(isMeaElement){
-        return true;
-    }        
-
-    let meaElement = element.closest('.mea-element');
-    if (meaElement) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 function findTokenIndexOfSentence(sentence, offset) {

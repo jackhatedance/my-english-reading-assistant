@@ -2,7 +2,7 @@ import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
 import { generateCssRuleOfHighlight as commonGenerateCssRuleOfHighlight } from '../../style.js';
-import { isTextTag } from '../../html.js';
+import { isLeafTextTag } from '../../html.js';
 
 class RedditSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -19,8 +19,8 @@ class RedditSiteProfile extends DefaultSiteProfile {
         return rule;
     }
 
-    isTextElement(element){
-        return isTextTag(element.nodeName, ['FACEPLATE-SCREEN-READER-CONTENT', 'FACEPLATE-NUMBER', 'GAMES-SECTION-BADGE-WRAPPER', 'SHREDDIT-DYNAMIC-AD-LINK']);
+    isLeafTextElement(element){
+        return isLeafTextTag(element.nodeName, ['FACEPLATE-SCREEN-READER-CONTENT', 'FACEPLATE-NUMBER', 'GAMES-SECTION-BADGE-WRAPPER', 'SHREDDIT-DYNAMIC-AD-LINK']);
     }
 };
 

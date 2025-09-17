@@ -1,5 +1,8 @@
-import { isTextTag, TAGS_NOT_LOG } from '../html.js';
+import { isLeafTextTag, TAGS_NOT_LOG, isInMeaElement } from '../html.js';
 
+const IGNORE_TAGS = [
+    'BUTTON'
+];
 class DefaultSiteProfile {
     
     constructor(name, matcher, config) {
@@ -43,11 +46,40 @@ class DefaultSiteProfile {
         return TAGS_NOT_LOG;
     }
 
-    isTextElement(element){
-        return isTextTag(element.nodeName);
+    isLeafTextElement(element){
+        return isLeafTextTag(element.nodeName);
     }
 
-    canBeTokenized(element){
+    
+    canElementBeTokenized(element){
+        //avoid re-enter
+        if (isInMeaElement(element)) {
+            return false;
+        }
+
+        let tag = element.nodeName;
+        if(IGNORE_TAGS.includes(tag)){
+            return false;
+        }
+        return true;
+    }
+
+    canNodeBeTokenized(node){
+        let textContent = node.textContent;
+        if(!textContent || textContent.trim().length === 0) {
+            return false;//blank
+        }
+
+        //some tags are not tokenizable, such as style, script, etc.
+        if (!this.isLeafTextElement(node.parentElement)) {
+            const tagsNotLog = this.getTagsNotLog();
+            if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
+                console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
+            }
+            
+            return false;
+        }
+        
         return true;
     }
 };

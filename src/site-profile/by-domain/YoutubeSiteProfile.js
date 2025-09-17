@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds } from '../../html.js';
+import { isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -35,11 +35,13 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         return super.getTagsNotLog().concat(['TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS']);
     }
 
-    isTextElement(element){
-        return isTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
+    isLeafTextElement(element){
+        return isLeafTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
     }
 
-    canBeTokenized(element){
+    canNodeBeTokenized(node){
+        let element = node.parentElement;
+
         const ignoredIds = ['title', 'top-row'];
         if(isSelfOrDecendantOfIds(element, ignoredIds, 6)) {
             return false;
@@ -51,7 +53,7 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
             return false;
         }
 
-        return true;
+        return super.canNodeBeTokenized(node);
     }
 };
 

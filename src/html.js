@@ -32,7 +32,7 @@ const TAGS_NOT_LOG = [
     'BDI'
 ];
 
-const TEXT_TAGS =[
+const LEAF_TEXT_TAGS =[
     'A', 
     'ABBR',
     'ADDRESS',
@@ -65,8 +65,8 @@ const TEXT_TAGS =[
     'FIGCAPTION'
 ];
 
-function isTextTag(tag, extraTextTags = []){
-    return TEXT_TAGS.includes(tag) || extraTextTags.includes(tag);
+function isLeafTextTag(tag, extraTextTags = []){
+    return LEAF_TEXT_TAGS.includes(tag) || extraTextTags.includes(tag);
 }
 
 function isSelfOrDecendantOfClass(element, classes, depth=3){
@@ -107,5 +107,24 @@ function isSelfOrDecendantOfIds(element, ids, depth=3){
     return false;
 }
 
+function isInMeaElement(element) {
+    if (!element) {
+        console.log('null element');
+        return false;
+    }
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds };
+    let isMeaElement = element.tagName.startsWith(MEA_TAG_PREFIX);
+    if(isMeaElement){
+        return true;
+    }        
+
+    let meaElement = element.closest('.mea-element');
+    if (meaElement) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement };
