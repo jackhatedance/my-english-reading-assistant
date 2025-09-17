@@ -2,7 +2,6 @@
 'use strict';
 
 import log from 'loglevel'
-import { traverseElement, traverseNode } from './dom.js';
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
@@ -24,73 +23,6 @@ import { MenuItems } from './menu.js';
 var knownWords;
 
 const gLogger = log.getLogger("document");
-
-function isElementLeaf(element) {
-
-    let childCount = element.childElementCount;
-    let text = element.textContent;
-    if (!text) {
-        text = '';
-    }
-
-
-    return (childCount == 0);
-}
-
-function needRemoveTag(element) {
-    return (element.getAttribute('mea-remove-tag') === 'true');
-}
-
-function allChildrenElementNeedRemoveTag(element) {
-    if (element.childElementCount === 0) {
-        return false;
-    }
-
-    for (let childElement of element.children) {
-        if (!needRemoveTag(childElement)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function cleanElements(document) {
-
-    //replace punctuations
-    traverseNode(document.body, (node) => {
-        if (node.nodeName === '#text') {
-            //node.textContent = node.textContent.replaceAll(/[`\u2018\u2019]/g, "'");
-        }
-    });
-
-    //remove text content of some tags
-    traverseElement(document.body, (element) => {
-        const TAGS_CLEAR_CONTENT = ['SUP', 'S'];
-        const TAGS_KEEP_CONTENT = ['EM', 'I', 'B',];
-        if (TAGS_CLEAR_CONTENT.includes(element.nodeName)) {
-            element.setAttribute('mea-remove-tag', 'true');
-            element.innerHTML = '';
-            //element.outerHTML = '';
-        } else if (TAGS_KEEP_CONTENT.includes(element.nodeName)) {
-            if (isElementLeaf(element)) {
-                element.setAttribute('mea-remove-tag', 'true');
-
-            }
-        }
-
-        if (allChildrenElementNeedRemoveTag(element)) {
-            element.innerHTML = element.textContent;
-        }
-    }, false);
-
-    // merge TEXT NODEs
-    traverseElement(document.body, (element) => {
-        if (allChildrenElementNeedRemoveTag(element)) {
-            element.innerHTML = element.textContent;
-        }
-    });
-
-}
 
 function isDocumentAnnotationInitialized(document) {
     if (!document.body) {
@@ -300,8 +232,6 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
             }
         }, 1000);
 
-        //cleanElements(document);
-
         
         tokenizeTextNode(document, options, currentSiteOption, siteProfile);
 
@@ -388,4 +318,4 @@ async function addWordHoverEventListener(page, document, documentConfig, current
   );
 }
 
-export { cleanElements, isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };
+export { isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };

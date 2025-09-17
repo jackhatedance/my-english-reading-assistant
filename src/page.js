@@ -2,7 +2,7 @@
 
 import { getSiteOptions, } from './service/optionService.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
-import { getAllDocuments, isDocumentAnnotationInitialized, cleanElements, resetDocumentAnnotationVisibility } from './document.js';
+import { getAllDocuments, isDocumentAnnotationInitialized, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
 import { sendMessageToBackground } from './message.js';
 import { getIsbn } from './service/pageService.js';
