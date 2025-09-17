@@ -2,7 +2,6 @@
 'use strict';
 
 import { md5 } from 'js-md5';
-import { traverseNode } from './dom.js';
 import { getSegmentOffset } from './segment.js';
 
 function purifySentence(sentence) {
@@ -14,63 +13,6 @@ function getSentenceContentHash(sentenceContent) {
     let sentenceId = md5(pureSentence);
     return sentenceId;
 }
-
-
-function getSentenceInstancePositionFromNodePosition(node, offset) {
-    let tokenElement = node.parentElement;
-    let offsetInToken = offset;
-
-
-    let sentenceElement = tokenElement.closest('.mea-sentence');
-
-    if (!sentenceElement) {
-        //cursor could be at the space between sentences. the space belongs to no sentence.
-        if (!tokenElement.classList.contains('mea-sentence')
-            &&
-            (node.nextElementSibling && node.nextElementSibling.classList.contains('mea-sentence'))
-            &&
-            (node.previousElementSibling && node.previousElementSibling?.classList.contains('mea-sentence'))
-        ) {
-            sentenceElement = node.nextElementSibling;
-        }
-    }
-
-    if (!sentenceElement) {
-        return null;
-    }
-
-    let sentenceId = sentenceElement.getAttribute('data-sentence-id');
-    let sentenceNumber = parseInt(sentenceElement.getAttribute('data-sentence-number'));
-
-
-    let sentenceBuffer = '';
-    let offsetInSentence = 0;
-
-    let done = false;
-
-    traverseNode(sentenceElement, (node2) => {
-        if (done) {
-            return;
-        }
-
-        if (node2.nodeName === '#text') {
-            if (node2 === node) {
-                offsetInSentence = sentenceBuffer.length + offsetInToken;
-
-                done = true;
-            }
-            sentenceBuffer = sentenceBuffer + node2.textContent;
-        }
-    });
-    let result = {
-        sentenceId: sentenceId,
-        offset: offsetInSentence,
-        sentenceNumber: sentenceNumber,
-    };
-    return result;
-}
-
-
 
 function getSentenceHashSelectionFromInstanceSelection(sentenceInstanceSelection, getSentenceIdByNumber){
     //console.log('get sentence hash selection from instance selection');
