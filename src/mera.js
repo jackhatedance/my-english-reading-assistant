@@ -10,7 +10,7 @@ import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
 import { getOptions } from './service/optionService.js'
-import { getEnabled } from './enable.js'
+import { getEnabled } from './switch-mode.js'
 
 
 
