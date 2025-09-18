@@ -2,10 +2,11 @@
 import { ref } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
 import HelpLink from '../../HelpLink.vue'
+import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../../switch-mode.js'
 
 const t = chrome.i18n.getMessage;
 const selectedRegion = ref('none');
-const selectedAutoEnable = ref('none');
+const selectedSwitchMode = ref('none');
 
 async function onChangeRegion() {
   const pronunciation = {
@@ -15,26 +16,26 @@ async function onChangeRegion() {
   await updateOptions(newOptions);
 }
 
-async function onChangeAutoEnable() {
-  const enable = {
-    auto: selectedAutoEnable.value,
+async function onChangeSwitchMode() {
+  const _switch = {
+    mode: selectedSwitchMode.value,
   };
-  let newOptions = { enable };
+  let newOptions = { switch: _switch };
   await updateOptions(newOptions);
 }
 
-function updateRegion(region){
-  selectedRegion.value = region;
+function updateRegion(options){
+  selectedRegion.value = options.pronunciation.region;
 }
 
-function updateAutoEnable(value){
-  selectedAutoEnable.value = value;
+function updateSwitchMode(options){
+  selectedSwitchMode.value = options.switch.mode;
 }
 
 const init = async () => {
   let options = await getOptions();
-  updateRegion(options.pronunciation.region);  
-  updateAutoEnable(options.enable.auto);  
+  updateRegion(options);  
+  updateSwitchMode(options);  
 };
 
 init();
@@ -46,16 +47,16 @@ init();
 
     <div class="section">
       <div class="label">
-        <h3>{{ t('options_general_enable_label') }}</h3>        
+        <h3>{{ t('options_general_switch_label') }}</h3>        
       </div>
       <div class="input">
         <div>
-          <label>{{ t('options_general_enable_auto_label') }}<HelpLink type="guide" keyword="默认开关模式"/></label>
-          <select data-testid="auto-enable" class="auto-enable" v-model="selectedAutoEnable" @change="onChangeAutoEnable" >
+          <label>{{ t('options_general_switch_mode_label') }}<HelpLink type="guide" keyword="默认开关模式"/></label>
+          <select data-testid="switch-mode" class="switch-mode" v-model="selectedSwitchMode" @change="onChangeSwitchMode" >
             
-            <option value="all">{{ t('options_general_enable_auto_all') }}</option>
-            <option value="none">{{ t('options_general_enable_auto_none') }}</option>
-            <option value="english">{{ t('options_general_enable_auto_english') }}</option>
+            <option :value="SWITCH_MODE_OPTION_ON">{{ t('options_general_switch_mode_on') }}</option>
+            <option :value="SWITCH_MODE_OPTION_OFF">{{ t('options_general_switch_mode_off') }}</option>
+            <option :value="SWITCH_MODE_OPTION_AUTO">{{ t('options_general_switch_mode_auto') }}</option>
             
           </select> 
         </div>

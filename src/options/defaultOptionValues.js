@@ -1,4 +1,5 @@
 'use strict';
+import { SWITCH_MODE_OPTION_OFF } from '../switch-mode.js'
 
 function createDefaultOptions(){
     return {
@@ -15,8 +16,8 @@ function createDefaultOptions(){
         unrecognizedWords: { 
             enabled:false
         },
-        enable: {
-            auto: 'none'
+        switch: {
+            mode: SWITCH_MODE_OPTION_OFF
         }
     };
 }
@@ -85,13 +86,13 @@ function patch_v_0_11_1(options){
 
 function patch_v_0_13_4(options){
     
-    if(!options.hasOwnProperty('enable')){
-        options.enable = {};
+    if(!options.hasOwnProperty('switch')){
+        options.switch = {};
     }
 
-    let enableOptions = options.enable;
-    if(!enableOptions.hasOwnProperty('auto')){
-        enableOptions.auto = 'none';
+    let switchOptions = options.switch;
+    if(!switchOptions.hasOwnProperty('mode')){
+        switchOptions.auto = SWITCH_MODE_OPTION_OFF;
     }
 }
 

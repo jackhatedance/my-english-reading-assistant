@@ -26,10 +26,10 @@
     "popupShowHideDefinition":{
         "message":"启用"
     },
-    "popupSiteAutoEnable":{
+    "popupSiteSwitchMode":{
         "message":"站点开关模式"
     },
-    "popupSiteAutoEnableUnset":{
+    "popupSiteSwitchModeUnset":{
         "message":"默认"
     },
     "popupDualAnnotationEnabledLabel": {
@@ -228,19 +228,19 @@
         "message":"都要"
     },
 
-    "options_general_enable_label":{
+    "options_general_switch_label":{
         "message":"开关"
     },
-    "options_general_enable_auto_label":{
+    "options_general_switch_mode_label":{
         "message":"默认开关模式"
     },
-    "options_general_enable_auto_english":{
+    "options_general_switch_mode_auto":{
         "message":"自动"
     },
-    "options_general_enable_auto_all":{
+    "options_general_switch_mode_on":{
         "message":"常开"
     },
-    "options_general_enable_auto_none":{
+    "options_general_switch_mode_off":{
         "message":"常关"
     },
 

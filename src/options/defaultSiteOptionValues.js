@@ -1,4 +1,5 @@
 'use strict';
+import { SWITCH_MODE_OPTION_ON } from '../switch-mode.js'
 
 function createFactoryDefaultSiteOptions(){
     return {
@@ -32,8 +33,8 @@ function createFactoryDefaultSiteOptions(){
         other:{
             additionalDictionaries: [],
         },
-        enable:{
-            auto:''
+        switch:{
+            mode:''
         }
     };
 }
@@ -105,14 +106,14 @@ function patch_v_0_13_1(options){
 
 function patch_v_0_13_4(options){
 
-    if(options.enable == null){
-        let auto = '';
+    if(options.switch == null){
+        let mode = '';
         if(options.enabled==true){
-            auto = 'all';
+            mode = SWITCH_MODE_OPTION_ON;
             delete options.enabled;
         }
-        options.enable = {
-            auto: auto
+        options.switch = {
+            mode: mode
         };
     }
 }

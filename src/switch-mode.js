@@ -1,6 +1,6 @@
-const ENABLE_DEFAULT_OPTION_NONE = 'none';
-const ENABLE_DEFAULT_OPTION_ALL = 'all';
-const ENABLE_DEFAULT_OPTION_ENGLISH = 'english';
+const SWITCH_MODE_OPTION_OFF = 'off';
+const SWITCH_MODE_OPTION_ON = 'on';
+const SWITCH_MODE_OPTION_AUTO = 'auto';
 
 function isEnglish(pageLanguage){
     let isEnglishPage = false;
@@ -17,9 +17,9 @@ function getEnabled(globalPolicy, sitePolicy, pageLanguage){
     }
 
     let enabled = false;
-    if(policy == ENABLE_DEFAULT_OPTION_ALL){
+    if(policy == SWITCH_MODE_OPTION_ON){
         enabled = true;
-    } else if(policy == ENABLE_DEFAULT_OPTION_ENGLISH){
+    } else if(policy == SWITCH_MODE_OPTION_AUTO){
         let isEnglishPage = isEnglish(pageLanguage);
           
         if(isEnglishPage){
@@ -29,4 +29,4 @@ function getEnabled(globalPolicy, sitePolicy, pageLanguage){
     return enabled;
 }
 
-export { getEnabled, ENABLE_DEFAULT_OPTION_NONE, ENABLE_DEFAULT_OPTION_ALL, ENABLE_DEFAULT_OPTION_ENGLISH }
+export { getEnabled, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_AUTO }

@@ -92,7 +92,7 @@ function myMain() {
       let options = values[0];
       let siteOptions = values[1];
 
-      let enabled = getEnabled(options.enable.auto, siteOptions.enable.auto, page.language);
+      let enabled = getEnabled(options.switch.mode, siteOptions.switch.mode, page.language);
       if (enabled) {
         initPageAnnotations(page).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 1);

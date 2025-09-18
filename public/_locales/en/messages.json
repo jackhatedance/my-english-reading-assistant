@@ -26,10 +26,10 @@
     "popupShowHideDefinition":{
         "message":"Enable"
     },
-    "popupSiteAutoEnable":{
+    "popupSiteSwitchMode":{
         "message":"Site switch mode"
     },
-    "popupSiteAutoEnableUnset":{
+    "popupSiteSwitchModeUnset":{
         "message":"default"
     },
     "popupSettings":{
@@ -229,19 +229,19 @@
         "message":"Both"
     },
 
-    "options_general_enable_label":{
+    "options_general_switch_label":{
         "message":"Switch"
     },
-    "options_general_enable_auto_label":{
+    "options_general_switch_mode_label":{
         "message":"Default switch mode"
     },
-    "options_general_enable_auto_english":{
+    "options_general_switch_mode_auto":{
         "message":"auto"
     },
-    "options_general_enable_auto_all":{
+    "options_general_switch_mode_on":{
         "message":"always on"
     },
-    "options_general_enable_auto_none":{
+    "options_general_switch_mode_off":{
         "message":"always off"
     },
     

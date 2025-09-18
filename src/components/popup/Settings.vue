@@ -1,11 +1,10 @@
 <script setup>
 import { ref, provide, inject, computed, toRaw } from 'vue';
 import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from '../../service/optionService.js';
-import {localizeHtmlPage} from '../../locale.js';
-import {initializeOptionService, getOptionsFromCache} from '../../service/optionService.js';
+import { getOptionsFromCache} from '../../service/optionService.js';
 import { getAdditionalDictionaryMetas } from '../../dictionary/customDictionary.js'
-import { getWebSiteDocumentUrl } from '../../site.js';
 import HelpLink from '../HelpLink.vue'
+import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../switch-mode.js'
 
 const t = chrome.i18n.getMessage;
 
@@ -20,7 +19,7 @@ const gQueryParams = inject('gQueryParams');
 
 const enabled = ref(false);
 
-const autoEnable = ref('');
+const switchMode = ref('');
 const dualAnnotationEnabled = ref(false);
 
 const content = ref(0);
@@ -64,16 +63,16 @@ const site = computed(() => {
     return props.pageInfo?.domain;
 });
 
-const globalAutoEnable = computed(() => {
+const defaultSwitchMode = computed(() => {
   let options = getOptionsFromCache();
-  let autoEnable = options.enable.auto;
+  let switchMode = options.switch.mode;
 
-  if(autoEnable=='all'){
-    return t('options_general_enable_auto_' + autoEnable);
-  }else if(autoEnable=='english'){
-    return t('options_general_enable_auto_english');
+  if(switchMode == SWITCH_MODE_OPTION_ON){
+    return t('options_general_switch_mode_' + switchMode);
+  }else if(switchMode == SWITCH_MODE_OPTION_AUTO){
+    return t('options_general_switch_mode_auto');
   }else {
-    return t('options_general_enable_auto_none');
+    return t('options_general_switch_mode_off');
   }
 });
 
@@ -104,7 +103,7 @@ function buildOptions(){
   //const selectedAdditionalDictionaryValues = Array.from(additionalDictionariesElement.selectedOptions).map(option => option.value);
 
   let newOptions = {
-    enable: { auto: autoEnable.value },
+    switch: { mode: switchMode.value },
     dualAnnotationEnabled: dualAnnotationEnabled.value,
 
     annotation:{    
@@ -239,7 +238,7 @@ function getPageInfo(resolve){
 
 function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
-    autoEnable.value = siteOptions.enable.auto;
+    switchMode.value = siteOptions.switch.mode;
   }
 
   dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
@@ -311,14 +310,14 @@ init();
               <span class="slider"></span>
             </label>
           </div>
-          <div class="auto-enable">
-            <label>{{ t('popupSiteAutoEnable') }}<HelpLink type="guide" keyword="站点开关模式"/>
+          <div class="switch-mode">
+            <label>{{ t('popupSiteSwitchMode') }}<HelpLink type="guide" keyword="站点开关模式"/>
             
-              <select data-testid="auto-enable" class="auto-enable" v-model="autoEnable" @change="onChangeSetting" >
-                <option value="">{{ globalAutoEnable }}({{ t('popupSiteAutoEnableUnset') }})</option>
-                <option value="all">{{ t('options_general_enable_auto_all') }}</option>
-                <option value="none">{{ t('options_general_enable_auto_none') }}</option>
-                <option value="english">{{ t('options_general_enable_auto_english') }}</option>
+              <select data-testid="switch-mode" class="switch-mode" v-model="switchMode" @change="onChangeSetting" >
+                <option value="">{{ defaultSwitchMode }}({{ t('popupSiteSwitchModeUnset') }})</option>
+                <option :value="SWITCH_MODE_OPTION_ON">{{ t('options_general_switch_mode_on') }}</option>
+                <option :value="SWITCH_MODE_OPTION_OFF">{{ t('options_general_switch_mode_off') }}</option>
+                <option :value="SWITCH_MODE_OPTION_AUTO">{{ t('options_general_switch_mode_auto') }}</option>
               </select>    
             </label>
           </div>
@@ -464,7 +463,7 @@ init();
     width: 70%;
     align-content: end;
   }
-  .auto-enable {
+  .switch-mode {
     align-content: end;
     margin-bottom: 5px;
 
