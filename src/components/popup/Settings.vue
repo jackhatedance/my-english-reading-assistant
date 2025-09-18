@@ -315,7 +315,7 @@ init();
             <label>{{ t('popupSiteAutoEnable') }}<HelpLink type="guide" keyword="站点开关模式"/>
             
               <select data-testid="auto-enable" class="auto-enable" v-model="autoEnable" @change="onChangeSetting" >
-                <option value="">{{ t('popupSiteAutoEnableUnset') }} - {{ globalAutoEnable }}</option>
+                <option value="">{{ globalAutoEnable }}({{ t('popupSiteAutoEnableUnset') }})</option>
                 <option value="all">{{ t('options_general_enable_auto_all') }}</option>
                 <option value="none">{{ t('options_general_enable_auto_none') }}</option>
                 <option value="english">{{ t('options_general_enable_auto_english') }}</option>
