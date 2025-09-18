@@ -7,8 +7,14 @@ export class TestPage {
     
     }
 
-    async goto() {
-        const file = "file:///" + path.join(__dirname, '../../e2e/html/test.html');
+    async goto(relativePath) {
+        if(!relativePath){
+            relativePath = 'html/test.html';
+        }
+
+        const relativeFilePath = '../../e2e/'+relativePath;
+
+        const file = "file:///" + path.join(__dirname, relativeFilePath);
         console.log(file);
         await this.page.goto(file);
     }
