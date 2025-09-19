@@ -16,7 +16,9 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
 
         //ignore time and caption(subtitle)
         
-        const ignoredIds = ['title'];
+        const ignoredIds = ['title',
+            'full-bleed-container',//the player control bar on bottom of the video area, time is changing
+        ];
         if(isSelfOrDecendantOfIds(mutation.target, ignoredIds, 5)) {
             return true;
         }
@@ -40,7 +42,7 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
     }
 
     canElementBeTokenized(element){
-        const ignoredIds = ['title', 'top-row'];
+        const ignoredIds = ['title', 'top-row', 'full-bleed-container'];
         if(hasAnyId(element, ignoredIds)) {
             return false;
         }
