@@ -1,5 +1,5 @@
 'use strict';
-import { SWITCH_MODE_OPTION_ON } from '../switch-mode.js'
+import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF } from '../switch-mode.js'
 
 function createFactoryDefaultSiteOptions(){
     return {
@@ -107,14 +107,16 @@ function patch_v_0_13_1(options){
 function patch_v_0_13_4(options){
 
     if(options.switch == null){
-        let mode = '';
-        if(options.enabled==true){
-            mode = SWITCH_MODE_OPTION_ON;
-            delete options.enabled;
-        }
         options.switch = {
-            mode: mode
+            mode: ''
         };
+    }
+
+    //migration
+    if(options.hasOwnProperty('enabled')){
+        let mode = options.enabled ? SWITCH_MODE_OPTION_ON: SWITCH_MODE_OPTION_OFF; 
+        options.switch.mode = mode;
+        delete options.enabled;
     }
 }
 

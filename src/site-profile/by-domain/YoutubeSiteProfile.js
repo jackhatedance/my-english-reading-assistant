@@ -46,7 +46,7 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         if(hasAnyId(element, ignoredIds)) {
             return false;
         }
-        const ignoredClasses = ['more-button', 'less-button', 'yt-lockup-metadata-view-model__heading-reset'];
+        const ignoredClasses = ['more-button', 'less-button'];
         if(hasAnyClass(element, ignoredClasses)){
             return false;
         }

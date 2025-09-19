@@ -92,7 +92,7 @@ function patch_v_0_13_4(options){
 
     let switchOptions = options.switch;
     if(!switchOptions.hasOwnProperty('mode')){
-        switchOptions.auto = SWITCH_MODE_OPTION_OFF;
+        switchOptions.mode = SWITCH_MODE_OPTION_OFF;
     }
 }
 

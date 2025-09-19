@@ -3,6 +3,7 @@
 import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from '../vocabularyStore.js';
 import { createDefaultOptions, patchDefaultOptionValues } from '../options/defaultOptionValues.js';
 import { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
+import assign from 'assign-deep'
 
 var gOptions;
 
@@ -14,35 +15,16 @@ async function getDefaultSiteOptions(){
     }
     
     //exclude enable section
-    delete options.enable;
+    //delete options.enable;
 
     
     patchDefaultSiteOptionValues(options);
     //force to false, otherwise all unsaved sites will be enabled by default, bad experience
-    options.enabled = false;
+    //options.enabled = false;
 
     return options;
     
 }
-
-/**
- * make sure all new added fields are not undefined, and assigned with default value
- * 
- * @param {*} option1 
- * @param {*} option2 
- */
-function assignDefaultValues(options, defaultOptions) {
-    
-    options.annotation = Object.assign({}, defaultOptions.annotation, options.annotation);
-    options.content = Object.assign({}, defaultOptions.content, options.content);
-    options.other = Object.assign({}, defaultOptions.other, options.other);
-
-    let mergedOptions = Object.assign({}, defaultOptions, options);
-    //console.log('merged options:'+JSON.stringify(mergedOptions));
-    return mergedOptions;
-    
-}
-
 
 function loadSiteOptionsFromStorage(siteDomain){
     return new Promise(resolve => {
@@ -109,6 +91,16 @@ function setSiteOptionsAsDefault(options){
     setSiteOptions('default', options);
 }
 
+function getEffectiveSiteOptions(siteOptions, defaultSiteOptions){
+    let effectiveOptions = assign(defaultSiteOptions, siteOptions);
+
+    patchDefaultSiteOptionValues(effectiveOptions);
+
+    //migrateSiteOptions(effectiveOptions);
+
+    return effectiveOptions;
+}
+
 async function getSiteOptions(siteDomain){
     
     let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
@@ -116,12 +108,11 @@ async function getSiteOptions(siteDomain){
         options ={};
     }
 
-    let defaultOptions = await getDefaultSiteOptions();
+    let defaultSiteOptions = await getDefaultSiteOptions();
     
     
-    let effectiveOptions = assignDefaultValues(options, defaultOptions);
+    let effectiveOptions = getEffectiveSiteOptions(options, defaultSiteOptions);
 
-    patchDefaultSiteOptionValues(effectiveOptions);
     return effectiveOptions;
 }
 
@@ -193,4 +184,4 @@ function createSimplifyDefinitionOptions(maxMeaningNumber = 6, hideWordClass = f
     return simplifyDefinitionOptions;
 }
 
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions};
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions, getEffectiveSiteOptions};
