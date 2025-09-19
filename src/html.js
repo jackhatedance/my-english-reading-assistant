@@ -143,5 +143,12 @@ function isInMeaElement(element) {
     }
 }
 
+function isElementDetached(element){
+  let rect = element.getBoundingClientRect();
+  return rect.left == 0 
+    && rect.top ==0 
+    && rect.height == 0 
+    && rect.width ==0;
+}
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement, hasAnyId, hasAnyClass };
+export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement, hasAnyId, hasAnyClass, isElementDetached };

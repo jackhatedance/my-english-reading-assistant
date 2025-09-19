@@ -9,6 +9,10 @@ import { findTokenInfoByNode } from './article.js'
 import { findPhrase } from './phrase.js'
 import { isRegularTransform } from './lemma.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
+import { isElementDetached } from './html.js'
+import log from 'loglevel'
+
+const gLogger = log.getLogger('tooltip');
 
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
@@ -229,7 +233,9 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
           dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
         let phraseSearchResult = getPhraseSearchResult(tokenInfo, searchResult, siteOptions);
-        showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
+        if(!isElementDetached(ele)){
+          showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
+        }
       }, 500); 
       clearAndSetTooltipTimeout(timeout);      
     
@@ -319,6 +325,9 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
     iframeTop = rect.top;
   }
   let targetRect = targetElement.getBoundingClientRect();
+  
+  gLogger.debug(targetRect);
+
   let baseTop = iframeTop + window.scrollY;
   let baseLeft = iframeLeft + window.scrollX;
 

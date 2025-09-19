@@ -41,7 +41,7 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
             }
             let textContent = node.textContent;
             //console.log(node.parentElement.nodeName);
-            //console.log(textContent);
+            gLogger.debug(textContent);
             let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
             //console.log(siteOptions);
 
