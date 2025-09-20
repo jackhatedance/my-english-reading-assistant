@@ -29,7 +29,8 @@ const TAGS_NOT_LOG = [
     'OPTION', 
     'TIME', 
     'CODE',
-    'BDI'
+    'BDI',
+    'TEXTAREA'
 ];
 
 const LEAF_TEXT_TAGS =[

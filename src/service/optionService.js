@@ -14,13 +14,12 @@ async function getDefaultSiteOptions(){
         options = createFactoryDefaultSiteOptions();
     }
     
-    //exclude enable section
-    //delete options.enable;
-
     
     patchDefaultSiteOptionValues(options);
-    //force to false, otherwise all unsaved sites will be enabled by default, bad experience
-    //options.enabled = false;
+    
+    //make sure new site options switch mode is empty, that means default
+    delete options.enabled;
+    options.switch.mode='';
 
     return options;
     

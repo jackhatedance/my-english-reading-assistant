@@ -263,7 +263,7 @@ describe('optionService', function () {
                 additionalDictionaries: [],
             },
             switch:{
-                mode:'off'
+                mode:''
             }
         };
         
