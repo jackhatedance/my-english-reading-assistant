@@ -12,7 +12,7 @@ export class PopupPage {
     }
 
     async goto(extensionId) {
-        await this.page.goto(`chrome-extension://${extensionId}/popup2.html?index=1`);
+        await this.page.goto(`chrome-extension://${extensionId}/popup.html?index=1`);
     }
 
     async toggle() {

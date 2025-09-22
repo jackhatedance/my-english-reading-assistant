@@ -1,124 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>__MSG_extensionName__</title>
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-    <div class="app">
-       
-      <div id="options-container">
-        <a id="dictionary" href="#" title="__MSG_popupDictionary__"><img src="icons/dictionary.png" alt="dictionary"></a>
-        &nbsp;
-        <a id="report" href="#" title="__MSG_popupReport__"><img src="icons/report.png" alt="report"></a>
-        &nbsp;
-        <a id="help" href="#" title="__MSG_popupHelp__"><img src="icons/help.png" alt="help"></a>
-        &nbsp;
-        <a id="options" href="#" title="__MSG_popupOptions__"><img src="icons/options.png" alt="options"></a>
-      </div>
-      <br/>
-      <div id="pageSection" style="display: none">
-        <h3 id="site"></h3>
-        <p class="subtitle">__MSG_popupShowHideDefinition__</p>
-        <label class="switch">
-          <input type="checkbox" id="enabledCheckbox" data-testid="switch">
-          <span class="slider"></span>
-        </label>
-        <div>
-          <label>__MSG_popupAlwaysShowDefinition__<input type="checkbox" id="enabled"></label>
-        </div>
-        <br/>
-        
-        <h4>__MSG_popupSettings__</h4>
-        <div class="popup-settings">
 
-          <div class="field">
-            <label>__MSG_popupPositionLabel__</label>
-            <input id="annotationPosition" type="number" value="-1" min="-10" max="10" step="0.1">
-          </div>  
+<head>
+  <meta charset="UTF-8" />
+  <title>__MSG_extensionName__</title>
+  <link rel="stylesheet" href="popup.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-          <div class="field">
-            <label>__MSG_popupFontSizeLabel__</label>
-            <input id="fontSize" type="number" value="0.4" min="0.1" max="1" step="0.1">
-          </div>
-          
-          <div class="field">
-            <label>__MSG_popupLineHeightLabel__</label>
-            <input id="lineHeight" type="number" value="0.5" min="1" max="2" step="0.1">
-          </div>
+<body>
+  
 
-          <div class="field">
-            <label for="color">__MSG_popupColorLabel__</label>
-            <input type="color" id="color" name="color" value="#808080">
-          </div>
 
-          <div class="field">
-            <label>__MSG_popupOpacityLabel__</label>
-            <input id="opacity" type="number" value="0.3" min="0.1" max="1" step="0.1">
-          </div>
+  <div id="app" class="app"></div>
+  <script src="popup.js"></script>
 
-          <div class="field">
-            <label>__MSG_popupInterlacedLabel__</label>
-            <input id="interlaced" type="checkbox" >
-          </div>
+</body>
 
-          <div class="field">
-            <label>__MSG_popupMaxMeaningNumberLabel__<span class="red">*</span></label>
-            <input id="maxMeaningNumber" type="number" value="3" min="1" max="20" step="1">
-          </div>
-
-          <div class="field">
-            <label>__MSG_popupHideWordClassLabel__<span class="red">*</span></label>
-            <input id="hideWordClass" type="checkbox" >
-          </div>
-
-          <div class="field">
-            <label>__MSG_popupUnknownWordColorLabel__</label>
-            <input id="contentStyleEnabled" type="checkbox" >
-            <input type="color" id="unknownWordColor" name="unknownWordColor" value="#808080">
-          </div>
-
-          <div class="field" id="dictionaryField">
-            <label>__MSG_popupAdditionalDictionaryLabel__<span class="red">*</span></label>
-            <select id="additionalDictionaries"  multiple size="3">              
-            </select>            
-          </div>
-
-          <div>
-            <button id="resetAnnotationSettings" class="button">__MSG_popupResetButton__</button>
-            <button id="saveAsDefault" class="button">__MSG_popupSaveAsDefault__</button>
-          </div>
-
-          <div class="footnote">
-            <span class="red">*</span>__MSG_popupFootNotes__
-          </div>
-
-        </div>
-
-        <button id="test" class="button" style="display:none">Test</button>
-      </div>
-      <div id="nothing-to-do" style="display: none;">
-        <br>
-        <h1>__MSG_popupNothingToDoTitle__</h1>
-        <img src="icons/nothing-to-do.png" width="277px">
-        <div class="quick-actions">
-          <h1 class="title">__MSG_popupNothingToDoQuickActionsTitle__</h1>
-          <ul class="actions">
-            <li><a href="https://app.flowoss.com" target="_blank">__MSG_popupNothingToDoQuickActionsEpubReader__</a></li>
-            <li><a href="https://mozilla.github.io/pdf.js/web/viewer.html" target="_blank">__MSG_popupNothingToDoQuickActionsPdfReader__</a></li>            
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <script src="popup.js"></script>
-
-    <!--
-      This HTML file opens when you click on icon from the toolbar.
-
-      To begin the development, run `npm run watch`.
-      To create a production bundle, use `npm run build`.
-    -->
-  </body>
 </html>

@@ -16,7 +16,7 @@
   },
   "action": {
     "default_title": "__MSG_extensionName__",
-    "default_popup": "popup2.html"
+    "default_popup": "popup.html"
   },
   "content_security_policy": {
     "sandbox": "sandbox allow-scripts;"
