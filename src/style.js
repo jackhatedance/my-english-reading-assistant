@@ -159,7 +159,7 @@ function addMeaStyle(document) {
         border: 1px solid black !important;
         font-size: 14px;
         visibility: hidden;
-        z-index: 100;
+        z-index: 9999;
         padding: 2px;
       }
 
