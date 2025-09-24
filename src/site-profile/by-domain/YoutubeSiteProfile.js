@@ -16,7 +16,8 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
 
         //ignore time and caption(subtitle)
         
-        const ignoredIds = ['title',
+        const ignoredIds = [
+            'title',//change title will cause issue of unchanged title after video clip changed.
             'full-bleed-container',//the player control bar on bottom of the video area, time is changing
         ];
         if(isSelfOrDecendantOfIds(mutation.target, ignoredIds, 5)) {
@@ -42,7 +43,9 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
     }
 
     canElementBeTokenized(element){
-        const ignoredIds = ['title', 'top-row', 'full-bleed-container'];
+        const ignoredIds = [
+            'title', //change title will cause issue of unchanged title after video clip changed.
+            'top-row', 'full-bleed-container'];
         if(hasAnyId(element, ignoredIds)) {
             return false;
         }
