@@ -190,9 +190,15 @@ function indexOfMeaAnnotation(styleSheet) {
     return indexOfRule(styleSheet, '.mea-highlight::after') || indexOfRule(styleSheet, '.mea-highlight::before')
 }
 
-function generateCssRuleOfAnnotation(options, suffix, contentExpr) {
+function generateCssRuleOfAnnotation(options, suffix, contentExpr, align) {
 
-    let top = `${options.position * -1}em`;
+    let pos;
+    if(align == 'top'){
+      pos = `top: ${ options.position * -1 }em`;
+    }else{
+      pos = `bottom: ${options.position + 1}em`;
+    }
+
     let fontSize = `${options.fontSize}em`;
     let opacity = `${options.opacity}`;
     let color = `${options.color}`;
@@ -205,7 +211,7 @@ function generateCssRuleOfAnnotation(options, suffix, contentExpr) {
       text-indent: 0px;
       white-space: pre;
       left: 0;
-      top: ${top};
+      ${pos};
       font-size: ${fontSize} !important;
       color: ${color};
       opacity: ${opacity};
@@ -213,11 +219,16 @@ function generateCssRuleOfAnnotation(options, suffix, contentExpr) {
     return rule;
 }
 
-function generateCssRuleOfSubAnnotation(options, selector) {
-    let top = `${(options.position * -1)/options.fontSize}em`;
-
+function generateCssRuleOfSubAnnotation(options, selector, offset, align) {
+    let pos;
+    if(align == 'top'){
+      pos = `top: ${(options.position * -1)/options.fontSize + offset}em`;
+    } else {
+      pos = `bottom: ${(options.position + 1)/options.fontSize + offset}em`;
+    }
+    
     let rule = `${selector} {
-      top: ${top};
+      ${pos};
     }`;
     return rule;
 }
@@ -288,10 +299,10 @@ function changeStyle(document, siteOptions, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
 
-        changeAnnotationStyle(styleSheet, siteOptions.annotation, 'after');
+        changeAnnotationStyle(styleSheet, siteOptions.annotation, 'after', 'bottom');
 
         let annotation2 = siteOptions.dualAnnotationEnabled? siteOptions.secondaryAnnotation : null;
-        changeAnnotationStyle(styleSheet, annotation2, 'before');
+        changeAnnotationStyle(styleSheet, annotation2, 'before', 'top');
         
         //console.log('changed style, insert rule');
 
@@ -321,7 +332,7 @@ function getContentExpr(content){
     }
 }
 
-function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
+function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
 
     let selectors = [`mea-token:nth-child(2n+1 of .mea-word)::${suffix}`,
         `mea-token:nth-child(2n of .mea-word)::${suffix}`];
@@ -334,19 +345,18 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix) {
     if(annotationOptions) {
         let contentExpr = getContentExpr(annotationOptions.content);
 
-        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, contentExpr);
+        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, contentExpr, align);
         styleSheet.insertRule(rule, 0);
 
-        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0]);
+        let offset =0;
+        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0], offset, align);
         styleSheet.insertRule(ruleOdd, 0);
 
         const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
         if (annotationOptions.interlaced) {
-            let numPosition = Number(annotationOptions.position);
-            annotationOptions2.position = (numPosition + 1 * annotationOptions.fontSize).toString();
+            offset = 1;
         }
-
-        let ruleEven = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1]);
+        let ruleEven = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1], offset, align);
         styleSheet.insertRule(ruleEven, 0);
     }
     

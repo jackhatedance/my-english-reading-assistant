@@ -7,7 +7,7 @@ function createFactoryDefaultSiteOptions(){
         dualAnnotationEnabled: false,
         annotation: {
             content: 'AC_DEFINITION',
-            position: 0.1,
+            position: 0.0,
             fontSize: 0.3,
             opacity: 0.5,
             color: '#0000ff',
