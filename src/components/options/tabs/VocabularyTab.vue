@@ -93,7 +93,8 @@ init();
                 <option value="常用-3000" >常用3000</option>
                 <option value="常用-5000" >常用5000</option>
                 <option value="常用-8000" >常用8000</option>
-                <option value="中考-2000">中考(2000)</option>
+                <option value="初中-2000">初中(2000)</option>
+                <option value="高中-3500">高中(3500)</option>
                 <option value="CET4-4600">CET4(4600)</option>
                 <option value="CET6-8000">CET6(8000)</option>
                 <option value="GRE-8000">GRE(8000)不含常用词汇</option>
