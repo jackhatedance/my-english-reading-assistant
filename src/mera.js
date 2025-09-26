@@ -11,7 +11,7 @@ import log from 'loglevel'
 import { initLog } from './log.js'
 import { getOptions } from './service/optionService.js'
 import { getEnabled } from './switch-mode.js'
-
+import { sendMessageToBackground } from './message.js'
 
 
 
@@ -98,6 +98,8 @@ function myMain() {
           page.initDocumentMap(documentArticleMap, 1);
           resetPageAnnotationVisibilityAndNotify(page, true);
         });
+      }else {
+        sendMessageToBackground(page.siteProfile, 'PAGE_LOADED_WITHOUT_AUTO_ENABLE');
       }
     });
 

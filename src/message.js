@@ -34,10 +34,10 @@ function sendMessageDictionaryChangeToBackground(name, type) {
     );
 }
 
-async function sendMessageToBackground(siteProfile, type, getPageInfo, documentArticleMap) {
+async function sendMessageToBackground(siteProfile, type, pageInfo) {
     //console.log('send message to background, type:' + type);
 
-    let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
+    
     let site = document.location.hostname;
     if (!site) {
         site = 'NULL';
@@ -45,13 +45,20 @@ async function sendMessageToBackground(siteProfile, type, getPageInfo, documentA
     let url = siteProfile.getUrl(document);
     
     let title = document.title;
-    let isbn = pageInfo.isbn;
 
-    if(isbn){
-        let book = await getBook(isbn);
-        if(book){
-            title = book.title;
-        }        
+    let enabled = (pageInfo != null);
+    let isbn, totalWordCount;
+    if(pageInfo){
+        //let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
+        isbn = pageInfo.isbn;
+
+        if(isbn){
+            let book = await getBook(isbn);
+            if(book){
+                title = book.title;
+            }        
+        }
+        totalWordCount = pageInfo.totalWordCount;
     }
 
     chrome.runtime.sendMessage(
@@ -60,9 +67,10 @@ async function sendMessageToBackground(siteProfile, type, getPageInfo, documentA
             payload: {
                 title: title,
                 url: url,
+                enabled: enabled,
                 isbn: isbn,
                 site: site,
-                totalWordCount: pageInfo.totalWordCount,
+                totalWordCount: totalWordCount,
             },
         },
         (response) => {

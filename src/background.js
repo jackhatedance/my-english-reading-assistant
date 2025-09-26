@@ -5,13 +5,17 @@ import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import {addActivityToStorage} from './service/activityService.js';
 import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
-
+import log from 'loglevel'
+import { initLog } from './log.js'
 import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} from './service/tabInfoService.js';
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
 
+
+initLog();
+const gLogger = log.getLogger("background");
 
 function sendMsg(type, baseForm){
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -112,10 +116,12 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  gLogger.debug(' on message, type:' + request.type);
+
   let tabId =sender.tab.id;
 
   let message = 'ok';
-  if(request.type === 'INIT_PAGE_ANNOTATIONS_FINISHED') {
+  if(request.type === 'PAGE_ANNOTATION_INITIALIZED') {
 
     //console.log('page changed, type:' + request.type);
     //console.log('tabId:'+ sender.tab.id +', title:'+request.payload.title);
@@ -130,6 +136,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let newTabInfo = {tabId: tabId, title: title, url:url, isbn: isbn, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
     
     onInitPageFinished(tabId, newTabInfo);
+  } else if(request.type === 'PAGE_ANNOTATION_CLEANED'){
+    onCleanPageFinished(tabId);
+  } else if(request.type === 'PAGE_LOADED_WITHOUT_AUTO_ENABLE'){
+    setIcon(tabId, false);
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
@@ -169,6 +179,18 @@ async function onInitPageFinished(tabId, newTabInfo){
     }
 
     await saveTabInfo(tabId, newTabInfo);
+    setIcon(tabId, true);
+}
+
+async function onCleanPageFinished(tabId){
+  let oldTabInfo = await getTabInfo(tabId);
+  
+  if(oldTabInfo && oldTabInfo.startTime){
+    await saveReadingActivityAndClearStartTime(oldTabInfo);
+  }
+
+  await removeTabInfo(tabId);
+  setIcon(tabId, false);
 }
 
 async function onUrlChanged(tabId){
@@ -198,8 +220,12 @@ chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
+      //it is impossible to get tabInfo here. the tabInfo is set after this event
       //console.log(`on updated page: ${tabInfo.title}`);
-      //saveActivities(tabId, tabInfo);
+    }else {
+      //by default, set it to active firstly.
+      //so that it show colorful icon on special pages, such as "chrome://"
+      setIcon(tabId, true);
     }
   }
   
@@ -209,6 +235,8 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   //console.log('activeInfo:'+JSON.stringify(activeInfo));
 
   let tabId = activeInfo.tabId;
+
+  //i guess below code is to save activity for all tabs
   let tabInfoMap = await getTabInfoMap();
   for (let key of tabInfoMap.keys()) {
       let tabInfo = tabInfoMap.get(key);
@@ -333,4 +361,33 @@ function sendMsgOfIndexBuildingProgress(name, progress){
       );
     }
   });  
+}
+
+
+const activeIcon = {
+  "16": "icons/icon_16.png",
+  "32": "icons/icon_32.png",
+  "48": "icons/icon_48.png",
+  "128": "icons/icon_128.png"
+};
+
+const inactiveIcon = {
+  "16": "icons/inactive/icon_16.png",
+  "32": "icons/inactive/icon_32.png",
+  "48": "icons/inactive/icon_48.png",
+  "128": "icons/inactive/icon_128.png"
+};
+
+function setIcon(tabId, active){
+  if(active){
+    chrome.action.setIcon({
+        path: activeIcon,
+        tabId: tabId
+      });
+  }else {
+    chrome.action.setIcon({
+        path: inactiveIcon,
+        tabId: tabId
+      });
+  }
 }

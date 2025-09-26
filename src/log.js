@@ -2,6 +2,7 @@ import log from 'loglevel'
 
 function initLog(){
     log.setDefaultLevel('info');
+    log.getLogger("background").setLevel("warn");
     log.getLogger("mera").setLevel("warn");
     //article is about tokenize text
     log.getLogger("article").setLevel("info");

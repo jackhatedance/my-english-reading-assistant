@@ -192,8 +192,9 @@ async function initPageAnnotations(page) {
     flushUnrecognizedWords();
     
     //send message to background
-    //console.log(`send INIT_PAGE_ANNOTATIONS_FINISHED: ${document.title}`);
-    sendMessageToBackground(siteProfile, 'INIT_PAGE_ANNOTATIONS_FINISHED', getPageInfo, documentArticleMap);
+    //console.log(`send PAGE_ANNOTATION_INITIALIZED: ${document.title}`);
+    let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
+    sendMessageToBackground(siteProfile, 'PAGE_ANNOTATION_INITIALIZED', pageInfo);
 
 
     return newDocumentArticleMap;
@@ -223,6 +224,7 @@ async function cleanPageAnnotations(page){
         }
     }
     //return documentArticleMap;
+    sendMessageToBackground(siteProfile, 'PAGE_ANNOTATION_CLEANED');
 }
 
 function getAllWindows(siteProfile) {
