@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, hasAnyId, hasAnyClass } from '../../html.js';
+import { isLeafTextTag } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -10,47 +10,22 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
         super(matcher.name, matcher, config);
     } 
     
-    ignoreDomChange(mutation){
-        //console.log(mutation);
-        //console.log('youtube ignore');
-
-        //ignore time and caption(subtitle)
-        
-        const ignoredIds = [
-            'title',//change title will cause issue of unchanged title after video clip changed.
-            'full-bleed-container',//the player control bar on bottom of the video area, time is changing
-        ];
-        if(isSelfOrDecendantOfIds(mutation.target, ignoredIds, 5)) {
-            return true;
-        }
-
-        const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytp-tooltip'];
-        
-        if(isSelfOrDecendantOfClass(mutation.target, ignoredClasses, 5)) {
-            return true;
-        }
-
-        
-        return false;
-    }
-    
-    getTagsNotLog(){
-        return super.getTagsNotLog().concat(['TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS']);
-    }
-
     isLeafTextElement(element){
         return isLeafTextTag(element.nodeName, ['YT-FORMATTED-STRING']);
     }
-
+   
     canElementBeTokenized(element){
+        const ignoredTags = [
+            'TP-YT-PAPER-BUTTON', 'TP-YT-PAPER-TOOLTIP', 'YT-EPHEMERAL-ACTIONS'
+            ];
+        
         const ignoredIds = [
             'title', //change title will cause issue of unchanged title after video clip changed.
             'top-row', 'full-bleed-container'];
-        if(hasAnyId(element, ignoredIds)) {
-            return false;
-        }
-        const ignoredClasses = ['more-button', 'less-button'];
-        if(hasAnyClass(element, ignoredClasses)){
+        
+        const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytp-tooltip', 'more-button', 'less-button'];
+        
+        if(this.isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses)){
             return false;
         }
 

@@ -1,8 +1,6 @@
-import { isLeafTextTag, TAGS_NOT_LOG, isInMeaElement } from '../html.js';
+import { isLeafTextTag, IGNORED_TAGS, containsTag, isInMeaElement, hasAnyId, hasAnyClass } from '../html.js';
 
-const IGNORE_TAGS = [
-    'BUTTON'
-];
+
 class DefaultSiteProfile {
     
     constructor(name, matcher, config) {
@@ -34,31 +32,52 @@ class DefaultSiteProfile {
     needRefreshPageAnnotation(topDocument){
         return this._config.needRefreshPageAnnotation(topDocument);
     }
+    
     ignoreDomChange(mutation){
-        return this._config.ignoreDomChange(mutation);
+        let canBeTokenized = this.canElementBeTokenized(mutation.target);
+        return !canBeTokenized;
     }
     //the url to identify the real page (could be in in iframe)
     getUrl(topDocument){
         return this._config.getUrl(topDocument);
     }
 
-    getTagsNotLog(){
-        return TAGS_NOT_LOG;
-    }
-
     isLeafTextElement(element){
         return isLeafTextTag(element.nodeName);
     }
 
-    
+    isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses){
+        if(ignoredTags){
+            if(containsTag(ignoredTags, element.nodeName)) {
+                return true;
+            }
+        }
+
+        if(ignoredIds){
+            if(hasAnyId(element, ignoredIds)) {
+                return true;
+            }
+        }
+
+        if(ignoredClasses){
+            if(hasAnyClass(element, ignoredClasses)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     canElementBeTokenized(element){
         //avoid re-enter
         if (isInMeaElement(element)) {
             return false;
         }
 
-        let tag = element.nodeName;
-        if(IGNORE_TAGS.includes(tag)){
+        const ignoredTags = IGNORED_TAGS;
+        const ignoredIds = [];
+        const ignoredClasses = [];
+        if(this.isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses)){
             return false;
         }
         return true;
@@ -72,10 +91,7 @@ class DefaultSiteProfile {
 
         //some tags are not tokenizable, such as style, script, etc.
         if (!this.isLeafTextElement(node.parentElement)) {
-            const tagsNotLog = this.getTagsNotLog();
-            if(!tagsNotLog.includes(node.parentElement.nodeName.toUpperCase())){
-                console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
-            }
+            console.log('not text element:'+ node.parentElement.nodeName+ ', textContent:'+textContent);
             
             return false;
         }

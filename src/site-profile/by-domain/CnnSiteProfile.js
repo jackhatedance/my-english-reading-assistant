@@ -9,18 +9,19 @@ class CnnSiteProfile extends DefaultSiteProfile {
         super(matcher.name, matcher, config);
     } 
     
-    ignoreDomChange(mutation){
-        //console.log(mutation);
-        const ignoreTags = ['TIME'];
+    canElementBeTokenized(element){
+        const ignoredTags = [
+            'TIME', 
+            ];
+        const ignoredIds = [];
+        const ignoredClasses = ['timestamp__container'];
         
-        if(ignoreTags.includes(mutation.target.nodeName)) {
-            return true;
+        if(this.isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses)){
+            return false;
         }
-        
-        return false;
-    }
 
-    
+        return super.canElementBeTokenized(element);
+    }
 };
 
 export { CnnSiteProfile };

@@ -13,11 +13,16 @@ const INLINE_TAGS = [
     'TIME', 'TT', 'VAR'
 ];
 
-function isInlineTag(tag){
-    return INLINE_TAGS.includes(tag);
+function containsTag(arrayInCaption, tag){
+    tag = tag.toUpperCase();
+    return arrayInCaption.includes(tag);
 }
 
-const TAGS_NOT_LOG = [
+function isInlineTag(tag){
+    return INLINE_TAGS.includes(tag.toUpperCase());
+}
+
+const IGNORED_TAGS = [
     'STYLE', 
     'SCRIPT', 
     'NOSCRIPT', 
@@ -67,6 +72,7 @@ const LEAF_TEXT_TAGS =[
 ];
 
 function isLeafTextTag(tag, extraTextTags = []){
+    tag = tag.toUpperCase();
     return LEAF_TEXT_TAGS.includes(tag) || extraTextTags.includes(tag);
 }
 
@@ -152,4 +158,4 @@ function isElementDetached(element){
     && rect.width ==0;
 }
 
-export { MEA_TAG_PREFIX, TOKEN_TAG, TAGS_NOT_LOG, TEXT_TAG, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement, hasAnyId, hasAnyClass, isElementDetached };
+export { MEA_TAG_PREFIX, TOKEN_TAG, IGNORED_TAGS, TEXT_TAG, containsTag, isInlineTag, isLeafTextTag, isSelfOrDecendantOfClass, isSelfOrDecendantOfIds, isInMeaElement, hasAnyId, hasAnyClass, isElementDetached };

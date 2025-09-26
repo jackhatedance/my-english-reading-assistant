@@ -10,14 +10,11 @@ class QuoraSiteProfile extends DefaultSiteProfile {
         super(matcher.name, matcher, config);
     } 
     
-    ignoreDomChange(mutation){
-                
-        return false;
-    }
-    
     canElementBeTokenized(element){
+        const ignoredTags = [];
+        const ignoredIds = [];
         const ignoredClasses = ['qt_read_more'];
-        if(hasAnyClass(element, ignoredClasses)){
+        if(this.isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses)){
             return false;
         }
 

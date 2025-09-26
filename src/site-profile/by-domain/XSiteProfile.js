@@ -20,11 +20,11 @@ class XSiteProfile extends DefaultSiteProfile {
         //ignore changes of numbers of each twitter. such as reply, repost, etc.
         const minContentChangeSize = 12;
 
-        if(addedNodeTextContentsLength > minContentChangeSize){
-            return false;
+        if(addedNodeTextContentsLength < minContentChangeSize){
+            return true;
         }
         
-        return true;
+        return super.ignoreDomChange(mutation);
     }
 
     
