@@ -340,6 +340,7 @@ init();
                   <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
                   <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
                   <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+                  <option value="AC_NOTE">{{ t('popup_settings_content_note') }}</option>
                   <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
                   <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
                 </select>
@@ -347,6 +348,7 @@ init();
                   <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
                   <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
                   <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
+                  <option value="AC_NOTE">{{ t('popup_settings_content_note') }}</option>
                   <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
                   <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
                 </select>

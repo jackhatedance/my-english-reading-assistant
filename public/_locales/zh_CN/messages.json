@@ -47,6 +47,9 @@
     "popup_settings_content_definition":{
         "message":"含义"
     },
+    "popup_settings_content_note":{
+        "message":"笔记"
+    },
     "popup_settings_content_pronunciation_and_definition":{
         "message":"发音+含义"
     },

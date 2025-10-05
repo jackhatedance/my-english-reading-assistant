@@ -54,19 +54,6 @@ function addMeaStyle(document) {
         display1: inline-block;
       }
 
-      .mea-highlight { 
-        &.mea-hide {
-          &::after {
-            visibility: hidden;
-          }
-          &::before {
-            visibility: hidden;
-          }
-        }
-
-      }
-
-
       .mea-highlight::after {
         content: attr(data-footnote-short);
         position: absolute;
@@ -86,7 +73,7 @@ function addMeaStyle(document) {
         top: -1.5em;        
       }
       
-      mea-token:nth-child(2n of .mea-word)::after {        
+      mea-token:nth-child(n of .mea-highlight)::after {        
         top: -2.5em;        
       }
 
@@ -122,9 +109,11 @@ function addMeaStyle(document) {
 
       }
 
-      ::highlight(user-1-highlight) {
-        background-color: rgb(255, 241, 92);
-        color: black;
+      ::highlight(note-highlight) {
+        text-decoration-line: underline;
+        text-decoration-style: wavy;
+        text-decoration-color: blue;
+        text-decoration-thickness: from-font;
       }
       #mea-vue-container * {
         all: revert;
@@ -190,7 +179,7 @@ function indexOfMeaAnnotation(styleSheet) {
     return indexOfRule(styleSheet, '.mea-highlight::after') || indexOfRule(styleSheet, '.mea-highlight::before')
 }
 
-function generateCssRuleOfAnnotation(options, suffix, contentExpr, align) {
+function generateCssRulesOfAnnotation(options, suffix, contentExpr, unknownWordOnly, align) {
 
     let pos;
     if(align == 'top'){
@@ -202,6 +191,19 @@ function generateCssRuleOfAnnotation(options, suffix, contentExpr, align) {
     let fontSize = `${options.fontSize}em`;
     let opacity = `${options.opacity}`;
     let color = `${options.color}`;
+    
+    let ruleVisibility;
+    if(unknownWordOnly){
+      ruleVisibility = `.mea-highlight.mea-hide::${suffix}{
+        visibility: hidden;
+      }
+      `;
+    }else{
+      ruleVisibility = `.mea-highlight.mea-hide::${suffix}{
+        visibility: visible;
+      }
+      `;
+    }
 
     let rule = `.mea-highlight::${suffix} {
       content: ${contentExpr};
@@ -216,7 +218,7 @@ function generateCssRuleOfAnnotation(options, suffix, contentExpr, align) {
       color: ${color};
       opacity: ${opacity};
     }`;
-    return rule;
+    return [ruleVisibility, rule];
 }
 
 function generateCssRuleOfSubAnnotation(options, selector, offset, align) {
@@ -320,44 +322,55 @@ function changeStyle(document, siteOptions, siteProfile) {
     }
 }
 
-function getContentExpr(content){
+function getContentInfo(content){
+    let contentExpr, unknownWordOnly;
     if(content == 'AC_PRONUNCIATION'){
-        return `attr(data-pronunciation)`;
+        contentExpr = `attr(data-pronunciation)`;
+        unknownWordOnly = true;
     } else if(content == 'AC_DEFINITION'){
-        return `attr(data-footnote-short)`;
+        contentExpr = `attr(data-footnote-short)`;
+        unknownWordOnly = true;
+    } else if(content == 'AC_NOTE'){
+        contentExpr = `attr(data-note)`;
+        unknownWordOnly = false;
     } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION'){
-        return `attr(data-pronunciation) " " attr(data-footnote-short)`;
+        contentExpr = `attr(data-pronunciation) " " attr(data-footnote-short)`;
+        unknownWordOnly = true;
     } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE'){
-        return `attr(data-pronunciation) "\\A" attr(data-footnote-short)`;
+        contentExpr = `attr(data-pronunciation) "\\A" attr(data-footnote-short)`;
+        unknownWordOnly = true;
     }
+    return { contentExpr, unknownWordOnly };
 }
 
 function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
 
-    let selectors = [`mea-token:nth-child(2n+1 of .mea-word)::${suffix}`,
-        `mea-token:nth-child(2n of .mea-word)::${suffix}`];
+    let selectors = [`mea-token:nth-child(n of .mea-highlight)::${suffix}`,
+      `mea-token:nth-child(2n+1 of .mea-word)::${suffix}`
+        ];
     
+    deleteStyleRule(styleSheet, `.mea-highlight.mea-hide::${suffix}`);
     deleteStyleRule(styleSheet, `.mea-highlight::${suffix}`);
 
     deleteStyleRule(styleSheet, selectors[0]);
     deleteStyleRule(styleSheet, selectors[1]);
 
     if(annotationOptions) {
-        let contentExpr = getContentExpr(annotationOptions.content);
+        const { contentExpr, unknownWordOnly } = getContentInfo(annotationOptions.content);
 
-        let rule = generateCssRuleOfAnnotation(annotationOptions, suffix, contentExpr, align);
-        styleSheet.insertRule(rule, 0);
+        let rules = generateCssRulesOfAnnotation(annotationOptions, suffix, contentExpr, unknownWordOnly, align);
+        rules.forEach(rule => styleSheet.insertRule(rule, 0));
 
         let offset =0;
-        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0], offset, align);
-        styleSheet.insertRule(ruleOdd, 0);
+        let ruleDefault = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0], offset, align);
+        styleSheet.insertRule(ruleDefault, 0);
 
         const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
         if (annotationOptions.interlaced) {
             offset = 1;
         }
-        let ruleEven = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1], offset, align);
-        styleSheet.insertRule(ruleEven, 0);
+        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1], offset, align);
+        styleSheet.insertRule(ruleOdd, 0);
     }
     
     //return rule;
