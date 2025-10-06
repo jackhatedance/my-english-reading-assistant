@@ -2,8 +2,7 @@
 import { ref } from 'vue';
 import { getNotes, setNotes } from '../../../service/noteService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
-import * as XBBCODE from 'xbbcode-parser';
-import { htmlToText } from 'html-to-text'
+import { xbbcToText } from '../../../note/note-util.js'
 
 const notes = ref();
 const noteCount = ref();
@@ -13,13 +12,7 @@ function updateNotes(noteArray){
     
     let contentArray = [];
     for(let item of noteArray){
-        var processResult = XBBCODE.process({
-            text: item.content,
-            removeMisalignedTags: false,
-            addInLineBreaks: false
-            });
-        const html = processResult.html;
-        const text = htmlToText(html);
+        const text = xbbcToText(item.content);
         //console.log(text);
         contentArray.push(text);
     }

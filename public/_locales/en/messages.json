@@ -53,6 +53,9 @@
     "popup_settings_content_definition":{
         "message":"Definition"
     },
+    "popup_settings_content_note":{
+        "message":"Note"
+    },
     "popup_settings_content_pronunciation_and_definition":{
         "message":"Pronunciation + Definition"
     },

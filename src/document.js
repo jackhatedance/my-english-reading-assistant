@@ -19,6 +19,8 @@ import { addTooltipEventListener } from './tooltip.js'
 import { sendMessageToEmbeddedApp } from './embed/iframe-embed.js';
 import { showDialog } from './dialog.js' 
 import { MenuItems } from './menu.js';
+import { TOKEN_TAG } from './html.js'
+import { xbbcToText } from './note/note-util.js'
 
 var knownWords;
 
@@ -123,6 +125,11 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       
       const highlight = new Highlight();
       
+      //clear data-note
+      document.querySelectorAll('mea-token[data-note]').forEach((element) => {
+        element.removeAttribute('data-note');
+      });
+
       for (let note of notes) {
         //one sentence selection could map to multiple node selections
         //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
@@ -142,11 +149,21 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
             range.setEnd(nodeSelection.focusNode, nodeSelection.focusOffset);
   
             highlight.add(range);
+
+            //note
+            let element = nodeSelection.anchorNode.parentElement;
+            if(element.nodeName.toUpperCase() == TOKEN_TAG){
+              let text = xbbcToText(note.content);
+              if(text.length>20){
+                text = text.substring(0,20) + '...';
+              }
+              element.setAttribute('data-note', text);
+            }
           }
         }
       }
       if (highlight.size > 0) {
-        window.CSS.highlights.set("user-1-highlight", highlight);
+        window.CSS.highlights.set("note-highlight", highlight);
       }
     }
   

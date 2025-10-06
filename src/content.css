@@ -67,9 +67,10 @@
 
 }
 
-::highlight(user-1-highlight) {
-  background-color: rgb(255, 241, 92);
-  color: black;
+::highlight(note-highlight) {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: blue;
 }
 #mea-vue-container * {
   all: revert;
