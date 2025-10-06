@@ -92,8 +92,8 @@ init();
             <select v-model="wordList" multiple size="11">
                 <option value="初中-2000">初中(2000)</option>
                 <option value="高中-3500">高中(3500)</option>
-                <option value="CET4-4600">大学英语4级(4600)</option>
-                <option value="CET6-8000">大学英语6级(8000)</option>
+                <option value="CET4-4600">大学英语4级(5000)</option>
+                <option value="CET6-8000">大学英语6级(8600)</option>
                 <option value="英语专业八级-13000">英语专业八级(13000)</option>
                 <option value="常用-3000" >常用3000</option>
                 <option value="常用-5000" >常用5000</option>
