@@ -19,6 +19,16 @@ describe('base-forms test', function () {
 
         });
 
+        it('sysLarge goes', async function () {
+            let result = findBaseForm("go的第三人称单数形式");
+
+            //console.log(parseResult);
+            //assert(tokens.length === 2,"test");
+
+            assert.equal(result.base, 'go');
+
+        });
+
         it('sysLarge habitualness', async function () {
             let result = findBaseForm("habitual(习惯性的)的变形");
 
