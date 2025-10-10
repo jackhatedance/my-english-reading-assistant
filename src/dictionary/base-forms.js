@@ -20,7 +20,7 @@ const FORM_MATCHERS = [
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PAST_OR_PAST_PARTICIPLE,
-        suffix: '((过去式)|(过去分词))',
+        suffix: '((过去时)|(过去式)|(过去分词))',
     },
     {   
         form: DICTIONARY_DEFINITION_TYPE_FORM_PRESENT_PARTICIPLE,
