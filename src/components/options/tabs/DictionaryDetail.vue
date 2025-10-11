@@ -61,9 +61,6 @@ init();
             <label>{{ t('options_dictionary_detail_entryNumber') }}</label>
             <span>{{ props.dict.size }}</span>
 
-            <label>{{ t('options_dictionary_detail_enabled') }}</label>
-            <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
-            
             <label>{{ t('options_dictionary_detail_index') }}</label>
             <span>{{ props.dict.data?.index?.status }}</span>
 
@@ -72,6 +69,10 @@ init();
 
             <label>{{ t('options_dictionary_detail_job') }}</label>
             <span>{{ jobStatus }}</span>
+
+            <label>{{ t('options_dictionary_detail_enabled') }}</label>
+            <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
+            
         </div>
     </div>
 </template>
