@@ -14,6 +14,13 @@ const indexBuildingProgress = inject('indexBuildingProgress');
 
 const t = chrome.i18n.getMessage;
 
+const parserHasNewerVersion = computed(() => {    
+    
+    let value = props.dict.data?.index?.hasNewerParser;
+
+    let key = value? "yes" : "no";
+    return t(key);
+});
 
 const jobStatus = computed(() => {    
     if(indexBuildingProgress.value && indexBuildingProgress.value.name == props.dict.name){
@@ -65,7 +72,7 @@ init();
             <span>{{ props.dict.data?.index?.status }}</span>
 
             <label>{{ t('options_dictionary_detail_parser_has_newer_version') }}</label>
-            <span>{{ props.dict.data?.index?.hasNewerParser }}</span>
+            <span>{{ parserHasNewerVersion }}</span>
 
             <label>{{ t('options_dictionary_detail_job') }}</label>
             <span>{{ jobStatus }}</span>

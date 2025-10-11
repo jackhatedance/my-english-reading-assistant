@@ -5,6 +5,12 @@
     "extensionDescription":{
         "message":"Automatically prompt the meaning of new words, so you can read English without pausing"
     },
+    "yes":{
+        "message":"Yes"
+    },
+    "no":{
+        "message":"No"
+    },
     "popupEpub":{
         "message":"Epub Reader"
     },
@@ -253,7 +259,7 @@
         "message":"Dictionary"
     },
     "optionsEditDictionaryTips": {
-        "message": "* Dictionaries are used from top to bottom\n* After the dictionary is imported, it needs to be enabled and is best moved to the top to have a higher priority\n* dictionaries without structured data cannot be used for text, but can be used on the dictionary page\n* Mdict dictionary takes up a lot of system resources. If it causes system slowdown, it is recommended not to use it\n* Software upgrades may require re-extract"
+        "message": "* Dictionaries are used from top to bottom\n* After the dictionary is imported, it needs to be enabled and is best moved to the top to have a higher priority\n* dictionaries without structured data cannot be used for text, but can be used on the dictionary page\n* Most Mdict dictionary takes up a lot of system resources. If it causes system slowdown, it is recommended not to use it\n* Software upgrades may require re-extract"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "At least enable one dictionary"

@@ -5,6 +5,12 @@
     "extensionDescription":{
         "message":"自动提示生词含义，阅读英文不停顿"
     },
+    "yes":{
+        "message":"是"
+    },
+    "no":{
+        "message":"否"
+    },
     "popupEpub":{
         "message":"Epub阅读器"
     },
@@ -251,7 +257,7 @@
         "message":"词典"
     },
     "optionsEditDictionaryTips": {
-        "message": "* 上面的词典的优先级高\n* 词典导入以后，需要启用并且最好移到上面以获得较高优先级\n* 不含结构化数据的词典不能作为正文词典，但是仍然可以在词典页面使用\n* Mdict词典占用系统资源比较多，如果导致系统缓慢则建议不要启用\n* 软件升级可能需要重新提取"
+        "message": "* 上面的词典的优先级高\n* 词典导入以后，需要启用并且最好移到上面以获得较高优先级\n* 不含结构化数据的词典不能作为正文词典，但是仍然可以在词典页面使用\n* 大部分Mdict词典占用系统资源比较多，如果导致系统缓慢则建议不要启用\n* 软件升级可能需要重新提取"
     },
     "optionsEditDictionaryIndexColorTipsAtLeastEnabledOneDictionary": {
         "message": "建议至少启用一本词典"
