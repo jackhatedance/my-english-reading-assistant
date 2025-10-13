@@ -629,6 +629,9 @@
     "reportVocabularyChartLabel":{
         "message":"词汇量"
     },
+    "reportVocabularyChartTimeLabel":{
+        "message":"时间(小时)"
+    },
 
     "guidePageTitle":{
         "message":"用户指南"

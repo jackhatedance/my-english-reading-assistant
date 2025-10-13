@@ -132,7 +132,7 @@ function renderVocabularyChart(vocabularyChartData){
                 position: 'left', // Position the bar chart's y-axis on the left
                 title: {
                     display: true,
-                    text: 'Vocabulary'
+                    text: t('reportVocabularyChartLabel')
                 }
             },
             'y-axis-bar': {
@@ -144,7 +144,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 title: {
                     display: true,
-                    text: 'Hours'
+                    text: t('reportVocabularyChartTimeLabel')
                 }
             }
         }
@@ -175,7 +175,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 {
                     yAxisID: 'y-axis-bar',
-                    label: 'Reading Time',
+                    label: chrome.i18n.getMessage('reportVocabularyChartTimeLabel'),
                     data: vocabularyChartData.duration,
                     type: 'bar',
                     backgroundColor: [

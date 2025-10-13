@@ -627,7 +627,10 @@
         "message":"Vocabulary & Reading time"
     },
     "reportVocabularyChartLabel":{
-        "message":"vocabulary size"
+        "message":"Vocabulary"
+    },
+    "reportVocabularyChartTimeLabel":{
+        "message":"Time(hours)"
     },
 
     "guidePageTitle":{
