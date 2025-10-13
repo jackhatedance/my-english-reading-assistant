@@ -220,6 +220,12 @@ init();
 
 <style>
 
+.vocabulary {
+    height: 600px;
+}
 
+#vocabularyChart {
+    display: inline-block !important;
+}
 
 </style>
