@@ -527,6 +527,9 @@
         "message":"Reset"
     },
 
+    "report_page_title":{
+        "message":"Report"
+    },
     "report_header_vocabulary":{
         "message":"Vocabulary"
     },
@@ -631,6 +634,15 @@
     },
     "reportVocabularyChartTimeLabel":{
         "message":"Time(hours)"
+    },
+    "total_reading_time":{
+        "message":"Total Reading time: $1 (hours)"
+    },
+    "average_reading_time":{
+        "message":"Average Daily Reading time: $1 (hours)"
+    },
+    "average_vocabulary_change":{
+        "message":"Average Daily Vocabulary Change: $1"
     },
 
     "guidePageTitle":{

@@ -26,16 +26,19 @@ init();
 nav {
     background-color: rgb(229, 229, 229);
 }
-.tabs a {
-    padding: 10px;
-    font-size: x-large;
-    text-decoration: none;
-    color: #666666;
+.tabs {
+    text-align: center;
 
-    &.active {
-        
-        background-color: white;
+    a {
+        padding: 10px;
+        font-size: x-large;
+        text-decoration: none;
+        color: #666666;
+        border: solid white 1px;
+        &.active {
+            
+            background-color: white;
+        }
     }
 }
-
 </style>

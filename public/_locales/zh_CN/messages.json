@@ -525,12 +525,14 @@
         "message":"重置"
     },
 
-
+    "report_page_title":{
+        "message":"阅读报告"
+    },
     "report_header_vocabulary":{
         "message":"词汇量"
     },
     "report_header_site":{
-        "message":"站点"
+        "message":"网站"
     },
     "report_header_page":{
         "message":"网页"
@@ -582,7 +584,7 @@
     },
 
     "reportPageSummariesTitle":{
-        "message":"页面统计"
+        "message":"网页统计"
     },
     "reportPageSummariesHeaderTitle":{
         "message":"标题"
@@ -631,6 +633,15 @@
     },
     "reportVocabularyChartTimeLabel":{
         "message":"时间(小时)"
+    },
+    "total_reading_time":{
+        "message":"总共阅读时间: $1（小时）"
+    },
+    "average_reading_time":{
+        "message":"日均阅读时间: $1（小时）"
+    },
+    "average_vocabulary_change":{
+        "message":"日均词汇变化: $1"
     },
 
     "guidePageTitle":{

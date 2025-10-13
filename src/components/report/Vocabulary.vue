@@ -22,6 +22,22 @@ const timeRange = inject('timeRange');
 const route = useRoute();
 const t = chrome.i18n.getMessage;
 
+const totalReadingTime = ref(0);
+const avgReadingTime = ref(0);
+const avgWordChange = ref(0);
+
+const totalReadingTimeMsg = computed(() => {
+    return t('total_reading_time', totalReadingTime.value);
+});
+
+const avgReadingTimeMsg = computed(() => {
+    return t('average_reading_time', avgReadingTime.value);
+});
+
+const avgWordChangeMsg = computed(() => {
+    return t('average_vocabulary_change', avgWordChange.value);
+});
+
 watch(() => timeRange.value, async (newValue) => {
     await refresh();
 });
@@ -35,6 +51,9 @@ function formatDate(date) {
 
 function getDaySummaries(activities){
     let daySummaryMap = new Map();
+    let totalDuration = 0;
+    let totalWordChanges = 0;
+    let minDate, maxDate;
     for(let activity of activities){
         let time = new Date(activity.endTime);
         
@@ -60,13 +79,36 @@ function getDaySummaries(activities){
         summary.duration = summary.duration + activity.duration;      
         summary.wordChanges = summary.wordChanges + activity.wordChanges;
         summary.vocabularySize = activity.vocabularySize;//last
+
+        totalDuration += activity.duration;
+        totalWordChanges += activity.wordChanges;
+
+        if(!minDate || minDate > timeObject){
+            minDate = timeObject;
+        }
+        if(!maxDate || maxDate < timeObject){
+            maxDate = timeObject;
+        }
     }
+
+    var diffInDays;
+    if(maxDate && minDate){
+        let diffInMilliseconds = maxDate.getTime() - minDate.getTime();
+        const millisecondsPerDay = 1000 * 60 * 60 * 24;
+        diffInDays = Math.round(diffInMilliseconds / millisecondsPerDay) + 1;
+    }else {
+        diffInDays =1;
+    }
+    
+
+    let avgDuration = totalDuration / diffInDays;
+    let avgWordChanges = totalWordChanges / diffInDays;
 
     let array = Array.from(daySummaryMap, ([name, value]) => ({ ... value}));
 
     array.sort(function(a, b){return b.time - a.time;});
     //console.log('page summaries:' + JSON.stringify(array));
-    return array;
+    return { summary: array, totalDuration: totalDuration, avgDuration: avgDuration, avgWordChanges: avgWordChanges};
 }
 
 function getVocabularyChartData(activities){
@@ -84,7 +126,13 @@ function getVocabularyChartData(activities){
     */
 
     
-    let dayDurationSummaries = getDaySummaries(activities);
+    let summary = getDaySummaries(activities);
+    let dayDurationSummaries = summary.summary;
+
+    totalReadingTime.value =(summary.totalDuration / (60 *60 * 1000)).toFixed(1);
+    avgReadingTime.value = (summary.avgDuration/ (60 *60 * 1000)).toFixed(1);
+    avgWordChange.value = summary.avgWordChanges.toFixed(1);
+    
 
     let vocabularyArray = [];
     for(let summary of dayDurationSummaries){
@@ -212,16 +260,36 @@ init();
 </script>
 
 <template>
-    <div class="vocabulary">     
-        <h1>{{ t('reportVocabularyChartTitle') }}</h1>
-        <canvas id="vocabularyChart"></canvas>
+    
+    <ul class="stats">
+        <li>{{ totalReadingTimeMsg }}<span id="total-reading-time"></span></li>
+        <li>{{ avgReadingTimeMsg }}<span id="avg-reading-time"></span></li>
+        <li>{{ avgWordChangeMsg }}<span id="avg-word-changes"></span></li>
+    </ul>
+    
+
+    <div class="chart-wrapper">
+        <div class="chart">     
+            <h1>{{ t('reportVocabularyChartTitle') }}</h1>
+            <canvas id="vocabularyChart"></canvas>
+        </div>
     </div>
 </template>
 
 <style>
 
-.vocabulary {
-    height: 600px;
+.stats {
+    li {
+        list-style: none;
+    }
+}
+.chart-wrapper {
+    height: 400px;
+}
+.chart {
+    position: relative;
+    width: 800px;
+    margin: auto;
 }
 
 #vocabularyChart {
