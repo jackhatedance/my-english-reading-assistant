@@ -23,7 +23,7 @@ function onClickDictionary(){
 
 
 function onClickReport(){
-    chrome.tabs.create({url: chrome.runtime.getURL('report.html')});
+    chrome.tabs.create({url: chrome.runtime.getURL('report2.html')});
 }
 
 

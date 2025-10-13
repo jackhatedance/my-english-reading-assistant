@@ -527,6 +527,33 @@
         "message":"Reset"
     },
 
+    "report_header_vocabulary":{
+        "message":"Vocabulary"
+    },
+    "report_header_site":{
+        "message":"Site"
+    },
+    "report_header_page":{
+        "message":"Page"
+    },
+    "report_header_activity":{
+        "message":"Activity"
+    },
+    "report_filter_time_range":{
+        "message":"Time Range"
+    },
+    "report_filter_time_range_option_last_7_days":{
+        "message":"Last 7 Days"
+    },
+    "report_filter_time_range_option_last_30_days":{
+        "message":"Last 30 Days"
+    },
+    "report_filter_time_range_option_last_360_days":{
+        "message":"Last 360 Days"
+    },
+    "report_filter_time_range_option_all":{
+        "message":"All"
+    },
     "reportReadingActivitiesTitle":{
         "message":"Reading Activities"
     },
@@ -556,7 +583,7 @@
     },
 
     "reportPageSummariesTitle":{
-        "message":"Page(Book) Summaries"
+        "message":"Page Summaries"
     },
     "reportPageSummariesHeaderTitle":{
         "message":"Title"
@@ -597,7 +624,7 @@
     },
 
     "reportVocabularyChartTitle":{
-        "message":"Vocabulary Size Chart"
+        "message":"Vocabulary & Reading time"
     },
     "reportVocabularyChartLabel":{
         "message":"vocabulary size"

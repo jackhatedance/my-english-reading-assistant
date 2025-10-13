@@ -525,6 +525,34 @@
         "message":"重置"
     },
 
+
+    "report_header_vocabulary":{
+        "message":"词汇量"
+    },
+    "report_header_site":{
+        "message":"站点"
+    },
+    "report_header_page":{
+        "message":"网页"
+    },
+    "report_header_activity":{
+        "message":"活动"
+    },
+    "report_filter_time_range":{
+        "message":"时间范围"
+    },
+    "report_filter_time_range_option_last_7_days":{
+        "message":"最近7天"
+    },
+    "report_filter_time_range_option_last_30_days":{
+        "message":"最近30天"
+    },
+    "report_filter_time_range_option_last_360_days":{
+        "message":"最近360天"
+    },
+    "report_filter_time_range_option_all":{
+        "message":"全部"
+    },
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },
@@ -554,7 +582,7 @@
     },
 
     "reportPageSummariesTitle":{
-        "message":"页面（书籍）统计"
+        "message":"页面统计"
     },
     "reportPageSummariesHeaderTitle":{
         "message":"标题"
@@ -596,7 +624,7 @@
     },
 
     "reportVocabularyChartTitle":{
-        "message":"词汇量图"
+        "message":"词汇量与阅读时间"
     },
     "reportVocabularyChartLabel":{
         "message":"词汇量"
