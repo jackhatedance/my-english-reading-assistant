@@ -266,6 +266,22 @@ chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
   removeTabInfo(tabId);
 });
 
+chrome.idle.onStateChanged.addListener(async (newState)=>{
+  //console.log(newState);
+  let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  
+  const tab = tabs[0];
+  let tabInfo = await getTabInfo(tab.id);
+  if(tabInfo){
+    if(newState !=='active'){
+      //console.log('save activity and clear');
+      await saveReadingActivityAndClearStartTime(tabInfo);
+    }else {
+      //console.log('start activity');
+      tabInfo.startTime = new Date().getTime();
+    }
+  }
+});
 
 async function saveReadingActivityAndClearStartTime(tabInfo){
   let options = await getOptions();

@@ -22,7 +22,7 @@
     "sandbox": "sandbox allow-scripts;"
   },
   "permissions": [
-    "storage","contextMenus","unlimitedStorage", "notifications"
+    "storage","contextMenus","unlimitedStorage", "notifications", "idle"
   ],
   "content_scripts": [
     {
