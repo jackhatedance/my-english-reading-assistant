@@ -77,10 +77,16 @@ initLog();
 const gLogger = log.getLogger("mera");
 
 window.addEventListener("load", myMain, false);
-
+var gLoadCount=0;
 
 function myMain() {
-  //console.log('page on load');
+  gLoadCount++;
+  
+  //avoid loading more than once. e.g. https://awoiaf.westeros.org
+  if(gLoadCount>1){
+    gLogger.warn(`page on load more than once. It's the ${gLoadCount} time.`);
+    return;
+  }
   var jsInitChecktimer = setTimeout(checkForJS_Finish, 100);
 
   function checkForJS_Finish() {
