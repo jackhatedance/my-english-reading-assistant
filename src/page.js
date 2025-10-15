@@ -168,7 +168,7 @@ async function initPageAnnotations(page) {
         let article = await preprocessDocument(page, document, false, siteProfile, documentConfig);
         newDocumentArticleMap.set(document, article);
     } else {
-        let article = newDocumentArticleMap.get(document);
+        let article = documentArticleMap.get(document);
         newDocumentArticleMap.set(document, article);
     }
 
