@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { isLeafTextTag } from '../../html.js';
+import { isLeafTextTag, isSelfOrDecendantOfClass } from '../../html.js';
 
 class YoutubeSiteProfile extends DefaultSiteProfile {
     constructor() {
@@ -31,6 +31,17 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
 
         return super.canElementBeTokenized(element);
     }
+
+    ignoreDomChange(mutation){
+        const ignoredClassesOfItselfOrDescendant = [ 'ytp-caption-window-container'];
+        let ignored = isSelfOrDecendantOfClass(mutation.target, ignoredClassesOfItselfOrDescendant, 4);
+        if(ignored){
+            return true;
+        }
+
+        return super.ignoreDomChange(mutation);
+    }
+
 };
 
 export { YoutubeSiteProfile };
