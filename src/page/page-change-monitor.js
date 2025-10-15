@@ -74,14 +74,14 @@ async function domMonitor(page) {
     page.initDocumentMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;
-    gLogger.info(`initPageAnnotations ${elapseTime1} ms`);
+    //gLogger.info(`initPageAnnotations ${elapseTime1} ms`);
 
     await resetPageAnnotationVisibilityAndNotify(page, true);
     let endTime2 = new Date().getTime();
     let elapseTime2 = endTime2 - endTime1;
     let elapseTimeTotal = endTime2 - startTime;
     adjustDomMonitorInterval(page, elapseTimeTotal);
-    gLogger.info(`resetPageAnnotationVisibility ${elapseTime2} ms`);
+    gLogger.info(`page annotation ${elapseTime1}+${elapseTime2} ms`);
 
   }
 
