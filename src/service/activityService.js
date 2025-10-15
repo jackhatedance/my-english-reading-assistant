@@ -1,7 +1,10 @@
 'use strict';
 
 import {loadKnownWords, calculateKnownWordsCount} from '../vocabularyStore.js';
+import { activityToString } from '../activity/activity-utils.js'
+import log from 'loglevel'
 
+const gLogger = log.getLogger('activity-service');
 
 function loadActivitiesFromStorage(){
     return new Promise(resolve => {
@@ -22,9 +25,9 @@ function loadActivitiesFromStorage(){
 }
 
 async function addActivityToStorage(newActivity){
-    //console.log('add new activity:'+JSON.stringify(newActivity));
+    gLogger.debug('add new activity:'+ activityToString(newActivity));
 
-    const MIN_DURATION_IN_MILLISECONDS = 5 * 1000;
+    const MIN_DURATION_IN_MILLISECONDS = 1 * 1000;
     const MIN_PAGE_WORD_COUNT = 10;
     const MAX_SESSION_TIME_IN_MILLISECONDS = 4 * 3600 * 1000;
 
@@ -66,6 +69,8 @@ async function addActivityToStorage(newActivity){
             item.vocabularySize= vocabularySize;
 
             merged = true;
+
+            gLogger.debug('merged activity:'+ activityToString(item));
         }
     }
     if(!merged){
@@ -73,7 +78,7 @@ async function addActivityToStorage(newActivity){
         activities.push(newActivity);
     }
 
-    const MAX_SIZE = 1000;
+    const MAX_SIZE = 100000;
     if(activities.length>MAX_SIZE){
         activities.shift();
     }

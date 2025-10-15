@@ -10,6 +10,7 @@ function initLog(){
     log.getLogger("page-change-monitor").setLevel("info");
     log.getLogger("document").setLevel("warn");
     log.getLogger("tooltip").setLevel("info");
+    log.getLogger("activity-service").setLevel("info");
 }
 
 export { initLog }

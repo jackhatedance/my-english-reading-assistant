@@ -16,6 +16,7 @@ import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} 
 
 initLog();
 const gLogger = log.getLogger("background");
+chrome.idle.setDetectionInterval(5 * 60);//5 minutes
 
 function sendMsg(type, baseForm){
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -267,11 +268,12 @@ chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
 });
 
 chrome.idle.onStateChanged.addListener(async (newState)=>{
-  //console.log(newState);
+  gLogger.debug(newState);
   let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   
   const tab = tabs[0];
-  let tabInfo = await getTabInfo(tab.id);
+  let tabId = tab.id;
+  let tabInfo = await getTabInfo(tabId);
   if(tabInfo){
     if(newState !=='active'){
       //console.log('save activity and clear');
@@ -279,6 +281,7 @@ chrome.idle.onStateChanged.addListener(async (newState)=>{
     }else {
       //console.log('start activity');
       tabInfo.startTime = new Date().getTime();
+      saveTabInfo(tabId, tabInfo);
     }
   }
 });
@@ -295,7 +298,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
     let endTime = new Date().getTime();
     var duration = endTime - tabInfo.startTime;
     
-    //console.log(`finish read page <<${tabInfo.title}>> in ${duration} seconds, word changes:${tabInfo.wordChanges}`);
+    gLogger.debug(`finish read page <<${tabInfo.title}>> in ${duration/1000} seconds, word changes:${tabInfo.wordChanges}`);
     addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,
