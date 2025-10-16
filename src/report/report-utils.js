@@ -26,7 +26,7 @@ function filterActivityByTimeRange(activities, timeRange){
         endTime = timeRange[1];
     }
     
-    let filtered = activities.filter(item => item.startTime>=startTime && item.endTime<endTime);
+    let filtered = activities.filter(item => item.endTime>startTime && item.endTime<endTime);
     return filtered;
 }
 
