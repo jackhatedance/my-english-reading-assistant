@@ -552,9 +552,22 @@
     "report_filter_time_range_option_last_360_days":{
         "message":"最近360天"
     },
+    "report_filter_time_range_option_last_24_hours":{
+        "message":"最近24小时"
+    },
+    "report_filter_time_range_option_last_60_minutes":{
+        "message":"最近60分钟"
+    },
+    "report_filter_time_range_option_last_15_minutes":{
+        "message":"最近15分钟"
+    },
+    "report_filter_time_range_option_custom":{
+        "message":"自定义"
+    },
     "report_filter_time_range_option_all":{
         "message":"全部"
     },
+
     "reportReadingActivitiesTitle":{
         "message":"阅读活动"
     },

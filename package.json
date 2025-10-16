@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@jackhatedance/js-mdict": "^6.0.7",
+    "@vuepic/vue-datepicker": "^11.0.2",
     "@zip.js/zip.js": "^2.7.57",
     "assign-deep": "^1.0.1",
     "bulletin-board-code": "^1.0.1",

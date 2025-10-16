@@ -554,9 +554,22 @@
     "report_filter_time_range_option_last_360_days":{
         "message":"Last 360 Days"
     },
+    "report_filter_time_range_option_last_24_hours":{
+        "message":"Last 24 hours"
+    },
+    "report_filter_time_range_option_last_60_minutes":{
+        "message":"Last 60 minutes"
+    },
+    "report_filter_time_range_option_last_15_minutes":{
+        "message":"Last 15 minutes"
+    },
+    "report_filter_time_range_option_custom":{
+        "message":"Custom"
+    },
     "report_filter_time_range_option_all":{
         "message":"All"
     },
+    
     "reportReadingActivitiesTitle":{
         "message":"Reading Activities"
     },

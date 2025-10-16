@@ -16,36 +16,17 @@ function formatDuration(milliseconds) {
 }
 
 function filterActivityByTimeRange(activities, timeRange){
-    if(timeRange==='all'){
-        return activities;
-    } 
     
     let startTime, endTime;
-    let now = new Date();
-    if(timeRange==='this_year'){
-        startTime = new Date(now.getFullYear(), 0, 1);
-    } else if(timeRange==='this_month'){
-        startTime = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if(timeRange==='this_week'){
-        now.setDate(now.getDate() - now.getDay());
-        let then = now;
-        startTime = new Date(then.getFullYear(), then.getMonth(), then.getDate());
-    } else if(timeRange==='last_7_days'){
-        now.setDate(now.getDate() - 7);
-        let then = now;
-        startTime = new Date(then.getFullYear(), then.getMonth(), then.getDate());
-    } else if(timeRange==='last_30_days'){
-        now.setDate(now.getDate() - 30);
-        let then = now;
-        startTime = new Date(then.getFullYear(), then.getMonth(), then.getDate());
-    } else if(timeRange==='last_360_days'){
-        now.setDate(now.getDate() - 360);
-        let then = now;
-        startTime = new Date(then.getFullYear(), then.getMonth(), then.getDate());
+    if(timeRange==null){
+        startTime = new Date(1970,0,1);
+        endTime = new Date();
+    } else{
+        startTime = timeRange[0];
+        endTime = timeRange[1];
     }
-    endTime = now;
-
-    let filtered = activities.filter(item => item.startTime>=startTime);
+    
+    let filtered = activities.filter(item => item.startTime>=startTime && item.endTime<endTime);
     return filtered;
 }
 
