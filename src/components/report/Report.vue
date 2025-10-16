@@ -41,6 +41,9 @@ function changeTimePeriod(){
 
     let startTime, endTime;
     
+    //default
+    endTime = getDaysAgo(now, 1);
+
     if(period==='all'){
         startTime = new Date(1970, 0, 1);
     } else if(period==='this_year'){
@@ -49,6 +52,9 @@ function changeTimePeriod(){
         startTime = new Date(beginOfToday.getFullYear(), beginOfToday.getMonth(), 1);
     } else if(period==='this_week'){
         startTime = getDaysAgo(beginOfToday, -beginOfToday.getDay());
+    } else if(period==='this_day'){
+        startTime = getDaysAgo(beginOfToday, -1+1);
+        endTime = getBeginOfDate(getDaysAgo(now, 1));
     } else if(period==='last_7_days'){
         startTime = getDaysAgo(beginOfToday, -7+1);
     } else if(period==='last_30_days'){
@@ -63,7 +69,7 @@ function changeTimePeriod(){
         startTime = getMinutesOffset(now, -15);
     }
 
-    endTime = getDaysAgo(now, 1);
+    
 
     periodStartTime = startTime;
     periodEndTime = endTime;
@@ -131,6 +137,7 @@ init();
                 <option value="last_24_hours">{{ t('report_filter_time_range_option_last_24_hours') }}</option>
                 <option value="last_60_minutes">{{ t('report_filter_time_range_option_last_60_minutes') }}</option>
                 <option value="last_15_minutes">{{ t('report_filter_time_range_option_last_15_minutes') }}</option>
+                <option value="this_day">{{ t('report_filter_time_range_option_this_day') }}</option>
                 <option value="custom">{{ t('report_filter_time_range_option_custom') }}</option>
             </select> 
 

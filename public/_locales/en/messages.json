@@ -554,6 +554,9 @@
     "report_filter_time_range_option_last_360_days":{
         "message":"Last 360 Days"
     },
+    "report_filter_time_range_option_this_day":{
+        "message":"Today"
+    },
     "report_filter_time_range_option_last_24_hours":{
         "message":"Last 24 hours"
     },
