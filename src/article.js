@@ -94,7 +94,7 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
         }
     });
 
-    gLogger.info(`tokenized ${tokenCount} tokens`);
+    gLogger.info(`${tokenCount} tokens generated`);
 }
 
 function detokenizeTextNode(document) {
