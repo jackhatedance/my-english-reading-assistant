@@ -1,4 +1,8 @@
 import { MEA_TAG_PREFIX } from '../html.js';
+import log from 'loglevel'
+
+
+const gLogger = log.getLogger("mutation-observer");
 
 function createMutationObserver(document, page){
   const { siteProfile } = page;
@@ -38,8 +42,8 @@ function createMutationObserver(document, page){
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
         let siteIgnoreDomChange = siteProfile.ignoreDomChange(mutation, addedNodeTextContents);
         if(!triggeredBySelf && !ignoreAddedNodeTextContentsSmallChange && !siteIgnoreDomChange){
-          //console.log(addedNodeTextContents);
-          //console.log(mutation);
+          gLogger.debug(addedNodeTextContents);
+          gLogger.debug(mutation);
           page.domChanges ++;
         }        
       } else if (mutation.type === "attributes") {
