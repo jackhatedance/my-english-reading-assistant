@@ -16,11 +16,6 @@ const timeRange = inject('timeRange');
 const route = useRoute();
 const t = chrome.i18n.getMessage;
 
-const filterType = ref('all');
-
-async function changeType(){
-    await refresh();
-}
 
 watch(() => timeRange.value, async (newValue) => {
     await refresh();
@@ -61,12 +56,6 @@ function getPageSummaries(activities){
     let array = Array.from(pageSummaryMap, ([name, value]) => ({ ... value}));
 
 
-    //filter
-    let type = filterType.value;
-    if(type && type!=='all'){
-        console.log(`page filter:${type}`);
-        array = array.filter(item => item.title.endsWith(type));
-    }
 
     array.sort(function(a, b){return b.endTime - a.endTime;});
     //console.log('page summaries:' + JSON.stringify(array));
@@ -115,10 +104,6 @@ async function refresh(){
 
 const init = async () => {
 
-    if(route.query.type){
-        let type = route.query.type;
-        filterType.value = type;
-    }
 
     await refresh();
 };
@@ -131,15 +116,6 @@ init();
     <div class="pages">     
         <h1>{{ t('reportPageSummariesTitle') }}</h1>
         
-        <label>
-            <input type="radio" v-model="filterType" value="all" @change="changeType">All
-        </label>
-        <label>
-            <input type="radio" v-model="filterType" value="epub" @change="changeType">epub
-        </label>
-        <label>
-            <input type="radio" v-model="filterType" value="pdf" @change="changeType">PDF
-        </label>
         
         <table id="pageSummaries">
             <thead>
