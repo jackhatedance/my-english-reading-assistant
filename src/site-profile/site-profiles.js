@@ -7,6 +7,7 @@ import { XSiteProfile } from './by-domain/XSiteProfile.js';
 
 import { GroupdocsAppViewerEpub } from './by-url/GroupdocsAppViewerEpubProfile.js';
 import { EpubjsSiteProfile } from './by-category/EpubjsSiteProfile.js';
+import { PdfjsSiteProfile } from './by-category/PdfjsSiteProfile.js'
 
 import { Matcher } from './matcher/Matcher.js';
 import { DefaultSiteProfile } from './DefaultSiteProfile.js';
@@ -28,6 +29,7 @@ const siteProfiles = [
     new GroupdocsAppViewerEpub(),
     
     new EpubjsSiteProfile(),
+    new PdfjsSiteProfile(),
 ];
 
 function findSiteProfile(document) {
