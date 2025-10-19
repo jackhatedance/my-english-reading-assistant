@@ -604,6 +604,9 @@
     "reportPageSummariesTitle":{
         "message":"Page Summaries"
     },
+    "reportPageSummariesHeaderSite":{
+        "message":"Site"
+    },
     "reportPageSummariesHeaderTitle":{
         "message":"Title"
     },

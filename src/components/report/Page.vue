@@ -29,12 +29,18 @@ watch(() => timeRange.value, async (newValue) => {
 function getPageSummaries(activities){
     let pageSummaryMap = new Map();
     for(let activity of activities){
+        let site = activity.site;
+        let url = activity.url;
         let title = activity.title;
         let isbn = activity.isbn;
-        let summary = pageSummaryMap.get(title);
         
+        let key = url;
+        let summary = pageSummaryMap.get(key);
+                
         if(!summary){
             summary={
+                site: site,
+                url: url,
                 title: title,
                 isbn: isbn,
                 startTime: activity.startTime,
@@ -43,7 +49,7 @@ function getPageSummaries(activities){
                 wordChanges: 0
             };
 
-            pageSummaryMap.set(title, summary);
+            pageSummaryMap.set(key, summary);
         }
 
         summary.startTime = Math.min(activity.startTime, summary.startTime);
@@ -73,7 +79,7 @@ function renderPageSummaries(pageSummaries){
     table.innerHTML = '';
 
     for(let item of pageSummaries){
-        let {title, isbn, wordChanges, duration, startTime, endTime} = item;
+        let {site, url, title, isbn, wordChanges, duration, startTime, endTime} = item;
 
         if(!isbn){
         isbn = '';
@@ -83,8 +89,8 @@ function renderPageSummaries(pageSummaries){
         let endTimeFormatted = new Date(endTime).toLocaleString( );
 
         let durationFormatted =formatDuration(duration);
-        const liInnerHTML = `<td>${title}</td>
-        <td>${isbn}</td>
+        const liInnerHTML = `<td>${site}</td>
+        <td><a target="_blank" href='${url}'>${title}</a></td>
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
@@ -138,8 +144,8 @@ init();
         <table id="pageSummaries">
             <thead>
                 <tr>
+                    <th>{{ t('reportPageSummariesHeaderSite') }}</th>
                     <th>{{ t('reportPageSummariesHeaderTitle') }}</th>
-                    <th>{{ t('reportPageSummariesHeaderIsbn') }}</th>
                     <th>{{ t('reportPageSummariesHeaderStartReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderLastReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderDuration') }}</th>

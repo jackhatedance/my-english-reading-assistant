@@ -298,7 +298,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
     let endTime = new Date().getTime();
     var duration = endTime - tabInfo.startTime;
     
-    gLogger.debug(`finish read page <<${tabInfo.title}>> in ${duration/1000} seconds, word changes:${tabInfo.wordChanges}`);
+    gLogger.debug(`finish read page <<${tabInfo.url}>> in ${duration/1000} seconds, word changes:${tabInfo.wordChanges}`);
     addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,

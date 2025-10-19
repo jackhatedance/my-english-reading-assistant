@@ -58,7 +58,7 @@ async function addActivityToStorage(newActivity){
         let timeDiff = new Date().getTime() - item.endTime;
         if(
             item.site === newActivity.site
-            && item.title === newActivity.title
+            && item.url === newActivity.url
             && item.sessionId===newActivity.sessionId 
             && timeDiff < MAX_SESSION_TIME_IN_MILLISECONDS){
             //merge

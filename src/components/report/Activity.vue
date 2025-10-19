@@ -56,9 +56,8 @@ function renderReadingActivities(activities){
             <td>${endTimeFormatted}</td>
             <td>${site}</td>
             <td><a target="_blank" href='${url}'>${title}</a></td>
-            <td>${isbn}</td>
-            <td>${totalWordCount}</td>
             <td>${durationFormatted}</td>
+            <td>${totalWordCount}</td>
             <td>${vocabularySize}(${wordChanges})</td>
         `;
 
@@ -94,9 +93,8 @@ init();
                     <th>{{ t('reportReadingActivitiesHeaderEndTime') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderSite') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderTitle') }}</th>
-                    <th>{{ t('reportReadingActivitiesHeaderIsbn') }}</th>
-                    <th>{{ t('reportReadingActivitiesHeaderWordCount') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderDuration') }}</th>
+                    <th>{{ t('reportReadingActivitiesHeaderWordCount') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderVocabulary') }}</th>
                 </tr>    
             </thead>   

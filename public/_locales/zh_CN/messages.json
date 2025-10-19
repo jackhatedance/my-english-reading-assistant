@@ -602,6 +602,9 @@
     "reportPageSummariesTitle":{
         "message":"网页统计"
     },
+    "reportPageSummariesHeaderSite":{
+        "message":"网站"
+    },
     "reportPageSummariesHeaderTitle":{
         "message":"标题"
     },
