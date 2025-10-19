@@ -16,7 +16,9 @@ init();
             <RouterLink to="/vocabulary">{{ t('report_header_vocabulary') }}</RouterLink>
             <RouterLink to="/site">{{ t('report_header_site') }}</RouterLink>
             <RouterLink to="/page">{{ t('report_header_page') }}</RouterLink>
+            
             <RouterLink to="/activity">{{ t('report_header_activity') }}</RouterLink>
+            <RouterLink to="/book">{{ t('report_header_book') }}</RouterLink>
         </nav>              
     
     </div>

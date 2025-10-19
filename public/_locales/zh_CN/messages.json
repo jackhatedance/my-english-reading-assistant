@@ -537,6 +537,9 @@
     "report_header_page":{
         "message":"网页"
     },
+    "report_header_book":{
+        "message":"书"
+    },
     "report_header_activity":{
         "message":"活动"
     },
@@ -624,6 +627,40 @@
         "message":"词汇变化"
     },
 
+
+    "reportBookSummariesTitle":{
+        "message":"书统计"
+    },
+    "reportBookSummariesHeaderSite":{
+        "message":"网站"
+    },
+    "reportBookSummariesHeaderTitle":{
+        "message":"标题"
+    },
+    "reportBookSummariesHeaderIsbn":{
+        "message":"书号"
+    },
+    "reportBookSummariesHeaderStartReadTime":{
+        "message":"开始时间"
+    },
+    "reportBookSummariesHeaderLastReadTime":{
+        "message":"结束时间"
+    },
+    "reportBookSummariesHeaderDuration":{
+        "message":"持续时间"
+    },
+    "reportBookSummariesHeaderPages":{
+        "message":"页数"
+    },
+    "reportBookSummariesHeaderWords":{
+        "message":"词数"
+    },
+    "reportBookSummariesHeaderSpeed":{
+        "message":"速度(词每分)"
+    },
+    "reportBookSummariesHeaderVocabulary":{
+        "message":"词汇量变化"
+    },
 
     "reportSiteSummariesTitle":{
         "message":"网站统计"

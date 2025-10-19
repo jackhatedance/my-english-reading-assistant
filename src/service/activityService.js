@@ -68,6 +68,8 @@ async function addActivityToStorage(newActivity){
             item.endTime = newActivity.endTime;
             item.vocabularySize= vocabularySize;
 
+            item.isbn = newActivity.isbn;
+
             merged = true;
 
             gLogger.debug('merged activity:'+ activityToString(item));

@@ -5,6 +5,7 @@ import Report from './components/report/Report.vue'
 import Vocabulary from './components/report/Vocabulary.vue'
 import Site from './components/report/Site.vue'
 import Page from './components/report/Page.vue'
+import Book from './components/report/Book.vue'
 import Activity from './components/report/Activity.vue'
 
 import { localizeHtmlPage} from './locale.js'
@@ -18,6 +19,7 @@ const routes = [
     { path: '/site', component: Site },
     { path: '/page', component: Page },
     { path: '/activity', component: Activity },
+    { path: '/book', component: Book },
     
 ]
 

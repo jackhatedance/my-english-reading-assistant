@@ -10,14 +10,20 @@ async function getBook(isbn){
     return book;
 }
 
+async function getAllBooks(){
+    return await bookDao.getAll();
+}
 
-async function searchBookByUrl(url) {
-    let bookArray = await bookDao.getAll();
+async function searchBookByUrl(url, books) {
+    if(!books){
+        books = await getAllBooks();
+    }
+    
     let result;
 
     //console.log('search book by url:' + url);
 
-    for(let book of bookArray){
+    for(let book of books){
         let pattern = book.urlPattern;
         if(pattern){
             const isMatch = wcmatch(pattern);
@@ -34,4 +40,4 @@ async function searchBookByUrl(url) {
     return result;
 }
 
-export { getBook, searchBookByUrl };
+export { getAllBooks, getBook, searchBookByUrl };

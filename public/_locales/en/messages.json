@@ -539,6 +539,9 @@
     "report_header_page":{
         "message":"Page"
     },
+    "report_header_book":{
+        "message":"Book"
+    },
     "report_header_activity":{
         "message":"Activity"
     },
@@ -623,6 +626,40 @@
         "message":"Duration"
     },
     "reportPageSummariesHeaderVocabulary":{
+        "message":"Vocabulary Changes"
+    },
+
+    "reportBookSummariesTitle":{
+        "message":"Book Summaries"
+    },
+    "reportBookSummariesHeaderSite":{
+        "message":"Site"
+    },
+    "reportBookSummariesHeaderTitle":{
+        "message":"Title"
+    },
+    "reportBookSummariesHeaderIsbn":{
+        "message":"ISBN"
+    },
+    "reportBookSummariesHeaderStartReadTime":{
+        "message":"Start Time"
+    },
+    "reportBookSummariesHeaderLastReadTime":{
+        "message":"End Time"
+    },
+    "reportBookSummariesHeaderDuration":{
+        "message":"Duration"
+    },
+    "reportBookSummariesHeaderPages":{
+        "message":"Pages"
+    },
+    "reportBookSummariesHeaderWords":{
+        "message":"Words"
+    },
+    "reportBookSummariesHeaderSpeed":{
+        "message":"Speed(wpm)"
+    },
+    "reportBookSummariesHeaderVocabulary":{
         "message":"Vocabulary Changes"
     },
 
