@@ -3,6 +3,9 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } fr
 import { PageDao } from '../service/PageDao.js';
 import { BookDao } from '../service/BookDao.js';
 import { searchBookByUrl } from '../service/bookService.js';
+import getfake from 'getfake';
+
+const t = chrome.i18n.getMessage;
 
 const props = defineProps({
     url: String,
@@ -13,16 +16,6 @@ const props = defineProps({
     page: Object,
 });
 
-const sidepanelBookTabUrlLabel = chrome.i18n.getMessage('sidepanelBookTabUrlLabel');
-const sidepanelBookTabIsBookLabel = chrome.i18n.getMessage('sidepanelBookTabIsBookLabel');
-const sidepanelBookTabIsbnLabel = chrome.i18n.getMessage('sidepanelBookTabIsbnLabel');
-const sidepanelBookTabTitleLabel = chrome.i18n.getMessage('sidepanelBookTabTitleLabel');
-const sidepanelBookTabUrlPatternLabel = chrome.i18n.getMessage('sidepanelBookTabUrlPatternLabel');
-const sidepanelBookTabQueryIsbnAction = chrome.i18n.getMessage('sidepanelBookTabQueryIsbnAction');
-const sidepanelBookTabDetectAction = chrome.i18n.getMessage('sidepanelBookTabDetectAction');
-const sidepanelBookTabSaveAction = chrome.i18n.getMessage('sidepanelBookTabSaveAction');
-const sidepanelBookTabDeleteAction = chrome.i18n.getMessage('sidepanelBookTabDeleteAction');
-const sidepanelBookTabResetAction = chrome.i18n.getMessage('sidepanelBookTabResetAction');
 
 const pageDao = new PageDao();
 const bookDao = new BookDao();
@@ -140,6 +133,11 @@ async function clickQuery() {
     updateBookUI(book);
 }
 
+async function clickFakeIsbn() {
+    isbn.value = getfake.isbn.v13.any();
+
+}
+
 async function clickDetect() {
     //console.log('page:'+ JSON.stringify(props.page));
     isbn.value = props.page.isbnsInContent.join(',');
@@ -169,45 +167,46 @@ init();
     
     <div class="book">
         
-            <label>{{ sidepanelBookTabUrlLabel }}</label>
+            <label>{{ t('sidepanelBookTabUrlLabel') }}</label>
             <div class="input">
                 <div class="url">{{ props.url }}</div>
             </div>
         
         
-            <label>{{ sidepanelBookTabIsBookLabel }}</label>
+            <label>{{ t('sidepanelBookTabIsBookLabel') }}</label>
             <div class="input">
                 <input type="checkbox" v-model="isBook">
             </div>
         
 
         
-            <label>{{ sidepanelBookTabIsbnLabel }}</label>
+            <label>{{ t('sidepanelBookTabIsbnLabel') }}</label>
             <div class="input">
                 <input class="isbn" v-model="isbn" @change="changeIsbn">
-                <button class="query-isbn button" @click="clickQuery">{{ sidepanelBookTabQueryIsbnAction }}</button>
+                <button class="fake-isbn button" @click="clickFakeIsbn">{{ t('sidepanelBookTabFakeIsbnAction') }}</button>
+                <button class="query-isbn button" @click="clickQuery">{{ t('sidepanelBookTabQueryIsbnAction') }}</button>
             </div>
         
 
         
-            <label>{{ sidepanelBookTabTitleLabel }}</label>
+            <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
             <div class="input">
                 <textarea class="title" v-model="title"></textarea>
             </div>
         
 
         
-            <label>{{ sidepanelBookTabUrlPatternLabel }}</label>
+            <label>{{ t('sidepanelBookTabUrlPatternLabel') }}</label>
             <div class="input">
                 <textarea class="urlPattern" v-model="urlPattern" ></textarea>
             </div>
         
 
         <div class="line">
-            <button class="button" @click="clickDetect">{{ sidepanelBookTabDetectAction }}</button>
-            <button class="button" @click="clickSave">{{ sidepanelBookTabSaveAction }}</button>
-            <button class="button" @click="clickDelete">{{ sidepanelBookTabDeleteAction }}</button>
-            <button class="button" @click="clickReset">{{ sidepanelBookTabResetAction }}</button>
+            <button class="button" @click="clickDetect">{{ t('sidepanelBookTabDetectAction') }}</button>
+            <button class="button" @click="clickSave">{{ t('sidepanelBookTabSaveAction') }}</button>
+            <button class="button" @click="clickDelete">{{ t('sidepanelBookTabDeleteAction') }}</button>
+            <button class="button" @click="clickReset">{{ t('sidepanelBookTabResetAction') }}</button>
         </div>
     </div>
 

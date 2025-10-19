@@ -511,6 +511,9 @@
     "sidepanelBookTabUrlPatternLabel":{
         "message":"URL Rule (support wildcard: ?, * and **)"
     },
+    "sidepanelBookTabFakeIsbnAction":{
+        "message":"Generate Fake ISBN"
+    },
     "sidepanelBookTabQueryIsbnAction":{
         "message":"Query"
     },

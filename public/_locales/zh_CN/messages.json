@@ -509,6 +509,9 @@
     "sidepanelBookTabUrlPatternLabel":{
         "message":"网址规则 (支持通配符: ?, * 和 **)"
     },
+    "sidepanelBookTabFakeIsbnAction":{
+        "message":"生成假书号"
+    },
     "sidepanelBookTabQueryIsbnAction":{
         "message":"查询"
     },
