@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUpdated } from 'vue';
-import { MenuItems } from '../menu.js';
+import { MenuItems } from '../../menu.js';
 
 const props = defineProps({
     menuItems: Array,

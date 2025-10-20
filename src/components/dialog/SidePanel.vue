@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, provide, toRaw } from 'vue';
-import Unavailable from './Unavailable.vue';
-import Tabs from './Tabs.vue';
+import Unavailable from '../Unavailable.vue';
+import Tabs from '../dialog/Tabs.vue';
 
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
-import { getNote } from '../service/noteService.js';
-import { initializeCustomDictionaryService } from '../dictionary/customDictionary.js';
-import { getEntryFromLink } from '../dictionary/mdict/mdict-definition-utils.js'
-import { isPageAnnotationVisible } from '../page.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
+import { getNote } from '../../service/noteService.js';
+import { initializeCustomDictionaryService } from '../../dictionary/customDictionary.js';
+import { getEntryFromLink } from '../../dictionary/mdict/mdict-definition-utils.js'
+import { isPageAnnotationVisible } from '../../page.js';
 
 const props = defineProps({
   // embedded (content page), standalone (side page)

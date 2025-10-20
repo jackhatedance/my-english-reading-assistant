@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
-import { lookup } from '../dictionaries.js';
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../vocabularyStore.js';
-import { sendMessageMarkWordToBackground } from '../message.js'; 
-import { isKnown } from '../language.js'
-import { getEnabledDictionaryNamesFromCache } from '../dictionary/customDictionary.js'
-import { getSystemDictionaryAlias, isSystemDictionary } from '../dictionary/systemDictionary.js'
-import { getOptions } from '../service/optionService.js'
-import { entriesToHtml } from '../dictionary/definition-formatter.js'
+import { lookup } from '../../dictionaries.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
+import { sendMessageMarkWordToBackground } from '../../message.js'; 
+import { isKnown } from '../../language.js'
+import { getEnabledDictionaryNamesFromCache } from '../../dictionary/customDictionary.js'
+import { getSystemDictionaryAlias, isSystemDictionary } from '../../dictionary/systemDictionary.js'
+import { getOptions } from '../../service/optionService.js'
+import { entriesToHtml } from '../../dictionary/definition-formatter.js'
 
 const props = defineProps({
     dictionary: String,

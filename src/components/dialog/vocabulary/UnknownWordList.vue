@@ -2,10 +2,10 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed } from 'vue';
 
 import UnknownWordItem from './UnknownWordItem.vue';
-import { loadKnownWords } from '../../vocabularyStore.js';
-import { getWordPartObjects, isKnown } from '../../language.js';
-import { lookup } from '../../dictionaries.js';
-import { getOptions } from '../../service/optionService.js'
+import { loadKnownWords } from '../../../vocabularyStore.js';
+import { getWordPartObjects, isKnown } from '../../../language.js';
+import { lookup } from '../../../dictionaries.js';
+import { getOptions } from '../../../service/optionService.js'
 
 const props = defineProps({
     items: Array,

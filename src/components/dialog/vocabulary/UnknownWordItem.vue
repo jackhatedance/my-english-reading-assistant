@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
-import {searchWord, isKnown, buildDictionaryOptions } from '../../language.js';
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
-import { sendMessageMarkWordToBackground } from '../../message.js';
+import {searchWord, isKnown, buildDictionaryOptions } from '../../../language.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../../vocabularyStore.js';
+import { sendMessageMarkWordToBackground } from '../../../message.js';
 
 const props = defineProps({
     word: Object,

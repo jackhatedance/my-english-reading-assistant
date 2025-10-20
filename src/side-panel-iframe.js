@@ -1,7 +1,7 @@
 import './side-panel.css';
 import './side-panel-component.css';
 import { createApp } from 'vue';
-import SidePanel from './components/SidePanel.vue'
+import SidePanel from './components/dialog/SidePanel.vue'
 import { AppModes } from './components/types.js';
 import { initializeOptionService, getSiteOptions } from './service/optionService.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
-import { PageDao } from '../service/PageDao.js';
-import { BookDao } from '../service/BookDao.js';
-import { searchBookByUrl } from '../service/bookService.js';
+import { PageDao } from '../../service/PageDao.js';
+import { BookDao } from '../../service/BookDao.js';
+import { searchBookByUrl } from '../../service/bookService.js';
 import getfake from 'getfake';
 
 const t = chrome.i18n.getMessage;
