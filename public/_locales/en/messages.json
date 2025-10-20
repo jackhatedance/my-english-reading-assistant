@@ -361,6 +361,23 @@
         "message":"Move Down"
     },
 
+    "options_section_book_title":{
+        "message":"Book"
+    },
+    "options_section_book_edit_label":{
+        "message":"Books"
+    },
+    "options_section_book_detail_title":{
+        "message":"Title"
+    },
+    "options_section_book_detail_isbn":{
+        "message":"ISBN"
+    },
+    "options_section_book_detail_url_pattern":{
+        "message":"URL pattern"
+    },
+
+
     "optionsUnrecognizedWordsLabel":{
         "message":"Unrecognized words"
     },

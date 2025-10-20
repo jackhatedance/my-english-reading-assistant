@@ -359,6 +359,23 @@
         "message":"下移"
     },
 
+
+    "options_section_book_title":{
+        "message":"书"
+    },
+    "options_section_book_edit_label":{
+        "message":"书列表"
+    },
+    "options_section_book_detail_title":{
+        "message":"标题"
+    },
+    "options_section_book_detail_isbn":{
+        "message":"书号"
+    },
+    "options_section_book_detail_url_pattern":{
+        "message":"网址规则"
+    },
+
     "optionsUnrecognizedWordsLabel":{
         "message":"不识别的单词"
     },
