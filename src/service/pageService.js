@@ -1,6 +1,6 @@
 import { PageDao } from './PageDao.js';
 import { BookDao } from './BookDao.js';
-import { searchBookByUrl } from './bookService.js';
+import { searchBookByUrlAsync } from './bookService.js';
 
 const pageDao = new PageDao();
 const bookDao = new BookDao();
@@ -9,7 +9,7 @@ async function getIsbn(url){
     let page = await pageDao.get(url);
     let result;
     if(!page){
-        let book = await searchBookByUrl(url);
+        let book = await searchBookByUrlAsync(url);
         if(book){
             result = book.isbn;
         }

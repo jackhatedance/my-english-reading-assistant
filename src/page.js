@@ -5,7 +5,7 @@ import { initializeCustomDictionaryService } from './dictionary/customDictionary
 import { getAllDocuments, isDocumentAnnotationInitialized, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
 import { sendMessageToBackground } from './message.js';
-import { getIsbn } from './service/pageService.js';
+import { searchBookByUrlAsync } from './service/bookService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
 import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
@@ -62,7 +62,10 @@ async function getPageInfo(siteProfile, documentArticleMap) {
     }
     let url = siteProfile.getUrl(document);
 
-    let isbn = await getIsbn(url);
+    let book = await searchBookByUrlAsync(url);
+    
+    let isbn = book?.isbn;
+    
     let title = document.title;
 
     let pageInfo = {

@@ -18,10 +18,9 @@ async function getAllBooks(){
     return await bookDao.getAll();
 }
 
-async function searchBookByUrl(url, books) {
-    if(!books){
-        books = await getAllBooks();
-    }
+async function searchBookByUrlAsync(url) {
+    
+    let books = await getAllBooks();
     
     let result;
 
@@ -44,4 +43,28 @@ async function searchBookByUrl(url, books) {
     return result;
 }
 
-export { getAllBooks, getBook, deleteBook, searchBookByUrl };
+
+function searchBookByUrl(url, books) {
+    
+    let result;
+
+    //console.log('search book by url:' + url);
+
+    for(let book of books){
+        let pattern = book.urlPattern;
+        if(pattern){
+            const isMatch = wcmatch(pattern);
+            let match = isMatch(url);
+            if(match){
+                result = book;
+
+                //console.log('found:'+JSON.stringify(book));
+
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+export { getAllBooks, getBook, deleteBook, searchBookByUrl, searchBookByUrlAsync };

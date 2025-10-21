@@ -512,10 +512,7 @@
     },
 
     "sidepanelBookTabUrlLabel":{
-        "message":"网址"
-    },
-    "sidepanelBookTabIsBookLabel":{
-        "message":"是一本书"
+        "message":"网页地址"
     },
     "sidepanelBookTabIsbnLabel":{
         "message":"书号"
@@ -524,25 +521,34 @@
         "message":"标题"
     },
     "sidepanelBookTabUrlPatternLabel":{
-        "message":"网址规则 (支持通配符: ?, * 和 **)"
-    },
-    "sidepanelBookTabFakeIsbnAction":{
-        "message":"生成假书号"
+        "message":"网址模式 (支持通配符: ?,*和**)"
     },
     "sidepanelBookTabQueryIsbnAction":{
         "message":"查询"
     },
-    "sidepanelBookTabDetectAction":{
-        "message":"检测"
+    "sidepanelBookTabAutofillAction":{
+        "message":"自动填写"
     },
     "sidepanelBookTabSaveAction":{
-        "message":"保存"
+        "message":"保存&退出编辑"
     },
     "sidepanelBookTabDeleteAction":{
         "message":"删除"
     },
     "sidepanelBookTabResetAction":{
         "message":"重置"
+    },
+    "sidepanelBookTabEditAction":{
+        "message":"编辑"
+    },
+    "sidepanelBookTabCreateAction":{
+        "message":"创建书籍元数据"
+    },
+    "sidepanelBookTabNotBook":{
+        "message":"当前页面未与任何书籍关联。"
+    },
+    "sidepanelBookTabIsBook":{
+        "message":"当前页面与下面书籍关联。"
     },
 
     "report_page_title":{

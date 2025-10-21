@@ -29,7 +29,7 @@ async function getBookSummaries(activities){
         let url = activity.url;
         
         //always search by latest url rules
-        let book = await searchBookByUrl(url, books);
+        let book = searchBookByUrl(url, books);
         if(!book){
             continue;
         }

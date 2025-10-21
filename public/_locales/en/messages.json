@@ -514,10 +514,7 @@
     },
     
     "sidepanelBookTabUrlLabel":{
-        "message":"URL"
-    },
-    "sidepanelBookTabIsBookLabel":{
-        "message":"Is Book"
+        "message":"Page URL"
     },
     "sidepanelBookTabIsbnLabel":{
         "message":"ISBN"
@@ -526,25 +523,31 @@
         "message":"Title"
     },
     "sidepanelBookTabUrlPatternLabel":{
-        "message":"URL Rule (support wildcard: ?, * and **)"
+        "message":"URL pattern (support wildcard: ?, * and **)"
     },
-    "sidepanelBookTabFakeIsbnAction":{
-        "message":"Generate Fake ISBN"
-    },
-    "sidepanelBookTabQueryIsbnAction":{
-        "message":"Query"
-    },
-    "sidepanelBookTabDetectAction":{
-        "message":"Detect"
+    "sidepanelBookTabAutofillAction":{
+        "message":"Autofill"
     },
     "sidepanelBookTabSaveAction":{
-        "message":"Save"
+        "message":"Save&Quit Edit"
     },
     "sidepanelBookTabDeleteAction":{
         "message":"Delete"
     },
     "sidepanelBookTabResetAction":{
         "message":"Reset"
+    },
+    "sidepanelBookTabEditAction":{
+        "message":"Edit"
+    },
+    "sidepanelBookTabCreateAction":{
+        "message":"Create book metadata"
+    },
+    "sidepanelBookTabNotBook":{
+        "message":"This page is not associated with any book."
+    },
+    "sidepanelBookTabIsBook":{
+        "message":"This page is associated with below book."
     },
 
     "report_page_title":{
