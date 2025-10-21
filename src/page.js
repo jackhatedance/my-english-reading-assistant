@@ -17,30 +17,50 @@ const gLogger = log.getLogger("page");
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
  */
-async function getPageInfo(siteProfile, documentArticleMap) {
+async function getPageInfo(siteProfile, documentArticleMap, options) {
     
-    let documents = getAllDocuments(siteProfile);
-    let unknownWordMap = new Map();
+    if(!options){
+        options = { sections: [ 'word' ]};
+    }
 
+    let documents = getAllDocuments(siteProfile);
+
+    //word section begin
+    let unknownWordMap = new Map();
+    let unknownWords;
     let unknownWordsCount = 0;
     let knownWordsCount = 0;
+    let totalWordCount;
+    let unknownWordsRatio;
+    let readingDifficulty;
+    if(options.sections.includes('word')) {
+        for (let document of documents) {
+            let elements = document.querySelectorAll('.mea-word:not(.mea-hide)');
+
+            for (var e of elements) {
+                //let targetWord = getTargetWordFromElement(e);
+                let base = getTargetWordFromElement(e);
+
+                unknownWordMap.set(base, { base, });
+                unknownWordsCount++;
+            }
+
+            elements = document.querySelectorAll('.mea-word.mea-hide');
+            for (var e of elements) {
+                knownWordsCount++;
+            }
+        }
+
+        unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
+
+        totalWordCount = unknownWordsCount + knownWordsCount;
+        unknownWordsRatio = unknownWordsCount / totalWordCount;
+        readingDifficulty = getReadingDifficulty(unknownWordsRatio);
+    }
+    //word section end
+
     let isbnsInContent = [];
     for (let document of documents) {
-        let elements = document.querySelectorAll('.mea-word:not(.mea-hide)');
-
-        for (var e of elements) {
-            //let targetWord = getTargetWordFromElement(e);
-            let base = getTargetWordFromElement(e);
-
-            unknownWordMap.set(base, { base, });
-            unknownWordsCount++;
-        }
-
-        elements = document.querySelectorAll('.mea-word.mea-hide');
-        for (var e of elements) {
-            knownWordsCount++;
-        }
-
         if(documentArticleMap) {
             let article = documentArticleMap.get(document);
             if(article && article.isbns){
@@ -49,11 +69,7 @@ async function getPageInfo(siteProfile, documentArticleMap) {
         }
     }
 
-    let unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
-
-    let totalWordCount = unknownWordsCount + knownWordsCount;
-    let unknownWordsRatio = unknownWordsCount / totalWordCount;
-    let readingDifficulty = getReadingDifficulty(unknownWordsRatio);
+    
     let visible = isPageAnnotationVisible();
     let siteOptions = await getCurrentSiteOptions();
     let domain = document.location.hostname;
@@ -74,11 +90,13 @@ async function getPageInfo(siteProfile, documentArticleMap) {
         isbn: isbn,
         domain: domain,
         visible: visible,
+        //word section begin
         totalWordCount: totalWordCount,
         unknownWordsCount: unknownWordsCount,
         unknownWords: unknownWords,
         unknownWordsRatio: unknownWordsRatio,
         readingDifficulty: readingDifficulty,
+        //word section end
         siteOptions: siteOptions,
         isbnsInContent: isbnsInContent,
     };

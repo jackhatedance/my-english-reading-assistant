@@ -90,9 +90,13 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
     //it is from popup page
 
     //console.log(`${request.type}`);
-
+    let options;
+    if(request.payload.sections){
+      options = { sections: request.payload.sections };
+    }
     
-      getPageInfo(page.siteProfile, page.documentArticleMap).then((pageInfo) => {
+    
+      getPageInfo(page.siteProfile, page.documentArticleMap, options).then((pageInfo) => {
         response.pageInfo = pageInfo;
 
         //console.log('pageInfo response:' + JSON.stringify(response));
@@ -101,28 +105,6 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
          
       });
       return true;
-    
-  } else if (request.type === 'GET_PAGE_INFO_AS_MESSAGE') {
-    //console.log(`${request.type}`);
-
-    
-      getPageInfo(page.siteProfile, page.documentArticleMap).then((pageInfo) => {
-        response.pageInfo = pageInfo;
-
-        //console.log('pageInfo response:' + JSON.stringify(response));
-        
-        if(request.payload.src === 'side_panel'){
-          let request2 = {
-            type:'UPDATE_PAGE_INFO',
-            payload:{
-              pageInfo
-            }
-          };
-          sendMessageToEmbeddedApp(request2, null, ()=>{});
-        }
-       
-      });
-      //don't return true. the response of this message return immediately. another message will be send. 
     
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();

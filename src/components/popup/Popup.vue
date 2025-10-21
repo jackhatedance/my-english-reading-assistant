@@ -47,7 +47,8 @@ function getPageInfo(resolve){
             tab.id,
             {
                 type: 'GET_PAGE_INFO',
-                payload: {            
+                payload: {
+                  sections: [],
                 },
             },
             (response) => {
