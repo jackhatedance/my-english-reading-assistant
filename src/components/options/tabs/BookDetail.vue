@@ -37,6 +37,9 @@ init();
     </div>
 </template>
 <style>
+.books .detail {
+    overflow-wrap: anywhere;
+}
 
 .fields {
     display: grid;
