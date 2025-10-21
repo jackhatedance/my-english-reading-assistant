@@ -247,6 +247,7 @@ init();
 
 .book-view {
     text-align: center;
+    overflow-wrap: anywhere;
 }
 
 .book {
