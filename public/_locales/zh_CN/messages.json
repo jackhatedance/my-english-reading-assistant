@@ -361,10 +361,10 @@
 
 
     "options_section_book_title":{
-        "message":"书"
+        "message":"书籍"
     },
     "options_section_book_edit_label":{
-        "message":"书列表"
+        "message":"书籍列表"
     },
     "options_section_book_detail_title":{
         "message":"标题"
@@ -423,7 +423,7 @@
         "message":"菜单"
     },
     "sidepanelTabBook":{
-        "message":"书"
+        "message":"书籍"
     },
     "sidepanelTitle":{
         "message":"生词"
@@ -564,7 +564,7 @@
         "message":"网页"
     },
     "report_header_book":{
-        "message":"书"
+        "message":"书籍"
     },
     "report_header_activity":{
         "message":"活动"
@@ -655,7 +655,7 @@
 
 
     "reportBookSummariesTitle":{
-        "message":"书统计"
+        "message":"书籍统计"
     },
     "reportBookSummariesHeaderSite":{
         "message":"网站"
