@@ -44,7 +44,7 @@ async function getPageInfo(siteProfile, documentArticleMap) {
         if(documentArticleMap) {
             let article = documentArticleMap.get(document);
             if(article && article.isbns){
-                isbnsInContent.push(article.isbns);
+                isbnsInContent.push(...article.isbns);
             }
         }
     }
