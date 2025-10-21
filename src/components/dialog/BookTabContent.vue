@@ -174,7 +174,7 @@ init();
         
             <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
             <div class="input">
-                {{ title }}
+                <h2>{{ title }}</h2>
             </div>
             
             <label>{{ t('sidepanelBookTabIsbnLabel') }}</label>
@@ -241,7 +241,7 @@ init();
     display: grid;
     grid-template-columns: auto auto;
     gap: 10px;
-
+    align-items: center;
 
     label {
         display: inline-block;
