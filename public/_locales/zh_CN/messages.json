@@ -640,6 +640,9 @@
     "reportPageSummariesHeaderTitle":{
         "message":"标题"
     },
+    "reportPageSummariesHeaderDocument":{
+        "message":"文档"
+    },
     "reportPageSummariesHeaderIsbn":{
         "message":"书号"
     },

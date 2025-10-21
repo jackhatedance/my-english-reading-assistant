@@ -627,7 +627,7 @@
         "message":"Duration"
     },
     "reportReadingActivitiesHeaderVocabulary":{
-        "message":"Vocabulary Changes"
+        "message":"Vocab. Chg."
     },
 
     "reportPageSummariesTitle":{
@@ -638,6 +638,9 @@
     },
     "reportPageSummariesHeaderTitle":{
         "message":"Title"
+    },
+    "reportPageSummariesHeaderDocument":{
+        "message":"Document"
     },
     "reportPageSummariesHeaderIsbn":{
         "message":"ISBN"
@@ -652,7 +655,7 @@
         "message":"Duration"
     },
     "reportPageSummariesHeaderVocabulary":{
-        "message":"Vocabulary Changes"
+        "message":"Vocab. Chg."
     },
 
     "reportBookSummariesTitle":{
@@ -686,7 +689,7 @@
         "message":"Speed(wpm)"
     },
     "reportBookSummariesHeaderVocabulary":{
-        "message":"Vocabulary Changes"
+        "message":"Vocab. Chg."
     },
 
     "reportSiteSummariesTitle":{
@@ -705,7 +708,7 @@
         "message":"Duration"
     },
     "reportSiteSummariesHeaderVocabulary":{
-        "message":"Vocabulary Changes"
+        "message":"Vocab. Chg."
     },
 
     "reportVocabularyChartTitle":{

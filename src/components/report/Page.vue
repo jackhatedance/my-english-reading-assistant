@@ -62,6 +62,21 @@ function getPageSummaries(activities){
     return array;
 }
 
+function getDocument(url){
+
+    let path = url;
+        
+    let index = path.lastIndexOf('/');
+    let doc = path.substring(index+1);
+
+    const MAX_DOC_LEN = 30;
+    if(doc.length>MAX_DOC_LEN){
+        doc= doc.substring(0,MAX_DOC_LEN) + '...';
+    }
+
+    return doc;
+}
+
 
 function renderPageSummaries(pageSummaries){
     let table = document.getElementById('pageSummariesBody');
@@ -69,6 +84,7 @@ function renderPageSummaries(pageSummaries){
 
     for(let item of pageSummaries){
         let {site, url, title, isbn, wordChanges, duration, startTime, endTime} = item;
+        let doc = getDocument(url);
 
         if(!isbn){
         isbn = '';
@@ -80,6 +96,7 @@ function renderPageSummaries(pageSummaries){
         let durationFormatted =formatDuration(duration);
         const liInnerHTML = `<td>${site}</td>
         <td><a target="_blank" href='${url}'>${title}</a></td>
+        <td>${doc}</td>
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
@@ -122,6 +139,7 @@ init();
                 <tr>
                     <th>{{ t('reportPageSummariesHeaderSite') }}</th>
                     <th>{{ t('reportPageSummariesHeaderTitle') }}</th>
+                    <th>{{ t('reportPageSummariesHeaderDocument') }}</th>
                     <th>{{ t('reportPageSummariesHeaderStartReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderLastReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderDuration') }}</th>
