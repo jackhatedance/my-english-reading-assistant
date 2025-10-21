@@ -3,6 +3,7 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } fr
 import { BookDao } from '../../service/BookDao.js';
 import { searchBookByUrlAsync } from '../../service/bookService.js';
 import getfake from 'getfake';
+import { parseZlibBookTitle } from '../../book/zlibrary-utils.js'
 
 const t = chrome.i18n.getMessage;
 
@@ -121,20 +122,6 @@ async function clickAutofill() {
 
 }
 
-/**
- * e.g. A Clash of Kings (George R. R. Martin) (Z-Library).epub
- * @param title 
- */
-function parseZlibBookTitle(text){
-    let pattern = /(?<title>.+) \((?<author>[^)]+)\) \(Z-Library\)\.epub/;
-    let matchResult = text.match(pattern);
-    if(matchResult != null){
-        let title = matchResult.groups.title;
-        let author = matchResult.groups.author;
-        
-        return { title, author };            
-    }
-}
 
 /**
  * e.g. https://app.flowoss.com/#A%20Clash%20of%20Kings%20(George%20R.%20R.%20Martin)%20(Z-Library).epub/OEBPS/Text/C63.xhtml
