@@ -525,6 +525,9 @@
     "sidepanelBookTabUrlPatternLabel":{
         "message":"URL pattern (support wildcard: ?, * and **)"
     },
+    "sidepanelBookTabUrlPatternSimpleLabel":{
+        "message":"URL pattern"
+    },
     "sidepanelBookTabAutofillAction":{
         "message":"Autofill"
     },

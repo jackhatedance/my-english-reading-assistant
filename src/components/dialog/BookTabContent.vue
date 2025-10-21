@@ -195,7 +195,7 @@ init();
                 {{ isbn }}
             </div>
 
-            <label>{{ t('sidepanelBookTabUrlPatternLabel') }}</label>
+            <label>{{ t('sidepanelBookTabUrlPatternSimpleLabel') }}</label>
             <div class="input">
                 {{ urlPattern }}
             </div>
@@ -220,7 +220,7 @@ init();
         
             <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
             <div class="input">
-                <textarea class="title" v-model="title"></textarea>
+                <input type="text" class="title" v-model="title">
             </div>
         
 
