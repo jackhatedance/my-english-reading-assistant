@@ -146,7 +146,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //console.log('page changed, type:' + request.type);
     //console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
     
-    onUrlChanged(tabId);
+    let startTime = new Date().getTime();
+    let title = request.payload.title;
+    let url = request.payload.url;
+    let isbn = request.payload.isbn;
+    let site = request.payload.site;
+    let totalWordCount = request.payload.totalWordCount;
+    let newTabInfo = {tabId: tabId, title: title, url:url, isbn: isbn, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
+    
+    onUrlChanged(tabId, newTabInfo);
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
@@ -194,12 +202,12 @@ async function onCleanPageFinished(tabId){
   setIcon(tabId, false);
 }
 
-async function onUrlChanged(tabId){
+async function onUrlChanged(tabId, newTabInfo){
 
   let oldTabInfo = await getTabInfo(tabId);
   if(oldTabInfo){
     await saveReadingActivityAndClearStartTime(oldTabInfo);
-    await saveTabInfo(tabId, oldTabInfo);
+    await saveTabInfo(tabId, newTabInfo);
   }
 }
 
