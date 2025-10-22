@@ -52,12 +52,6 @@ async function sendMessageToBackground(siteProfile, type, pageInfo) {
         //let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
         isbn = pageInfo.isbn;
 
-        if(isbn){
-            let book = await getBook(isbn);
-            if(book){
-                title = book.title;
-            }        
-        }
         totalWordCount = pageInfo.totalWordCount;
     }
 
