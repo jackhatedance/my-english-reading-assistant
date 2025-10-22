@@ -516,11 +516,20 @@
     "sidepanelBookTabTitleLabel":{
         "message":"Title"
     },
+    "sidepanelBookTabTitleErrorEmpty":{
+        "message":"can not be empty"
+    },
     "sidepanelBookTabUrlPatternLabel":{
         "message":"URL pattern (support wildcard: ?, * and **)"
     },
     "sidepanelBookTabUrlPatternSimpleLabel":{
         "message":"URL pattern"
+    },
+    "sidepanelBookTabUrlPatternEmpty":{
+        "message":"can not be empty"
+    },
+    "sidepanelBookTabUrlPatternNotMatch":{
+        "message":"does not match page URL"
     },
     "sidepanelBookTabAutofillAction":{
         "message":"Autofill"

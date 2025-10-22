@@ -514,14 +514,20 @@
     "sidepanelBookTabTitleLabel":{
         "message":"标题"
     },
+    "sidepanelBookTabTitleErrorEmpty":{
+        "message":"不能为空"
+    },
     "sidepanelBookTabUrlPatternLabel":{
         "message":"网址模式 (支持通配符: ?,*和**)"
     },
     "sidepanelBookTabUrlPatternSimpleLabel":{
         "message":"网址模式"
     },
-    "sidepanelBookTabQueryIsbnAction":{
-        "message":"查询"
+    "sidepanelBookTabUrlPatternEmpty":{
+        "message":"不能为空"
+    },
+    "sidepanelBookTabUrlPatternNotMatch":{
+        "message":"与网址不匹配"
     },
     "sidepanelBookTabAutofillAction":{
         "message":"自动填写"

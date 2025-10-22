@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 import { BookDao } from '../../service/BookDao.js';
-import { searchBookByUrlAsync } from '../../service/bookService.js';
+import { searchBookByUrlAsync, matchUrl } from '../../service/bookService.js';
 import getfake from 'getfake';
 import { parseZlibBookTitle } from '../../book/zlibrary-utils.js'
 
@@ -24,7 +24,10 @@ const bookMeta = ref();
 
 const isbn = ref();
 const title = ref();
+const titleErrors = ref([]);
+
 const urlPattern = ref();
+const urlPatternErrors = ref([]);
 
 const isBook = ref(false);
 
@@ -64,7 +67,55 @@ function clickEdit() {
     mode.value = 'edit';
 }
 
+
+function validateForm(){
+    validateTitle();
+    validateUrlPattern();
+
+    let hasErrors = (titleErrors.value.length>0 || urlPatternErrors.value.length>0);
+    return !hasErrors;
+}
+
+function validateTitle(){
+    let errors =[];
+
+    let titleStr = title.value;
+    if(titleStr==null){
+        titleStr = '';
+    }
+    titleStr = titleStr.trim();
+    if(titleStr == ''){
+        errors.push('can not be empty');
+    }
+    
+    titleErrors.value = errors;
+}
+
+function validateUrlPattern(){
+    let errors = [];
+
+    let value = urlPattern.value;
+    if(value==null){
+        value = '';
+    }
+    value = value.trim();
+    if(value == ''){
+        errors.push('can not be empty');
+    }
+
+    let matchUrlResult = matchUrl(props.url, value);
+    if(!matchUrlResult){
+        errors.push('does not match page URL');
+    }
+    
+    urlPatternErrors.value = errors;
+}
+
 async function clickSave() {
+    let valid = validateForm();
+    if(!valid){
+        return;
+    }
     //console.log('click save');
     let book = await searchBookByUrlAsync(props.url);
     if(book){
@@ -189,6 +240,7 @@ init();
             <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
             <div class="input">
                 <input type="text" class="title" v-model="title">
+                <span class="error">{{ titleErrors.join(';')  }}</span>
             </div>
         
 
@@ -196,6 +248,7 @@ init();
             <label>{{ t('sidepanelBookTabUrlPatternLabel') }}</label>
             <div class="input">
                 <textarea class="urlPattern" v-model="urlPattern" ></textarea>
+                <span class="error">{{ urlPatternErrors.join(';')  }}</span>
             </div>
         
 
@@ -256,6 +309,10 @@ init();
 
     button {
         margin: 5px;
+    }
+
+    .error {
+        color: red;
     }
 }
 </style>
