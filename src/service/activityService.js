@@ -69,6 +69,7 @@ async function addActivityToStorage(newActivity){
             item.vocabularySize= vocabularySize;
 
             item.isbn = newActivity.isbn;
+            item.title = newActivity.title;
 
             merged = true;
 
