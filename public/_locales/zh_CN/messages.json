@@ -625,7 +625,7 @@
         "message":"持续时间"
     },
     "reportReadingActivitiesHeaderVocabulary":{
-        "message":"词汇变化"
+        "message":"词汇量变化"
     },
 
     "reportPageSummariesTitle":{
@@ -650,7 +650,7 @@
         "message":"持续时间"
     },
     "reportPageSummariesHeaderVocabulary":{
-        "message":"词汇变化"
+        "message":"词汇量变化"
     },
 
 
@@ -701,7 +701,7 @@
         "message":"持续时间"
     },
     "reportSiteSummariesHeaderVocabulary":{
-        "message":"词汇变化"
+        "message":"词汇量变化"
     },
 
     "reportVocabularyChartTitle":{
@@ -720,7 +720,7 @@
         "message":"日均阅读时间: $1（小时）"
     },
     "average_vocabulary_change":{
-        "message":"日均词汇变化: $1"
+        "message":"日均词汇量变化: $1"
     },
 
     "guidePageTitle":{
