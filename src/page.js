@@ -100,7 +100,7 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
         siteOptions: siteOptions,
         isbnsInContent: isbnsInContent,
     };
-    //console.log('page info:'+JSON.stringify(pageInfo));
+    gLogger.debug('page info:'+JSON.stringify(pageInfo));
     return pageInfo;
 }
 
