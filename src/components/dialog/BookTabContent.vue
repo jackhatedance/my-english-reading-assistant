@@ -227,8 +227,9 @@ init();
             </div>
         </div>    
 
-        <button class="button" @click="clickEdit">{{ t('sidepanelBookTabEditAction') }}</button>
-               
+        <div class="buttons">
+            <button class="button" @click="clickEdit">{{ t('sidepanelBookTabEditAction') }}</button>
+        </div>  
     </div>
     <div v-show="mode =='edit'"  class="book">
         
@@ -269,6 +270,10 @@ init();
 .book-view {
     text-align: center;
     overflow-wrap: anywhere;
+
+    .buttons {
+        margin: 5px;
+    }
 }
 
 .book {
