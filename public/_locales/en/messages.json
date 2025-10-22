@@ -620,6 +620,9 @@
     "reportReadingActivitiesHeaderTitle":{
         "message":"Title"
     },
+    "reportReadingActivitiesHeaderDocument":{
+        "message":"Document"
+    },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"Words"
     },
@@ -627,7 +630,7 @@
         "message":"Duration"
     },
     "reportReadingActivitiesHeaderVocabulary":{
-        "message":"Vocab. Chg."
+        "message":"Vocab.(Chg.)"
     },
 
     "reportPageSummariesTitle":{

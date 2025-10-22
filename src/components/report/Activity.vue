@@ -3,7 +3,7 @@ import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, wat
 import { useRoute } from 'vue-router'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
-import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { formatDuration, formatVocabularyChange, filterActivityByTimeRange, getDocumentOfUrl } from '../../report/report-utils.js'
 
 const props = defineProps({
     
@@ -34,6 +34,8 @@ function renderReadingActivities(activities){
             site='';
         }
         
+        let doc = getDocumentOfUrl(url);
+
         if(!isbn){
             isbn='';
         }
@@ -56,9 +58,10 @@ function renderReadingActivities(activities){
             <td>${endTimeFormatted}</td>
             <td>${site}</td>
             <td><a target="_blank" href='${url}'>${title}</a></td>
+            <td>${doc}</td>
             <td>${durationFormatted}</td>
             <td>${totalWordCount}</td>
-            <td>${vocabularySize}(${wordChanges})</td>
+            <td>${vocabularySize}(${ formatVocabularyChange(wordChanges) })</td>
         `;
 
         let tr = document.createElement("tr");
@@ -93,6 +96,7 @@ init();
                     <th>{{ t('reportReadingActivitiesHeaderEndTime') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderSite') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderTitle') }}</th>
+                    <th>{{ t('reportReadingActivitiesHeaderDocument') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderDuration') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderWordCount') }}</th>
                     <th>{{ t('reportReadingActivitiesHeaderVocabulary') }}</th>

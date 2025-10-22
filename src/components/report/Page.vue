@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { formatDuration, filterActivityByTimeRange, formatVocabularyChange, getDocumentOfUrl } from '../../report/report-utils.js'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 
@@ -60,29 +60,13 @@ function getPageSummaries(activities){
     return array;
 }
 
-function getDocument(url){
-
-    let path = url;
-        
-    let index = path.lastIndexOf('/');
-    let doc = path.substring(index+1);
-
-    const MAX_DOC_LEN = 30;
-    if(doc.length>MAX_DOC_LEN){
-        doc= doc.substring(0,MAX_DOC_LEN) + '...';
-    }
-
-    return doc;
-}
-
-
 function renderPageSummaries(pageSummaries){
     let table = document.getElementById('pageSummariesBody');
     table.innerHTML = '';
 
     for(let item of pageSummaries){
         let {site, url, title, wordChanges, duration, startTime, endTime} = item;
-        let doc = getDocument(url);
+        let doc = getDocumentOfUrl(url);
 
         let startTimeFormatted = new Date(startTime).toLocaleString( );
         let endTimeFormatted = new Date(endTime).toLocaleString( );
@@ -94,7 +78,7 @@ function renderPageSummaries(pageSummaries){
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
-            <td>${wordChanges}</td>
+            <td>${ formatVocabularyChange(wordChanges) }</td>
         `;
 
         let tr = document.createElement("tr");

@@ -618,6 +618,9 @@
     "reportReadingActivitiesHeaderTitle":{
         "message":"标题"
     },
+    "reportReadingActivitiesHeaderDocument":{
+        "message":"文档"
+    },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"词数"
     },
@@ -625,7 +628,7 @@
         "message":"持续时间"
     },
     "reportReadingActivitiesHeaderVocabulary":{
-        "message":"词汇量变化"
+        "message":"词汇量(变化)"
     },
 
     "reportPageSummariesTitle":{

@@ -15,6 +15,14 @@ function formatDuration(milliseconds) {
     return fh + ":" + fm + ":" + fs;
 }
 
+function formatVocabularyChange(change){
+    if(change>0){
+        return '+'+change;
+    }
+    
+    return ''+change;
+}
+
 function filterActivityByTimeRange(activities, timeRange){
     
     let startTime, endTime;
@@ -30,4 +38,20 @@ function filterActivityByTimeRange(activities, timeRange){
     return filtered;
 }
 
-export { formatDuration, filterActivityByTimeRange }
+function getDocumentOfUrl(url){
+
+    let path = url;
+        
+    let index = path.lastIndexOf('/');
+    let doc = path.substring(index+1);
+
+    const MAX_DOC_LEN = 30;
+    if(doc.length>MAX_DOC_LEN){
+        doc= doc.substring(0,MAX_DOC_LEN) + '...';
+    }
+
+    return doc;
+}
+
+
+export { formatDuration, filterActivityByTimeRange, formatVocabularyChange, getDocumentOfUrl }

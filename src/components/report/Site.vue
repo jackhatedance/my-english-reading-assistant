@@ -3,7 +3,7 @@ import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, wat
 import { useRoute } from 'vue-router'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
-import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { formatDuration, formatVocabularyChange, filterActivityByTimeRange } from '../../report/report-utils.js'
 
 const props = defineProps({
     
@@ -64,7 +64,7 @@ function renderSiteSummaries(summaries){
         <td>${startTimeFormatted}</td>
         <td>${lastTimeFormatted}</td>
             <td>${durationFormatted}</td>
-            <td>${wordChanges}</td>
+            <td>${ formatVocabularyChange(wordChanges) }</td>
         `;
 
         let tr = document.createElement("tr");
