@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } fr
 import { BookDao } from '../../service/BookDao.js';
 import { searchBookByUrlAsync, matchUrl } from '../../service/bookService.js';
 import getfake from 'getfake';
-import { parseZlibBookTitle } from '../../book/zlibrary-utils.js'
+import { parseBookTitle } from '../../book/book-title-utils.js'
 
 const t = chrome.i18n.getMessage;
 
@@ -155,7 +155,7 @@ async function clickAutofill() {
     
     let isFlowoss = isFlowossEpubUrl(url);
     if(isFlowoss){
-        let parseResult = parseZlibBookTitle(bookTitle);
+        let parseResult = parseBookTitle(bookTitle);
         if(parseResult){
             bookTitle = parseResult.title;
         }

@@ -3,13 +3,16 @@
  * e.g. A Clash of Kings (George R. R. Martin) (Z-Library).epub
  * @param title 
  */
-function parseZlibBookTitle(text){
+function parseBookTitle(text){
     
+    //ZlibBook
     let p1 = /(?<title>.+) \((?<author>[^)]+)\) \(Z-Library\)\.epub/;
     let p2 = /(?<title>.+) \((?<author>[^)]+) \(Z-Library\)\.epub/;
     let p3 = /(?<title>.+) \(Z-Library\)\.epub/;
+    
+    let p4 = /(?<title>.+)\.epub/;
 
-    let patterns = [p1,p2,p3];
+    let patterns = [p1,p2,p3, p4];
     for(let item of patterns){
         let matchResult = match(text, item);
         if(matchResult){
@@ -28,4 +31,4 @@ function match(text, pattern) {
     }
 }
 
-export { parseZlibBookTitle }
+export { parseBookTitle }
