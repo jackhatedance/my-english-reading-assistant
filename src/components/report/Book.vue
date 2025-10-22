@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import { formatDuration, formatVocabularyChange, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { formatDuration, formatVocabularyChange, formatSpeed, filterActivityByTimeRange } from '../../report/report-utils.js'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { getAllBooks, getBook, searchBookByUrl } from '../../service/bookService.js'
@@ -108,7 +108,7 @@ function renderBookSummaries(bookSummaries){
             <td>${durationFormatted}</td>
             <td>${pageCount}</td>
             <td>${totalWordCount}</td>
-            <td>${speed}</td>
+            <td>${ formatSpeed(speed) }</td>
             <td>${ formatVocabularyChange(wordChanges) }</td>
         `;
 

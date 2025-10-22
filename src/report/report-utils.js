@@ -15,6 +15,18 @@ function formatDuration(milliseconds) {
     return fh + ":" + fm + ":" + fs;
 }
 
+function formatSpeed(speed){
+    let speedStr;
+    const MAX_SPEED = 350;
+    if(speed>MAX_SPEED){
+        //impossible, meaningless
+        speedStr = '';
+    }else{
+        speedStr = ''+speed;
+    }
+    return speedStr;
+}
+
 function formatVocabularyChange(change){
     if(change>0){
         return '+'+change;
@@ -54,4 +66,4 @@ function getDocumentOfUrl(url){
 }
 
 
-export { formatDuration, filterActivityByTimeRange, formatVocabularyChange, getDocumentOfUrl }
+export { formatDuration, filterActivityByTimeRange, formatVocabularyChange, formatSpeed, getDocumentOfUrl }

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import { formatDuration, filterActivityByTimeRange, formatVocabularyChange, getDocumentOfUrl } from '../../report/report-utils.js'
+import { formatDuration, formatSpeed, filterActivityByTimeRange, formatVocabularyChange, getDocumentOfUrl } from '../../report/report-utils.js'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 
@@ -92,7 +92,7 @@ function renderPageSummaries(pageSummaries){
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
             <td>${totalWordCount}</td>
-            <td>${speed}</td>
+            <td>${ formatSpeed(speed) }</td>
             <td>${ formatVocabularyChange(wordChanges) }</td>
         `;
 
