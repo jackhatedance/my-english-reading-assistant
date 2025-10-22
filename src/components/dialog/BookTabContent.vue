@@ -85,7 +85,7 @@ function validateTitle(){
     }
     titleStr = titleStr.trim();
     if(titleStr == ''){
-        errors.push('can not be empty');
+        errors.push(t('sidepanelBookTabTitleErrorEmpty'));
     }
     
     titleErrors.value = errors;
@@ -100,12 +100,12 @@ function validateUrlPattern(){
     }
     value = value.trim();
     if(value == ''){
-        errors.push('can not be empty');
+        errors.push(t('sidepanelBookTabUrlPatternEmpty'));
     }
 
     let matchUrlResult = matchUrl(props.url, value);
     if(!matchUrlResult){
-        errors.push('does not match page URL');
+        errors.push(t('sidepanelBookTabUrlPatternNotMatch'));
     }
     
     urlPatternErrors.value = errors;
