@@ -39,6 +39,7 @@ function getPageSummaries(activities){
                 startTime: activity.startTime,
                 endTime: 0,
                 duration: 0,
+                totalWordCount: 0,
                 wordChanges: 0
             };
 
@@ -48,6 +49,7 @@ function getPageSummaries(activities){
         summary.startTime = Math.min(activity.startTime, summary.startTime);
         summary.endTime = Math.max(activity.endTime, summary.endTime);
         summary.duration = summary.duration + activity.duration;      
+        summary.totalWordCount = activity.totalWordCount;
         summary.wordChanges = summary.wordChanges + activity.wordChanges;
     }
 
@@ -65,19 +67,25 @@ function renderPageSummaries(pageSummaries){
     table.innerHTML = '';
 
     for(let item of pageSummaries){
-        let {site, url, title, wordChanges, duration, startTime, endTime} = item;
+        let {site, url, title, wordChanges, totalWordCount, duration, startTime, endTime} = item;
         let doc = getDocumentOfUrl(url);
 
         let startTimeFormatted = new Date(startTime).toLocaleString( );
         let endTimeFormatted = new Date(endTime).toLocaleString( );
 
         let durationFormatted =formatDuration(duration);
+
+        let durationInMinutes = duration / (60 * 1000);
+        let speed =  (totalWordCount / durationInMinutes).toFixed(0);
+
         const liInnerHTML = `<td>${site}</td>
         <td><a target="_blank" href='${url}'>${title}</a></td>
         <td>${doc}</td>
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
+            <td>${totalWordCount}</td>
+            <td>${speed}</td>
             <td>${ formatVocabularyChange(wordChanges) }</td>
         `;
 
@@ -121,6 +129,8 @@ init();
                     <th>{{ t('reportPageSummariesHeaderStartReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderLastReadTime') }}</th>
                     <th>{{ t('reportPageSummariesHeaderDuration') }}</th>
+                    <th>{{ t('reportPageSummariesHeaderWords') }}</th>
+                    <th>{{ t('reportPageSummariesHeaderSpeed') }}</th>
                     <th>{{ t('reportPageSummariesHeaderVocabulary') }}</th>
                 </tr>        
             </thead>

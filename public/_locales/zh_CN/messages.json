@@ -652,6 +652,12 @@
     "reportPageSummariesHeaderDuration":{
         "message":"持续时间"
     },
+    "reportPageSummariesHeaderWords":{
+        "message":"词数"
+    },
+    "reportPageSummariesHeaderSpeed":{
+        "message":"速度(词每分)"
+    },
     "reportPageSummariesHeaderVocabulary":{
         "message":"词汇量变化"
     },

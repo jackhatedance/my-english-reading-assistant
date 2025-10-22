@@ -654,6 +654,12 @@
     "reportPageSummariesHeaderDuration":{
         "message":"Duration"
     },
+    "reportPageSummariesHeaderWords":{
+        "message":"Words"
+    },
+    "reportPageSummariesHeaderSpeed":{
+        "message":"Speed(wpm)"
+    },
     "reportPageSummariesHeaderVocabulary":{
         "message":"Vocab. Chg."
     },
