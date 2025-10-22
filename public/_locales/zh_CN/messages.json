@@ -634,6 +634,9 @@
     "reportPageSummariesTitle":{
         "message":"网页统计"
     },
+    "reportPageSummariesTitleDesc":{
+        "message":"注：只有读完整页的情况下，速度才是有意义的。"
+    },
     "reportPageSummariesHeaderSite":{
         "message":"网站"
     },
@@ -665,6 +668,9 @@
 
     "reportBookSummariesTitle":{
         "message":"书籍统计"
+    },
+    "reportBookSummariesTitleDesc":{
+        "message":"注：只有读完整页的情况下，速度才是有意义的。"
     },
     "reportBookSummariesHeaderSite":{
         "message":"网站"

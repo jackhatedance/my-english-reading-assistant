@@ -118,7 +118,7 @@ init();
 <template>
     <div class="pages">     
         <h1>{{ t('reportPageSummariesTitle') }}</h1>
-        
+        <p>{{ t('reportPageSummariesTitleDesc') }}</p>
         
         <table id="pageSummaries">
             <thead>

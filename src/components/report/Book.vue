@@ -140,7 +140,7 @@ init();
 <template>
     <div class="books">     
         <h1>{{ t('reportBookSummariesTitle') }}</h1>
-        
+        <p>{{ t('reportBookSummariesTitleDesc') }}</p>
         
         <table id="bookSummaries">
             <thead>

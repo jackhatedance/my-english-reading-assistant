@@ -636,6 +636,9 @@
     "reportPageSummariesTitle":{
         "message":"Page Summaries"
     },
+    "reportPageSummariesTitleDesc":{
+        "message":"Note: Speed ​​is only meaningful when reading complete pages."
+    },
     "reportPageSummariesHeaderSite":{
         "message":"Site"
     },
@@ -666,6 +669,9 @@
 
     "reportBookSummariesTitle":{
         "message":"Book Summaries"
+    },
+    "reportBookSummariesTitleDesc":{
+        "message":"Note: Speed ​​is only meaningful when reading complete pages."
     },
     "reportBookSummariesHeaderSite":{
         "message":"Site"
