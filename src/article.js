@@ -237,6 +237,8 @@ function parseArticleContent(siteOptions, article, lines, newTagPositions){
 
 
 function extractIsbn(content) {
+    return [];
+    /* not need to extract isbn from page content.
     let isbns = [];
 
     if(content.includes('ISBN')){
@@ -253,6 +255,7 @@ function extractIsbn(content) {
     }
 
     return isbns;
+    */
 }
 
 function parseParagraphContent(siteOptions, article, paragraphInfo, content, newTagPositions){

@@ -24,9 +24,6 @@ init();
     <div class="detail">
         <h3>Detail</h3>
         <div class="fields">
-            <label>{{ t('options_section_book_detail_isbn') }}</label>
-            <span>{{ props.book.isbn }}</span>
-
             <label>{{ t('options_section_book_detail_title') }}</label>
             <span>{{ props.book.title }}</span>
                 

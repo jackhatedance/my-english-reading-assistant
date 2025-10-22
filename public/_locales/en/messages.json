@@ -370,9 +370,6 @@
     "options_section_book_detail_title":{
         "message":"Title"
     },
-    "options_section_book_detail_isbn":{
-        "message":"ISBN"
-    },
     "options_section_book_detail_url_pattern":{
         "message":"URL pattern"
     },
@@ -516,9 +513,6 @@
     "sidepanelBookTabUrlLabel":{
         "message":"Page URL"
     },
-    "sidepanelBookTabIsbnLabel":{
-        "message":"ISBN"
-    },
     "sidepanelBookTabTitleLabel":{
         "message":"Title"
     },
@@ -617,9 +611,6 @@
     "reportReadingActivitiesHeaderTitle":{
         "message":"Title"
     },
-    "reportReadingActivitiesHeaderIsbn":{
-        "message":"ISBN"
-    },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"Words"
     },
@@ -642,9 +633,6 @@
     "reportPageSummariesHeaderDocument":{
         "message":"Document"
     },
-    "reportPageSummariesHeaderIsbn":{
-        "message":"ISBN"
-    },
     "reportPageSummariesHeaderStartReadTime":{
         "message":"Start Time"
     },
@@ -666,9 +654,6 @@
     },
     "reportBookSummariesHeaderTitle":{
         "message":"Title"
-    },
-    "reportBookSummariesHeaderIsbn":{
-        "message":"ISBN"
     },
     "reportBookSummariesHeaderStartReadTime":{
         "message":"Start Time"

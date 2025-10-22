@@ -95,12 +95,8 @@ async function clickDelete() {
 async function clickAutofill() {
     console.log('page:'+ JSON.stringify(props.page));
 
-    let isbns = props.page.isbnsInContent;
-    if(isbns!=null && isbns.length>0){
-        isbn.value = isbn[0];
-    }else{
-        isbn.value = getfake.isbn.v13.any();
-    }
+    //need a unique ID as book key
+    isbn.value = getfake.isbn.v13.any();
 
     let url = props.page.url;
     
@@ -151,10 +147,6 @@ async function clickReset() {
     update(props.url);
 }
 
-function changeIsbn(){
-    isbn.value = isbn.value.replaceAll(/-/g, '');
-}
-
 const init = async () => {
 
 };
@@ -176,11 +168,7 @@ init();
             <div class="input">
                 <h2>{{ title }}</h2>
             </div>
-            
-            <label>{{ t('sidepanelBookTabIsbnLabel') }}</label>
-            <div class="input">
-                {{ isbn }}
-            </div>
+                       
 
             <label>{{ t('sidepanelBookTabUrlPatternSimpleLabel') }}</label>
             <div class="input">
@@ -198,13 +186,6 @@ init();
                 <div class="url">{{ props.url }}</div>
             </div>
                 
-            <label>{{ t('sidepanelBookTabIsbnLabel') }}</label>
-            <div class="input">
-                <input class="isbn" v-model="isbn" @change="changeIsbn">
-            </div>
-        
-
-        
             <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
             <div class="input">
                 <input type="text" class="title" v-model="title">
@@ -257,13 +238,7 @@ init();
     .url {
         overflow-wrap: anywhere;
     }
-    .isbn {
-        width: 60%;
-    }
-    .query-isbn {
-        width: 50px;
-    }
-    
+        
     .title {
         width: 100%;
     }

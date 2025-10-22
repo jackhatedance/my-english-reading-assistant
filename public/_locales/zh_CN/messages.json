@@ -369,9 +369,6 @@
     "options_section_book_detail_title":{
         "message":"标题"
     },
-    "options_section_book_detail_isbn":{
-        "message":"书号"
-    },
     "options_section_book_detail_url_pattern":{
         "message":"网址规则"
     },
@@ -514,9 +511,6 @@
     "sidepanelBookTabUrlLabel":{
         "message":"网页地址"
     },
-    "sidepanelBookTabIsbnLabel":{
-        "message":"书号"
-    },
     "sidepanelBookTabTitleLabel":{
         "message":"标题"
     },
@@ -618,9 +612,6 @@
     "reportReadingActivitiesHeaderTitle":{
         "message":"标题"
     },
-    "reportReadingActivitiesHeaderIsbn":{
-        "message":"书号"
-    },
     "reportReadingActivitiesHeaderWordCount":{
         "message":"词数"
     },
@@ -642,9 +633,6 @@
     },
     "reportPageSummariesHeaderDocument":{
         "message":"文档"
-    },
-    "reportPageSummariesHeaderIsbn":{
-        "message":"书号"
     },
     "reportPageSummariesHeaderStartReadTime":{
         "message":"开始时间"
@@ -668,9 +656,6 @@
     },
     "reportBookSummariesHeaderTitle":{
         "message":"标题"
-    },
-    "reportBookSummariesHeaderIsbn":{
-        "message":"书号"
     },
     "reportBookSummariesHeaderStartReadTime":{
         "message":"开始时间"

@@ -27,7 +27,6 @@ function getPageSummaries(activities){
         let site = activity.site;
         let url = activity.url;
         let title = activity.title;
-        let isbn = activity.isbn;
         
         let key = url;
         let summary = pageSummaryMap.get(key);
@@ -37,7 +36,6 @@ function getPageSummaries(activities){
                 site: site,
                 url: url,
                 title: title,
-                isbn: isbn,
                 startTime: activity.startTime,
                 endTime: 0,
                 duration: 0,
@@ -83,13 +81,9 @@ function renderPageSummaries(pageSummaries){
     table.innerHTML = '';
 
     for(let item of pageSummaries){
-        let {site, url, title, isbn, wordChanges, duration, startTime, endTime} = item;
+        let {site, url, title, wordChanges, duration, startTime, endTime} = item;
         let doc = getDocument(url);
 
-        if(!isbn){
-        isbn = '';
-        }
-        
         let startTimeFormatted = new Date(startTime).toLocaleString( );
         let endTimeFormatted = new Date(endTime).toLocaleString( );
 

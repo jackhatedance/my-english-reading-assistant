@@ -90,7 +90,7 @@ function renderBookSummaries(bookSummaries){
     table.innerHTML = '';
 
     for(let item of bookSummaries){
-        let {site, url, title, isbn, wordChanges, pageCount, totalWordCount, duration, startTime, endTime} = item;
+        let {site, title, isbn, wordChanges, pageCount, totalWordCount, duration, startTime, endTime} = item;
 
                 
         let startTimeFormatted = new Date(startTime).toLocaleString( );
@@ -103,7 +103,6 @@ function renderBookSummaries(bookSummaries){
 
         const liInnerHTML = `<td>${site}</td>
         <td>${title}</td>
-        <td>${isbn}</td>
         <td>${startTimeFormatted}</td>
         <td>${endTimeFormatted}</td>
             <td>${durationFormatted}</td>
@@ -148,7 +147,6 @@ init();
                 <tr>
                     <th>{{ t('reportBookSummariesHeaderSite') }}</th>
                     <th>{{ t('reportBookSummariesHeaderTitle') }}</th>
-                    <th>{{ t('reportBookSummariesHeaderIsbn') }}</th>
                     <th>{{ t('reportBookSummariesHeaderStartReadTime') }}</th>
                     <th>{{ t('reportBookSummariesHeaderLastReadTime') }}</th>
                     <th>{{ t('reportBookSummariesHeaderDuration') }}</th>
