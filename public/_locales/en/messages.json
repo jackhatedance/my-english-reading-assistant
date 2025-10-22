@@ -639,6 +639,12 @@
     "reportPageSummariesTitleDesc":{
         "message":"Note: Speed ​​is only meaningful when reading complete pages."
     },
+    "reportPageSummariesFilterTitle":{
+        "message":"Title contains:"
+    },
+    "reportPageSummariesQueryButton":{
+        "message":"Refresh"
+    },
     "reportPageSummariesHeaderSite":{
         "message":"Site"
     },

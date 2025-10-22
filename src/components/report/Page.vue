@@ -16,6 +16,7 @@ const timeRange = inject('timeRange');
 const route = useRoute();
 const t = chrome.i18n.getMessage;
 
+const titleFilter = ref('');
 
 watch(() => timeRange.value, async (newValue) => {
     await refresh();
@@ -48,6 +49,7 @@ function getPageSummaries(activities){
 
         summary.startTime = Math.min(activity.startTime, summary.startTime);
         summary.endTime = Math.max(activity.endTime, summary.endTime);
+        summary.title = activity.title;
         summary.duration = summary.duration + activity.duration;      
         summary.totalWordCount = activity.totalWordCount;
         summary.wordChanges = summary.wordChanges + activity.wordChanges;
@@ -55,7 +57,12 @@ function getPageSummaries(activities){
 
     let array = Array.from(pageSummaryMap, ([name, value]) => ({ ... value}));
 
-
+    //filter
+    
+    let titleContains = titleFilter.value;
+    if(titleContains){
+        array = array.filter(item => item.title.toLowerCase().includes(titleContains.toLowerCase()));    
+    }
 
     array.sort(function(a, b){return b.endTime - a.endTime;});
     //console.log('page summaries:' + JSON.stringify(array));
@@ -105,6 +112,10 @@ async function refresh(){
     renderPageSummaries(pageSummaries);
 }
 
+async function onQuery(){
+    await refresh();
+}
+
 const init = async () => {
 
 
@@ -119,7 +130,11 @@ init();
     <div class="pages">     
         <h1>{{ t('reportPageSummariesTitle') }}</h1>
         <p>{{ t('reportPageSummariesTitleDesc') }}</p>
-        
+        <div class="filter">
+            <label>{{ t('reportPageSummariesFilterTitle') }}</label>
+            <input v-model="titleFilter" @keyup.enter="onQuery">
+            <button @click="onQuery">{{ t('reportPageSummariesQueryButton') }}</button>
+        </div>
         <table id="pageSummaries">
             <thead>
                 <tr>
@@ -142,7 +157,11 @@ init();
 </template>
 
 <style>
-
+.pages {
+    .filter * {
+        margin: 5px;
+    }
+}
 
 
 </style>

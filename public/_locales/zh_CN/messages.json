@@ -637,6 +637,12 @@
     "reportPageSummariesTitleDesc":{
         "message":"注：只有读完整页的情况下，速度才是有意义的。"
     },
+    "reportPageSummariesFilterTitle":{
+        "message":"标题包含:"
+    },
+    "reportPageSummariesQueryButton":{
+        "message":"刷新"
+    },
     "reportPageSummariesHeaderSite":{
         "message":"网站"
     },
