@@ -40,13 +40,13 @@ onMounted(()=>{
 });
 
 watch(() => props.url, (newValue) => {
-    console.log('url changed:'+ newValue);
+    //console.log('url changed:'+ newValue);
     update(newValue);
 });
 
 async function update(url){
     let book = await searchBookByUrlAsync(url);
-    console.log('update, url:'+url+', book:'+ JSON.stringify(book));
+    //console.log('update, url:'+url+', book:'+ JSON.stringify(book));
     bookMeta.value = book;
     if(book){
         isbn.value = book.isbn;
