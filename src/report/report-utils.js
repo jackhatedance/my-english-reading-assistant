@@ -46,6 +46,10 @@ function filterActivityByTimeRange(activities, timeRange){
         endTime = timeRange[1];
     }
     
+    //filter out exceptional data, 8 hours
+    const MAX_DURATION = 8 * 60 * 60 * 1000;
+    activities = activities.filter(item => item.duration < MAX_DURATION);
+
     let filtered = activities.filter(item => item.endTime>startTime && item.endTime<endTime);
     return filtered;
 }
