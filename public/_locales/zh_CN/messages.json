@@ -630,6 +630,12 @@
     "reportReadingActivitiesHeaderVocabulary":{
         "message":"词汇量(变化)"
     },
+    "reportReadingActivitySummariesFilterTitle":{
+        "message":"标题包含:"
+    },
+    "reportReadingActivitySummariesQueryButton":{
+        "message":"刷新"
+    },
 
     "reportPageSummariesTitle":{
         "message":"网页统计"

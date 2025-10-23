@@ -632,6 +632,12 @@
     "reportReadingActivitiesHeaderVocabulary":{
         "message":"Vocab.(Chg.)"
     },
+    "reportReadingActivitySummariesFilterTitle":{
+        "message":"Title contains:"
+    },
+    "reportReadingActivitySummariesQueryButton":{
+        "message":"Refresh"
+    },
 
     "reportPageSummariesTitle":{
         "message":"Page Summaries"

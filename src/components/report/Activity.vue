@@ -14,12 +14,21 @@ const route = useRoute();
 const t = chrome.i18n.getMessage;
 
 
+const titleFilter = ref('');
+
 watch(() => timeRange.value, async (newValue) => {
     await refresh();
 });
 
 
 function renderReadingActivities(activities){
+    //filter
+    
+    let titleContains = titleFilter.value;
+    if(titleContains){
+        activities = activities.filter(item => item.title.toLowerCase().includes(titleContains.toLowerCase()));    
+    }
+
     let history = activities;
 
     history.sort(function(a, b){return a.endTime - b.endTime});
@@ -71,6 +80,11 @@ function renderReadingActivities(activities){
     }
 }
 
+
+async function onQuery(){
+    await refresh();
+}
+
 async function refresh(){
     let activities = await loadActivitiesFromStorage();
     activities = filterActivityByTimeRange(activities, timeRange.value);
@@ -87,8 +101,15 @@ init();
 </script>
 
 <template>
-    <div class="sites">     
+    <div class="activities">     
         <h1>{{ t('reportReadingActivitiesTitle') }}</h1>
+        
+        <div class="filter">
+            <label>{{ t('reportReadingActivitySummariesFilterTitle') }}</label>
+            <input v-model="titleFilter" @keyup.enter="onQuery">
+            <button @click="onQuery">{{ t('reportReadingActivitySummariesQueryButton') }}</button>
+        </div>
+
         <table id="history">
             <thead>
                 <tr>
@@ -110,7 +131,11 @@ init();
 </template>
 
 <style>
-
+.activities {
+    .filter * {
+        margin: 5px;
+    }
+}
 
 
 </style>
