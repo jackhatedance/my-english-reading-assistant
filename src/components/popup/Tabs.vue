@@ -9,26 +9,14 @@ import DictionaryTab from './tabs/DictionaryTab.vue'
 
 import { ref, watch } from "vue";
 
-const emit = defineEmits(['markWord', 'vocabulary', 'note', 'change-setting']);
+const emit = defineEmits(['change-setting']);
 const t = chrome.i18n.getMessage;
 
 const props = defineProps({
-    word: String,
-    dictionary: String,
-    notes: Array,
-    page: Object,
+    
     activeTabId: String,
-    changeToggle: Boolean,
-    menuItems: Array,
+    
 });
-
-
-const sidepanelTabActions = chrome.i18n.getMessage('sidepanelTabActions');
-const sidepanelTabMenu = chrome.i18n.getMessage('sidepanelTabMenu');
-const sidepanelTabVocabulary = chrome.i18n.getMessage('sidepanelTabVocabulary');
-const sidepanelTabNotes = chrome.i18n.getMessage('sidepanelTabNotes');
-const sidepanelTabBook = chrome.i18n.getMessage('sidepanelTabBook');
-
 
 //console.log('Tabs notes:' + JSON.stringify(props.notes));
 
@@ -49,10 +37,6 @@ function onChangeSetting(type){
     emit('change-setting', type);
 }
 
-function onVocabulary(){
-    
-    emit('vocabulary');
-}
 
 const activeTabId = ref(props.activeTabId);
 watch(() => props.changeToggle, (newValue, oldValue) => {
@@ -126,10 +110,10 @@ ul.tabs > li{
   margin-right : 2px;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
-  padding : 5px;
   background: #ddd;
   position : relative;
   max-width : 200px;
+  font-size: large;
 }
 
 ul.tabs > li > a{
