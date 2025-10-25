@@ -18,6 +18,8 @@ const showSettings = ref(false);
 const showNothingToDo = ref(false);
 const options = ref();
 
+provide('options', options);
+
 watch(() => pageInfo.value, (newValue) => {
   if(newValue === null) {
     showSettings.value = false;
@@ -228,7 +230,7 @@ input:checked + .slider:before {
 }
 
 .popup-settings {
-  border: solid 1px;
+  
   
   >div {
     padding: 5px;
@@ -242,19 +244,30 @@ input:checked + .slider:before {
       color: red;
     }
   }
+
+  .buttons {
+    text-align: center;
+  }
 }
 
 #pageSection{
   display: block;
 }
 
-#options-container {
+.options-container {
   width:100%;
   text-align:right;
 
   a img {
     width: 20px;
     height: 20px;
+    
+  }
+  a {
+    
+    img:hover {
+        transform: scale(1.2);
+    }
   }
 }
 

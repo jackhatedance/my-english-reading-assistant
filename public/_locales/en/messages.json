@@ -111,6 +111,15 @@
     "popupNothingToDoTitle":{
         "message":"Nothing to do on this page"
     },
+    "popup_tab_annotation":{
+        "message":"annotation"
+    },
+    "popup_tab_text":{
+        "message":"text"
+    },
+    "popup_tab_dictionary":{
+        "message":"dictionary"
+    },
     
     "optionsPageTitle":{
         "message":"Options"

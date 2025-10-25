@@ -111,6 +111,15 @@
     "popupNothingToDoTitle":{
         "message":"当前页面无事可做"
     },
+    "popup_tab_annotation":{
+        "message":"注解"
+    },
+    "popup_tab_text":{
+        "message":"正文"
+    },
+    "popup_tab_dictionary":{
+        "message":"词典"
+    },
     
     "optionsPageTitle":{
         "message":"设置"
