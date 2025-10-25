@@ -72,8 +72,17 @@ function addMeaStyle(document) {
       mea-token:nth-child(2n+1 of .mea-word)::after {        
         top: -1.5em;        
       }
-      
-      mea-token:nth-child(n of .mea-highlight)::after {        
+
+      mea-token:nth-child(2n of .mea-word)::after {        
+        top: -2.5em;        
+      }
+
+      /* for note */
+      mea-token:nth-child(2n+1 of .mea-nonword)::after {        
+        top: -1.5em;        
+      }
+
+      mea-token:nth-child(2n of .mea-nonword)::after {        
         top: -2.5em;        
       }
 
@@ -345,15 +354,22 @@ function getContentInfo(content){
 
 function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
 
-    let selectors = [`mea-token:nth-child(n of .mea-highlight)::${suffix}`,
-      `mea-token:nth-child(2n+1 of .mea-word)::${suffix}`
-        ];
+    //for pronunciation and definition
+    let selectorEven = `mea-token:nth-child(2n of .mea-word)::${suffix}`;
+    let selectorOdd =  `mea-token:nth-child(2n+1 of .mea-word)::${suffix}`;
+    
+    //for notes
+    let selectorEvenNonword = `mea-token:nth-child(2n of .mea-nonword)::${suffix}`;
+    let selectorOddNonword =  `mea-token:nth-child(2n+1 of .mea-nonword)::${suffix}`;
+        
     
     deleteStyleRule(styleSheet, `.mea-highlight.mea-hide::${suffix}`);
     deleteStyleRule(styleSheet, `.mea-highlight::${suffix}`);
 
-    deleteStyleRule(styleSheet, selectors[0]);
-    deleteStyleRule(styleSheet, selectors[1]);
+    deleteStyleRule(styleSheet, selectorEven);
+    deleteStyleRule(styleSheet, selectorOdd);
+    deleteStyleRule(styleSheet, selectorEvenNonword);
+    deleteStyleRule(styleSheet, selectorOddNonword);
 
     if(annotationOptions) {
         const { contentExpr, unknownWordOnly } = getContentInfo(annotationOptions.content);
@@ -362,15 +378,21 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
         rules.forEach(rule => styleSheet.insertRule(rule, 0));
 
         let offset =0;
-        let ruleDefault = generateCssRuleOfSubAnnotation(annotationOptions, selectors[0], offset, align);
+        let ruleDefault = generateCssRuleOfSubAnnotation(annotationOptions, selectorEven, offset, align);
         styleSheet.insertRule(ruleDefault, 0);
+
+        let ruleDefaultNonword = generateCssRuleOfSubAnnotation(annotationOptions, selectorEvenNonword, offset, align);
+        styleSheet.insertRule(ruleDefaultNonword, 0);
 
         const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
         if (annotationOptions.interlaced) {
             offset = 1;
         }
-        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions2, selectors[1], offset, align);
+        let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions2, selectorOdd, offset, align);
         styleSheet.insertRule(ruleOdd, 0);
+
+        let ruleOddNonword = generateCssRuleOfSubAnnotation(annotationOptions2, selectorOddNonword, offset, align);
+        styleSheet.insertRule(ruleOddNonword, 0);
     }
     
     //return rule;
