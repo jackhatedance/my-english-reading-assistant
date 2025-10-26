@@ -38,7 +38,7 @@ init();
           <div class="field" id="dictionaryField" v-show="additionalDictionaryEnabled">
             <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
             <div class="inputs">
-              <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="3">
+              <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="5">
                   <option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
               </select>           
             </div> 
@@ -48,6 +48,8 @@ init();
 </template>
 
 <style>
-
+#additionalDictionaries {
+  width: 10em;
+}
 
 </style>

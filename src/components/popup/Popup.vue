@@ -101,6 +101,7 @@ html {
 
 body {
   width: 330px;
+  background-color: #efefef;
 }
 
 .app {
@@ -296,9 +297,7 @@ input:checked + .slider:before {
   
 }
 
-#additionalDictionaries {
-  width: 10em;
-}
+
 
 #nothing-to-do {
   

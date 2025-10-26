@@ -93,16 +93,16 @@ ul.tabs{
 
 ul.tabs > li.active{
   z-index: 2;
-  background: #efefef;
+  background: #ffffff;
 }
 
 ul.tabs > li.active:before{
-  border-color : transparent #efefef transparent transparent;
+  border-color : transparent #ffffff transparent transparent;
 }
 
 
 ul.tabs > li.active:after{
-  border-color : transparent transparent transparent #efefef;
+  border-color : transparent transparent transparent #ffffff;
 }
 
 ul.tabs > li{
@@ -134,6 +134,6 @@ ul.tabs > li > a{
 .clearfix { zoom: 1; }
 
 .tabbody.active{
-  background: #efefef;
+  background: #ffffff;
 }
 </style>
