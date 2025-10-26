@@ -256,7 +256,6 @@ input:checked + .slider:before {
 
 .options-container {
   width:100%;
-  text-align:right;
 
   a img {
     width: 20px;

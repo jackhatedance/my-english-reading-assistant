@@ -47,7 +47,7 @@ init();
 </script>
 
 <template>
-    <div id="header-container">
+    <div class="header-container">
         
         <a href="#" :title="t('popupEpub')"><img src="icons/epub.png" alt="Epub Reader" @click="onClickEpub"></a>
         
@@ -63,10 +63,11 @@ init();
     </div>
 </template>
 <style>
-#header-container a {
-    margin-right: 5px;
-
-    
+.header-container {
+    text-align: right;
+    a {
+        margin-right: 5px;
+    }
 }
 
 </style>
