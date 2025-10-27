@@ -74,6 +74,9 @@ provide('unknownWordColor', unknownWordColor);
 const unknownWordWidth = ref(1);
 provide('unknownWordWidth', unknownWordWidth);
 
+const textFontSize = ref('');
+provide('textFontSize', textFontSize);
+
 const additionalDictionaryMetas = ref([]);
 provide('additionalDictionaryMetas', additionalDictionaryMetas);
 const additionalDictionaries = ref([]);
@@ -152,6 +155,7 @@ function buildOptions(){
       enabled: contentStyleEnabled.value,
       unknownWordColor: unknownWordColor.value,
       unknownWordWidth: unknownWordWidth.value,
+      textFontSize: textFontSize.value,
     },
     other: {
       additionalDictionaries: toRaw(additionalDictionaries.value),
@@ -297,6 +301,13 @@ function updateViewModel(siteOptions, settingsOnly = false){
   contentStyleEnabled.value = contentOptions.enabled;
   unknownWordColor.value = contentOptions.unknownWordColor;
   unknownWordWidth.value = contentOptions.unknownWordWidth;
+
+  if(contentOptions.textFontSize > 0){
+    textFontSize.value = contentOptions.textFontSize;
+  } else {
+    textFontSize.value = null;
+  }
+  
 
   let otherOptions = siteOptions.other;
   additionalDictionaries.value = otherOptions.additionalDictionaries;

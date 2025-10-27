@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
+import HelpLink from '../../HelpLink.vue'
 
 const emit = defineEmits(['change-setting']);
 
@@ -11,6 +12,7 @@ const props = defineProps({
 const lineHeight = inject('lineHeight');
 const unknownWordColor = inject('unknownWordColor');
 const unknownWordWidth = inject('unknownWordWidth');
+const textFontSize = inject('textFontSize');
 
 const contentStyleEnabled = inject('contentStyleEnabled');
 
@@ -50,6 +52,13 @@ init();
             <label>{{ t('popupUnknownWordWidthLabel') }}</label>
             <div class="inputs">
               <input id="unknownWordWidth" v-model="unknownWordWidth" @change="onChangeSetting" type="number" value="1" min="1" max="5" step="1">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>{{ t('popup_settings_text_font_size_label') }}<HelpLink type="guide" keyword="正文字体尺寸"/></label>
+            <div class="inputs">
+              <input v-model="textFontSize" @change="onChangeSetting" type="number" value="1" min="14" max="28" step="1">
             </div>
           </div>
     </div>

@@ -1,7 +1,7 @@
 import { DefaultSiteProfile } from '../DefaultSiteProfile.js';
 import { DomainMatcher } from '../matcher/DomainMatcher.js';
 import { DefaultSiteConfig } from '../config/DefaultSiteConfig.js';
-import { generateCssRuleOfHighlight as commonGenerateCssRuleOfHighlight } from '../../style.js';
+import { generateCssRules as commonGenerateCssRules } from '../../style.js';
 import { isLeafTextTag } from '../../html.js';
 
 class RedditSiteProfile extends DefaultSiteProfile {
@@ -11,12 +11,12 @@ class RedditSiteProfile extends DefaultSiteProfile {
         super(matcher.name, matcher, config);
     } 
     
-    generateCssRuleOfHighlight(options) {
+    generateCssRules(options) {
 
 
         let extraStyle = 'visibility: visible !important;';
-        let rule = commonGenerateCssRuleOfHighlight(options, extraStyle);
-        return rule;
+        let rules = commonGenerateCssRules(options, extraStyle);
+        return rules;
     }
 
     isLeafTextElement(element){

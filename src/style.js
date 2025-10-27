@@ -244,7 +244,7 @@ function generateCssRuleOfSubAnnotation(options, selector, offset, align) {
     return rule;
 }
 
-function generateCssRuleOfHighlight(options, extraStyle) {
+function generateCssRules(options, extraStyle) {
     let annotationOptions = options.annotation;
     let contentOptions = options.content;
 
@@ -259,7 +259,14 @@ function generateCssRuleOfHighlight(options, extraStyle) {
         unknownWordWidthStyle = `padding-right: ${contentOptions.unknownWordWidth - 1}em !important;
             white-space: nowrap;
             `;
-    }    
+    }
+    
+    let textStyle = '';
+    if(contentOptions.textFontSize >1){
+        textStyle = `
+                font-size: ${contentOptions.textFontSize}px;
+            `;
+    }
 
     //TEST
     /*
@@ -283,7 +290,7 @@ function generateCssRuleOfHighlight(options, extraStyle) {
     }
     
 
-    let rule = `.mea-highlight {  
+    let highlightRule = `.mea-highlight {  
       position: relative;
       margin-top: 0px;
       text-indent1: 0px;
@@ -294,7 +301,13 @@ function generateCssRuleOfHighlight(options, extraStyle) {
 
       ${extraStyle}
     }`;
-    return rule;
+
+    let bodyRule = `
+    body {
+      ${textStyle}
+    }
+    `;
+    return [ bodyRule, highlightRule];
 }
 
 function deleteStyleRule(styleSheet, selector){
@@ -319,15 +332,19 @@ function changeStyle(document, siteOptions, siteProfile) {
 
         //highlight, aka. text
         deleteStyleRule(styleSheet, '.mea-highlight');
+        deleteStyleRule(styleSheet, 'body');
         
-        let highlighRule;
-        if(siteProfile.generateCssRuleOfHighlight){
-            highlighRule = siteProfile.generateCssRuleOfHighlight(siteOptions);
+        let highlighRules;
+        if(siteProfile.generateCssRules){
+            highlighRules = siteProfile.generateCssRules(siteOptions);
         }else{
-            highlighRule = generateCssRuleOfHighlight(siteOptions);
+            highlighRules = generateCssRules(siteOptions);
         }
         
-        styleSheet.insertRule(highlighRule, 0);
+        for(let rule of highlighRules){
+          styleSheet.insertRule(rule, 0);
+        }
+        
     }
 }
 
@@ -398,5 +415,5 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
     //return rule;
 }
 
-export { addMeaStyle, removeMeaStyle, changeStyle, findStyleSheet, containsMeaStyle, indexOfMeaAnnotation, generateCssRuleOfHighlight };
+export { addMeaStyle, removeMeaStyle, changeStyle, findStyleSheet, containsMeaStyle, indexOfMeaAnnotation, generateCssRules };
 

@@ -29,6 +29,7 @@ function createFactoryDefaultSiteOptions(){
             enabled: false,
             unknownWordColor: '#0000ff',
             unknownWordWidth: 1,
+            textFontSize: 0,
         },
         other:{
             additionalDictionaries: [],
@@ -57,6 +58,14 @@ function patchAll(options) {
     patch_v_0_13_0(options);
     patch_v_0_13_1(options);
     patch_v_0_13_4(options);
+    patch_v_1_3_0(options);
+}
+
+function patch_v_1_3_0(options){
+    let contentOptions = options.content;
+    if(!contentOptions.textFontSize){
+        contentOptions.textFontSize = 0;
+    }
 }
 
 function patch_v_0_10_1(options){
