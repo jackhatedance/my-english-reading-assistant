@@ -101,7 +101,7 @@ html {
 
 body {
   width: 330px;
-  background-color: #efefef;
+  background-color: #f4f4f4;
 }
 
 .app {
