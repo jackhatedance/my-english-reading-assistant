@@ -18,7 +18,6 @@ const config = (env, argv) =>
       faq: PATHS.src + '/faq.js',
       "release-notes": PATHS.src + '/release-notes.js',
       report: PATHS.src + '/report.js',
-      report2: PATHS.src + '/report2.js',
       dictionary: PATHS.src + '/dictionary.js',
     },
     devtool: argv.mode === 'production' ? false : 'source-map',
