@@ -448,8 +448,7 @@ function addSentence(article, paragraph, sentenceInfo){
 
     let segmentOffsets = getSentenceSegmentOffsets(sentenceInfo);
     for(let segmentOffset of segmentOffsets){
-        let sentenceNumber = segmentOffsetSentenceMap.get(segmentOffset);
-        if(!sentenceNumber){
+        if(!segmentOffsetSentenceMap.has(segmentOffset)){
             segmentOffsetSentenceMap.set(segmentOffset, sentenceInfo.sentenceNumber);
         }
     }
