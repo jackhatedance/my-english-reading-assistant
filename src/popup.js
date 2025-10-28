@@ -4,13 +4,15 @@ import { createApp, ref } from 'vue';
 import Popup from './components/popup/Popup.vue'
 import { initializeOptionService } from './service/optionService.js';
 import { initVocabularyIfEmpty } from './service/optionService.js';
-
+//import ElementPlus from 'element-plus'
+//import 'element-plus/dist/index.css'
 var gQueryParams = parseQuery(window.location.search);
 
 await initializeOptionService();
 await initVocabularyIfEmpty();
 
 createApp(Popup, { gQueryParams })
+//.use(ElementPlus)
     .mount('#app');
 
 

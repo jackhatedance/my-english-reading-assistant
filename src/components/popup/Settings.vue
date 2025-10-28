@@ -4,8 +4,10 @@ import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVoc
 import { getOptionsFromCache} from '../../service/optionService.js';
 import { getAdditionalDictionaryMetas } from '../../dictionary/customDictionary.js'
 import HelpLink from '../HelpLink.vue'
-import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../switch-mode.js'
+import { SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../switch-mode.js'
 import Tabs from './Tabs.vue'
+import { ElSelect, ElOption } from 'element-plus'
+import 'element-plus/es/components/select/style/css'
 
 const t = chrome.i18n.getMessage;
 
@@ -21,6 +23,20 @@ const activeTabId = 'annotation-tab';
 const enabled = ref(false);
 
 const switchMode = ref('');
+function getSwitchModeValue(){
+  let value = switchMode.value;
+  if(value == SWITCH_MODE_OPTION_UNSET){
+    value = '';
+  }
+  return value;
+}
+
+function setSwitchModeValue(value){
+  if(value == ''){
+    value = SWITCH_MODE_OPTION_UNSET;
+  }
+  switchMode.value = value;
+}
 
 const dualAnnotationEnabled = ref(false);
 provide('dualAnnotationEnabled', dualAnnotationEnabled);
@@ -129,7 +145,7 @@ function buildOptions(){
   //const selectedAdditionalDictionaryValues = Array.from(additionalDictionariesElement.selectedOptions).map(option => option.value);
 
   let newOptions = {
-    switch: { mode: switchMode.value },
+    switch: { mode: getSwitchModeValue(switchMode.value) },
     dualAnnotationEnabled: dualAnnotationEnabled.value,
 
     annotation:{    
@@ -265,7 +281,7 @@ function getPageInfo(resolve){
 
 function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
-    switchMode.value = siteOptions.switch.mode;
+    setSwitchModeValue(siteOptions.switch.mode);
   }
 
   dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
@@ -347,12 +363,12 @@ init();
           <div class="switch-mode">
             <label>{{ t('popupSiteSwitchMode') }}<HelpLink type="guide" keyword="站点开关模式"/>
             
-              <select data-testid="switch-mode" class="switch-mode" v-model="switchMode" @change="onChangeSetting" >
-                <option value="">{{ defaultSwitchMode }}({{ t('popupSiteSwitchModeUnset') }})</option>
-                <option :value="SWITCH_MODE_OPTION_ON">{{ t('options_general_switch_mode_on') }}</option>
-                <option :value="SWITCH_MODE_OPTION_OFF">{{ t('options_general_switch_mode_off') }}</option>
-                <option :value="SWITCH_MODE_OPTION_AUTO">{{ t('options_general_switch_mode_auto') }}</option>
-              </select>    
+              <el-select data-testid="switch-mode" class="switch-mode" v-model="switchMode" @change="onChangeSetting" >
+                <el-option :value="SWITCH_MODE_OPTION_UNSET" :label="defaultSwitchMode + '(' +t('popupSiteSwitchModeUnset') + ')'" />
+                <el-option :value="SWITCH_MODE_OPTION_ON" :label="t('options_general_switch_mode_on')" />
+                <el-option :value="SWITCH_MODE_OPTION_OFF" :label="t('options_general_switch_mode_off')" />
+                <el-option :value="SWITCH_MODE_OPTION_AUTO" :label="t('options_general_switch_mode_auto')" />
+              </el-select>    
             </label>
           </div>
         </div>
