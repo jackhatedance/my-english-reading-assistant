@@ -1,3 +1,4 @@
+const SWITCH_MODE_OPTION_UNSET = 'unset';
 const SWITCH_MODE_OPTION_OFF = 'off';
 const SWITCH_MODE_OPTION_ON = 'on';
 const SWITCH_MODE_OPTION_AUTO = 'auto';
@@ -29,4 +30,4 @@ function getEnabled(globalPolicy, sitePolicy, pageLanguage){
     return enabled;
 }
 
-export { getEnabled, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_AUTO }
+export { getEnabled, SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_AUTO }
