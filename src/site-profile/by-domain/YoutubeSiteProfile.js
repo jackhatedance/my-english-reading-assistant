@@ -23,7 +23,7 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
             'title', //change title will cause issue of unchanged title after video clip changed.
             'top-row', 'full-bleed-container'];
         
-        const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytp-tooltip', 'more-button', 'less-button'];
+        const ignoredClasses = ['ytp-time-current', 'ytp-chapter-container', 'ytp-caption-window-container', 'ytd-watch-info-text', 'ytp-tooltip', 'more-button', 'less-button'];
         
         if(this.isIgnoredElement(element, ignoredTags, ignoredIds, ignoredClasses)){
             return false;
