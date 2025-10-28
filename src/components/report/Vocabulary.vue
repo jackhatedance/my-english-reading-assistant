@@ -271,6 +271,7 @@ init();
     <div class="chart-wrapper">
         <div class="chart">     
             <h1>{{ t('reportVocabularyChartTitle') }}</h1>
+            <p>{{ t('reportVocabularyChartDesc') }}</p>
             <canvas id="vocabularyChart"></canvas>
         </div>
     </div>

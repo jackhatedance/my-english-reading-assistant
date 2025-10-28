@@ -746,6 +746,9 @@
     "reportVocabularyChartTitle":{
         "message":"词汇量与阅读时间"
     },
+    "reportVocabularyChartDesc":{
+        "message":"瞧瞧我的努力和进步"
+    },
     "reportVocabularyChartLabel":{
         "message":"词汇量"
     },

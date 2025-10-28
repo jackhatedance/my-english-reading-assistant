@@ -747,6 +747,9 @@
     "reportVocabularyChartTitle":{
         "message":"Vocabulary & Reading time"
     },
+    "reportVocabularyChartDesc":{
+        "message":"Look at my efforts and progress"
+    },
     "reportVocabularyChartLabel":{
         "message":"Vocabulary"
     },
