@@ -8,9 +8,11 @@ import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSele
 import { MenuItems } from '../menu.js';
 import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
+import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveInteractionOption } from '../interaction-utils.js'
+import { getCurrentSiteOptions } from '../page.js'
 
 
-async function mouseUpEventListenerWithParams(event, document, currentSiteOption, gDocumentArticleMap) {
+async function mouseUpEventListenerWithParams(event, document, options, currentSiteOption, gDocumentArticleMap) {
   //console.log(event);
   //mouse up event on dialog itself, ignore
   let supplementary = event.target.closest('.mea-supplementary');
@@ -56,7 +58,10 @@ async function mouseUpEventListenerWithParams(event, document, currentSiteOption
     let dictionaryName;
     
     let filteredNotes = [];
-    if (isSelectionCollapsed) {
+    let siteOptions = await getCurrentSiteOptions();
+    let clickWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_CLICK_WORD);
+    if (isSelectionCollapsed && clickWordEnabled) {
+
       //1. mark the word
       let targetElement = event.target;
       let highlightElement = targetElement.closest('.mea-word');
@@ -108,7 +113,10 @@ async function mouseUpEventListenerWithParams(event, document, currentSiteOption
       if(filteredNotes.length>0){
         menuItems.push(MenuItems.ViewNote);
       }
-    } else {
+    } 
+
+    let selectTextEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_SELECT_TEXT);
+    if (!isSelectionCollapsed && selectTextEnabled) {
       type = 'select-text';
       menuItems.push(MenuItems.AddNote);
     }

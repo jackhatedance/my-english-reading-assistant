@@ -11,6 +11,15 @@
     "no":{
         "message":"否"
     },
+    "default":{
+        "message":"默认"
+    },
+    "enabled":{
+        "message":"启用"
+    },
+    "disabled":{
+        "message":"禁用"
+    },
     "popupEpub":{
         "message":"Epub阅读器"
     },
@@ -101,6 +110,17 @@
     "popupAdditionalDictionaryLabel":{
         "message":"附加词典"
     },
+
+    "popup_interaction_click_word_Label":{
+        "message":"点击单词弹出对话框"
+    },
+    "popup_interaction_hover_word_Label":{
+        "message":"光标悬浮在单词上显示悬浮窗"
+    },
+    "popup_interaction_select_text_Label":{
+        "message":"选择文本弹出对话框"
+    },
+
     "popupFootNotes":{
         "message":"部分设置需要刷新页面才能生效"
     },
@@ -263,6 +283,19 @@
     },
     "options_general_switch_mode_off":{
         "message":"常关"
+    },
+
+    "options_general_interaction_label":{
+        "message":"交互"
+    },
+    "options_general_interaction_click_word_label":{
+        "message":"点击单词弹出对话框"
+    },
+    "options_general_interaction_hover_word_label":{
+        "message":"光标悬浮在单词上显示悬浮窗"
+    },
+    "options_general_interaction_select_text_label":{
+        "message":"选择文本弹出对话框"
     },
 
     "optionsSectionDictionaryTitle":{

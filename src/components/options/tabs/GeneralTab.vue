@@ -8,6 +8,10 @@ const t = chrome.i18n.getMessage;
 const selectedRegion = ref('none');
 const selectedSwitchMode = ref('none');
 
+const clickWord = ref(true);
+const hoverWord = ref(true);
+const selectText = ref(false);
+
 async function onChangeRegion() {
   const pronunciation = {
     region: selectedRegion.value,
@@ -24,6 +28,16 @@ async function onChangeSwitchMode() {
   await updateOptions(newOptions);
 }
 
+async function onChangeInteraction() {
+  const _interaction = {
+    clickWord: clickWord.value,
+    hoverWord: hoverWord.value,
+    selectText: selectText.value,
+  };
+  let newOptions = { interaction: _interaction };
+  await updateOptions(newOptions);
+}
+
 function updateRegion(options){
   selectedRegion.value = options.pronunciation.region;
 }
@@ -32,10 +46,17 @@ function updateSwitchMode(options){
   selectedSwitchMode.value = options.switch.mode;
 }
 
+function updateInteraction(options){
+  clickWord.value = options.interaction.clickWord;
+  hoverWord.value = options.interaction.hoverWord;
+  selectText.value = options.interaction.selectText;
+}
+
 const init = async () => {
   let options = await getOptions();
   updateRegion(options);  
   updateSwitchMode(options);  
+  updateInteraction(options);
 };
 
 init();
@@ -79,6 +100,34 @@ init();
             <option value="us">{{ t('options_general_pronunciation_region_us') }}</option>
             <option value="all">{{ t('options_general_pronunciation_region_all') }}</option>
           </select> 
+        </div>
+      </div>
+      <div class="action">
+
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="label">
+        <h3>{{ t('options_general_interaction_label') }}</h3>        
+      </div>
+      <div class="input">
+        <div>
+          <div>
+            <label>{{ t('options_general_interaction_click_word_label') }}</label>
+            <input type="checkbox" @change="onChangeInteraction" v-model="clickWord">
+          </div>
+          
+          <div>
+            <label>{{ t('options_general_interaction_hover_word_label') }}</label>
+            <input type="checkbox" @change="onChangeInteraction" v-model="hoverWord">
+  
+          </div>
+
+          <div>
+            <label>{{ t('options_general_interaction_select_text_label') }}</label>
+            <input type="checkbox" @change="onChangeInteraction" v-model="selectText">
+          </div>
         </div>
       </div>
       <div class="action">

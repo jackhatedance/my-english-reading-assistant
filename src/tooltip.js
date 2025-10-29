@@ -10,6 +10,8 @@ import { findPhrase } from './phrase.js'
 import { isRegularTransform } from './lemma.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import { isElementDetached } from './html.js'
+import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
+import { getCurrentSiteOptions } from './page.js'
 import log from 'loglevel'
 
 const gLogger = log.getLogger('tooltip');
@@ -211,8 +213,13 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   const meaWords = document.querySelectorAll('.mea-word');
   //console.log(`add mouseenter event listener for mea-word`);
   meaWords.forEach(function(ele) {
-    ele.addEventListener('mouseenter', function() {
+    ele.addEventListener('mouseenter', async function() {
       //console.log('mouse enter');
+      let siteOptions = await getCurrentSiteOptions();
+      let hoverWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_HOVER_WORD);
+      if(!hoverWordEnabled){
+        return;
+      }
 
       //console.log('clearTimeout 2');
       clearTooltipTimeout();

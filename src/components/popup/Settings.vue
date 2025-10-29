@@ -8,6 +8,7 @@ import { SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF
 import Tabs from './Tabs.vue'
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
+import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
 
 const t = chrome.i18n.getMessage;
 
@@ -24,18 +25,11 @@ const enabled = ref(false);
 
 const switchMode = ref('');
 function getSwitchModeValue(){
-  let value = switchMode.value;
-  if(value == SWITCH_MODE_OPTION_UNSET){
-    value = '';
-  }
-  return value;
+  return convertUnsetToValue(switchMode.value, '');
 }
 
 function setSwitchModeValue(value){
-  if(value == ''){
-    value = SWITCH_MODE_OPTION_UNSET;
-  }
-  switchMode.value = value;
+  switchMode.value = convertValueToUnset(value, '');
 }
 
 const dualAnnotationEnabled = ref(false);
@@ -97,6 +91,16 @@ const additionalDictionaryMetas = ref([]);
 provide('additionalDictionaryMetas', additionalDictionaryMetas);
 const additionalDictionaries = ref([]);
 provide('additionalDictionaries', additionalDictionaries);
+
+const clickWord = ref(true);
+provide('clickWord', clickWord);
+
+const hoverWord = ref(true);
+provide('hoverWord', hoverWord);
+
+const selectText = ref(true);
+provide('selectText', selectText);
+
 
 //const emit = defineEmits(['reload-page-info']);
 
@@ -175,6 +179,11 @@ function buildOptions(){
     },
     other: {
       additionalDictionaries: toRaw(additionalDictionaries.value),
+    },
+    interaction: {
+      clickWord: getValueByOption(clickWord.value, trueFalseNullDict),
+      hoverWord: getValueByOption(hoverWord.value, trueFalseNullDict),
+      selectText: getValueByOption(selectText.value, trueFalseNullDict),
     }
   };
 
@@ -327,6 +336,12 @@ function updateViewModel(siteOptions, settingsOnly = false){
 
   let otherOptions = siteOptions.other;
   additionalDictionaries.value = otherOptions.additionalDictionaries;
+
+
+  let interactionOptions = siteOptions.interaction;
+  clickWord.value =  getOptionByValue(interactionOptions.clickWord, trueFalseNullDict);
+  hoverWord.value =  getOptionByValue(interactionOptions.hoverWord, trueFalseNullDict);
+  selectText.value =  getOptionByValue(interactionOptions.selectText, trueFalseNullDict);
 }
 
 async function onReset(){

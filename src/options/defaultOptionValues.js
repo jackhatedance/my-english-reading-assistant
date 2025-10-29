@@ -32,6 +32,7 @@ function patchAll(options) {
     patch_v_0_10_1(options);
     patch_v_0_11_1(options);
     patch_v_0_13_4(options);
+    patch_v_1_4_0(options);
 }
 
 function earlyPatch(options){
@@ -93,6 +94,24 @@ function patch_v_0_13_4(options){
     let switchOptions = options.switch;
     if(!switchOptions.hasOwnProperty('mode')){
         switchOptions.mode = SWITCH_MODE_OPTION_OFF;
+    }
+}
+
+function patch_v_1_4_0(options){
+    
+    if(!options.hasOwnProperty('interaction')){
+        options.interaction = {};
+    }
+
+    let interactionOptions = options.interaction;
+    if(!interactionOptions.hasOwnProperty('clickWord')){
+        interactionOptions.clickWord = true;
+    }
+    if(!interactionOptions.hasOwnProperty('hoverWord')){
+        interactionOptions.hoverWord = true;
+    }
+    if(!interactionOptions.hasOwnProperty('selectText')){
+        interactionOptions.selectText = false;
     }
 }
 

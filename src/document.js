@@ -169,14 +169,14 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
   
     //console.log('resetDocumentAnnotationVisibility end');
   }
-function addDocumentEventListener(page, document, currentSiteOption) {  
+function addDocumentEventListener(page, document, options, currentSiteOption) {  
   gLogger.debug('addDocumentEventListener:' + document.URL);
   let documentInfo = page.getDocumentInfo(document);
   let mouseUpEventListener = documentInfo.mouseUpEventListener;
   if(!mouseUpEventListener){
     gLogger.debug('create mouseUpEventListener');
     mouseUpEventListener = function(event) {
-      mouseUpEventListenerWithParams(event, document, currentSiteOption, page.documentArticleMap);
+      mouseUpEventListenerWithParams(event, document, options, currentSiteOption, page.documentArticleMap);
     }
     documentInfo.mouseUpEventListener = mouseUpEventListener;
   }
@@ -254,7 +254,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
 
         let documentInfo = page.getDocumentInfo(document);
         if(!documentInfo.mouseUpEventListener){
-            addDocumentEventListener(page, document, currentSiteOption);
+            addDocumentEventListener(page, document, options, currentSiteOption);
         }else {
             gLogger.debug('already has mouseUpEventListener, skip adding');
         }
