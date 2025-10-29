@@ -5,6 +5,7 @@ import TabBody from './TabBody.vue';
 import AnnotationTab from './tabs/AnnotationTab.vue'
 import TextTab from './tabs/TextTab.vue'
 import DictionaryTab from './tabs/DictionaryTab.vue'
+import MiscTab from './tabs/MiscTab.vue'
 
 
 import { ref, watch } from "vue";
@@ -60,6 +61,7 @@ onUpdated(() => {
             <TabHeader tabId="annotation-tab" :name="t('popup_tab_annotation')" :isActive="activeTabId === 'annotation-tab'" @activeTab="onActiveTab"></TabHeader>
             <TabHeader tabId="text-tab" :name="t('popup_tab_text')" :isActive="activeTabId === 'text-tab'" @activeTab="onActiveTab"></TabHeader>
             <TabHeader tabId="dictionary-tab" :name="t('popup_tab_dictionary')" :isActive="activeTabId === 'dictionary-tab'" @activeTab="onActiveTab"></TabHeader>
+            <TabHeader tabId="misc-tab" :name="t('popup_tab_misc')" :isActive="activeTabId === 'misc-tab'" @activeTab="onActiveTab"></TabHeader>
         </ul>
         <TabBody id="annotation-tab" v-show="activeTabId === 'annotation-tab'" :isActive="activeTabId === 'annotation-tab'">
             <AnnotationTab @change-setting="onChangeSetting"></AnnotationTab>
@@ -69,6 +71,9 @@ onUpdated(() => {
         </TabBody>
         <TabBody id="dictionary-tab" v-show="activeTabId === 'dictionary-tab'" :isActive="activeTabId === 'dictionary-tab'">
             <DictionaryTab @change-setting="onChangeSetting"></DictionaryTab>
+        </TabBody>
+        <TabBody id="misc-tab" v-show="activeTabId === 'misc-tab'" :isActive="activeTabId === 'misc-tab'">
+            <MiscTab @change-setting="onChangeSetting"></MiscTab>
         </TabBody>
        
         

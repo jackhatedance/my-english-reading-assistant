@@ -11,6 +11,16 @@
     "no":{
         "message":"No"
     },
+    "default":{
+        "message":"Default"
+    },
+    "enabled":{
+        "message":"Enabled"
+    },
+    "disabled":{
+        "message":"Disabled"
+    },
+
     "popupEpub":{
         "message":"Epub Reader"
     },
@@ -101,6 +111,17 @@
     "popupAdditionalDictionaryLabel":{
         "message":"Additional Dictionaries"
     },
+
+    "popup_interaction_click_word_Label":{
+        "message":"Click word to show dialog"
+    },
+    "popup_interaction_hover_word_Label":{
+        "message":"Hover over word to show tooltip"
+    },
+    "popup_interaction_select_text_Label":{
+        "message":"Select text to show dialog"
+    },
+
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
     },
@@ -115,13 +136,16 @@
         "message":"Nothing to do on this page"
     },
     "popup_tab_annotation":{
-        "message":"annotation"
+        "message":"annot."
     },
     "popup_tab_text":{
         "message":"text"
     },
     "popup_tab_dictionary":{
-        "message":"dictionary"
+        "message":"dict."
+    },
+    "popup_tab_misc":{
+        "message":"misc."
     },
     
     "optionsPageTitle":{
@@ -266,7 +290,19 @@
         "message":"always off"
     },
     
-
+    "options_general_interaction_label":{
+        "message":"Interaction"
+    },
+    "options_general_interaction_click_word_label":{
+        "message":"Click word to show dialog"
+    },
+    "options_general_interaction_hover_word_label":{
+        "message":"Hover over word to show tooltip"
+    },
+    "options_general_interaction_select_text_label":{
+        "message":"Select text to show dialog"
+    },
+    
     "optionsSectionDictionaryTitle":{
         "message":"Dictionary"
     },

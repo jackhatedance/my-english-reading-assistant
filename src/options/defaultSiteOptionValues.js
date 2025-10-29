@@ -36,6 +36,11 @@ function createFactoryDefaultSiteOptions(){
         },
         switch:{
             mode:''
+        },
+        interaction:{
+            clickWord: null,
+            hoverWord: null,
+            selectText: null,
         }
     };
 }
@@ -59,6 +64,7 @@ function patchAll(options) {
     patch_v_0_13_1(options);
     patch_v_0_13_4(options);
     patch_v_1_3_0(options);
+    patch_v_1_4_0(options);
 }
 
 function patch_v_1_3_0(options){
@@ -127,6 +133,18 @@ function patch_v_0_13_4(options){
         options.switch.mode = mode;
         delete options.enabled;
     }
+}
+
+function patch_v_1_4_0(options){
+
+    if(options.interaction == null){
+        options.interaction = {
+            clickWord: null,
+            hoverWord: null,
+            selectText: null,
+        };
+    }
+
 }
 
 export { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues };
