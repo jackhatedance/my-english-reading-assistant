@@ -119,6 +119,15 @@ let pageMessageListener = function(request, sender, sendResponse) {
   };
 chrome.runtime.onMessage.addListener(pageMessageListener);
 
+window.onfocus = () => {
+    //console.log("Browser window is in focus");
+    sendMessageToBackground(page.siteProfile, 'WINDOW_FOCUS');
+};
+
+window.onblur = () => {
+  //console.log("Browser window has lost focus");
+  sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
+};
 
 
 //enahnced version of setInterval(), make sure tasks are exectued sequentially.

@@ -141,6 +141,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     onCleanPageFinished(tabId);
   } else if(request.type === 'PAGE_LOADED_WITHOUT_AUTO_ENABLE'){
     setIcon(tabId, false);
+  } else if(request.type === 'WINDOW_FOCUS'){
+    onWindowFocus(tabId);
+  } else if(request.type === 'WINDOW_BLUR'){
+    onWindowBlur(tabId);
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
@@ -202,6 +206,25 @@ async function onCleanPageFinished(tabId){
   setIcon(tabId, false);
 }
 
+async function onWindowFocus(tabId){
+  
+  let tabInfo = await getTabInfo(tabId);
+  if(tabInfo){
+    //console.log('focus');
+    tabInfo.startTime = new Date().getTime();
+    saveTabInfo(tabId, tabInfo);
+  }
+}
+
+async function onWindowBlur(tabId){
+  let tabInfo = await getTabInfo(tabId);
+  if(tabInfo){
+    //console.log('blur');
+    await saveReadingActivityAndClearStartTime(tabInfo);
+    await saveTabInfo(tabId, tabInfo);
+  }
+}
+
 async function onUrlChanged(tabId, newTabInfo){
 
   let oldTabInfo = await getTabInfo(tabId);
@@ -240,12 +263,13 @@ chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
   
 });
 
+//below event is no longer required. replaced by focus and blur event;
+/*
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  //console.log('activeInfo:'+JSON.stringify(activeInfo));
+  console.log('activeInfo:'+JSON.stringify(activeInfo));
 
   let tabId = activeInfo.tabId;
-
-  //i guess below code is to save activity for all tabs
+  //i guess below code is to save activity for all other tabs, actually another one tab which start time is not null
   let tabInfoMap = await getTabInfoMap();
   for (let key of tabInfoMap.keys()) {
       let tabInfo = tabInfoMap.get(key);
@@ -265,6 +289,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   await saveTabInfoMap(tabInfoMap);
 
 });
+*/
 
 chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
   //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
@@ -278,16 +303,19 @@ chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
 chrome.idle.onStateChanged.addListener(async (newState)=>{
   gLogger.debug(newState);
   let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  
+  if(tabs && tabs.length==0){
+    return;
+  }
+
   const tab = tabs[0];
   let tabId = tab.id;
   let tabInfo = await getTabInfo(tabId);
   if(tabInfo){
     if(newState !=='active'){
-      //console.log('save activity and clear');
+      console.log('save activity and clear');
       await saveReadingActivityAndClearStartTime(tabInfo);
     }else {
-      //console.log('start activity');
+      console.log('start activity');
       tabInfo.startTime = new Date().getTime();
       saveTabInfo(tabId, tabInfo);
     }
