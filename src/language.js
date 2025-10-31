@@ -624,12 +624,8 @@ function getWordPartObjects(baseWord){
 function buildDictionaryOptions(siteOptions){
     let options = getOptionsFromCache();
     
-    let dictionaryOptions;
-    if(options.dictionary.additionalDictionaryEnabled){
-        dictionaryOptions = { additionalDictionaries: siteOptions.other.additionalDictionaries };
-    } else {
-        dictionaryOptions = { additionalDictionaries: [] };
-    }
+    let dictionaryOptions = { additionalDictionaries: siteOptions.other.additionalDictionaries };
+    
     return dictionaryOptions;
 }
   

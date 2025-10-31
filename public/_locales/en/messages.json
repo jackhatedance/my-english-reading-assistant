@@ -345,12 +345,6 @@
     "optionsEditAdditionalDictionaryLabelDesc":{
         "message":"add/delete additional dictionaries"
     },
-    "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"Enable this feature, and you can temporarily attach a dictionary while reading. Additional dictionaries have higher priority than enabled dictionaries."
-    },
-    "optionsAdditionalDictionaryEnableDictionaryLabel":{
-        "message":"Enable additional dictionary"
-    },
     "optionsImportDictionaryDesc": {
         "message": "formats：.txt, .zip(mdict)"
     },

@@ -21,7 +21,6 @@ const selectedDictionaryEnabled = ref(false);
 const selectedDictionaryObject = ref();
 
 const file = ref();
-const enableAdditionalDictionary = ref(false);
 
 const indexBuildingProgress = inject('indexBuildingProgress');
 
@@ -47,10 +46,6 @@ const extractable = computed(() => {
 const $loading = useLoading({
         // options
     });
-
-async function onChangeEnableAdditionalDictionary() {
-  await updateAdditionalDictionaryEnabled(enableAdditionalDictionary.value);
-}
 
 const debug = ref(false);
 async function onDeleteGarbage() {
@@ -119,16 +114,6 @@ function swap(array, index1, index2) {
   const temp = array[index1];
   array[index1] = array[index2];
   array[index2] = temp;
-}
-
-
-async function updateAdditionalDictionaryEnabled(value) {
-  let options = await getOptions();
-  let dictionary = options.dictionary;
-  dictionary.additionalDictionaryEnabled = value;
-  let newOptions = { dictionary };
-
-  await updateOptions(newOptions);
 }
 
 async function onAdd() {
@@ -303,9 +288,6 @@ async function refreshUI(){
   let dictMeta = await getDictionaryMeta(selectedDictionary.value);
   selectedDictionaryObject.value = dictMeta;
 
-  let options = await getOptions();
-  enableAdditionalDictionary.value = options.dictionary.additionalDictionaryEnabled;
-
 }
 
 watch(() => indexBuildingProgress.value, (newValue) => {
@@ -427,16 +409,7 @@ init();
         <button @click="onAdd">{{ t('optionsAddDictionaryAction') }}</button>
       </div>
     </div>
-    <div class="section">
-      <div class="label">
-        <p>{{ t('optionsAdditionalDictionaryEnableDictionaryDesc') }}<HelpLink type="guide" keyword="附加词典" ></HelpLink></p>
-      </div>
-      <div class="input">
-        <label>{{ t('optionsAdditionalDictionaryEnableDictionaryLabel') }}</label>
-        <input @change="onChangeEnableAdditionalDictionary" v-model="enableAdditionalDictionary" type="checkbox">
-      </div>
-      <div class="action"></div>
-    </div>
+    
   </div>
 
 </template>

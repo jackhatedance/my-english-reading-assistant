@@ -343,12 +343,6 @@
     "optionsEditAdditionalDictionaryLabelDesc":{
         "message":"添加/删除附加词典"
     },    
-    "optionsAdditionalDictionaryEnableDictionaryDesc":{
-        "message":"启用此功能，你能在阅读时临时附加词典。临时附加的词典比默认启用的词典具有更高的优先级。"
-    },
-    "optionsAdditionalDictionaryEnableDictionaryLabel":{
-        "message":"启用附加词典"
-    },
     "optionsImportDictionaryDesc": {
         "message": "支持格式：.txt, .zip(mdict)"
     },
