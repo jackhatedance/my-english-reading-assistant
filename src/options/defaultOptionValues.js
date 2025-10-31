@@ -61,9 +61,11 @@ function earlyPatch(options){
 
 function patch_v_0_10_1(options){
     let dictionaryOptions = options.dictionary;
-    if(dictionaryOptions.additionalDictionaryEnabled === null){
-        dictionaryOptions.additionalDictionaryEnabled = false;
+    /* additionalDictionaryEnabled was removed since v1.3.1. it is always true.
+    if(dictionaryOptions.additionalDictionaryEnabled == null){
+        dictionaryOptions.additionalDictionaryEnabled = true;
     }
+         */
     if(!dictionaryOptions.additionalDictionaries){
         dictionaryOptions.additionalDictionaries = [];
     }

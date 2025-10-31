@@ -17,10 +17,6 @@ const additionalDictionaries = inject('additionalDictionaries');
 const t = chrome.i18n.getMessage;
 
 
-const additionalDictionaryEnabled = computed(() => {
-    return options.value.dictionary.additionalDictionaryEnabled;
-});
-
 function onChangeSetting(){
     emit('change-setting');
 }
@@ -35,7 +31,7 @@ init();
 <template>
     <div class="dictionary-settings">
         
-          <div class="field" id="dictionaryField" v-show="additionalDictionaryEnabled">
+          <div class="field" id="dictionaryField" >
             <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
             <div class="inputs">
               <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="5">
