@@ -143,6 +143,9 @@
     "popup_tab_dictionary":{
         "message":"词典"
     },
+    "popup_tab_misc":{
+        "message":"杂项"
+    },
     
     "optionsPageTitle":{
         "message":"设置"
