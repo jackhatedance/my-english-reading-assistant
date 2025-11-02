@@ -131,9 +131,6 @@
     "popup_site_category_video_Label":{
         "message":"Video"
     },
-    "popup_site_category_application_Label":{
-        "message":"Application"
-    },
     "popup_site_category_other_Label":{
         "message":"Other"
     },
@@ -810,9 +807,6 @@
     },
     "reportVocabularyChartTimeVideoLabel":{
         "message":"Video"
-    },
-    "reportVocabularyChartTimeApplicationLabel":{
-        "message":"Application"
     },
     "reportVocabularyChartTimeOtherLabel":{
         "message":"Other"

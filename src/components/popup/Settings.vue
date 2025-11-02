@@ -9,6 +9,7 @@ import Tabs from './Tabs.vue'
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
+import { fixCategory } from '../../site-category.js'
 
 const t = chrome.i18n.getMessage;
 
@@ -295,7 +296,7 @@ function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
     setSwitchModeValue(siteOptions.switch.mode);
   }
-  siteCategory.value = siteOptions.siteCategory;
+  siteCategory.value = fixCategory(siteOptions.siteCategory);
 
   dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
 

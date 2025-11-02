@@ -6,7 +6,7 @@ import 'chartjs-adapter-date-fns';
 import {initializeOptionService, getAllSiteOptions} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
-import { convertOtherCategory } from '../../site-category.js'
+import { fixCategory } from '../../site-category.js'
 
 Chart.register(...registerables);
 
@@ -84,7 +84,7 @@ function getDaySummaries(activities, allSiteOptions){
         if(siteCategory == null){
             siteCategory = 'text';
         }
-        siteCategory = convertOtherCategory(siteCategory);
+        siteCategory = fixCategory(siteCategory);
 
         if(summary.durationByCategory[siteCategory] == null){
             summary.durationByCategory[siteCategory] = 0;
@@ -161,13 +161,11 @@ function getVocabularyChartData(activities, allSiteOptions){
     //total duration
     let durationText = getDurationByCategoryData(dayDurationSummaries, 'text');
     let durationVideo = getDurationByCategoryData(dayDurationSummaries, 'video');
-    let durationApplication = getDurationByCategoryData(dayDurationSummaries, 'application');
     let durationOther = getDurationByCategoryData(dayDurationSummaries, 'other');
 
     let duration = {
         text: durationText,
         video: durationVideo,
-        application: durationApplication,
         other: durationOther,
     }
 

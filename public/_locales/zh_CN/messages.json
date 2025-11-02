@@ -130,9 +130,6 @@
     "popup_site_category_video_Label":{
         "message":"视频"
     },
-    "popup_site_category_application_Label":{
-        "message":"应用"
-    },
     "popup_site_category_other_Label":{
         "message":"其他"
     },
@@ -809,9 +806,6 @@
     },
     "reportVocabularyChartTimeVideoLabel":{
         "message":"视频"
-    },
-    "reportVocabularyChartTimeApplicationLabel":{
-        "message":"应用"
     },
     "reportVocabularyChartTimeOtherLabel":{
         "message":"其他"

@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toR
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
-import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_APPLICATION, SITE_CATEGORY_OTHER } from '../../../site-category.js'
+import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
 
 const emit = defineEmits(['change-setting']);
 
@@ -81,7 +81,6 @@ init();
           <el-select data-testid="site-category" v-model="siteCategory" @change="onChangeSetting" size="small">
             <el-option :value="SITE_CATEGORY_TEXT" :label="t('popup_site_category_text_Label')" />
             <el-option :value="SITE_CATEGORY_VIDEO" :label="t('popup_site_category_video_Label')" />
-            <el-option :value="SITE_CATEGORY_APPLICATION" :label="t('popup_site_category_application_Label')" />
             <el-option :value="SITE_CATEGORY_OTHER" :label="t('popup_site_category_other_Label')" />
           </el-select> 
         </div> 
