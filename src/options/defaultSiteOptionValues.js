@@ -5,6 +5,7 @@ function createFactoryDefaultSiteOptions(){
     return {
         //enabled: false,
         dualAnnotationEnabled: false,
+        siteCategory: 'text',
         annotation: {
             content: 'AC_DEFINITION',
             position: 0.0,
@@ -143,6 +144,10 @@ function patch_v_1_4_0(options){
             hoverWord: null,
             selectText: null,
         };
+    }
+
+    if(options.siteCategory == null){
+        options.siteCategory = 'text';
     }
 
 }

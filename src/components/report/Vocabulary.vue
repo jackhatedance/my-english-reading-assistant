@@ -3,9 +3,10 @@ import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, wat
 import { useRoute } from 'vue-router'
 import {Chart, registerables} from 'chart.js';
 import 'chartjs-adapter-date-fns';
-import {initializeOptionService} from '../../service/optionService.js';
+import {initializeOptionService, getAllSiteOptions} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { convertOtherCategory } from '../../site-category.js'
 
 Chart.register(...registerables);
 
@@ -49,7 +50,7 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-function getDaySummaries(activities){
+function getDaySummaries(activities, allSiteOptions){
     let daySummaryMap = new Map();
     let totalDuration = 0;
     let totalWordChanges = 0;
@@ -69,12 +70,26 @@ function getDaySummaries(activities){
             summary={
                 time: timeObject,
                 duration: 0,
+                durationByCategory: {},
                 wordChanges: 0,
                 vocabularySize: 0
             };
 
             daySummaryMap.set(key, summary);
         }
+
+        //duration group by site category
+        let siteOptions = allSiteOptions[activity.site]
+        let siteCategory = siteOptions?.siteCategory;
+        if(siteCategory == null){
+            siteCategory = 'text';
+        }
+        siteCategory = convertOtherCategory(siteCategory);
+
+        if(summary.durationByCategory[siteCategory] == null){
+            summary.durationByCategory[siteCategory] = 0;
+        }
+        summary.durationByCategory[siteCategory] = summary.durationByCategory[siteCategory] + activity.duration; 
 
         summary.duration = summary.duration + activity.duration;      
         summary.wordChanges = summary.wordChanges + activity.wordChanges;
@@ -111,7 +126,7 @@ function getDaySummaries(activities){
     return { summary: array, totalDuration: totalDuration, avgDuration: avgDuration, avgWordChanges: avgWordChanges};
 }
 
-function getVocabularyChartData(activities){
+function getVocabularyChartData(activities, allSiteOptions){
     /*
     let vocabularyArray = [];
     for(let activity of activities){
@@ -126,7 +141,7 @@ function getVocabularyChartData(activities){
     */
 
     
-    let summary = getDaySummaries(activities);
+    let summary = getDaySummaries(activities, allSiteOptions);
     let dayDurationSummaries = summary.summary;
 
     totalReadingTime.value =(summary.totalDuration / (60 *60 * 1000)).toFixed(1);
@@ -143,19 +158,34 @@ function getVocabularyChartData(activities){
         vocabularyArray.push(item);
     }   
 
-    //duration
+    //total duration
+    let durationText = getDurationByCategoryData(dayDurationSummaries, 'text');
+    let durationVideo = getDurationByCategoryData(dayDurationSummaries, 'video');
+    let durationApplication = getDurationByCategoryData(dayDurationSummaries, 'application');
+    let durationOther = getDurationByCategoryData(dayDurationSummaries, 'other');
+
+    let duration = {
+        text: durationText,
+        video: durationVideo,
+        application: durationApplication,
+        other: durationOther,
+    }
+
+    return {vocabulary: vocabularyArray, duration: duration};
+}
+
+function getDurationByCategoryData(dayDurationSummaries, category){
     let durationArray = [];
     for(let summary of dayDurationSummaries){
         let item = {
             x: summary.time,
-            y: summary.duration / (60 * 60 * 1000),
+            y: summary.durationByCategory[category] / (60 * 60 * 1000),
         };
         durationArray.push(item);
     }    
     //sort by time
     durationArray.sort(function(a, b){return a.x - a.x});
-
-    return {vocabulary: vocabularyArray, duration: durationArray};
+    return durationArray;
 }
 
 function renderVocabularyChart(vocabularyChartData){
@@ -171,6 +201,7 @@ function renderVocabularyChart(vocabularyChartData){
         scales: {
             x: {
                 type: 'time',
+                stacked: true,
                 time: {
                     minUnit: 'day', // This ensures the smallest unit displayed is a minute
                 }
@@ -186,6 +217,7 @@ function renderVocabularyChart(vocabularyChartData){
             'y-axis-bar': {
                 type: 'linear',
                 position: 'right', // Position the line chart's y-axis on the right
+                stacked: true,
                 beginAtZero: true,
                 grid: {
                     drawOnChartArea: false, // Only draw the grid for the main y-axis
@@ -219,21 +251,49 @@ function renderVocabularyChart(vocabularyChartData){
                         'rgba(153, 102, 255, 1)',
                         'rgba(255, 159, 64, 1)'
                     ],
+                    
                     borderWidth: 1
                 },
                 {
                     yAxisID: 'y-axis-bar',
-                    label: chrome.i18n.getMessage('reportVocabularyChartTimeLabel'),
-                    data: vocabularyChartData.duration,
+                    label: chrome.i18n.getMessage('reportVocabularyChartTimeTextLabel'),
+                    data: vocabularyChartData.duration['text'],
                     type: 'bar',
+                    stacked: true,
                     backgroundColor: [
                         
-                        'rgba(54, 162, 235, 0.2)',
+                        'lightgreen'
                         
                     ],
                     borderWidth: 1
                 },
-
+                {
+                    yAxisID: 'y-axis-bar',
+                    label: chrome.i18n.getMessage('reportVocabularyChartTimeVideoLabel'),
+                    data: vocabularyChartData.duration['video'],
+                    type: 'bar',
+                    stacked: true,
+                    backgroundColor: [
+                        
+                        'tomato',
+                        
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    yAxisID: 'y-axis-bar',
+                    label: chrome.i18n.getMessage('reportVocabularyChartTimeOtherLabel'),
+                    data: vocabularyChartData.duration['other'],
+                    type: 'bar',
+                    stacked: true,
+                    backgroundColor: [
+                        
+                        'lightgrey',
+                        
+                    ],
+                    borderWidth: 1
+                },
+                
             ]
         }
     });
@@ -243,7 +303,9 @@ async function refresh(){
     let activities = await loadActivitiesFromStorage();
     activities = filterActivityByTimeRange(activities, timeRange.value);
 
-    let vocabularyChartData = getVocabularyChartData(activities);
+    let siteOptions = await getAllSiteOptions();
+
+    let vocabularyChartData = getVocabularyChartData(activities, siteOptions);
     
     renderVocabularyChart(vocabularyChartData);
 

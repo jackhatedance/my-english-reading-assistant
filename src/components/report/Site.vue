@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import {initializeOptionService} from '../../service/optionService.js';
+import {initializeOptionService, getAllSiteOptions} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { formatDuration, formatVocabularyChange, filterActivityByTimeRange } from '../../report/report-utils.js'
 
@@ -48,19 +48,25 @@ function getSiteSummaries(activities){
     return array;
 }
 
-function renderSiteSummaries(summaries){
+function renderSiteSummaries(summaries, allSiteOptions){
     let tableBody = document.getElementById('siteSummariesBody');
     tableBody.innerHTML='';
 
     for(let item of summaries){
         let {site, wordChanges, duration, startTime, lastTime} = item;
 
+        let siteOptions = allSiteOptions[site];
+        let category = siteOptions?.siteCategory;
+        if(category == null){
+            category = 'text';
+        }
         
         let startTimeFormatted = new Date(startTime).toLocaleString( );
         let lastTimeFormatted = new Date(lastTime).toLocaleString( );
 
         let durationFormatted = formatDuration(duration);
         const liInnerHTML = `<td>${site}</td>
+        <td>${category}</td>
         <td>${startTimeFormatted}</td>
         <td>${lastTimeFormatted}</td>
             <td>${durationFormatted}</td>
@@ -78,7 +84,8 @@ async function refresh(){
     let activities = await loadActivitiesFromStorage();
     activities = filterActivityByTimeRange(activities, timeRange.value);
     let siteSummaries = getSiteSummaries(activities);
-    renderSiteSummaries(siteSummaries);
+    let allSiteOptions = await getAllSiteOptions();
+    renderSiteSummaries(siteSummaries, allSiteOptions);
 }
 const init = async () => {
     await initializeOptionService();
@@ -96,6 +103,7 @@ init();
             <thead>
                 <tr>
                     <th>{{ t('reportSiteSummariesHeaderName') }}</th>
+                    <th>{{ t('reportSiteSummariesHeaderCategory') }}</th>
                     <th>{{ t('reportSiteSummariesHeaderStartReadTime') }}</th>
                     <th>{{ t('reportSiteSummariesHeaderLastReadTime') }}</th>
                     <th>{{ t('reportSiteSummariesHeaderDuration') }}</th>

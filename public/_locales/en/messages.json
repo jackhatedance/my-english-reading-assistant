@@ -122,6 +122,22 @@
         "message":"Select text to show dialog"
     },
 
+    "popup_site_category_Label":{
+        "message":"Site Category"
+    },
+    "popup_site_category_text_Label":{
+        "message":"Text"
+    },
+    "popup_site_category_video_Label":{
+        "message":"Video"
+    },
+    "popup_site_category_application_Label":{
+        "message":"Application"
+    },
+    "popup_site_category_other_Label":{
+        "message":"Other"
+    },
+
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
     },
@@ -761,6 +777,9 @@
     "reportSiteSummariesHeaderName":{
         "message":"Name"
     },
+    "reportSiteSummariesHeaderCategory":{
+        "message":"Category"
+    },
     "reportSiteSummariesHeaderStartReadTime":{
         "message":"Start Time"
     },
@@ -785,6 +804,18 @@
     },
     "reportVocabularyChartTimeLabel":{
         "message":"Time(hours)"
+    },
+    "reportVocabularyChartTimeTextLabel":{
+        "message":"Text"
+    },
+    "reportVocabularyChartTimeVideoLabel":{
+        "message":"Video"
+    },
+    "reportVocabularyChartTimeApplicationLabel":{
+        "message":"Application"
+    },
+    "reportVocabularyChartTimeOtherLabel":{
+        "message":"Other"
     },
     "total_reading_time":{
         "message":"Total Reading time: $1 (hours)"

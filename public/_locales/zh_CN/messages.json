@@ -121,6 +121,22 @@
         "message":"选择文本弹出对话框"
     },
 
+    "popup_site_category_Label":{
+        "message":"站点类别"
+    },
+    "popup_site_category_text_Label":{
+        "message":"文本"
+    },
+    "popup_site_category_video_Label":{
+        "message":"视频"
+    },
+    "popup_site_category_application_Label":{
+        "message":"应用"
+    },
+    "popup_site_category_other_Label":{
+        "message":"其他"
+    },
+
     "popupFootNotes":{
         "message":"部分设置需要刷新页面才能生效"
     },
@@ -760,6 +776,9 @@
     "reportSiteSummariesHeaderName":{
         "message":"名称"
     },
+    "reportSiteSummariesHeaderCategory":{
+        "message":"类别"
+    },
     "reportSiteSummariesHeaderStartReadTime":{
         "message":"开始时间"
     },
@@ -784,6 +803,18 @@
     },
     "reportVocabularyChartTimeLabel":{
         "message":"时间(小时)"
+    },
+    "reportVocabularyChartTimeTextLabel":{
+        "message":"文本"
+    },
+    "reportVocabularyChartTimeVideoLabel":{
+        "message":"视频"
+    },
+    "reportVocabularyChartTimeApplicationLabel":{
+        "message":"应用"
+    },
+    "reportVocabularyChartTimeOtherLabel":{
+        "message":"其他"
     },
     "total_reading_time":{
         "message":"总共阅读时间: $1（小时）"

@@ -40,6 +40,11 @@ function loadSiteOptionsFromStorage(siteDomain){
     });
 }
 
+async function getAllSiteOptions(){
+    let result = await chrome.storage.local.get(['sitesOptions']);
+    return result?.sitesOptions;
+}
+
 function saveSiteOptionsToStorage(siteDomain, options){
     //console.log('save site options, domain:'+siteDomain+',options:'+options);
     return new Promise(resolve => {
@@ -183,4 +188,4 @@ function createSimplifyDefinitionOptions(maxMeaningNumber = 6, hideWordClass = f
     return simplifyDefinitionOptions;
 }
 
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions, getEffectiveSiteOptions};
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getAllSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions, getEffectiveSiteOptions};

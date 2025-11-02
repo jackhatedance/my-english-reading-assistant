@@ -101,6 +101,8 @@ provide('hoverWord', hoverWord);
 const selectText = ref(true);
 provide('selectText', selectText);
 
+const siteCategory = ref('text');
+provide('siteCategory', siteCategory);
 
 //const emit = defineEmits(['reload-page-info']);
 
@@ -151,6 +153,7 @@ function buildOptions(){
   let newOptions = {
     switch: { mode: getSwitchModeValue(switchMode.value) },
     dualAnnotationEnabled: dualAnnotationEnabled.value,
+    siteCategory: siteCategory.value,
 
     annotation:{    
       content: content.value,
@@ -292,6 +295,7 @@ function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
     setSwitchModeValue(siteOptions.switch.mode);
   }
+  siteCategory.value = siteOptions.siteCategory;
 
   dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
 
