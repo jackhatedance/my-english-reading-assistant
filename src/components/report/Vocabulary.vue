@@ -262,10 +262,10 @@ function renderVocabularyChart(vocabularyChartData){
                     stacked: true,
                     backgroundColor: [
                         
-                        'lightgreen'
+                        'cornflowerblue'
                         
                     ],
-                    borderWidth: 1
+                    borderWidth: 0
                 },
                 {
                     yAxisID: 'y-axis-bar',
@@ -278,7 +278,7 @@ function renderVocabularyChart(vocabularyChartData){
                         'tomato',
                         
                     ],
-                    borderWidth: 1
+                    borderWidth: 0
                 },
                 {
                     yAxisID: 'y-axis-bar',
