@@ -312,10 +312,10 @@ chrome.idle.onStateChanged.addListener(async (newState)=>{
   let tabInfo = await getTabInfo(tabId);
   if(tabInfo){
     if(newState !=='active'){
-      console.log('save activity and clear');
+      //console.log('save activity and clear');
       await saveReadingActivityAndClearStartTime(tabInfo);
     }else {
-      console.log('start activity');
+      //console.log('start activity');
       tabInfo.startTime = new Date().getTime();
       saveTabInfo(tabId, tabInfo);
     }
