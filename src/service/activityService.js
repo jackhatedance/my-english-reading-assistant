@@ -62,6 +62,7 @@ async function addActivityToStorage(newActivity){
             && item.sessionId===newActivity.sessionId 
             && timeDiff < MAX_SESSION_TIME_IN_MILLISECONDS){
             //merge
+            item.totalWordCount = newActivity.totalWordCount;
             item.duration = item.duration + newActivity.duration;
             item.wordChanges = item.wordChanges + newActivity.wordChanges;
 
