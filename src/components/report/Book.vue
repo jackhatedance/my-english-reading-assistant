@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import { formatDuration, formatVocabularyChange, formatSpeed, filterActivityByTimeRange } from '../../report/report-utils.js'
+import { formatDuration, formatVocabularyChange, isValidSpeed, formatSpeed, filterActivityByTimeRange } from '../../report/report-utils.js'
 import {initializeOptionService} from '../../service/optionService.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { getAllBooks, getBook, searchBookByUrl } from '../../service/bookService.js'
@@ -46,8 +46,8 @@ async function getBookSummaries(activities){
                 startTime: activity.startTime,
                 endTime: 0,
                 duration: 0,
-                wordCountMap: new Map(),//key is url
-                wordChanges: 0
+                pageMap: new Map(),//key is url
+                wordChanges: 0,
             };
 
             bookSummaryMap.set(key, summary);
@@ -57,7 +57,16 @@ async function getBookSummaries(activities){
         summary.endTime = Math.max(activity.endTime, summary.endTime);
         summary.duration = summary.duration + activity.duration;      
         
-        summary.wordCountMap.set(url, activity.totalWordCount);
+        let pageSummary = summary.pageMap.get(url);
+        if(!pageSummary){
+            pageSummary = {
+                wordCount:0,
+                duration:0,
+            }
+            summary.pageMap.set(url, pageSummary);
+        }
+        pageSummary.totalWordCount = activity.totalWordCount;
+        pageSummary.duration = pageSummary.duration + activity.duration;
 
         summary.wordChanges = summary.wordChanges + activity.wordChanges;
     }
@@ -67,15 +76,35 @@ async function getBookSummaries(activities){
     for(let item of array) {
         let totalWordCount = 0;
         let pageCount = 0;
-        for(let wordCount of item.wordCountMap.values()){
-            totalWordCount += wordCount;
+
+        let totalValidSpeed = 0;
+        let totalValidSpeedCounter =0;
+        for(const [key, value] of item.pageMap.entries()){
+            let url = key;
+            let pageSummary =value;
+
+            totalWordCount += pageSummary.totalWordCount;
             pageCount++;
+
+            let durationInMinutes = pageSummary.duration / (60 * 1000);
+            let pageSpeed = totalWordCount / durationInMinutes;
+            if(isValidSpeed(pageSpeed)){
+                totalValidSpeed += pageSpeed;
+                totalValidSpeedCounter++;
+            }
         }
+
+        let avgValidSpeed=0;
+        if(totalValidSpeedCounter>0) {
+            avgValidSpeed = totalValidSpeed / totalValidSpeedCounter;
+        }
+
 
         let book = await getBook(item.isbn);
         item.title = book.title;
         item.pageCount = pageCount;
         item.totalWordCount = totalWordCount;
+        item.avgSpeed = avgValidSpeed;
     }
 
 
@@ -90,7 +119,7 @@ function renderBookSummaries(bookSummaries){
     table.innerHTML = '';
 
     for(let item of bookSummaries){
-        let {site, title, isbn, wordChanges, pageCount, totalWordCount, duration, startTime, endTime} = item;
+        let {site, title, isbn, wordChanges, pageCount, totalWordCount, duration, avgSpeed, startTime, endTime} = item;
 
                 
         let startTimeFormatted = new Date(startTime).toLocaleString( );
@@ -98,8 +127,8 @@ function renderBookSummaries(bookSummaries){
 
         let durationFormatted =formatDuration(duration);
 
-        let durationInMinutes = duration / (60 * 1000);
-        let speed =  (totalWordCount / durationInMinutes).toFixed(0);
+        
+        let speed =  avgSpeed;
 
         const liInnerHTML = `<td>${site}</td>
         <td>${title}</td>

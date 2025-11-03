@@ -15,14 +15,29 @@ function formatDuration(milliseconds) {
     return fh + ":" + fm + ":" + fs;
 }
 
-function formatSpeed(speed){
-    let speedStr;
+function isValidSpeed(speed){
+    const MIN_SPEED = 10;
     const MAX_SPEED = 350;
-    if(speed>MAX_SPEED){
+
+    return speed >= MIN_SPEED && speed <= MAX_SPEED;
+}
+
+function formatSpeed(speed){
+    if(speed==null){
+        return '';
+    }
+    let speedStr;
+    
+    if(!isValidSpeed(speed)){
         //impossible, meaningless
         speedStr = '';
     }else{
-        speedStr = ''+speed;
+        if(typeof speed == 'number'){
+            speedStr = speed.toFixed(0);
+        }else{
+            speedStr = speed;
+        }
+        
     }
     return speedStr;
 }
@@ -70,4 +85,4 @@ function getDocumentOfUrl(url){
 }
 
 
-export { formatDuration, filterActivityByTimeRange, formatVocabularyChange, formatSpeed, getDocumentOfUrl }
+export { formatDuration, filterActivityByTimeRange, formatVocabularyChange, isValidSpeed, formatSpeed, getDocumentOfUrl }
