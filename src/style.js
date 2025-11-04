@@ -1,5 +1,7 @@
 'use strict';
 
+import { generateHighlightStyles } from './style/highlight-style.js'
+
 const MEA_STYLE = "mea-style";
 
 
@@ -32,6 +34,9 @@ function addMeaStyle(document) {
     //dynamic style
     var style = document.createElement("style");    
     style.id = MEA_STYLE;
+
+    let highlightStyle = generateHighlightStyles();
+
     style.innerHTML = `    
       .mea-sentence {
         
@@ -118,12 +123,8 @@ function addMeaStyle(document) {
 
       }
 
-      ::highlight(note-highlight) {
-        text-decoration-line: underline;
-        text-decoration-style: wavy;
-        text-decoration-color: blue;
-        text-decoration-thickness: from-font;
-      }
+      ${highlightStyle}
+      
       #mea-vue-container * {
         all: revert;
       }

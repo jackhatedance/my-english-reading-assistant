@@ -88,7 +88,8 @@ async function setNote(note) {
 function cleanCopyNote(srcNote) {
     let note = {
         selection: cleanCopySelection(srcNote.selection),
-        content: srcNote.content
+        content: srcNote.content,
+        highlight: cleanCopyHighlight(srcNote.highlight),
     };
     return note;
 }
@@ -99,6 +100,16 @@ function cleanCopySelection(srcSelection) {
         return cleanCopySelectionOfParagraph(srcSelection);
     } else {
         return cleanCopySelectionOfSentence(srcSelection);
+    }
+}
+
+function cleanCopyHighlight(srcHighlight) {
+    if(srcHighlight){
+        return { type: srcHighlight.type, 
+            backgroundColor: srcHighlight.backgroundColor, 
+            underlineType: srcHighlight.underlineType };
+    }else{
+        return null;
     }
 }
 

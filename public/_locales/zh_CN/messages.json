@@ -550,6 +550,28 @@
         "message":"笔记"
     },
 
+    "sidepanel_actions_note_highlight_label":{
+        "message":"高亮"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_yellow":{
+        "message":"黄色"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_green":{
+        "message":"绿色"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_blue":{
+        "message":"蓝色"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_pink":{
+        "message":"粉色"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_purple":{
+        "message":"紫色"
+    },
+    "sidepanel_actions_note_highlight_option_underline":{
+        "message":"下划线"
+    },
+
     "sidepanelActionsTabWordLabelWord":{
         "message":"单词"
     },

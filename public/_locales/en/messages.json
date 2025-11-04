@@ -552,6 +552,29 @@
         "message":"Notes"
     },
 
+    "sidepanel_actions_note_highlight_label":{
+        "message":"Highlight"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_yellow":{
+        "message":"Yellow"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_green":{
+        "message":"Green"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_blue":{
+        "message":"Blue"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_pink":{
+        "message":"Pink"
+    },
+    "sidepanel_actions_note_highlight_option_background_color_purple":{
+        "message":"Purple"
+    },
+    "sidepanel_actions_note_highlight_option_underline":{
+        "message":"Underline"
+    },
+    
+
     "sidepanelActionsTabWordLabelWord":{
         "message":"Word"
     },

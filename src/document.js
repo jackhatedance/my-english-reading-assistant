@@ -13,6 +13,7 @@ import { createMutationObserver } from './document/mutation-observer.js'
 import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
 import { getOptionsFromCache } from './service/optionService.js';
 import { addMeaStyle, removeMeaStyle, findStyleSheet, changeStyle, containsMeaStyle } from './style.js';
+import { generateHighlightName, NOTE_HIGHLIGH_TYPE_UNDERLINE, NOTE_HIGHLIGH_COLOR_BLUE } from './style/highlight-style.js';
 import { containsVueApp, addVueApp, removeVueApp } from './embed/iframe-embed.js';
 import { createTooltip, removeTooltip } from './tooltip.js'
 import { addTooltipEventListener } from './tooltip.js'
@@ -123,7 +124,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
         window.CSS.highlights.clear();
       }
       
-      const highlight = new Highlight();
+      const highlightMap = new Map();
       
       //clear data-note
       document.querySelectorAll('mea-token[data-note]').forEach((element) => {
@@ -148,6 +149,17 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
             range.setStart(nodeSelection.anchorNode, nodeSelection.anchorOffset);
             range.setEnd(nodeSelection.focusNode, nodeSelection.focusOffset);
   
+            let noteHighlight = note.highlight;
+            if(!noteHighlight){
+              //default
+              noteHighlight = { type: NOTE_HIGHLIGH_TYPE_UNDERLINE, backgroundColor: NOTE_HIGHLIGH_COLOR_BLUE, underlineType: 'wavy'};
+            }
+            let highlightKey = [noteHighlight.type, noteHighlight.backgroundColor, noteHighlight.underlineType].join(',');
+            let highlight = highlightMap.get(highlightKey);
+            if(!highlight){
+              highlight = new Highlight();
+              highlightMap.set(highlightKey, highlight);
+            }
             highlight.add(range);
 
             //note
@@ -162,8 +174,18 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
           }
         }
       }
-      if (highlight.size > 0) {
-        window.CSS.highlights.set("note-highlight", highlight);
+
+      for(const [key, value] of highlightMap){
+        let keyParts = key.split(',');
+        let type = keyParts[0];
+        let backgroundColor = keyParts[1];
+        let underlineType = keyParts[2];
+        let highlightName = generateHighlightName(type, backgroundColor, underlineType);
+
+        let highlight = value;
+        if (highlight.size > 0) {
+          window.CSS.highlights.set(highlightName, highlight);
+        }
       }
     }
   

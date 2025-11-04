@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 
 import { getNote, setNote, deleteNote } from '../../service/noteService.js';
+import { NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR, NOTE_HIGHLIGH_TYPE_UNDERLINE, getDefaultType} from '../../style/highlight-style.js'
 
 import 'sceditor/minified/sceditor.min.js';
 import 'sceditor/minified/formats/bbcode.js';
@@ -14,6 +15,7 @@ const props = defineProps({
     service: Object,
 });
 
+const t = chrome.i18n.getMessage;
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
 const sidepanelAddAction = chrome.i18n.getMessage('sidepanelAddAction');
@@ -35,6 +37,29 @@ const textarea = ref();
 //one time flag
 var sceditorInitialized = false;
 
+const highlight = ref();
+
+function buildHighlightOption(highlightObj){
+    const { type, backgroundColor, underlineType } = highlightObj;
+    if(type == NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR){
+        return `${type}-${backgroundColor}`;
+    }else if(type == NOTE_HIGHLIGH_TYPE_UNDERLINE){
+        return `${type}-${underlineType}`;
+    }
+}
+
+function parseHighlightOption(highlightOption){
+    let highlightParts = highlightOption.split('-');
+    let type = highlightParts[0];
+    let backgroundColor;
+    let underlineType;
+    if(type == NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR){
+        backgroundColor = highlightParts[1];
+    }else if(type == NOTE_HIGHLIGH_TYPE_UNDERLINE){
+        underlineType = highlightParts[1];
+    }
+    return {type, backgroundColor, underlineType};
+}
 
 function clickAdd() {
     
@@ -62,8 +87,9 @@ async function clickDelete() {
 
 async function clickSave() {
     let noteBBCode = getScEditor().val();
-    let noteEnity = { selection: props.note.selection, content: noteBBCode };
-    await setNote(noteEnity);
+    
+    let noteEntity = { selection: props.note.selection, content: noteBBCode, highlight: parseHighlightOption(highlight.value) };
+    await setNote(noteEntity);
 
     props.note.persisted = true;
     props.note.content = noteBBCode;
@@ -150,6 +176,12 @@ onMounted(() => {
         rootElement.value.querySelector('.sceditor-container').style.width = null;
         rootElement.value.querySelector('.sceditor-container').style.height = null;
     }
+
+    let highlight_ = props.note.highlight;
+    if(!highlight_){
+        highlight_ = { type : getDefaultType(), backgroundColor: getDefaultBackgroundColor(), underlineType: getDefaultUnderlineType()};
+    }
+    highlight.value = buildHighlightOption(highlight_);
 });
 
 onBeforeUpdate(() => {
@@ -197,6 +229,17 @@ init();
         </div>
         <div class="edit-note-container" v-show="mode === 'init' || mode === 'edit'">
             <textarea ref="textarea" class="note-editor"></textarea>
+            
+            <label for="highlight">{{  t('sidepanel_actions_note_highlight_label') }}</label>
+            <select id="highlight" v-model="highlight" >
+                <option value="background_color-yellow">{{ t('sidepanel_actions_note_highlight_option_background_color_yellow') }}</option>
+                <option value="background_color-green">{{ t('sidepanel_actions_note_highlight_option_background_color_green') }}</option>
+                <option value="background_color-blue">{{ t('sidepanel_actions_note_highlight_option_background_color_blue') }}</option>
+                <option value="background_color-pink">{{ t('sidepanel_actions_note_highlight_option_background_color_pink') }}</option>
+                <option value="background_color-purple">{{ t('sidepanel_actions_note_highlight_option_background_color_purple') }}</option>
+                <option value="underline-wavy">{{ t('sidepanel_actions_note_highlight_option_underline') }}</option>
+            </select>
+
             <div class="note-actions">
                 <div class="note-action">
                     <button @click="clickSave">{{ sidepanelSaveAction }}</button>
