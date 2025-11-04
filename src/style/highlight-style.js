@@ -43,9 +43,7 @@ function generateBackgroundColorStyle(backgroundColor) {
     let highlightName = generateHighlightName(type, backgroundColor);
     let backgroundColorRgb = getColorRgb(backgroundColor);
     let styleName = `::highlight(${highlightName})`;
-    let body = `
-        background-color: ${backgroundColorRgb};
-        `;
+    let body = `background-color: ${backgroundColorRgb};`;
 
     let styleContent = `
     ${styleName} {
@@ -62,18 +60,16 @@ function generateUnderlineStyle(underlineType) {
     let highlightName = generateHighlightName(type, null, underlineType);
 
     let styleName = `::highlight(${highlightName})`;
-    let body = `
-        text-decoration-line: underline;
+    let body = 
+       `text-decoration-line: underline;
         text-decoration-style: ${underlineType};
         text-decoration-color: red;
-        text-decoration-thickness: from-font;
-        `;
+        text-decoration-thickness: from-font;`;
 
-    let styleContent = `
-    ${styleName} {
+    let styleContent = 
+     `${styleName} {
       ${body}
-    }
-  `;
+    }`;
 
     return styleContent;
 }

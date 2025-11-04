@@ -2,7 +2,7 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 
 import { getNote, setNote, deleteNote } from '../../service/noteService.js';
-import { NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR, NOTE_HIGHLIGH_TYPE_UNDERLINE, getDefaultType} from '../../style/highlight-style.js'
+import { NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR, NOTE_HIGHLIGH_TYPE_UNDERLINE, getDefaultType, getDefaultBackgroundColor, getDefaultUnderlineType} from '../../style/highlight-style.js'
 
 import 'sceditor/minified/sceditor.min.js';
 import 'sceditor/minified/formats/bbcode.js';
