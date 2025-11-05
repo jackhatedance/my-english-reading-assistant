@@ -14,12 +14,12 @@ function formatDate(date) {
   return [year, month, day].join('-');
 }
 
-function saveTextAsFile(text, name) {
+function saveTextAsFile(text, name, ext = 'txt') {
     var textToWrite = text;
     var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
 
     let yyyymmdd = formatDate(new Date());
-    var fileNameToSaveAs = `my-${name}-${yyyymmdd}.txt`; //filename.extension
+    var fileNameToSaveAs = `my-${name}-${yyyymmdd}.${ext}`; //filename.extension
   
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;

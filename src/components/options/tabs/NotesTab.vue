@@ -58,7 +58,7 @@ async function onExport() {
     let notes  = await getNotes();
     let json = JSON.stringify(notes);
 
-    saveTextAsFile(json, 'notes');
+    saveTextAsFile(json, 'notes', 'json');
 }
 
 const init = async () => {
