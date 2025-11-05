@@ -12,9 +12,17 @@ function updateNotes(noteArray){
     
     let contentArray = [];
     for(let item of noteArray){
-        const text = xbbcToText(item.content);
+        const content = xbbcToText(item.content);
+        let text = item.text? item.text : '';
         //console.log(text);
-        contentArray.push(text);
+        let tc;
+        if(item.text){
+            tc = `"${text}":${content}`;
+        }else {
+            tc = content;
+        }
+        
+        contentArray.push(tc);
     }
     notes.value = contentArray.join("\n");
     noteCount.value = noteArray.length;

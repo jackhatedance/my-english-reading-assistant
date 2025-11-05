@@ -88,7 +88,7 @@ async function clickDelete() {
 async function clickSave() {
     let noteBBCode = getScEditor().val();
     
-    let noteEntity = { selection: props.note.selection, content: noteBBCode, highlight: parseHighlightOption(highlight.value) };
+    let noteEntity = { text: props.note.selectedText, selection: props.note.selection, content: noteBBCode, highlight: parseHighlightOption(highlight.value) };
     await setNote(noteEntity);
 
     props.note.persisted = true;

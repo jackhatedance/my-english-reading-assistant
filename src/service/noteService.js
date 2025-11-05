@@ -87,6 +87,7 @@ async function setNote(note) {
 
 function cleanCopyNote(srcNote) {
     let note = {
+        text: srcNote.text,
         selection: cleanCopySelection(srcNote.selection),
         content: srcNote.content,
         highlight: cleanCopyHighlight(srcNote.highlight),
