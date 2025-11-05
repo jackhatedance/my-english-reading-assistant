@@ -171,7 +171,7 @@
         "message":"Vocabulary"
     },
     "optionsInitializeVocabularyLabel":{
-        "message":"Initialize Personal Vocabulary"
+        "message":"Vocabulary list"
     },
     "optionsInitializeVocabularyLabelDesc":{
         "message":"Select a set of preset vocabularies to initialize your personal vocabulary. Multiple selection is allowed (using Ctrl/Command keys)."

@@ -170,7 +170,7 @@
         "message":"词汇表"
     },
     "optionsInitializeVocabularyLabel":{
-        "message":"初始化个人词汇表"
+        "message":"词汇表"
     },
     "optionsInitializeVocabularyLabelDesc":{
         "message":"选择一组预设词汇表来初始化你的个人词汇表。允许多选(使用Ctrl/Command键)。"
