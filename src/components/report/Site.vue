@@ -1,7 +1,8 @@
 <script setup>
 import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } from 'vue';
 import { useRoute } from 'vue-router'
-import {initializeOptionService, getAllSiteOptions} from '../../service/optionService.js';
+import {initializeOptionService } from '../../service/optionService.js';
+import { getAllSiteOptions} from '../../service/site-option-service.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { formatDuration, formatVocabularyChange, filterActivityByTimeRange } from '../../report/report-utils.js'
 
