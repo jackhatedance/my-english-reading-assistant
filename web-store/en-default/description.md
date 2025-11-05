@@ -4,17 +4,25 @@ refer to [message file](./public/_locales/en/messages.json), key: extensionDescr
 
 ### Long Description
 
-English beginners often cannot persist in reading English articles because of insufficient vocabulary. This software automatically displays the meaning of new words, improves the reading experience, makes English reading smooth, and allows readers to experience the joy brought by the content of the article. As the saying goes, great skill does not work, and a heavy sword has no edge. Extensive reading is better than any seemingly clever learning method.
+English beginners often struggle to maintain a consistent reading pace due to insufficient vocabulary. This software automatically displays the meanings of unfamiliar words, improving the reading experience and making English reading smoother, allowing readers to enjoy the content. As the saying goes, true skill lies in simplicity, and a heavy sword has no sharp edge; extensive reading is superior to any seemingly clever learning method.
 
-The main functions are as follows:
+Main functions include:
+1. Initializing/importing/exporting a personal vocabulary list.
 
-1. Initialize/import/export personal vocabulary.
-2. According to the personal vocabulary, the meaning of new words is automatically displayed on the web page.
-3. Mark words as known/unknown during reading, so as to update the personal vocabulary.
-4. Support root affix memory method
-5. View reading history.
-6. Highlight and take notes on web page content.
-7. Support epub/pdf format e-books (novels, foreign magazines, etc.), as well as most English websites.
-8. import user dictionary, support Mdict format
+2. Automatically displaying the meanings of unfamiliar words on web pages based on the user's vocabulary list.
+
+3. Flexible annotation functions, supporting the display of meanings, phonetic symbols, and notes.
+
+4. Marking words as "familiar" or "unfamiliar" during reading, thereby updating the user's vocabulary list.
+
+5. Supporting root and affix memorization methods.
+
+6. Viewing reading reports.
+
+7. Highlighting and taking notes on web page content.
+
+8. Supporting epub/pdf format ebooks (novels, foreign periodicals, etc.) and most English websites.
+
+9. Importing user dictionaries, supporting Mdict format.
 
 old name: My English Reading Assistant
