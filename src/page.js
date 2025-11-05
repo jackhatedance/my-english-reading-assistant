@@ -1,6 +1,6 @@
 'use strict';
 
-import { getSiteOptions, } from './service/optionService.js';
+import { getSiteOptions, } from './service/site-option-service.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';

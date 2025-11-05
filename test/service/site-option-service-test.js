@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
-import { getEffectiveSiteOptions } from '../../src/service/optionService.js'
+import { getEffectiveSiteOptions } from '../../src/service/site-option-service.js'
 
-describe('optionService', function () {
+describe('siteOptionService', function () {
   describe('#getEffectiveSiteOptions()', function () {
     it('v0.13.4 switch options - site options is old, enabled is false', async function () {
         let siteOptions = {

@@ -9,7 +9,7 @@ import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstan
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
 import { searchWord, buildDictionaryOptions } from './language.js';
 import { TEXT_TAG } from './html.js';
-import { getSimplifyDefinitionOptions } from './service/optionService.js';
+import { getSimplifyDefinitionOptions } from './service/site-option-service.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'

@@ -5,7 +5,7 @@ import {  TOKEN_TAG } from './html.js';
 import { mergeEntries } from './dictionary/entry-utils.js'
 import { pronunciationsToText } from './dictionary/definition-formatter.js'
 import { simplifyDefinition } from './dictionary/simplify-definition.js'
-import { createSimplifyDefinitionOptions } from './service/optionService.js'
+import { createSimplifyDefinitionOptions } from './service/site-option-service.js'
 import { encode } from 'html-entities';
 import { isRegularTransform } from './lemma.js'
 

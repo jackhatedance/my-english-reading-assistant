@@ -1,7 +1,7 @@
 <script setup>
 import { ref, provide, inject, computed, toRaw } from 'vue';
-import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, initVocabularyIfEmpty} from '../../service/optionService.js';
-import { getOptionsFromCache} from '../../service/optionService.js';
+import { getOptionsFromCache, initVocabularyIfEmpty} from '../../service/optionService.js';
+import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, } from '../../service/site-option-service.js';
 import { getAdditionalDictionaryMetas } from '../../dictionary/customDictionary.js'
 import HelpLink from '../HelpLink.vue'
 import { SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../switch-mode.js'

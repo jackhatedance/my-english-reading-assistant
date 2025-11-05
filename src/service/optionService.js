@@ -2,65 +2,9 @@
 
 import {loadKnownWords, loadDefaultKnownWords, saveKnownWords} from '../vocabularyStore.js';
 import { createDefaultOptions, patchDefaultOptionValues } from '../options/defaultOptionValues.js';
-import { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
-import assign from 'assign-deep'
+
 
 var gOptions;
-
-async function getDefaultSiteOptions(){
-
-    let options = await loadSiteOptionsFromStorage('default');
-    if(!options){
-        options = createFactoryDefaultSiteOptions();
-    }
-    
-    
-    patchDefaultSiteOptionValues(options);
-    
-    //make sure new site options switch mode is empty, that means default
-    delete options.enabled;
-    options.switch.mode='';
-
-    return options;
-    
-}
-
-function loadSiteOptionsFromStorage(siteDomain){
-    return new Promise(resolve => {
-        chrome.storage.local.get(['sitesOptions'], (result) => {
-            //console.log('load sitesOptions:'+JSON.stringify(result.sitesOptions));
-            
-            let siteOptions = undefined;
-            if(result.sitesOptions){
-                siteOptions = result.sitesOptions[siteDomain];
-            }
-            
-            resolve(siteOptions);
-        });
-    });
-}
-
-async function getAllSiteOptions(){
-    let result = await chrome.storage.local.get(['sitesOptions']);
-    return result?.sitesOptions;
-}
-
-function saveSiteOptionsToStorage(siteDomain, options){
-    //console.log('save site options, domain:'+siteDomain+',options:'+options);
-    return new Promise(resolve => {
-        chrome.storage.local.get(['sitesOptions'], (result) => {
-            let sitesOptions = result.sitesOptions;
-            if(!sitesOptions){
-                sitesOptions = {};
-            }
-            sitesOptions[siteDomain] = options;
-
-            let object = {sitesOptions: sitesOptions};
-            //console.log('save sitesOptions:'+JSON.stringify(sitesOptions));
-            chrome.storage.local.set(object, resolve);
-        });
-    });    
-}
 
 function getOptions(){
     return new Promise(resolve => {
@@ -88,47 +32,6 @@ async function updateOptions(newOptions) {
     let current = await getOptions();
     const merged = Object.assign(current, newOptions);
     await setOptions(merged);
-}
-
-
-function setSiteOptionsAsDefault(options){
-    setSiteOptions('default', options);
-}
-
-function getEffectiveSiteOptions(siteOptions, defaultSiteOptions){
-    let effectiveOptions = assign(defaultSiteOptions, siteOptions);
-
-    patchDefaultSiteOptionValues(effectiveOptions);
-
-    //migrateSiteOptions(effectiveOptions);
-
-    return effectiveOptions;
-}
-
-async function getSiteOptions(siteDomain){
-    
-    let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
-    if(!options){
-        options ={};
-    }
-
-    let defaultSiteOptions = await getDefaultSiteOptions();
-    
-    
-    let effectiveOptions = getEffectiveSiteOptions(options, defaultSiteOptions);
-
-    return effectiveOptions;
-}
-
-function setSiteOptions(siteDomain, options){
-    return saveSiteOptionsToStorage(fixSiteDomain(siteDomain), options);
-}
-
-function fixSiteDomain(domain){
-    if(!domain){
-        return 'NULL';
-    }
-    return domain;
 }
 
 async function initVocabularyIfEmpty(){
@@ -172,20 +75,5 @@ function getOptionsFromCache(){
     return gOptions;
 } 
 
-function getSimplifyDefinitionOptions(siteOptions){
-    let simplifyDefinitionOptions = {
-        hideWordClass: siteOptions.annotation.hideWordClass,
-        maxMeaningNumber: siteOptions.annotation.maxMeaningNumber,
-    };
-    return simplifyDefinitionOptions;
-}
 
-function createSimplifyDefinitionOptions(maxMeaningNumber = 6, hideWordClass = false){
-    let simplifyDefinitionOptions = {
-        hideWordClass: hideWordClass,
-        maxMeaningNumber: maxMeaningNumber,
-    };
-    return simplifyDefinitionOptions;
-}
-
-export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, getDefaultSiteOptions, getAllSiteOptions, getSiteOptions, setSiteOptions, setSiteOptionsAsDefault, initVocabularyIfEmpty, getSimplifyDefinitionOptions, createSimplifyDefinitionOptions, getEffectiveSiteOptions};
+export {getOptions, initializeOptionService, getOptionsFromCache, refreshOptionsCache, setOptions, updateOptions, initVocabularyIfEmpty, };

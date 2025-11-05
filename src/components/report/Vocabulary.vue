@@ -3,7 +3,8 @@ import { ref, toRaw, onMounted, onBeforeUpdate, onUpdated, computed, inject, wat
 import { useRoute } from 'vue-router'
 import {Chart, registerables} from 'chart.js';
 import 'chartjs-adapter-date-fns';
-import {initializeOptionService, getAllSiteOptions} from '../../service/optionService.js';
+import {initializeOptionService, } from '../../service/optionService.js';
+import { getAllSiteOptions} from '../../service/site-option-service.js';
 import {loadActivitiesFromStorage} from '../../service/activityService.js';
 import { formatDuration, filterActivityByTimeRange } from '../../report/report-utils.js'
 import { fixCategory } from '../../site-category.js'
