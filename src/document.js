@@ -21,6 +21,7 @@ import { showDialog } from './dialog.js'
 import { MenuItems } from './menu.js';
 import { TOKEN_TAG } from './html.js'
 import { xbbcToText } from './note/note-util.js'
+import { sendMessageToBackground } from './message.js'
 
 var knownWords;
 
@@ -169,7 +170,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
   
     //console.log('resetDocumentAnnotationVisibility end');
   }
-function addDocumentEventListener(page, document, options, currentSiteOption) {  
+function addDocumentEventListener(page, window, document, options, currentSiteOption) {  
   gLogger.debug('addDocumentEventListener:' + document.URL);
   let documentInfo = page.getDocumentInfo(document);
   let mouseUpEventListener = documentInfo.mouseUpEventListener;
@@ -183,6 +184,17 @@ function addDocumentEventListener(page, document, options, currentSiteOption) {
 
   gLogger.debug('add mouseup event listener');
   document.addEventListener("mouseup", mouseUpEventListener);
+
+  //top window and iframe windows all need to send event 
+  window.onfocus = () => {
+      //console.log("Browser window is in focus");
+      sendMessageToBackground(page.siteProfile, 'WINDOW_FOCUS');
+  };
+
+  window.onblur = () => {
+    //console.log("Browser window has lost focus");
+    sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
+  };
 
   //DOM mutation changes
   const targetNode = document.body;
@@ -254,7 +266,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
 
         let documentInfo = page.getDocumentInfo(document);
         if(!documentInfo.mouseUpEventListener){
-            addDocumentEventListener(page, document, options, currentSiteOption);
+            addDocumentEventListener(page, window, document, options, currentSiteOption);
         }else {
             gLogger.debug('already has mouseUpEventListener, skip adding');
         }
@@ -335,4 +347,4 @@ async function addWordHoverEventListener(page, document, documentConfig, current
   );
 }
 
-export { isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, addDocumentEventListener, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };
+export { isDocumentAnnotationInitialized, isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, getAllDocuments, changeStyleForAllDocuments, resetDocumentAnnotationVisibility, removeDocumentEventListener, preprocessDocument, cleanDocumentAnnotations };
