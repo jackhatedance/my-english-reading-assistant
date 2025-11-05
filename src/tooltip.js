@@ -11,7 +11,7 @@ import { isRegularTransform } from './lemma.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import { isElementDetached } from './html.js'
 import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
-import { getCurrentSiteOptions } from './page.js'
+import { getCurrentSiteOptionsFromCache } from './page.js'
 import log from 'loglevel'
 
 const gLogger = log.getLogger('tooltip');
@@ -32,7 +32,9 @@ var gPage;
 var gTooltipTimeout;
 
 function clearAndSetTooltipTimeout(tooltipTimeout){
+  //console.log('clearAndSetTooltipTimeout');
   if(gTooltipTimeout){
+    //console.log('clearTimeout');
     clearTimeout(gTooltipTimeout);
   }
 
@@ -42,6 +44,7 @@ function clearAndSetTooltipTimeout(tooltipTimeout){
 function clearTooltipTimeout(){
   if(gTooltipTimeout){
     clearTimeout(gTooltipTimeout);
+    gTooltipTimeout= null;
   }
 }
 
@@ -213,9 +216,10 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   const meaWords = document.querySelectorAll('.mea-word');
   //console.log(`add mouseenter event listener for mea-word`);
   meaWords.forEach(function(ele) {
-    ele.addEventListener('mouseenter', async function() {
+    ele.addEventListener('mouseenter', function() {
+      //this function must be sync. otherwise the timer won't work correctly.
       //console.log('mouse enter');
-      let siteOptions = await getCurrentSiteOptions();
+      let siteOptions = getCurrentSiteOptionsFromCache();
       let hoverWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_HOVER_WORD);
       if(!hoverWordEnabled){
         return;
@@ -249,6 +253,7 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
     });
 
     ele.addEventListener('mouseleave', function() {
+      //this function must be sync. otherwise the timer won't work correctly.
       //console.log('mouse leave');    
       let timeout = setTimeout(() => {
         hideTooltip(definitionTooltipElement);   

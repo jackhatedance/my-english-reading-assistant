@@ -13,6 +13,8 @@ import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
 import log from 'loglevel'
 
 const gLogger = log.getLogger("page");
+
+var gCurrentSiteOptions;
 /**
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
@@ -141,6 +143,21 @@ async function getCurrentSiteOptions() {
     return options;
 }
 
+async function initializeCurrentSiteOptionCache(){
+    gCurrentSiteOptions = await getCurrentSiteOptions();
+}
+
+async function refreshCurrentSiteOptionsCache(currentSiteOptions) {
+    if(currentSiteOptions){
+        gCurrentSiteOptions = currentSiteOptions;
+    }else {
+        gCurrentSiteOptions = await getCurrentSiteOptions();
+    }
+}
+
+function getCurrentSiteOptionsFromCache() {
+    return gCurrentSiteOptions;
+}
 
 function isPageAnnotationInitialized() {
     return isDocumentAnnotationInitialized(document)
@@ -158,7 +175,8 @@ async function doInitializeService(){
     await initializeOptionService();
     let options = getOptionsFromCache();
 
-    let siteOptions = await getCurrentSiteOptions();
+    await initializeCurrentSiteOptionCache();
+    let siteOptions = await getCurrentSiteOptionsFromCache();
     //console.log(`get site options:`+ JSON.stringify(siteOptions));
     let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
         
@@ -284,4 +302,4 @@ function clearPagePreprocessMark(siteProfile) {
     });
 }
 
-export { getPageInfo, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, isPageAnnotationInitialized, clearPagePreprocessMark };
+export { getPageInfo, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, getCurrentSiteOptionsFromCache, refreshCurrentSiteOptionsCache, isPageAnnotationInitialized, clearPagePreprocessMark };
