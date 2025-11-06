@@ -262,6 +262,20 @@
     "optionsDeleteReadingHistoryAction":{
         "message":"清除报告数据"
     },
+     "options_report_import_label_desc":{
+        "message":"从文件读取报告数据记录"
+    },
+    "options_report_import":{
+        "message":"导入"
+    },
+
+
+    "options_report_export_label_desc":{
+        "message":"备份报告数据到文件"
+    },
+    "options_report_export":{
+        "message":"导出"
+    },
 
     "optionsGeneralLabel":{
         "message":"通用"

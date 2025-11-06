@@ -264,6 +264,20 @@
     "optionsDeleteReadingHistoryAction":{
         "message":"Clear Report Data"
     },
+    "options_report_import_label_desc":{
+        "message":"read report data from file"
+    },
+    "options_report_import":{
+        "message":"Import"
+    },
+
+
+    "options_report_export_label_desc":{
+        "message":"backup report data to file"
+    },
+    "options_report_export":{
+        "message":"Export"
+    },
 
     "optionsGeneralLabel":{
         "message":"General"

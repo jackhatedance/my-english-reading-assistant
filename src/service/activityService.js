@@ -88,15 +88,17 @@ async function addActivityToStorage(newActivity){
     }
     
     activities.sort(function(a, b){return a.endTime - b.endTime});
-    let object = {activities: activities};
-    //console.log('save activities:'+JSON.stringify(activities));
-    await chrome.storage.local.set(object);
-    
-       
+    await saveActivities(activities);
 }
+
+async function saveActivities(activities){
+    let object = {activities: activities};
+    await chrome.storage.local.set(object);
+}
+
 async function deleteAllReadingHistory(){
     await chrome.storage.local.remove("activities");
 }
 
   
-export {loadActivitiesFromStorage, addActivityToStorage, deleteAllReadingHistory};
+export {loadActivitiesFromStorage, saveActivities, addActivityToStorage, deleteAllReadingHistory};
