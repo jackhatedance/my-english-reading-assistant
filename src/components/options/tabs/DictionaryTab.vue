@@ -25,7 +25,6 @@ const file = ref();
 const indexBuildingProgress = inject('indexBuildingProgress');
 
 const optionsEditDictionaryTips = ref('');
-const options_dictionary_detail_enabled = ref('');
 const optionalTips = ref({});
 
 const extractable = computed(() => {
@@ -351,8 +350,6 @@ const init = async () => {
   await refreshUI();
 
   optionsEditDictionaryTips.value = await markdown2Html(t('optionsEditDictionaryTips'));
-  options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');
-  options_dictionary_detail_enabled.value = t('options_dictionary_detail_enabled');  
 };
 
 init();
@@ -382,7 +379,7 @@ init();
       <div class="input dictionary">
         <div class="list">
           <select class="dictionaries" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
-            <option :class="{support_ok: supportOk(meta), support_ok_upgradable: supportOkUpgradable(meta), support_invalid: supportInvalid(meta), not_support: notSupport(meta)}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[${options_dictionary_detail_enabled}]`:''}}{{ meta.displayName }}</option>
+            <option :class="{support_ok: supportOk(meta), support_ok_upgradable: supportOkUpgradable(meta), support_invalid: supportInvalid(meta), not_support: notSupport(meta)}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[✓]`:''}}{{ meta.displayName }}</option>
           </select>          
         </div>
         <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
