@@ -8,6 +8,8 @@ import { saveTextAsFile } from '../../../html-utils.js';
 const t = chrome.i18n.getMessage;
 const enableReport = ref(false);
 
+const file = ref();
+
 async function onChange() {
   const report = {
     enabled: enableReport.value,
