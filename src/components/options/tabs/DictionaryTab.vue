@@ -118,7 +118,7 @@ function swap(array, index1, index2) {
 async function onAdd() {
   const files = file.value.files;
   if (files.length == 0) {
-    alert('pick file first.');
+    alert(t('choose_file_first'));
     return;
   }
 
