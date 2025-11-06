@@ -30,6 +30,7 @@ init();
                 <RouterLink to="/book">{{ t('options_section_book_title') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
                 <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
+                <hr></hr>
                 <RouterLink data-testid="unrecognized-words" to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>
             </nav>              
         </div>
@@ -70,6 +71,9 @@ init();
 .sidebar-middle {
     text-align: left;
 
+    hr {
+        width: 100%;
+    }
 }
 
 nav {
