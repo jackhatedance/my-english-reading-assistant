@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
 import { BookDao } from '../../service/BookDao.js';
-import { searchBookByUrlAsync, matchUrl } from '../../service/bookService.js';
+import { saveBook, searchBookByUrlAsync, matchUrl } from '../../service/bookService.js';
 import getfake from 'getfake';
 import { parseBookTitle } from '../../book/book-title-utils.js'
 
@@ -129,7 +129,7 @@ async function clickSave() {
         title: title.value,
         urlPattern: urlPattern.value
     };
-    await bookDao.set(newBook);
+    await saveBook(newBook);
 
     mode.value = 'view';
     await update(props.url);

@@ -20,6 +20,9 @@
     "disabled":{
         "message":"Disabled"
     },
+    "choose_file_first": {
+        "message": "Choose file first please"
+    },
 
     "popupEpub":{
         "message":"Epub Reader"
@@ -441,6 +444,20 @@
     },
     "options_section_book_detail_url_pattern":{
         "message":"URL pattern"
+    },
+    "options_book_import_label_desc":{
+        "message":"read book data from file"
+    },
+    "options_book_import":{
+        "message":"Import"
+    },
+
+
+    "options_book_export_label_desc":{
+        "message":"backup book data to file"
+    },
+    "options_book_export":{
+        "message":"Export"
     },
 
 

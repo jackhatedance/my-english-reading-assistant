@@ -20,6 +20,10 @@
     "disabled":{
         "message":"禁用"
     },
+    "choose_file_first": {
+        "message": "请先选择文件"
+    },
+
     "popupEpub":{
         "message":"Epub阅读器"
     },
@@ -440,6 +444,20 @@
     },
     "options_section_book_detail_url_pattern":{
         "message":"网址规则"
+    },
+    "options_book_import_label_desc":{
+        "message":"从文件读取书籍数据"
+    },
+    "options_book_import":{
+        "message":"导入"
+    },
+
+
+    "options_book_export_label_desc":{
+        "message":"备份书籍数据到文件"
+    },
+    "options_book_export":{
+        "message":"导出"
     },
 
     "optionsUnrecognizedWordsLabel":{

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { getAllBooks, getBook, deleteBook } from '../../../service/bookService.js';
+import { getAllBooks, getBook, saveAllBooks, deleteBook } from '../../../service/bookService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
 import BookDetail from './BookDetail.vue';
 
@@ -30,6 +30,33 @@ async function onDelete(){
     selectedBook.value = null;
     selectedBookObject.value = null;
     await refreshUI();
+}
+
+function onImport() {
+    
+    const files = file.value.files;
+    if(files.length == 0){
+        alert(t('choose_file_first'));
+        return;
+    }
+    
+    const _file = files[0];
+
+    var reader = new FileReader();
+    reader.onload = function(e){
+        let books2 = JSON.parse(e.target.result);
+        saveAllBooks(books2);
+        books.value =books2;
+    }
+    reader.readAsText(_file);
+
+}
+
+async function onExport() {
+    let books  = await getAllBooks();
+    let json = JSON.stringify(books);
+
+    saveTextAsFile(json, 'books', 'json');
 }
 
 async function refreshUI(){
@@ -69,6 +96,29 @@ init();
             </div>
         </div>
 
+        <div class="section">
+            <div class="label">
+                {{ t('options_report_import_label_desc') }}
+            </div>
+            <div class="input">
+                <input type="file" ref="file">
+            </div>
+            <div class="action">
+                <button @click="onImport" >{{ t('options_report_import') }}</button>
+            </div>
+        </div>
+        <div class="section">
+            <div class="label">
+                {{ t('options_report_export_label_desc') }}
+            </div>
+
+            <div class="input">
+            </div>
+            <div class="action">
+                <button @click="onExport">{{ t('options_report_export') }}</button>
+            </div>
+        </div>
+        
     </div>
 
 </template>

@@ -10,12 +10,20 @@ async function getBook(isbn){
     return book;
 }
 
+async function saveBook(book){
+    await bookDao.set(book);
+}
+
 async function deleteBook(isbn){
     await bookDao.delete(isbn);
 }
 
 async function getAllBooks(){
     return await bookDao.getAll();
+}
+
+async function saveAllBooks(books){
+    await bookDao.setAll(books);
 }
 
 function matchUrl(url, pattern){
@@ -71,4 +79,4 @@ function searchBookByUrl(url, books) {
     return result;
 }
 
-export { getAllBooks, getBook, deleteBook, searchBookByUrl, searchBookByUrlAsync, matchUrl };
+export { getAllBooks, getBook, saveBook, saveAllBooks, deleteBook, searchBookByUrl, searchBookByUrlAsync, matchUrl };
