@@ -118,6 +118,7 @@ init();
 <style>
 
 .notes {
+    white-space: nowrap;
     width: 100%;
 }
 </style>
