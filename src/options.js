@@ -10,7 +10,6 @@ import GeneralTab from './components/options/tabs/GeneralTab.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
 import NotesTab from './components/options/tabs/NotesTab.vue'
 import BookTab from './components/options/tabs/BookTab.vue'
-import RootAndAffixTab from './components/options/tabs/RootAndAffixTab.vue'
 import ReportTab from './components/options/tabs/ReportTab.vue'
 import DictionaryTab from './components/options/tabs/DictionaryTab.vue'
 import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab.vue'
@@ -27,7 +26,6 @@ const routes = [
     { path: '/vocabulary', component: VocabularyTab },
     { path: '/notes', component: NotesTab },
     { path: '/book', component: BookTab },
-    { path: '/root-and-affix', component: RootAndAffixTab },
     { path: '/report', component: ReportTab },
     { path: '/dictionary', component: DictionaryTab },
     { path: '/unrecognized-words', component: UnrecognizedWordsTab },

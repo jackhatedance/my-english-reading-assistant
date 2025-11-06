@@ -25,7 +25,6 @@ init();
             <nav>
                 <RouterLink data-testid="general" to="/general">{{ t('optionsGeneralLabel') }}</RouterLink>
                 <RouterLink to="/vocabulary">{{ t('optionsSectionVocabularyTitle') }}</RouterLink>
-                <RouterLink data-testid="root-and-affix" to="/root-and-affix">{{ t('optionsRootAndAffixLabel') }}</RouterLink>
                 <RouterLink to="/dictionary">{{ t('optionsSectionDictionaryTitle') }}</RouterLink>
                 <RouterLink to="/book">{{ t('options_section_book_title') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>

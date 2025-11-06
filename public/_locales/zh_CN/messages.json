@@ -248,6 +248,9 @@
     "optionsRootAndAffixLabelDesc":{
         "message":"打开词根与词缀模式时，只要你认识单词的词根和词缀，那么默认就认为你也认识该单词了。它不仅可以极大地减少单词的标记工作，也是一种自然的单词学习方法。"
     },
+    "options_general_root_and_affix_label":{
+        "message":"词根与词缀"
+    },
     "optionsRootAndAffixModeLabel":{
         "message":"词根与词缀模式"
     },

@@ -15,7 +15,7 @@ test('root and affix mode disabled hopeless', async ({ testPage, extensionId, po
 test('root and affix mode enabled hopeless', async ({ optionsPage, testPage, extensionId, popupPage }) => {
   
   await optionsPage.goto(extensionId);  
-  await optionsPage.gotoTab('root-and-affix');
+  await optionsPage.gotoTab('general');
 
   await optionsPage.locateRootAndAffixMode().click();
   

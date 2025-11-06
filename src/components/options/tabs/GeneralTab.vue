@@ -8,6 +8,8 @@ const t = chrome.i18n.getMessage;
 const selectedRegion = ref('none');
 const selectedSwitchMode = ref('none');
 
+const enableRootAndAffix = ref(false);
+
 const clickWord = ref(true);
 const hoverWord = ref(true);
 const selectText = ref(false);
@@ -28,6 +30,14 @@ async function onChangeSwitchMode() {
   await updateOptions(newOptions);
 }
 
+async function onChangeRootAndAffixMode(){
+    const rootAndAffix = {
+        enabled: enableRootAndAffix.value,
+    };
+    let newOptions = {rootAndAffix};
+    await updateOptions(newOptions);
+}
+
 async function onChangeInteraction() {
   const _interaction = {
     clickWord: clickWord.value,
@@ -46,6 +56,10 @@ function updateSwitchMode(options){
   selectedSwitchMode.value = options.switch.mode;
 }
 
+function updateRootAndAffixMode(options){
+  enableRootAndAffix.value = options.rootAndAffix?.enabled;
+}
+
 function updateInteraction(options){
   clickWord.value = options.interaction.clickWord;
   hoverWord.value = options.interaction.hoverWord;
@@ -55,7 +69,8 @@ function updateInteraction(options){
 const init = async () => {
   let options = await getOptions();
   updateRegion(options);  
-  updateSwitchMode(options);  
+  updateSwitchMode(options);
+  updateRootAndAffixMode(options);  
   updateInteraction(options);
 };
 
@@ -107,6 +122,24 @@ init();
       </div>
     </div>
     
+    <div class="section">
+      <div class="label">
+        <h3>{{ t('options_general_root_and_affix_label') }}</h3> 
+        <p>{{ t('optionsRootAndAffixLabelDesc') }}</p>
+      </div>
+  
+      <div class="input">
+        <div>
+          <label>{{ t('optionsRootAndAffixModeLabel') }}</label>
+          <input data-testid="root-and-affix-mode" type="checkbox" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode">
+        </div>
+        
+      </div>
+      <div class="action">
+        
+      </div>
+    </div>
+
     <div class="section">
       <div class="label">
         <h3>{{ t('options_general_interaction_label') }}</h3>        
