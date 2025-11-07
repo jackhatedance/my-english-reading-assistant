@@ -54,6 +54,9 @@
     "popupDualAnnotationEnabledLabel": {
         "message":"双注解"
     },
+    "popupDualAnnotationEnabledTip": {
+        "message":"允许在正文上下都有注解"
+    },
     "popupContentLabel": {
         "message":"内容"
     },
@@ -93,6 +96,9 @@
     "popup_settings_text_font_size_label":{
         "message":"字体尺寸"
     },
+    "popup_settings_text_font_size_tip":{
+        "message":"为空时表示不改变字体尺寸"
+    },
     "popupColorLabel":{
         "message":"颜色"
     },
@@ -127,6 +133,9 @@
 
     "popup_site_category_Label":{
         "message":"站点类别"
+    },
+    "popup_site_category_tip":{
+        "message":"用于阅读报告"
     },
     "popup_site_category_text_Label":{
         "message":"文本"

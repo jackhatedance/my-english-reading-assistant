@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
-import HelpLink from '../../HelpLink.vue'
+import Tooltip from '../../common/Tooltip.vue'
 
 const emit = defineEmits(['change-setting']);
 
@@ -56,7 +56,10 @@ init();
           </div>
 
           <div class="field">
-            <label>{{ t('popup_settings_text_font_size_label') }}<HelpLink type="guide" keyword="正文字体尺寸"/></label>
+            <Tooltip placement="top-start"  effect="dark" :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸">
+              <label>{{ t('popup_settings_text_font_size_label') }}</label>
+            </Tooltip>
+            
             <div class="inputs">
               <input v-model="textFontSize" @change="onChangeSetting" type="number" value="1" min="14" max="28" step="1">
             </div>

@@ -57,6 +57,9 @@
     "popupDualAnnotationEnabledLabel": {
         "message":"Dual Annotation"
     },
+    "popupDualAnnotationEnabledTip": {
+        "message":"annotations on top and bottom of text"
+    },
     "popupContentLabel": {
         "message":"Content"
     },
@@ -93,6 +96,9 @@
     "popup_settings_text_font_size_label":{
         "message":"Font Size"
     },
+    "popup_settings_text_font_size_tip":{
+        "message":"size not changed when empty"
+    },
     "popupColorLabel":{
         "message":"Color"
     },
@@ -127,6 +133,9 @@
 
     "popup_site_category_Label":{
         "message":"Site Category"
+    },
+    "popup_site_category_tip":{
+        "message":"used by reading report"
     },
     "popup_site_category_text_Label":{
         "message":"Text"

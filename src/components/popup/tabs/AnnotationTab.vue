@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import HelpLink from '../../HelpLink.vue'
+import Tooltip from '../../common/Tooltip.vue'
+
 
 const emit = defineEmits(['change-setting']);
 
@@ -53,7 +55,9 @@ init();
 <template>
     <div class="annotation-settings">
         <div class="field">
-            <label>{{ t('popupDualAnnotationEnabledLabel') }} <HelpLink type="guide" keyword="双注解"/></label>
+            <Tooltip placement="top-start"  effect="dark" :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解">
+                <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
+            </Tooltip>
             <div class="inputs">
             <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
             </div>

@@ -4,6 +4,7 @@ import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
 import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
+import Tooltip from '../../common/Tooltip.vue'
 
 const emit = defineEmits(['change-setting']);
 
@@ -76,7 +77,10 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_site_category_Label') }}</label>
+        <Tooltip placement="top-start"  effect="dark" :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别">
+          <label>{{ t('popup_site_category_Label') }}</label>
+        </Tooltip>
+        
         <div class="inputs">
           <el-select data-testid="site-category" v-model="siteCategory" @change="onChangeSetting" size="small">
             <el-option :value="SITE_CATEGORY_TEXT" :label="t('popup_site_category_text_Label')" />

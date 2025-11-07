@@ -1,0 +1,21 @@
+<script setup>
+import { ElTooltip } from 'element-plus';
+import { ref } from 'vue';
+import ExternalLink from './ExternalLink.vue'
+
+const props = defineProps({
+    content: String,
+    linkType: String,
+    linkKeyword: String,
+});
+
+</script>
+
+<template>
+    <el-tooltip v-bind="$attrs">
+        <template #content>
+            <p>{{ content }}<ExternalLink :type="props.linkType" :keyword="props.linkKeyword"/></p>
+        </template>
+        <slot />
+    </el-tooltip>
+</template>
