@@ -34,7 +34,7 @@ function sendMessageDictionaryChangeToBackground(name, type) {
     );
 }
 
-async function sendMessageToBackground(siteProfile, type, pageInfo) {
+function sendMessageToBackground(siteProfile, type, pageInfo) {
     //console.log('send message to background, type:' + type);
 
     
