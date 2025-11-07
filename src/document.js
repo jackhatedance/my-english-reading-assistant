@@ -23,6 +23,7 @@ import { MenuItems } from './menu.js';
 import { TOKEN_TAG } from './html.js'
 import { xbbcToText } from './note/note-util.js'
 import { sendMessageToBackground } from './message.js'
+import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_HOVER_LISTENER } from './document/process.js'
 
 var knownWords;
 
@@ -218,6 +219,25 @@ function addDocumentEventListener(page, window, document, options, currentSiteOp
     sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
   };
 
+  //top window and iframe windows all need to send event 
+  window.onfocus = () => {
+    gLogger.debug('window focus');  
+    //console.log("Browser window is in focus");
+    sendMessageToBackground(page.siteProfile, 'WINDOW_FOCUS');
+  };
+
+  window.onblur = () => {
+    //console.log("Browser window has lost focus");
+    gLogger.debug('window blur');
+
+    const topDocument = window.top.document;
+    if(topDocument.hasFocus()){
+      gLogger.debug('tab still has focus');
+    }else{
+      gLogger.debug('tab lost focus');
+      sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
+    }    
+  };
   //DOM mutation changes
   const targetNode = document.body;
   const config = { attributes: false, childList: true, subtree: true };
@@ -266,7 +286,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
     let article = null;
     if (documentConfig.canProcess) {
 
-
+      if(canProcessStep(documentConfig.processSteps, STEP_CHANGE_MEA_STYLE)){
         //console.log('preprocess document');
         
         var x = 0;
@@ -282,23 +302,29 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
                 window.clearInterval(intervalID);
             }
         }, 1000);
-
-        
+      }
+      
+      if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
         tokenizeTextNode(document, options, currentSiteOption, siteProfile);
+      }
 
+      if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
         let documentInfo = page.getDocumentInfo(document);
         if(!documentInfo.mouseUpEventListener){
             addDocumentEventListener(page, window, document, options, currentSiteOption);
         }else {
             gLogger.debug('already has mouseUpEventListener, skip adding');
         }
-        
+      }
     
+      if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
         article = parseDocument(document, options, currentSiteOption);
+      }
 
+      if(canProcessStep(documentConfig.processSteps, STEP_ADD_WORD_HOVER_LISTENER)){
         //console.log(JSON.stringify(article));
         addWordHoverEventListener(page, document, documentConfig, currentSiteOption);
-        
+      }
     } else {
         //empty article
         article = parseDocument(document, options, currentSiteOption, true);

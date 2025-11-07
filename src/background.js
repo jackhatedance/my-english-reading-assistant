@@ -117,7 +117,7 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  gLogger.debug(' on message, type:' + request.type);
+  gLogger.debug(`on message, type:${request.type}, tabId:${sender.tab.id}`);
 
   let tabId =sender.tab.id;
 
@@ -144,7 +144,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type === 'WINDOW_FOCUS'){
     onWindowFocus(tabId);
   } else if(request.type === 'WINDOW_BLUR'){
-    onWindowBlur(tabId);
+    onTabBlur(tabId);
   } else if(request.type === 'PAGE_URL_CHANGED'){
 
     //console.log('page changed, type:' + request.type);
@@ -211,12 +211,17 @@ async function onWindowFocus(tabId){
   let tabInfo = await getTabInfo(tabId);
   if(tabInfo){
     //console.log('focus');
-    tabInfo.startTime = new Date().getTime();
-    saveTabInfo(tabId, tabInfo);
+    if(tabInfo.startTime ==null){
+      gLogger.debug('start time is null, set start time');
+      tabInfo.startTime = new Date().getTime();
+      await saveTabInfo(tabId, tabInfo);
+    }else {
+      gLogger.debug('start time is not null');
+    }
   }
 }
 
-async function onWindowBlur(tabId){
+async function onTabBlur(tabId){
   let tabInfo = await getTabInfo(tabId);
   if(tabInfo){
     //console.log('blur');
@@ -239,7 +244,7 @@ async function onMarkWord(tabId, wordChanges){
 
   if(tabInfo){
     tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
-    saveTabInfo(tabId, tabInfo);
+    await saveTabInfo(tabId, tabInfo);
   }else{
     console.error(`tabInfo not found of tab id: ${tabId}`);
   }
@@ -317,16 +322,21 @@ chrome.idle.onStateChanged.addListener(async (newState)=>{
     }else {
       //console.log('start activity');
       tabInfo.startTime = new Date().getTime();
-      saveTabInfo(tabId, tabInfo);
+      await saveTabInfo(tabId, tabInfo);
     }
   }
 });
 
 async function saveReadingActivityAndClearStartTime(tabInfo){
+  gLogger.debug('saveReadingActivityAndClearStartTime()');
   let options = await getOptions();
   //console.log('get options from cache:'+JSON.stringify(options));
   if(!options.report.enabled){
     return;
+  }
+
+  if(tabInfo.startTime == null){
+    gLogger.error('tabInfo.startTime is null');
   }
 
   if(tabInfo.startTime){

@@ -7,6 +7,7 @@ class DefaultSiteConfig {
             window: window,
             document: document,
             canProcess: true,
+            processSteps: { ignoreSteps:[]  }
         };
         return config;
     }
@@ -28,7 +29,8 @@ class DefaultSiteConfig {
                     iframe: iframe,
                     document:iframe.contentDocument,
                     window: iframe.contentWindow,
-                    canProcess: false
+                    canProcess: false,
+                    processSteps: { ignoreSteps:[] }
                 };
                 configs.push(config);
             } catch (error) {
