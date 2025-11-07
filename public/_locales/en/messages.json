@@ -48,6 +48,9 @@
     "popupSiteSwitchMode":{
         "message":"Site switch mode"
     },
+    "popupSiteSwitchModeTip":{
+        "message":"Auto mode only open English page"
+    },
     "popupSiteSwitchModeUnset":{
         "message":"default"
     },

@@ -44,8 +44,12 @@ init();
 </template>
 
 <style>
-#additionalDictionaries {
-  width: 10em;
+.dictionary-settings{
+  #additionalDictionaries {
+    width: 10em;
+    height:unset;
+  }
 }
+
 
 </style>

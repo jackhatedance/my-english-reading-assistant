@@ -8,6 +8,9 @@ import { SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF
 import Tabs from './Tabs.vue'
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
+import Tooltip from '../common/Tooltip.vue'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
 import { fixCategory } from '../../site-category.js'
 
@@ -376,12 +379,16 @@ init();
           <div class="toggle-master">
             <span class="subtitle">{{ t('popupShowHideDefinition') }}</span>
             <label class="switch">
-              <input type="checkbox" id="enabledCheckbox" data-testid="switch" v-model="props.pageInfo.visible" @change="onChangePageEnabled">
-              <span class="slider"></span>
+              <el-switch size="large" id="enabledCheckbox" data-testid="switch" v-model="props.pageInfo.visible" @change="onChangePageEnabled" />
+              
             </label>
           </div>
           <div class="switch-mode">
-            <label>{{ t('popupSiteSwitchMode') }}<HelpLink type="guide" keyword="站点开关模式"/>
+            <Tooltip placement="top-start"  effect="dark" :content="t('popupSiteSwitchModeTip')" linkType="guide" linkKeyword="站点开关模式">
+              <label>{{ t('popupSiteSwitchMode') }}</label>
+            </Tooltip>
+            
+            
             
               <el-select data-testid="switch-mode" class="switch-mode" v-model="switchMode" @change="onChangeSetting" >
                 <el-option :value="SWITCH_MODE_OPTION_UNSET" :label="defaultSwitchMode + '(' +t('popupSiteSwitchModeUnset') + ')'" />
@@ -389,7 +396,7 @@ init();
                 <el-option :value="SWITCH_MODE_OPTION_OFF" :label="t('options_general_switch_mode_off')" />
                 <el-option :value="SWITCH_MODE_OPTION_AUTO" :label="t('options_general_switch_mode_auto')" />
               </el-select>    
-            </label>
+            
           </div>
         </div>
                 
