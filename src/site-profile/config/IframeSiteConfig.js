@@ -12,7 +12,7 @@ class IframeSiteConfig extends DefaultSiteConfig {
         let config = {
             window: window,
             document: document,
-            canProcess: false,
+            canProcess: true,
         };
         return config;
     }

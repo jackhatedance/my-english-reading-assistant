@@ -187,15 +187,23 @@ function addDocumentEventListener(page, window, document, options, currentSiteOp
 
   //top window and iframe windows all need to send event 
   window.onfocus = () => {
-      //console.log("Browser window is in focus");
-      sendMessageToBackground(page.siteProfile, 'WINDOW_FOCUS');
+    gLogger.debug('window focus');  
+    //console.log("Browser window is in focus");
+    sendMessageToBackground(page.siteProfile, 'WINDOW_FOCUS');
   };
 
   window.onblur = () => {
     //console.log("Browser window has lost focus");
-    sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
-  };
+    gLogger.debug('window blur');
 
+    const topDocument = window.top.document;
+    if(topDocument.hasFocus()){
+      gLogger.debug('tab still has focus');
+    }else{
+      gLogger.debug('tab lost focus');
+      sendMessageToBackground(page.siteProfile, 'WINDOW_BLUR');
+    }    
+  };
   //DOM mutation changes
   const targetNode = document.body;
   const config = { attributes: false, childList: true, subtree: true };
