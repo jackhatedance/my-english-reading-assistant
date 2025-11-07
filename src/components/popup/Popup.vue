@@ -284,13 +284,9 @@ input:checked + .slider:before {
     float: right;
     display: flex;
 
-    input {
+    >* {
       width: 4em;
       height: 20px;
-      margin-left: 5px;
-    }
-    select {
-      width: 4em;
       margin-left: 5px;
     }
   }

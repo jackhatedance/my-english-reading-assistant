@@ -1,5 +1,6 @@
 <script setup>
 import { ElTooltip } from 'element-plus';
+import 'element-plus/es/components/tooltip/style/css'
 import { ref } from 'vue';
 import ExternalLink from './ExternalLink.vue'
 

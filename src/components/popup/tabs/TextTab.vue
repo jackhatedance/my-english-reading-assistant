@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import Tooltip from '../../common/Tooltip.vue'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -43,7 +45,7 @@ init();
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
             <div class="inputs">
               <input type="color" id="unknownWordColor" v-model="unknownWordColor" @change="onChangeSetting" name="unknownWordColor" value="#808080">
-              <input id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" type="checkbox" >
+              <el-switch id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" size="small" />
               
             </div>
           </div>

@@ -2,7 +2,8 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import HelpLink from '../../HelpLink.vue'
 import Tooltip from '../../common/Tooltip.vue'
-
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -59,7 +60,7 @@ init();
                 <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
             </Tooltip>
             <div class="inputs">
-            <input v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" type="checkbox" >
+                <el-switch v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" size="small"/>
             </div>
         </div>
 
@@ -120,8 +121,8 @@ init();
         <div class="field">
             <label>{{ t('popupInterlacedLabel') }}</label>
             <div class="inputs">
-            <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" type="checkbox" >
-            <input id="interlaced" v-model="interlaced" @change="onChangeSetting" type="checkbox" >
+            <el-switch class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" size="small" />
+            <el-switch id="interlaced" v-model="interlaced" @change="onChangeSetting" size="small" />
             </div>
         </div>
 
@@ -135,7 +136,7 @@ init();
         <div class="field">
             <label>{{ t('popupHideWordClassLabel') }}<span class="red">*</span></label>
             <div class="inputs">
-                <input id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" type="checkbox" >
+                <el-switch id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" size="small" />
             </div>
         </div>
 

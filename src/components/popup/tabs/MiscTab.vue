@@ -97,6 +97,10 @@ init();
   .field{
     .inputs {
       width: 100px;
+
+      >* {
+        width: 8em;
+      }
     }
     
   }
