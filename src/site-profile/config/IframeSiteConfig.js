@@ -1,5 +1,6 @@
 import { searchSubIframesRecursively, isMeaIframe } from '../utils.js';
 import {DefaultSiteConfig} from './DefaultSiteConfig.js';
+import {STEP_TOKENIZE_TEXT_NODE} from '../../document/process.js'
 
 class IframeSiteConfig extends DefaultSiteConfig {
 
@@ -13,6 +14,7 @@ class IframeSiteConfig extends DefaultSiteConfig {
             window: window,
             document: document,
             canProcess: true,
+            processSteps: { ignoreSteps:[STEP_TOKENIZE_TEXT_NODE] }
         };
         return config;
     }
@@ -29,7 +31,8 @@ class IframeSiteConfig extends DefaultSiteConfig {
                     iframe: iframe,
                     document:iframe.contentDocument,
                     window: iframe.contentWindow,
-                    canProcess: true
+                    canProcess: true,
+                    processSteps: { ignoreSteps:[] }
                 };
                 configs.push(config);
             }
