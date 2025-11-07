@@ -49,7 +49,7 @@
         "message":"Site switch mode"
     },
     "popupSiteSwitchModeTip":{
-        "message":"Auto mode only open English page"
+        "message":"Whether auto-enable pages on this site"
     },
     "popupSiteSwitchModeUnset":{
         "message":"default"

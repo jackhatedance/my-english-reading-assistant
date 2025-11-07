@@ -49,7 +49,7 @@
         "message":"站点开关模式"
     },
     "popupSiteSwitchModeTip":{
-        "message":"自动模式仅打开英文网页"
+        "message":"控制打开此站点时是否自动启用"
     },
     "popupSiteSwitchModeUnset":{
         "message":"默认"
