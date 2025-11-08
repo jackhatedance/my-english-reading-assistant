@@ -4,6 +4,12 @@ import HelpLink from '../../HelpLink.vue'
 import Tooltip from '../../common/Tooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
+import { ElInputNumber } from 'element-plus'
+import 'element-plus/es/components/input-number/style/css'
+import { ElSelect, ElOption } from 'element-plus'
+import 'element-plus/es/components/select/style/css'
+import { ElColorPicker } from 'element-plus'
+import 'element-plus/es/components/color-picker/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -67,54 +73,76 @@ init();
         <div class="field">
             <label>{{ t('popupContentLabel') }}</label>
             <div class="inputs">
-            <select data-testid="content2" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="content2" @change="onChangeSetting" >
-                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
-                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
-                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
-                <option value="AC_NOTE">{{ t('popup_settings_content_note') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
-            </select>
-            <select data-testid="content" v-model="content" @change="onChangeSetting" >
-                <option value="AC_NONE">{{ t('popup_settings_content_none') }}</option>
-                <option value="AC_PRONUNCIATION">{{ t('popup_settings_content_pronunciation') }}</option>
-                <option value="AC_DEFINITION">{{ t('popup_settings_content_definition') }}</option>
-                <option value="AC_NOTE">{{ t('popup_settings_content_note') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION">{{ t('popup_settings_content_pronunciation_and_definition') }}</option>
-                <option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE">{{ t('popup_settings_content_pronunciation_newline_definition') }}</option>
-            </select>
+                
+
+                <el-select v-show="dualAnnotationEnabled" data-testid="content2" class="annotation-input-2" v-model="content2" @change="onChangeSetting" size="small">
+                    <el-option value="AC_NONE" :label="t('popup_settings_content_none')" />
+                    <el-option value="AC_PRONUNCIATION" :label="t('popup_settings_content_pronunciation')" />
+                    <el-option value="AC_DEFINITION" :label="t('popup_settings_content_definition')" />
+                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" />
+                    <el-option value="AC_PRONUNCIATION_AND_DEFINITION" :label="t('popup_settings_content_pronunciation_and_definition')" />
+                    <el-option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE" :label="t('popup_settings_content_pronunciation_newline_definition')" />
+                </el-select>   
+
+                <el-select data-testid="content" v-model="content" @change="onChangeSetting" size="small">
+                    <el-option value="AC_NONE" :label="t('popup_settings_content_none')" />
+                    <el-option value="AC_PRONUNCIATION" :label="t('popup_settings_content_pronunciation')" />
+                    <el-option value="AC_DEFINITION" :label="t('popup_settings_content_definition')" />
+                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" />
+                    <el-option value="AC_PRONUNCIATION_AND_DEFINITION" :label="t('popup_settings_content_pronunciation_and_definition')" />
+                    <el-option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE" :label="t('popup_settings_content_pronunciation_newline_definition')" />
+                </el-select>   
             </div>
         </div>
         
         <div class="field">
             <label>{{ t('popupPositionLabel') }}</label>
             <div class="inputs">
-            <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="position2"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
-            <input id="annotationPosition" v-model="position"  @change="onChangeSetting" type="number" value="-1" min="-2" max="1" step="0.1">
+            
+                <el-input-number v-show="dualAnnotationEnabled" v-model="position2" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
+
+                <el-input-number v-model="position" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
             </div>
         </div>
 
         <div class="field">
             <label>{{ t('popupFontSizeLabel') }}</label>
             <div class="inputs">
-            <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="fontSize2" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1"></input>
-            <input id="fontSize" v-model="fontSize" @change="onChangeSetting" type="number" value="0.4" min="0.1" max="1" step="0.1">
+            
+
+                <el-input-number v-show="dualAnnotationEnabled" v-model="fontSize2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
+
+                <el-input-number v-model="fontSize" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
             </div>
         </div>
         
         <div class="field">
             <label for="color">{{ t('popupColorLabel') }}</label>
             <div class="inputs">
-            <input type="color" class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting"  name="color" value="#808080">
-            <input type="color" id="color" v-model="color" @change="onChangeSetting"  name="color" value="#808080">
+            <el-color-picker :class="{ 'hidden-component': !dualAnnotationEnabled }" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting" size="small"/>
+            <el-color-picker v-model="color" @change="onChangeSetting" size="small"/>
             </div>
         </div>
 
         <div class="field">
             <label>{{ t('popupOpacityLabel') }}</label>
             <div class="inputs">
-            <input class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="opacity2" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
-            <input id="opacity" v-model="opacity" @change="onChangeSetting" type="number" value="0.3" min="0.1" max="1" step="0.1">
+            
+                <el-input-number v-show="dualAnnotationEnabled" v-model="opacity2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
+                <el-input-number v-model="opacity" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
+
             </div>
         </div>
 
@@ -129,7 +157,10 @@ init();
          <div class="field">
             <label>{{ t('popupMaxMeaningNumberLabel') }}<span class="red">*</span></label>
             <div class="inputs">
-                <input id="maxMeaningNumber" v-model="maxMeaningNumber" @change="onChangeSetting" type="number" value="3" min="1" max="20" step="1">
+                
+                <el-input-number v-model="maxMeaningNumber" :min="1" :max="20" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+                </el-input-number>
             </div>
         </div>
 
@@ -144,6 +175,15 @@ init();
 </template>
 
 <style>
+.annotation-settings {
+  .field {
+    .inputs {
+      >* {
+        width: 6em;
+      }
+    }
 
+  }
+}
 
 </style>

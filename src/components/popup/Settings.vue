@@ -10,6 +10,8 @@ import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 import Tooltip from '../common/Tooltip.vue'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
 import { fixCategory } from '../../site-category.js'
@@ -412,8 +414,8 @@ init();
           <Tabs :activeTabId="activeTabId" @change-setting="onChangeSetting"></Tabs>
           
           <div class="buttons">
-            <button id="resetAnnotationSettings" @click="onReset" class="button">{{ t('popupResetButton') }}</button>
-            <button id="saveAsDefault" @click="onSaveAsDefault" class="button">{{ t('popupSaveAsDefault') }}</button>
+            <el-button id="resetAnnotationSettings" @click="onReset">{{ t('popupResetButton') }}</el-button>
+            <el-button id="saveAsDefault" @click="onSaveAsDefault">{{ t('popupSaveAsDefault') }}</el-button>
           </div>
 
           <div class="footnote">
@@ -446,5 +448,8 @@ init();
 }
 .annotation-settings {
   padding:0 !important;
+}
+.hidden-component {
+  display: none;
 }
 </style>

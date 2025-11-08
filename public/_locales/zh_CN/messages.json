@@ -123,6 +123,9 @@
     "popupAdditionalDictionaryLabel":{
         "message":"附加词典"
     },
+    "popupAdditionalDictionaryTip":{
+        "message":"额外增加词典"
+    },
 
     "popup_interaction_click_word_Label":{
         "message":"点击单词弹出对话框"

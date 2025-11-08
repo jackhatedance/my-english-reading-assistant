@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
-
+import Tooltip from '../../common/Tooltip.vue'
+import { ElSelect, ElOption } from 'element-plus'
+import 'element-plus/es/components/select/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -32,11 +34,17 @@ init();
     <div class="dictionary-settings">
         
           <div class="field" id="dictionaryField" >
-            <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
+            
+            <Tooltip placement="top-start"  effect="dark" :content="t('popupAdditionalDictionaryTip')" linkType="guide" linkKeyword="指定附加词典">
+              <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span></label>
+            </Tooltip>
             <div class="inputs">
-              <select id="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="5">
-                  <option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.displayName }}</option>
-              </select>           
+                       
+              
+              <el-select id="additionalDictionaries" data-testid="additionalDictionaries" v-model="additionalDictionaries" @change="onChangeSetting" multiple size="small">
+                <el-option v-for="(meta, index) in additionalDictionaryMetas" :key="meta.name" :value="meta.name" :label="meta.displayName" />
+                
+              </el-select>   
             </div> 
           </div>
 
@@ -45,9 +53,14 @@ init();
 
 <style>
 .dictionary-settings{
-  #additionalDictionaries {
-    width: 10em;
-    height:unset;
+  .field {
+
+    .inputs {
+      >* {
+        width: 10em;
+      }
+    }
+
   }
 }
 

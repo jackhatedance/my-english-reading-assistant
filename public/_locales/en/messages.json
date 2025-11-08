@@ -121,7 +121,10 @@
         "message":"Unknown Word Color"
     },
     "popupAdditionalDictionaryLabel":{
-        "message":"Add'l Dictionaries"
+        "message":"Additional Dictionaries"
+    },
+    "popupAdditionalDictionaryTip":{
+        "message":"additional dictionaries"
     },
 
     "popup_interaction_click_word_Label":{

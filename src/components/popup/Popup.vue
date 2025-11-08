@@ -286,7 +286,6 @@ input:checked + .slider:before {
 
     >* {
       width: 4em;
-      height: 20px;
       margin-left: 5px;
     }
   }

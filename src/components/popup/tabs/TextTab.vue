@@ -3,6 +3,10 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toR
 import Tooltip from '../../common/Tooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
+import { ElInputNumber } from 'element-plus'
+import 'element-plus/es/components/input-number/style/css'
+import { ElColorPicker } from 'element-plus'
+import 'element-plus/es/components/color-picker/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -37,14 +41,18 @@ init();
         <div class="field">
             <label>{{ t('popupLineHeightLabel') }}</label>
             <div class="inputs">
-              <input id="lineHeight" v-model="lineHeight" @change="onChangeSetting" type="number" value="0.5" min="1" max="3" step="0.1">
+              <el-input-number v-model="lineHeight" :min="1" :max="3" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+              </el-input-number>
             </div>
           </div>
 
           <div class="field">
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
             <div class="inputs">
-              <input type="color" id="unknownWordColor" v-model="unknownWordColor" @change="onChangeSetting" name="unknownWordColor" value="#808080">
+              
+              <el-color-picker v-model="unknownWordColor" @change="onChangeSetting" size="small"/>
+
               <el-switch id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" size="small" />
               
             </div>
@@ -53,7 +61,9 @@ init();
           <div class="field">
             <label>{{ t('popupUnknownWordWidthLabel') }}</label>
             <div class="inputs">
-              <input id="unknownWordWidth" v-model="unknownWordWidth" @change="onChangeSetting" type="number" value="1" min="1" max="5" step="1">
+              <el-input-number v-model="unknownWordWidth" :min="1" :max="5" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+              </el-input-number>
             </div>
           </div>
 
@@ -63,13 +73,24 @@ init();
             </Tooltip>
             
             <div class="inputs">
-              <input v-model="textFontSize" @change="onChangeSetting" type="number" value="1" min="14" max="28" step="1">
+              <el-input-number v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+                    
+              </el-input-number>
             </div>
           </div>
     </div>
 </template>
 
 <style>
+.text-settings {
+  .field {
+    .inputs {
+      >* {
+        width: 5em;
+      }
+    }
 
+  }
+}
 
 </style>
