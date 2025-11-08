@@ -131,8 +131,10 @@ const defaultSwitchMode = computed(() => {
 
 function onChangePageEnabled(){
     //emit('reload-page-info');
+    //get REAL state from page, because the switch state may not same with page state
     getPageInfo((pageInfo) => {
-        toggleEnabled(pageInfo.visible);
+      let currentPageState = pageInfo.visible;
+        toggleEnabled(currentPageState);
     });
 }
 
@@ -231,9 +233,13 @@ function toggleEnabled(currentValue) {
 
     let newValue = !currentValue ;
 
-    let time = setTimeout(function () {
-        document.getElementById('enabledCheckbox').checked = newValue;
-    }, 100);
+    //fix switch state if mismatch
+    if(enabled.value != newValue){
+      setTimeout(function () {
+        enabled.value = newValue;
+      }, 100);
+    }
+    
     
 
     // Communicate with content script of
@@ -279,7 +285,8 @@ function getPageInfo(resolve){
             tab.id,
             {
                 type: 'GET_PAGE_INFO',
-                payload: {            
+                payload: {  
+                  sections: [],          
                 },
             },
             (response) => {
@@ -364,6 +371,7 @@ async function onSaveAsDefault(){
 }
 
 const init = async () => {
+  enabled.value = props.pageInfo.visible;
   additionalDictionaryMetas.value = await getAdditionalDictionaryMetas();
   updateViewModel(props.pageInfo.siteOptions);
 };
@@ -379,7 +387,7 @@ init();
           <div class="toggle-master">
             <span class="subtitle">{{ t('popupShowHideDefinition') }}</span>
             <label class="switch">
-              <el-switch size="large" id="enabledCheckbox" data-testid="switch" v-model="props.pageInfo.visible" @change="onChangePageEnabled" />
+              <el-switch size="large" id="enabledCheckbox" data-testid="switch" v-model="enabled" @change="onChangePageEnabled" />
               
             </label>
           </div>
