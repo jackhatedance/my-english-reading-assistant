@@ -50,10 +50,10 @@ init();
           <div class="field">
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
             <div class="inputs">
+              <el-switch id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" size="small" />
               
               <el-color-picker v-model="unknownWordColor" @change="onChangeSetting" size="small"/>
 
-              <el-switch id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" size="small" />
               
             </div>
           </div>

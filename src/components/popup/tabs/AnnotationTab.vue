@@ -179,7 +179,7 @@ init();
   .field {
     .inputs {
       >* {
-        width: 6em;
+        width: 7em;
       }
     }
 

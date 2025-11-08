@@ -311,4 +311,7 @@ input:checked + .slider:before {
   }
 }
 
+.el-switch__core {
+  margin: auto;
+}
 </style>
