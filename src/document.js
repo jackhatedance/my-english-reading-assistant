@@ -24,6 +24,7 @@ import { TOKEN_TAG } from './html.js'
 import { xbbcToText } from './note/note-util.js'
 import { sendMessageToBackground } from './message.js'
 import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_HOVER_LISTENER } from './document/process.js'
+import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 
 var knownWords;
 
@@ -165,7 +166,13 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
             highlight.add(range);
 
             //note
-            let element = nodeSelection.anchorNode.parentElement;
+            let element;
+            if(isBionicHighlightedElement(nodeSelection.anchorNode.parentElement)){
+              element = nodeSelection.anchorNode.parentElement.parentElement;
+            }else{
+              element = nodeSelection.anchorNode.parentElement;
+            }
+
             if(element.nodeName.toUpperCase() == TOKEN_TAG){
               let text = xbbcToText(note.content);
               if(text.length>20){

@@ -16,13 +16,13 @@ function getWordFixationLength(word, fixationSize) {
     return Math.ceil(wordSize/6);
 }
 
-function bionic(word, encode){
+function bionic(word, encode, tag){
     let fixationLength = getWordFixationLength(word, 3);
 
     let part1 = word.substring(0, fixationLength);
     let part2 = word.substring(fixationLength);
 
-    return `<b>${encode(part1)}</b>${encode(part2)}`;
+    return `<${tag}>${encode(part1)}</${tag}>${encode(part2)}`;
 }
 
 

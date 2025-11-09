@@ -8,7 +8,7 @@ import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/site-option-service.js'
 import { encode } from 'html-entities';
 import { isRegularTransform } from './lemma.js'
-import { bionic } from './bionic.js'
+import { bionic } from './bionic/bionic-utils.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion) {
     let query = searchResult.query;

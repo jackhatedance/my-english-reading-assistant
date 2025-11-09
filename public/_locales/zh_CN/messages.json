@@ -81,6 +81,12 @@
     "popup_settings_content_pronunciation_newline_definition":{
         "message":"发音+含义(2行)"
     },
+    "popup_settings_content_pronunciation_and_note":{
+        "message":"发音+笔记"
+    },
+    "popup_settings_content_pronunciation_and_note_2_lines":{
+        "message":"发音+笔记(2行)"
+    },
     "popupSettings":{
         "message":"设置"
     },

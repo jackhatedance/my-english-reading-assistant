@@ -366,7 +366,13 @@ function getContentInfo(content){
     } else if(content == 'AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE'){
         contentExpr = `attr(data-pronunciation) "\\A" attr(data-footnote-short)`;
         unknownWordOnly = true;
-    }
+    } else if(content == 'AC_PRONUNCIATION_AND_NOTE'){
+        contentExpr = `attr(data-pronunciation) " " attr(data-note)`;
+        unknownWordOnly = true;
+    } else if(content == 'AC_PRONUNCIATION_AND_NOTE_2_LINES'){
+        contentExpr = `attr(data-pronunciation) "\\A" attr(data-note)`;
+        unknownWordOnly = true;
+    } 
     return { contentExpr, unknownWordOnly };
 }
 

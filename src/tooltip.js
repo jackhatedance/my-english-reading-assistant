@@ -12,6 +12,8 @@ import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import { isElementDetached } from './html.js'
 import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
 import { getCurrentSiteOptionsFromCache } from './page.js'
+import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
+
 import log from 'loglevel'
 
 const gLogger = log.getLogger('tooltip');
@@ -235,11 +237,12 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
         let article = page.documentArticleMap.get(document);
 
         let textNode;
-        if(ele.firstChild.nodeName == '#text'){
-          textNode = ele.firstChild;
-        }else {//bionic reading, <mea-token><b>foo</b></mea-token>
+        if(isBionicHighlightedElement(ele.firstElementChild)){
           textNode = ele.firstChild.firstChild;
+        }else {
+          textNode = ele.firstChild;
         }
+        
         let tokenInfo  = findTokenInfoByNode(article, textNode);
         let { sentenceInfo, tokenIndex } =  tokenInfo;
         let token = sentenceInfo.tokens[tokenIndex];
