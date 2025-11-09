@@ -8,6 +8,7 @@ import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/site-option-service.js'
 import { encode } from 'html-entities';
 import { isRegularTransform } from './lemma.js'
+import { bionic } from './bionic.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion) {
     let query = searchResult.query;
@@ -84,10 +85,11 @@ function getPronunciation(searchResult, targetWord, pronunciationRegion){
 
 }
 
-function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions, pronunciationRegion) {
+function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions, pronunciationRegion, siteOptions) {
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion);
     let { pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts } = annotationParameters;
-    let formatted = format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber);
+    let bionicOptions = siteOptions.content.bionic;
+    let formatted = format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber, bionicOptions);
     //console.log('formatted:'+formatted);
 
     return formatted;
@@ -150,21 +152,30 @@ function annotateNonword(text, sentenceId, sentenceNumber, tokenNumber) {
     let pronunciation = '';
     let definition = '';
     let shortDefinition = '';
+    let middleDefinition = '';
+    let query = text;
     let word = '';
     let baseWord = '';
     let targetWord = '';
     let parts = '';
+    let bionicOptions = { enabled: false};
 
-    let result = format(text, pronunciation, definition, shortDefinition, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber);
+    let result = format(text, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber, bionicOptions);
 
     return result;
 }
 
-function format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber) {
+function format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber, bionicOptions) {
     baseWord = encode(baseWord);
     word = encode(word);
     targetWord = encode(targetWord);
-    token = encode(token);
+    
+    if(bionicOptions.enabled){
+        token = bionic(token, encode);
+    }else{
+        token = encode(token);
+    }
+
     pronunciation = encode(pronunciation);
     shortDefinition = encode(shortDefinition);
     middleDefinition = encode(middleDefinition);

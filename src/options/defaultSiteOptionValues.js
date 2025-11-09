@@ -31,6 +31,9 @@ function createFactoryDefaultSiteOptions(){
             unknownWordColor: '#0000ff',
             unknownWordWidth: 1,
             textFontSize: 0,
+            bionic: {
+                enabled: false,
+            }
         },
         other:{
             additionalDictionaries: [],
@@ -66,6 +69,7 @@ function patchAll(options) {
     patch_v_0_13_4(options);
     patch_v_1_3_0(options);
     patch_v_1_4_0(options);
+    patch_v_1_7_0(options);
 }
 
 function patch_v_1_3_0(options){
@@ -148,6 +152,17 @@ function patch_v_1_4_0(options){
 
     if(options.siteCategory == null){
         options.siteCategory = 'text';
+    }
+
+}
+
+function patch_v_1_7_0(options){
+
+    let contentOptions = options.content;
+    if(contentOptions.bionic == null){
+        contentOptions.bionic = {
+            enabled: false,            
+        };
     }
 
 }

@@ -102,6 +102,12 @@
     "popup_settings_text_font_size_tip":{
         "message":"为空时表示不改变字体尺寸"
     },
+    "popup_settings_text_bionic_reading_label":{
+        "message":"仿生阅读"
+    },
+    "popup_settings_text_bionic_reading_tip":{
+        "message":"仿生阅读高亮单词的最重要部分试图加快阅读速度"
+    },
     "popupColorLabel":{
         "message":"颜色"
     },

@@ -102,6 +102,12 @@
     "popup_settings_text_font_size_tip":{
         "message":"size not changed when empty"
     },
+    "popup_settings_text_bionic_reading_label":{
+        "message":"Bionic reading"
+    },
+    "popup_settings_text_bionic_reading_tip":{
+        "message":"Bionic reading highlights most important parts of a word to accelerate read speed"
+    },
     "popupColorLabel":{
         "message":"Color"
     },

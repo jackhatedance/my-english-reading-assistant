@@ -233,7 +233,14 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
         let query = ele.getAttribute('data-query');
         
         let article = page.documentArticleMap.get(document);
-        let tokenInfo  = findTokenInfoByNode(article, ele.firstChild);
+
+        let textNode;
+        if(ele.firstChild.nodeName == '#text'){
+          textNode = ele.firstChild;
+        }else {//bionic reading, <mea-token><b>foo</b></mea-token>
+          textNode = ele.firstChild.firstChild;
+        }
+        let tokenInfo  = findTokenInfoByNode(article, textNode);
         let { sentenceInfo, tokenIndex } =  tokenInfo;
         let token = sentenceInfo.tokens[tokenIndex];
       

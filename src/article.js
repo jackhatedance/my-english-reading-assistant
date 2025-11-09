@@ -63,7 +63,7 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciationRegion);
+                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciationRegion, siteOptions);
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
                     tokenHtml = annotatedWord;

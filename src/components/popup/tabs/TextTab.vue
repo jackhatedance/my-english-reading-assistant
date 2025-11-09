@@ -19,6 +19,7 @@ const lineHeight = inject('lineHeight');
 const unknownWordColor = inject('unknownWordColor');
 const unknownWordWidth = inject('unknownWordWidth');
 const textFontSize = inject('textFontSize');
+const bionicEnabled = inject('bionicEnabled');
 
 const contentStyleEnabled = inject('contentStyleEnabled');
 
@@ -78,6 +79,17 @@ init();
               </el-input-number>
             </div>
           </div>
+
+          <div class="field">
+            <Tooltip placement="top-start"  effect="dark" :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读">
+              <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span></label>
+            </Tooltip>
+            
+            <div class="inputs">
+              <el-switch v-model="bionicEnabled" @change="onChangeSetting" size="small" />
+              
+            </div>
+          </div>
     </div>
 </template>
 
@@ -86,7 +98,7 @@ init();
   .field {
     .inputs {
       >* {
-        width: 5em;
+        width: 6em;
       }
     }
 

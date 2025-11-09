@@ -93,6 +93,10 @@ provide('unknownWordWidth', unknownWordWidth);
 const textFontSize = ref('');
 provide('textFontSize', textFontSize);
 
+const bionicEnabled = ref(false);
+provide('bionicEnabled', bionicEnabled);
+
+
 const additionalDictionaryMetas = ref([]);
 provide('additionalDictionaryMetas', additionalDictionaryMetas);
 const additionalDictionaries = ref([]);
@@ -187,6 +191,9 @@ function buildOptions(){
       unknownWordColor: unknownWordColor.value,
       unknownWordWidth: unknownWordWidth.value,
       textFontSize: textFontSize.value,
+      bionic: {
+        enabled: bionicEnabled.value,
+      }
     },
     other: {
       additionalDictionaries: toRaw(additionalDictionaries.value),
@@ -350,6 +357,7 @@ function updateViewModel(siteOptions, settingsOnly = false){
     textFontSize.value = null;
   }
   
+  bionicEnabled.value = contentOptions.bionic.enabled;
 
   let otherOptions = siteOptions.other;
   additionalDictionaries.value = otherOptions.additionalDictionaries;
