@@ -303,6 +303,12 @@
     "options_report_import":{
         "message":"Import"
     },
+    "options_report_import_notification_title":{
+        "message":"import completed"
+    },
+    "options_report_import_notification_message_success":{
+        "message":"import successfully"
+    },
 
 
     "options_report_export_label_desc":{

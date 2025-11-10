@@ -8,6 +8,8 @@ import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
+import { ElNotification } from 'element-plus'
+import 'element-plus/es/components/notification/style/css'
 
 const t = chrome.i18n.getMessage;
 const enableReport = ref(false);
@@ -40,6 +42,11 @@ function onImport() {
     reader.onload = function(e){
         let activities = JSON.parse(e.target.result);
         saveActivities(activities);
+
+        ElNotification({
+          title: t('options_report_import_notification_title'),
+          message: t('options_report_import_notification_message_success'),
+      });
     }
     reader.readAsText(_file);
 

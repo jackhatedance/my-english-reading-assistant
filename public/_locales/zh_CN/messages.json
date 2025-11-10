@@ -302,6 +302,12 @@
     "options_report_import":{
         "message":"导入"
     },
+    "options_report_import_notification_title":{
+        "message":"导入完成"
+    },
+    "options_report_import_notification_message_success":{
+        "message":"导入成功"
+    },
 
 
     "options_report_export_label_desc":{
