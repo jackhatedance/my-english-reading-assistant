@@ -4,6 +4,10 @@ import { getOptions, updateOptions } from '../../../service/optionService.js';
 import {deleteAllReadingHistory} from '../../../service/activityService.js';
 import {loadActivitiesFromStorage, saveActivities } from '../../../service/activityService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const t = chrome.i18n.getMessage;
 const enableReport = ref(false);
@@ -71,11 +75,11 @@ init();
       <div class="input">
         <div>
           <label>{{ t('optionsReportModeLabel') }}</label>
-          <input type="checkbox" @change="onChange" v-model="enableReport">
+          <el-switch @change="onChange" v-model="enableReport" />
         </div>
       </div>
       <div class="action">
-        <button @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</button>
+        <el-button type="primary" @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
       </div>
     </div>
     
@@ -88,7 +92,7 @@ init();
             <input type="file" ref="file">
         </div>
         <div class="action">
-            <button @click="onImport" >{{ t('options_report_import') }}</button>
+            <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
         </div>
     </div>
     <div class="section">
@@ -99,7 +103,7 @@ init();
         <div class="input">
         </div>
         <div class="action">
-            <button @click="onExport">{{ t('options_report_export') }}</button>
+            <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
         </div>
     </div>
   </div>

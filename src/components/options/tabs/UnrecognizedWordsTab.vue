@@ -2,6 +2,10 @@
 import { ref } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
 import { getUnrecognizedWords, updateUnrecognizedWords } from '../../../service/dictionaryService.js';
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const enabled = ref(false);
 const unrecognizedWords = ref('');
@@ -54,7 +58,7 @@ init();
             <div class="input">
                 <div>
                     <label>{{ t('optionsUnrecognizedWordsToggleLabel') }}</label>
-                    <input data-testid="unregonized-words-enabled" v-model="enabled" type="checkbox" @change="onChangeEnabled">
+                    <el-switch data-testid="unregonized-words-enabled" v-model="enabled" @change="onChangeEnabled" />
                 </div>
             </div>
             <div class="action">
@@ -71,7 +75,7 @@ init();
                 <p>{{ t('optionsUnrecognizedWordsTotal') }}<span>{{ unrecognizedWordsCount }}</span></p>
             </div>
             <div class="action">
-                <button @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</button>
+                <el-button type="primary" @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
             </div>
         </div>
     </div>

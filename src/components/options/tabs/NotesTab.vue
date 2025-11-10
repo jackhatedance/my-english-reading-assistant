@@ -3,6 +3,8 @@ import { ref } from 'vue';
 import { getNotes, setNotes } from '../../../service/noteService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
 import { xbbcToText } from '../../../note/note-util.js'
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const notes = ref();
 const noteCount = ref();
@@ -86,7 +88,7 @@ init();
                 <p>{{ t('optionsEditNotesTotal') }}<span>{{ noteCount }}</span></p>
             </div>
             <div class="action">
-                <button @click="clearNotes" >{{ t('optionsClearNotesAction') }}</button>
+                <el-button type="primary" @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
             </div>
         </div>
 
@@ -98,7 +100,7 @@ init();
                 <input type="file" ref="file">
             </div>
             <div class="action">
-                <button @click="onImport" >{{ t('optionsImportNotesAction') }}</button>
+                <el-button type="primary" @click="onImport" >{{ t('optionsImportNotesAction') }}</el-button>
             </div>
         </div>
         <div class="section">
@@ -109,7 +111,7 @@ init();
             <div class="input">
             </div>
             <div class="action">
-                <button @click="onExport">{{ t('optionsExportNotesAction') }}</button>
+                <el-button type="primary" @click="onExport">{{ t('optionsExportNotesAction') }}</el-button>
             </div>
         </div>
     </div>

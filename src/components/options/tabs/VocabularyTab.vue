@@ -3,7 +3,8 @@
 import { ref, toRaw } from 'vue';
 import {loadKnownWords, loadAndMergeWordLists, saveKnownWords, calculateKnownWordsCount} from '../../../vocabularyStore.js';
 import { saveTextAsFile } from '../../../html-utils';
-
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const t = chrome.i18n.getMessage;
 
@@ -105,7 +106,7 @@ init();
         </div>
         <div class="action">
             <p>{{ t('optionsInitializeVocabularyActionWarning') }}</p>
-            <button @click="onInitializeVocabulary" >{{ t('optionsInitializeVocabularyAction') }}</button>
+            <el-button type="primary" @click="onInitializeVocabulary" >{{ t('optionsInitializeVocabularyAction') }}</el-button>
         </div>
         </div>
     
@@ -133,7 +134,7 @@ init();
             <input type="file" ref="file" >
         </div>
         <div class="action">
-            <button @click="onImport" >{{ t('optionsImportAction') }}</button>
+            <el-button type="primary" @click="onImport" >{{ t('optionsImportAction') }}</el-button>
         </div>
         </div>
         <div class="section">
@@ -144,7 +145,7 @@ init();
         <div class="input">
         </div>
         <div class="action">
-            <button @click="onExport" >{{ t('optionsExportAction') }}</button>
+            <el-button type="primary" @click="onExport" >{{ t('optionsExportAction') }}</el-button>
         </div>
         </div>
     </div>

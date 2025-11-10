@@ -3,7 +3,8 @@ import { ref, computed } from 'vue';
 import { getAllBooks, getBook, saveAllBooks, deleteBook } from '../../../service/bookService.js';
 import { saveTextAsFile } from '../../../html-utils.js';
 import BookDetail from './BookDetail.vue';
-
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const t = chrome.i18n.getMessage;
 
@@ -92,7 +93,7 @@ init();
                 <BookDetail v-if="selectedBookObject" :book="selectedBookObject" @value-changed="onDetailChanged"></BookDetail>
             </div>
             <div class="action">
-                <button @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
+                <el-button type="primary" @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
             </div>
         </div>
 
@@ -104,7 +105,7 @@ init();
                 <input type="file" ref="file">
             </div>
             <div class="action">
-                <button @click="onImport" >{{ t('options_report_import') }}</button>
+                <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
             </div>
         </div>
         <div class="section">
@@ -115,7 +116,7 @@ init();
             <div class="input">
             </div>
             <div class="action">
-                <button @click="onExport">{{ t('options_report_export') }}</button>
+                <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
             </div>
         </div>
         

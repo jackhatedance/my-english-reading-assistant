@@ -3,6 +3,10 @@ import { ref } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
 import HelpLink from '../../HelpLink.vue'
 import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../../switch-mode.js'
+import { ElSelect, ElOption } from 'element-plus'
+import 'element-plus/es/components/select/style/css'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
 
 const t = chrome.i18n.getMessage;
 const selectedRegion = ref('none');
@@ -88,13 +92,13 @@ init();
       <div class="input">
         <div>
           <label>{{ t('options_general_switch_mode_label') }}<HelpLink type="guide" keyword="默认开关模式"/></label>
-          <select data-testid="switch-mode" class="switch-mode" v-model="selectedSwitchMode" @change="onChangeSwitchMode" >
+          <el-select data-testid="switch-mode" class="switch-mode" v-model="selectedSwitchMode" @change="onChangeSwitchMode" >
             
-            <option :value="SWITCH_MODE_OPTION_ON">{{ t('options_general_switch_mode_on') }}</option>
-            <option :value="SWITCH_MODE_OPTION_OFF">{{ t('options_general_switch_mode_off') }}</option>
-            <option :value="SWITCH_MODE_OPTION_AUTO">{{ t('options_general_switch_mode_auto') }}</option>
+            <el-option :value="SWITCH_MODE_OPTION_ON" :label="t('options_general_switch_mode_on')" />
+            <el-option :value="SWITCH_MODE_OPTION_OFF" :label="t('options_general_switch_mode_off')" />
+            <el-option :value="SWITCH_MODE_OPTION_AUTO" :label="t('options_general_switch_mode_auto')" />
             
-          </select> 
+          </el-select> 
         </div>
       </div>
       <div class="action">
@@ -109,12 +113,12 @@ init();
       <div class="input">
         <div>
           <label>{{ t('options_general_pronunciation_region_label') }}</label>
-          <select data-testid="region" class="region" v-model="selectedRegion" @change="onChangeRegion" >
-            <option value="none">{{ t('options_general_pronunciation_region_none') }}</option>
-            <option value="uk">{{ t('options_general_pronunciation_region_uk') }}</option>
-            <option value="us">{{ t('options_general_pronunciation_region_us') }}</option>
-            <option value="all">{{ t('options_general_pronunciation_region_all') }}</option>
-          </select> 
+          <el-select data-testid="region" class="region" v-model="selectedRegion" @change="onChangeRegion" >
+            <el-option value="none" :label="t('options_general_pronunciation_region_none')" />
+            <el-option value="uk" :label="t('options_general_pronunciation_region_uk')" />
+            <el-option value="us" :label="t('options_general_pronunciation_region_us')" />
+            <el-option value="all" :label="t('options_general_pronunciation_region_all')" />
+          </el-select> 
         </div>
       </div>
       <div class="action">
@@ -131,7 +135,7 @@ init();
       <div class="input">
         <div>
           <label>{{ t('optionsRootAndAffixModeLabel') }}</label>
-          <input data-testid="root-and-affix-mode" type="checkbox" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode">
+          <el-switch data-testid="root-and-affix-mode" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode" size="small" />
         </div>
         
       </div>
@@ -148,18 +152,18 @@ init();
         <div>
           <div>
             <label>{{ t('options_general_interaction_click_word_label') }}</label>
-            <input type="checkbox" @change="onChangeInteraction" v-model="clickWord">
+            <el-switch @change="onChangeInteraction" v-model="clickWord" />
           </div>
           
           <div>
             <label>{{ t('options_general_interaction_hover_word_label') }}</label>
-            <input type="checkbox" @change="onChangeInteraction" v-model="hoverWord">
+            <el-switch @change="onChangeInteraction" v-model="hoverWord" />
   
           </div>
 
           <div>
             <label>{{ t('options_general_interaction_select_text_label') }}</label>
-            <input type="checkbox" @change="onChangeInteraction" v-model="selectText">
+            <el-switch @change="onChangeInteraction" v-model="selectText" />
           </div>
         </div>
       </div>

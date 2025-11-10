@@ -43,23 +43,10 @@ html, body, #app {
 
 .action {
     button {
-        border: 0;
-        display: inline-block;
-        padding: 10px 20px;
         margin: 4px;
-        color: white;
-        background-color: #3987ec;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 4px;
-        text-decoration: none;
-        transition: transform 0.2s ease;
-        user-select: none;
-        min-width: 150px;
+        margin-left: 4px !important;
     }
     
-    button:disabled {
-        background-color: #929494;
-    }
+    
 }
 </style>

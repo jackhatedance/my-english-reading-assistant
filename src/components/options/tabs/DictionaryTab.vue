@@ -13,6 +13,8 @@ import HelpLink from '../../HelpLink.vue'
 import { deleteDictionaryAllResourceFiles } from '../../../store/db.js'
 import { DICTIONARY_INDEX_STATUS_OK, DICTIONARY_INDEX_STATUS_NOT_SUPPORT } from '../../../dictionary/dictConstants.js'
 import {useLoading} from 'vue-loading-overlay'
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
 
 const dictionaryMetas = ref([]);
 const selectedDictionary = ref();
@@ -386,12 +388,12 @@ init();
         
       </div>
       <div class="action">
-        <button v-if="debug" @click="onDeleteGarbage">Delete Garbage</button>
-        <button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</button>
-        <button @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</button>
+        <el-button v-if="debug" @click="onDeleteGarbage">Delete Garbage</el-button>
+        <el-button type="primary" @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
+        <el-button type="primary" @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</el-button>
 
-        <button @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</button>
-        <button @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</button>
+        <el-button type="primary" @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</el-button>
+        <el-button type="primary" @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
       </div>
     </div>
     <div class="section">
@@ -403,7 +405,7 @@ init();
         <input type="file" ref="file" accept=".txt, .zip">
       </div>
       <div class="action">
-        <button @click="onAdd">{{ t('optionsAddDictionaryAction') }}</button>
+        <el-button type="primary" @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
       </div>
     </div>
     
