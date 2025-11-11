@@ -104,7 +104,7 @@ init();
             </select>
             
             <p>{{ t('optionsInitializeVocabularyActionWarning') }}</p>
-            <el-button type="primary" @click="onInitializeVocabulary" >{{ t('optionsInitializeVocabularyAction') }}</el-button>
+            <el-button @click="onInitializeVocabulary" >{{ t('optionsInitializeVocabularyAction') }}</el-button>
         </div>
         <div class="action">
             
@@ -134,7 +134,7 @@ init();
         <div class="input">
             <input type="file" ref="file" >
 
-            <el-button type="primary" @click="onImport" >{{ t('optionsImportAction') }}</el-button>
+            <el-button @click="onImport" >{{ t('optionsImportAction') }}</el-button>
         </div>
         <div class="action">
             
@@ -146,7 +146,7 @@ init();
         </div>
     
         <div class="input">
-            <el-button type="primary" @click="onExport" >{{ t('optionsExportAction') }}</el-button>
+            <el-button @click="onExport" >{{ t('optionsExportAction') }}</el-button>
         </div>
         <div class="action">
             

@@ -93,7 +93,7 @@ init();
                 
 
                 <div>
-                    <el-button type="primary" @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
+                    <el-button @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
 
                 </div>
             </div>
@@ -108,7 +108,7 @@ init();
             </div>
             <div class="input">
                 <input type="file" ref="file">
-                <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
+                <el-button @click="onImport" >{{ t('options_report_import') }}</el-button>
             </div>
             <div class="action">
                 
@@ -120,7 +120,7 @@ init();
             </div>
 
             <div class="input">
-              <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
+              <el-button @click="onExport">{{ t('options_report_export') }}</el-button>
             </div>
             <div class="action">
                 

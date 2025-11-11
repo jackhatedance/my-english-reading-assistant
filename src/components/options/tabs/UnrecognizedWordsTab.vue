@@ -73,7 +73,7 @@ init();
                 <textarea data-testid="unregonized-words" v-model="unrecognizedWords" rows="10" maxlength="500000"
                     readonly></textarea>
                 <p>{{ t('optionsUnrecognizedWordsTotal') }}<span>{{ unrecognizedWordsCount }}</span></p>
-                <el-button type="primary" @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
+                <el-button @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
             </div>
             <div class="action">
                 
