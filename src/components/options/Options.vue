@@ -51,6 +51,22 @@ html, body, #app {
 }
 
 
+input[type="file"]::file-selector-button{
+  color: var(--el-button-text-color);
+  border: thin solid var(--el-border-color);
+  border-radius: var(--el-border-radius-round);
+  font-size: large;
+}
+
+input[type="file"]::file-selector-button:hover {
+  
+    background-color: var(--el-button-hover-bg-color);
+    border-color: var(--el-button-hover-border-color);
+    color: var(--el-button-hover-text-color);
+    outline: none;
+}
+
+
 .right {
   float: right;
 }
