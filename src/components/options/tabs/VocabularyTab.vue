@@ -103,10 +103,11 @@ init();
                 <option value="TOEFL-4500">TOEFL(4500)不含常用词汇</option>
             </select>
             
-        </div>
-        <div class="action">
             <p>{{ t('optionsInitializeVocabularyActionWarning') }}</p>
             <el-button type="primary" @click="onInitializeVocabulary" >{{ t('optionsInitializeVocabularyAction') }}</el-button>
+        </div>
+        <div class="action">
+            
         </div>
         </div>
     
@@ -132,9 +133,11 @@ init();
         </div>
         <div class="input">
             <input type="file" ref="file" >
+
+            <el-button type="primary" @click="onImport" >{{ t('optionsImportAction') }}</el-button>
         </div>
         <div class="action">
-            <el-button type="primary" @click="onImport" >{{ t('optionsImportAction') }}</el-button>
+            
         </div>
         </div>
         <div class="section">
@@ -143,9 +146,10 @@ init();
         </div>
     
         <div class="input">
+            <el-button type="primary" @click="onExport" >{{ t('optionsExportAction') }}</el-button>
         </div>
         <div class="action">
-            <el-button type="primary" @click="onExport" >{{ t('optionsExportAction') }}</el-button>
+            
         </div>
         </div>
     </div>

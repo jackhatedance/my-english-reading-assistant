@@ -32,7 +32,7 @@ init();
 html, body, #app {
     height: 100%;     
     margin: 0;
-    min-width: 900px;
+    min-width: 800px;
 }
 
 .options-container {
@@ -48,5 +48,14 @@ html, body, #app {
     }
     
     
+}
+
+
+.right {
+  float: right;
+}
+
+.option {
+    clear: both;
 }
 </style>

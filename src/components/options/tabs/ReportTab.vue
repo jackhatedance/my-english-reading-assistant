@@ -80,13 +80,16 @@ init();
         <p>{{ t('optionsReportLabelDesc') }}</p>  
       </div>
       <div class="input">
-        <div>
+        <div class="option">
           <label>{{ t('optionsReportModeLabel') }}</label>
-          <el-switch @change="onChange" v-model="enableReport" />
+          <el-switch class="right" @change="onChange" v-model="enableReport" />
+        </div>
+        <div class="option">
+          <el-button type="primary" @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
         </div>
       </div>
       <div class="action">
-        <el-button type="primary" @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
+        
       </div>
     </div>
     
@@ -97,9 +100,10 @@ init();
         </div>
         <div class="input">
             <input type="file" ref="file">
+            <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
         </div>
         <div class="action">
-            <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
+            
         </div>
     </div>
     <div class="section">
@@ -108,9 +112,10 @@ init();
         </div>
 
         <div class="input">
+            <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
         </div>
         <div class="action">
-            <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
+            
         </div>
     </div>
   </div>

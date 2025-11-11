@@ -88,12 +88,17 @@ init();
                     <select class="books" v-model="selectedBook" :size="12" @change="onChangeSelectedBook">
                         <option v-for="(book, index) in books" :key="book.isbn" :value="book.isbn">{{ book.title }}</option>
                     </select>  
+                    <BookDetail v-if="selectedBookObject" :book="selectedBookObject" @value-changed="onDetailChanged"></BookDetail>
+                </div>
+                
+
+                <div>
+                    <el-button type="primary" @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
 
                 </div>
-                <BookDetail v-if="selectedBookObject" :book="selectedBookObject" @value-changed="onDetailChanged"></BookDetail>
             </div>
             <div class="action">
-                <el-button type="primary" @click="onDelete">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
+                
             </div>
         </div>
 
@@ -103,9 +108,10 @@ init();
             </div>
             <div class="input">
                 <input type="file" ref="file">
+                <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
             </div>
             <div class="action">
-                <el-button type="primary" @click="onImport" >{{ t('options_report_import') }}</el-button>
+                
             </div>
         </div>
         <div class="section">
@@ -114,9 +120,10 @@ init();
             </div>
 
             <div class="input">
+              <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
             </div>
             <div class="action">
-                <el-button type="primary" @click="onExport">{{ t('options_report_export') }}</el-button>
+                
             </div>
         </div>
         
@@ -128,18 +135,18 @@ init();
 .sections.book{
   .input.books {
 
-    display: flex;
-
+    
     * {
       margin-left: 5px;
     }
 
     .list {
-      width: 50%;
+      display:flex;
+      
     
       .books{
         
-        width: 100%;
+        width: 50%;
         overflow-y: auto;
         
       }

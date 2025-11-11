@@ -135,7 +135,7 @@ init();
       <div class="input">
         <div>
           <label>{{ t('optionsRootAndAffixModeLabel') }}</label>
-          <el-switch data-testid="root-and-affix-mode" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode" size="small" />
+          <el-switch class="right" data-testid="root-and-affix-mode" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode" size="small" />
         </div>
         
       </div>
@@ -150,20 +150,20 @@ init();
       </div>
       <div class="input">
         <div>
-          <div>
+          <div class="option">
             <label>{{ t('options_general_interaction_click_word_label') }}</label>
-            <el-switch @change="onChangeInteraction" v-model="clickWord" />
+            <el-switch class="right" @change="onChangeInteraction" v-model="clickWord" />
           </div>
           
-          <div>
+          <div class="option">
             <label>{{ t('options_general_interaction_hover_word_label') }}</label>
-            <el-switch @change="onChangeInteraction" v-model="hoverWord" />
+            <el-switch class="right" @change="onChangeInteraction" v-model="hoverWord" />
   
           </div>
 
-          <div>
+          <div class="option">
             <label>{{ t('options_general_interaction_select_text_label') }}</label>
-            <el-switch @change="onChangeInteraction" v-model="selectText" />
+            <el-switch class="right" @change="onChangeInteraction" v-model="selectText" />
           </div>
         </div>
       </div>
@@ -175,3 +175,6 @@ init();
   </div>
 
 </template>
+<script>
+
+</script>

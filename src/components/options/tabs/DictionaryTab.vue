@@ -379,21 +379,25 @@ init();
         
       </div>
       <div class="input dictionary">
-        <div class="list">
-          <select class="dictionaries" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
-            <option :class="{support_ok: supportOk(meta), support_ok_upgradable: supportOkUpgradable(meta), support_invalid: supportInvalid(meta), not_support: notSupport(meta)}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[✓]`:''}}{{ meta.displayName }}</option>
-          </select>          
+        <div class="dictionaries">
+          <div class="list">
+            <select class="dictionaries" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
+              <option :class="{support_ok: supportOk(meta), support_ok_upgradable: supportOkUpgradable(meta), support_invalid: supportInvalid(meta), not_support: notSupport(meta)}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[✓]`:''}}{{ meta.displayName }}</option>
+            </select>          
+          </div>
+          <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
         </div>
-        <DictionaryDetail v-if="selectedDictionaryObject" v-model:enabled="selectedDictionaryEnabled" :dict="selectedDictionaryObject" @value-changed="onDetailChanged"></DictionaryDetail>
-        
+        <div>
+          <el-button v-if="debug" @click="onDeleteGarbage">Delete Garbage</el-button>
+          <el-button type="primary" @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
+          <el-button type="primary" @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</el-button>
+
+          <el-button type="primary" @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</el-button>
+          <el-button type="primary" @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
+        </div>
       </div>
       <div class="action">
-        <el-button v-if="debug" @click="onDeleteGarbage">Delete Garbage</el-button>
-        <el-button type="primary" @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
-        <el-button type="primary" @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</el-button>
-
-        <el-button type="primary" @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</el-button>
-        <el-button type="primary" @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
+        
       </div>
     </div>
     <div class="section">
@@ -403,9 +407,10 @@ init();
       </div>
       <div class="input">
         <input type="file" ref="file" accept=".txt, .zip">
+        <el-button type="primary" @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
       </div>
       <div class="action">
-        <el-button type="primary" @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
+        
       </div>
     </div>
     
@@ -414,9 +419,12 @@ init();
 </template>
 <style>
 .sections.dictionary{
+  .dictionaries {
+    display: flex;
+  }
   .input.dictionary {
 
-    display: flex;
+    
 
     * {
       margin-left: 5px;

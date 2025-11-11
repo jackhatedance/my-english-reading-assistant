@@ -58,7 +58,7 @@ init();
             <div class="input">
                 <div>
                     <label>{{ t('optionsUnrecognizedWordsToggleLabel') }}</label>
-                    <el-switch data-testid="unregonized-words-enabled" v-model="enabled" @change="onChangeEnabled" />
+                    <el-switch class="right" data-testid="unregonized-words-enabled" v-model="enabled" @change="onChangeEnabled" />
                 </div>
             </div>
             <div class="action">
@@ -73,9 +73,10 @@ init();
                 <textarea data-testid="unregonized-words" v-model="unrecognizedWords" rows="10" maxlength="500000"
                     readonly></textarea>
                 <p>{{ t('optionsUnrecognizedWordsTotal') }}<span>{{ unrecognizedWordsCount }}</span></p>
+                <el-button type="primary" @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
             </div>
             <div class="action">
-                <el-button type="primary" @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
+                
             </div>
         </div>
     </div>
