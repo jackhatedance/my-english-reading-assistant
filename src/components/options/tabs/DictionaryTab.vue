@@ -389,11 +389,11 @@ init();
         </div>
         <div>
           <el-button v-if="debug" @click="onDeleteGarbage">Delete Garbage</el-button>
-          <el-button @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
-          <el-button @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</el-button>
+          <el-button round @click="onDelete" :disabled="selectedDictionaryObject?.type == 'system'">{{ t('optionsDeleteAdditionalDictionaryAction') }}</el-button>
+          <el-button round @click="onExtract" :disabled="!extractable">{{ t('optionsImportDictionaryAction') }}</el-button>
 
-          <el-button @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</el-button>
-          <el-button @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
+          <el-button round @click="onMoveUp" >{{ t('optionsDictionaryMoveUpAction') }}</el-button>
+          <el-button round @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
         </div>
       </div>
       <div class="action">
@@ -407,7 +407,7 @@ init();
       </div>
       <div class="input">
         <input type="file" ref="file" accept=".txt, .zip">
-        <el-button @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
+        <el-button round @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
       </div>
       <div class="action">
         

@@ -86,7 +86,7 @@ init();
             <div class="input">
                 <textarea class="notes" v-model="notes" rows="10" maxlength="500000" readonly></textarea>
                 <p>{{ t('optionsEditNotesTotal') }}<span>{{ noteCount }}</span></p>
-                <el-button @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
+                <el-button round @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
             </div>
             <div class="action">
                 
@@ -99,7 +99,7 @@ init();
             </div>
             <div class="input">
                 <input type="file" ref="file">
-                <el-button @click="onImport" >{{ t('optionsImportNotesAction') }}</el-button>
+                <el-button round @click="onImport" >{{ t('optionsImportNotesAction') }}</el-button>
             </div>
             <div class="action">
                 
@@ -111,7 +111,7 @@ init();
             </div>
 
             <div class="input">
-                <el-button @click="onExport">{{ t('optionsExportNotesAction') }}</el-button>
+                <el-button round @click="onExport">{{ t('optionsExportNotesAction') }}</el-button>
             </div>
             <div class="action">
                 
