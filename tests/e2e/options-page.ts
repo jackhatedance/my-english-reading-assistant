@@ -1,4 +1,5 @@
 import type { Page, Locator } from '@playwright/test';
+import { elSelect } from './element-plus/element-plus.cjs'
 
 export class OptionsPage {
     private readonly unrecognizedWordsEnabled: Locator;
@@ -19,7 +20,7 @@ export class OptionsPage {
 
     async setRegion(region){
         const regionSelect = this.page.getByTestId('region');
-        await regionSelect.selectOption(region);
+        await elSelect(regionSelect).selectOptionByText(region);
     }
 
     locateRootAndAffixMode(){

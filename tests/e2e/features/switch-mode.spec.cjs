@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures';
+import { elSelect } from '../element-plus/element-plus.cjs'
 
 
 test('switch mode - default global switch mode is off', async ({ optionsPage, testPage, extensionId, popupPage }) => {
@@ -6,9 +7,9 @@ test('switch mode - default global switch mode is off', async ({ optionsPage, te
   await optionsPage.goto(extensionId);  
   await optionsPage.gotoTab('general');
 
-  const selectedSitchMode = await optionsPage.page.getByTestId('switch-mode').inputValue();
+  const switchModeSelect = elSelect(optionsPage.page.getByTestId('switch-mode'));
   
-  await expect(selectedSitchMode).toBe('off');
+  await expect(switchModeSelect.selected()).toHaveText('always off');
   
 });
 
@@ -17,10 +18,10 @@ test('switch mode - default site switch mode is unset', async ({ optionsPage, te
   await testPage.goto();
   
   await popupPage.goto(extensionId);
+  const switchModeSelect = elSelect(popupPage.switchMode);
   
-  const selectedSwitchMode = await popupPage.switchMode.inputValue();
   
-  await expect(selectedSwitchMode).toBe('');
+  await expect(switchModeSelect.selected()).toHaveText('always off(default)');
 });
 
 test('switch mode - set global switch mode to auto and visit Chinese page', async ({ optionsPage, testPage, extensionId, popupPage }) => {
@@ -28,13 +29,14 @@ test('switch mode - set global switch mode to auto and visit Chinese page', asyn
   await optionsPage.goto(extensionId);  
   await optionsPage.gotoTab('general');
 
-  await optionsPage.page.getByTestId('switch-mode').selectOption('auto');
+  const switchModeSelect = elSelect(optionsPage.page.getByTestId('switch-mode'));
+  await switchModeSelect.selectOptionByText('auto');
   
   await testPage.goto('features/switch-mode/chinese.html');
 
   await popupPage.goto(extensionId);
-  const selectedSwitchMode = await popupPage.switchMode.inputValue();
-  await expect(selectedSwitchMode).toBe('');
+  
+  await expect(elSelect(popupPage.switchMode).selected()).toHaveText('auto(default)');
 
   
   const body = testPage.page.locator('body');
@@ -47,7 +49,7 @@ test('switch mode - set global switch mode to auto and visit English page', asyn
   await optionsPage.goto(extensionId);  
   await optionsPage.gotoTab('general');
 
-  await optionsPage.page.getByTestId('switch-mode').selectOption('auto');
+  await elSelect(optionsPage.page.getByTestId('switch-mode')).selectOptionByText('auto');
   
   await testPage.goto('features/switch-mode/english.html');
 

@@ -6,7 +6,7 @@ test('options page click tabs', async ({ optionsPage, extensionId }) => {
   
   await optionsPage.goto(extensionId);  
   await optionsPage.gotoTab('general');
-  await optionsPage.setRegion('us');
+  await optionsPage.setRegion('US');
   
 
 });

@@ -1,13 +1,12 @@
 import type { Page, Locator } from '@playwright/test';
+import { elButton } from './element-plus/element-plus.cjs'
 
 export class PopupPage {
-    private readonly switchCheckbox: Locator;
-    private readonly switchBtn: Locator;
+    private readonly switch: Locator;
     private readonly switchMode: Locator;
 
     constructor(public readonly page: Page) {
-        this.switchCheckbox = this.page.getByTestId('switch');
-        this.switchBtn = this.page.locator('.slider');
+        this.switch = this.page.getByTestId('switch');
         this.switchMode = this.page.getByTestId('switch-mode');
     }
 
@@ -16,7 +15,7 @@ export class PopupPage {
     }
 
     async toggle() {
-        await this.switchBtn.click();
+        await elButton(this.switch).click();
     }
 
 }
