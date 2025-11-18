@@ -283,12 +283,14 @@ async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, en
       types = ['word-definition', 'note'];
     }
   
+    let siteOptions = await getCurrentSiteOptions();
+
     let windows = getAllWindows(siteProfile);
     for (const window of windows) {
         let document = window.document;
         let article = documentArticleMap.get(document);
         if(article){
-            await resetDocumentAnnotationVisibility(article, window, enabled, types);
+            await resetDocumentAnnotationVisibility(article, window, enabled, types, siteOptions);
         }
         
     }    

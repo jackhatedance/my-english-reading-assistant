@@ -2,6 +2,8 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
 import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
 import Tooltip from '../../common/Tooltip.vue'
@@ -20,6 +22,7 @@ const hoverWord = inject('hoverWord');
 const selectText = inject('selectText');
 
 const siteCategory = inject('siteCategory');
+const notesEnabled = inject('notesEnabled');
 
 function getInteractionDefaultLabel(key){
   let interactionOptions = options.value.interaction;
@@ -87,6 +90,16 @@ init();
             <el-option :value="SITE_CATEGORY_VIDEO" :label="t('popup_site_category_video_Label')" />
             <el-option :value="SITE_CATEGORY_OTHER" :label="t('popup_site_category_other_Label')" />
           </el-select> 
+        </div> 
+      </div>
+
+      <div class="field" >
+        <Tooltip placement="top-start"  effect="dark" :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记">
+          <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span></label>
+        </Tooltip>
+        
+        <div class="inputs">
+          <el-switch v-model="notesEnabled" @change="onChangeSetting" size="small" />
         </div> 
       </div>
     </div>

@@ -45,6 +45,9 @@ function createFactoryDefaultSiteOptions(){
             clickWord: null,
             hoverWord: null,
             selectText: null,
+        },
+        notes:{
+            enabled: false,
         }
     };
 }
@@ -70,6 +73,7 @@ function patchAll(options) {
     patch_v_1_3_0(options);
     patch_v_1_4_0(options);
     patch_v_1_7_0(options);
+    patch_v_1_9_0(options);
 }
 
 function patch_v_1_3_0(options){
@@ -161,6 +165,16 @@ function patch_v_1_7_0(options){
     let contentOptions = options.content;
     if(contentOptions.bionic == null){
         contentOptions.bionic = {
+            enabled: false,            
+        };
+    }
+
+}
+
+function patch_v_1_9_0(options){
+
+    if(options.notes == null){
+        options.notes = {
             enabled: false,            
         };
     }

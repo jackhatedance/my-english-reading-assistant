@@ -41,6 +41,7 @@ const interlaced2 = inject('interlaced2');
 const maxMeaningNumber = inject('maxMeaningNumber');
 const hideWordClass = inject('hideWordClass');
 
+const notesEnabled = inject('notesEnabled');
 
 const t = chrome.i18n.getMessage;
 
@@ -79,22 +80,22 @@ init();
                     <el-option value="AC_NONE" :label="t('popup_settings_content_none')" />
                     <el-option value="AC_PRONUNCIATION" :label="t('popup_settings_content_pronunciation')" />
                     <el-option value="AC_DEFINITION" :label="t('popup_settings_content_definition')" />
-                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" />
+                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" :disabled="!notesEnabled"/>
                     <el-option value="AC_PRONUNCIATION_AND_DEFINITION" :label="t('popup_settings_content_pronunciation_and_definition')" />
                     <el-option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE" :label="t('popup_settings_content_pronunciation_newline_definition')" />
-                    <el-option value="AC_PRONUNCIATION_AND_NOTE" :label="t('popup_settings_content_pronunciation_and_note')" />
-                    <el-option value="AC_PRONUNCIATION_AND_NOTE_2_LINES" :label="t('popup_settings_content_pronunciation_and_note_2_lines')" />
+                    <el-option value="AC_PRONUNCIATION_AND_NOTE" :label="t('popup_settings_content_pronunciation_and_note')" :disabled="!notesEnabled"/>
+                    <el-option value="AC_PRONUNCIATION_AND_NOTE_2_LINES" :label="t('popup_settings_content_pronunciation_and_note_2_lines')" :disabled="!notesEnabled"/>
                 </el-select>   
 
                 <el-select data-testid="content" v-model="content" @change="onChangeSetting" size="small">
                     <el-option value="AC_NONE" :label="t('popup_settings_content_none')" />
                     <el-option value="AC_PRONUNCIATION" :label="t('popup_settings_content_pronunciation')" />
                     <el-option value="AC_DEFINITION" :label="t('popup_settings_content_definition')" />
-                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" />
+                    <el-option value="AC_NOTE" :label="t('popup_settings_content_note')" :disabled="!notesEnabled"/>
                     <el-option value="AC_PRONUNCIATION_AND_DEFINITION" :label="t('popup_settings_content_pronunciation_and_definition')" />
                     <el-option value="AC_PRONUNCIATION_AND_DEFINITION_NEW_LINE" :label="t('popup_settings_content_pronunciation_newline_definition')" />
-                    <el-option value="AC_PRONUNCIATION_AND_NOTE" :label="t('popup_settings_content_pronunciation_and_note')" />
-                    <el-option value="AC_PRONUNCIATION_AND_NOTE_2_LINES" :label="t('popup_settings_content_pronunciation_and_note_2_lines')" />
+                    <el-option value="AC_PRONUNCIATION_AND_NOTE" :label="t('popup_settings_content_pronunciation_and_note')" :disabled="!notesEnabled"/>
+                    <el-option value="AC_PRONUNCIATION_AND_NOTE_2_LINES" :label="t('popup_settings_content_pronunciation_and_note_2_lines')" :disabled="!notesEnabled"/>
                 </el-select>   
             </div>
         </div>

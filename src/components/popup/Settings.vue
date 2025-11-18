@@ -114,6 +114,9 @@ provide('selectText', selectText);
 const siteCategory = ref('text');
 provide('siteCategory', siteCategory);
 
+const notesEnabled = ref(false);
+provide('notesEnabled', notesEnabled);
+
 //const emit = defineEmits(['reload-page-info']);
 
 
@@ -202,6 +205,9 @@ function buildOptions(){
       clickWord: getValueByOption(clickWord.value, trueFalseNullDict),
       hoverWord: getValueByOption(hoverWord.value, trueFalseNullDict),
       selectText: getValueByOption(selectText.value, trueFalseNullDict),
+    }, 
+    notes: {
+      enabled: notesEnabled.value,
     }
   };
 
@@ -367,6 +373,9 @@ function updateViewModel(siteOptions, settingsOnly = false){
   clickWord.value =  getOptionByValue(interactionOptions.clickWord, trueFalseNullDict);
   hoverWord.value =  getOptionByValue(interactionOptions.hoverWord, trueFalseNullDict);
   selectText.value =  getOptionByValue(interactionOptions.selectText, trueFalseNullDict);
+
+  let notesOptions = siteOptions.notes;
+  notesEnabled.value = notesOptions.enabled;
 }
 
 async function onReset(){

@@ -165,6 +165,13 @@
         "message":"Other"
     },
 
+    "popup_notes_enabled_label":{
+        "message":"Notes"
+    },
+    "popup_notes_enabled_tip":{
+        "message":"only enable notes when needed"
+    },
+
     "popupFootNotes":{
         "message":"Some settings require refreshing the page to take effect"
     },

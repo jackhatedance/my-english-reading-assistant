@@ -88,7 +88,7 @@ function getAllDocuments(siteProfile) {
  * 
  * reset all word's display attribute according to vocabulary
  */
-async function resetDocumentAnnotationVisibility(article, window, enabled, types) {
+async function resetDocumentAnnotationVisibility(article, window, enabled, types, siteOptions) {
   //console.log('resetDocumentAnnotationVisibility begin');
 
     let document = window.document;
@@ -116,6 +116,8 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       });
     }
   
+  if(siteOptions.notes.enabled){
+
   
     if (types.includes('note')) {
       let notes = await getNotes();
@@ -197,7 +199,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
         }
       }
     }
-  
+  }
     //console.log('resetDocumentAnnotationVisibility end');
   }
 function addDocumentEventListener(page, window, document, options, currentSiteOption) {  
