@@ -26,6 +26,8 @@ var page = {
 
   documentArticleMap: null,
   
+  monitoring: false,
+
   domChanges: 0,
   domChangesMonitored:0,
 
@@ -119,20 +121,19 @@ let pageMessageListener = function(request, sender, sendResponse) {
   };
 chrome.runtime.onMessage.addListener(pageMessageListener);
 
+setInterval(async ()=>{
+  if(page.monitoring){
+    console.log('skip DOM monitor');
+    return;
+  }
 
-
-//enahnced version of setInterval(), make sure tasks are exectued sequentially.
-(function domMonitorLoop() {
-  setTimeout(async () => {
-    try {
-      await domMonitor(page);
-    } finally {
-      domMonitorLoop();
-    }
-  }, page.domMonitorInterval);
-})();
-
-
+  page.monitoring = true;
+  try {
+    await domMonitor(page);
+  } finally {
+    page.monitoring = false;
+  }
+}, page.domMonitorInterval);
 
 
 
