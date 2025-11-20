@@ -33,6 +33,36 @@ function trimPunctuations(text){
     return result;
 }
 
+/**
+ * replace punctuations to space around the word
+ * ending dot not trimmed
+ * @param {*} text 
+ * @returns 
+ */
+function sameLengthTrimPunctuations(text){
+    var result = text;
+    // first or last char cannot be punctuation, some punctuations ('.-) allowed in between
+    let array = text.match(/(([^,.…!?()[\]{};:'"*#+-=][^,…!?()[\]{};:"*#+=]+[^,.…!?()[\]{};:'"*#+-=])|([^,.…!?()[\]{};:'"*#+-=]+))\.?/);
+    
+    if(array){
+        let headSpaces = array.index >0 ? ' '.repeat(array.index) : '';
+        
+        let tailLength = text.length - (array.index + array[0].length);
+        let tailSpaces = tailLength >0 ? ' '.repeat(tailLength) : '';
+        
+        let body = array[0];
+
+        //if ends with dot, length must less than n
+        if(endsWithDot(body) && body.length > 6){
+            body = body.slice(0, -1) + ' '; 
+        }
+
+        result = headSpaces + body + tailSpaces;
+    }
+
+    return result;
+}
+
 function sameLengthStandardizeCharacters(text){
     return text.replaceAll(/[‘’`]/g, "'")
         .replaceAll(/[“”]/g, '"')
@@ -187,4 +217,4 @@ function splitButIgnoreParentheses(text, separater){
 }
 
 
-export { endsWithDot, trimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, isBlankMask, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };
+export { endsWithDot, trimPunctuations, sameLengthTrimPunctuations, sameLengthStandardizeCharacters, variableLengthStandardizeCharacters, createBlankMask, containsMaskedChars, isBlankMask, replaceMaskedChars, removeMaskedChars, standardizeParenthesesPunctuations, standardizePunctuations, removeParentheses, splitButIgnoreParentheses };

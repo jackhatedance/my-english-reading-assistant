@@ -1,4 +1,4 @@
-import { trimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
+import { trimPunctuations, sameLengthTrimPunctuations, sameLengthStandardizeCharacters } from './textUtils.js';
 import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
@@ -87,18 +87,18 @@ function splitWords(checkWord, parts){
 }
 
 function splitCamelWords(checkWord, part, parts){
-    let content = part.content;
+    const { originalContent, content } = part;
     let contentWithoutPunctuation = trimPunctuations(content);
     let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
-        part.content = checkWordResult.word;
+        //part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
         part.checked = true;
         parts.push(part);
     } else {
         //step 2: split compound word
         const regexp2 = /([A-Z][^A-Z\s]+)/g;
-        let subParts = _splitTextByRegex(content, regexp2, part.offset);
+        let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
         for(const subPart of subParts){
             parts.push(subPart);
         }
@@ -106,18 +106,18 @@ function splitCamelWords(checkWord, part, parts){
 }
 
 function splitSlashWords(checkWord, part, parts){
-    let content = part.content;
+    const { originalContent, content } = part;
     let contentWithoutPunctuation = trimPunctuations(content);
     let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
-        part.content = checkWordResult.word;
+        //part.content = checkWordResult.word;
         part.checkWordResult = checkWordResult;
         part.chcked = true;
         parts.push(part);
     } else {
         //step 2: split word
         const regexp2 = /([/])|([^/]+)/g;
-        let subParts = _splitTextByRegex(content, regexp2, part.offset);
+        let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
         for(const subPart of subParts){
             parts.push(subPart);
         }
@@ -131,7 +131,7 @@ function splitCompoundWord(checkWord, part, parts){
     //step 1: check original word
     let guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
     if(guessWordResult){
-        part.content = guessWordResult;
+        //part.content = guessWordResult;
         part.checkWordResult = checkWord(guessWordResult, 'Always');
         part.checked = true;
         parts.push(part);
@@ -140,7 +140,7 @@ function splitCompoundWord(checkWord, part, parts){
         const contentWithoutPunctuationAndHyphen = contentWithoutPunctuation.replaceAll(/[-]/g, '');
         guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
         if(guessWordResult){
-            part.content = guessWordResult;
+            //part.content = guessWordResult;
             part.checkWordResult = checkWord(guessWordResult, 'Always');
             part.checked = true;
             parts.push(part);
@@ -379,7 +379,7 @@ function guessPartWord(checkWord, part){
     }
     
     if(guessResult){
-        part.content = guessResult.content;
+        //part.content = guessResult.content;
         if(!part.checked) {
             let checkWordResult = checkWord(guessResult.content, 'Always');
             if(checkWordResult){
@@ -423,10 +423,12 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let content = sentence.substring(match.index, match.index + match[0].length);
         
         //console.log('originalContent:'+originalContent);
-        let cleanContent = removeMaskedChars(content, submask)
+        let cleanContent = removeMaskedChars(content, submask);
+        cleanContent = sameLengthTrimPunctuations(cleanContent);
+        
         let contentWithoutPunctuation = trimPunctuations(cleanContent);
         //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
-        let partContent = contentWithoutPunctuation;
+        let partContent = cleanContent;
         let checkWordResult;
         let checked = false;
         if(checkWord){
@@ -445,7 +447,7 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         let part = {
             originalContent: originalContent,
             mask: submask,
-            content: partContent,
+            content: partContent,//puncutations either standard or replaced by space, same length with original content
             checkWordResult: checkWordResult,
             checked: checked,
             //relative to sentence
