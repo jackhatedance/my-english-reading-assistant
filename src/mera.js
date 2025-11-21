@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(pageMessageListener);
 
 setInterval(()=>{
   if(page.monitoring){
-    console.log('skip DOM monitor');
+    gLogger.debug('skip DOM monitor');
     return;
   }
 
