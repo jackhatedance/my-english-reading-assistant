@@ -30,6 +30,8 @@ function trimPunctuations(text){
         result = result.slice(0, -1); 
     }
 
+    result = result.trim();
+
     return result;
 }
 

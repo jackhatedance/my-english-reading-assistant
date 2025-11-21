@@ -412,15 +412,27 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
    
     let sentence = sameLengthStandardizeCharacters(originalSentence);
     
-    const matches = sentence.matchAll(regexp);
+    const matchesIter = sentence.matchAll(regexp);
+    const matches = Array.from(matchesIter);
+    //console.log(matches);
 
+    let lastMatchEndIndex=0;
+    let i=0;
     for (const match of matches) {
-        let submask = mask.substring(match.index, match.index + match[0].length);
+        let matchStartIndex = lastMatchEndIndex;
+        let matchEndIndex;
+        if(i == matches.length){//last
+            matchEndIndex = originalSentence.length;
+        }else{
+            matchEndIndex = match.index + match[0].length;
+        }
 
-        let originalContent = originalSentence.substring(match.index, match.index + match[0].length);
+        let submask = mask.substring(matchStartIndex, matchEndIndex);
+
+        let originalContent = originalSentence.substring(matchStartIndex, matchEndIndex);
         originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
 
-        let content = sentence.substring(match.index, match.index + match[0].length);
+        let content = sentence.substring(matchStartIndex, matchEndIndex);
         
         //console.log('originalContent:'+originalContent);
         let cleanContent = removeMaskedChars(content, submask);
@@ -455,6 +467,9 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
             length: match[0].length,
         };
         parts.push(part);
+
+        i++;
+        lastMatchEndIndex = matchEndIndex;
     }
 
     return parts;

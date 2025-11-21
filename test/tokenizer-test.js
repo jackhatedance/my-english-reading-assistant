@@ -9,8 +9,10 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
-        if(words.includes(text)){
-          return { word: text };
+        
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -19,9 +21,9 @@ describe('tokenizer', function () {
       //assert(tokens.length === 2,"test");
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[0].checkWordResult.word, "hello");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "world");
+      assert.equal(tokens[2].checkWordResult.word, "world");
       
       
     });
@@ -31,8 +33,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -41,9 +44,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[0].checkWordResult.word, "hello");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "world");
+      assert.equal(tokens[2].checkWordResult.word, "world");
       
       
     });
@@ -53,8 +56,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'world'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -63,9 +67,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[0].checkWordResult.word, "hello");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "world");
+      assert.equal(tokens[2].checkWordResult.word, "world");
       
       
     });
@@ -75,8 +79,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['good-bye', 'world'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -85,9 +90,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "good-bye");
+      assert.equal(tokens[0].checkWordResult.word, "good-bye");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "world");
+      assert.equal(tokens[2].checkWordResult.word, "world");
       
       
     });
@@ -97,8 +102,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['national', 'secu', 'security'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -107,9 +113,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "national");
+      assert.equal(tokens[0].checkWordResult.word, "national");
       assert.equal(tokens[1].content, "-");
-      assert.equal(tokens[2].content, "security");
+      assert.equal(tokens[2].checkWordResult.word, "security");
             
     });
 
@@ -118,8 +124,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['his', 'son-in-law', 'son', 'in', 'law'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -128,9 +135,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "his");
+      assert.equal(tokens[0].checkWordResult.word, "his");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "son-in-law");
+      assert.equal(tokens[2].checkWordResult.word, "son-in-law");
             
     });
 
@@ -139,8 +146,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['public', 'in', 'formation', 'information'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -149,10 +157,10 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "public");
+      assert.equal(tokens[0].checkWordResult.word, "public");
       assert.equal(tokens[1].content, "-");
 
-      assert.equal(tokens[2].content, "information");
+      assert.equal(tokens[2].checkWordResult.word, "information");
       assert.equal(tokens[2].originalContent, "in-formation");
             
     });
@@ -162,8 +170,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['local', 'lo-cal'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -172,7 +181,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "local");
+      assert.equal(tokens[0].checkWordResult.word, "local");
             
     });
 
@@ -181,8 +190,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -191,10 +201,10 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "think");
+      assert.equal(tokens[0].checkWordResult.word, "think");
       assert.equal(tokens[1].content, " ");
 
-      assert.equal(tokens[2].content, "of");
+      assert.equal(tokens[2].checkWordResult.word, "of");
       assert.equal(tokens[2].originalContent, "of.");
             
     });
@@ -204,8 +214,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think', 'any'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -214,10 +225,10 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 5);
       
-      assert.equal(tokens[0].content, "think");
+      assert.equal(tokens[0].checkWordResult.word, "think");
       assert.equal(tokens[1].content, " ");
 
-      assert.equal(tokens[2].content, "of.");
+      assert.equal(tokens[2].checkWordResult.word, "of.");
       assert.equal(tokens[2].originalContent, "of.");
             
     });
@@ -227,8 +238,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['of.', 'of', 'think', 'me.', 'me'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -238,7 +250,7 @@ describe('tokenizer', function () {
       assert.equal(tokens.length, 14);
       
 
-      assert.equal(tokens[12].content, "me");
+      assert.equal(tokens[12].checkWordResult.word, "me");
       assert.equal(tokens[12].originalContent, 'me.”');
             
     });
@@ -247,9 +259,10 @@ describe('tokenizer', function () {
       
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
-        let words = ['Hello','World'];
-        if(words.includes(text)){
-          return { word: text };
+        let words = ['hello','world'];
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -258,9 +271,31 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 2);
       
-      assert.equal(tokens[0].content, "Hello");
-      assert.equal(tokens[1].content, "World");
+      assert.equal(tokens[0].checkWordResult.word, "hello");
+      assert.equal(tokens[1].checkWordResult.word, "world");
       
+      
+    });
+
+    it('camel word with punctuation DuPont,', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['pont'];
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
+        }else {
+          return null;
+        }
+      }, "DuPont,", 0);
+      
+      
+      assert.equal(tokens.length, 2);
+      
+      assert.equal(tokens[0].content, "Du");
+      assert.equal(tokens[1].content, "Pont ");
+      assert.equal(tokens[1].checkWordResult.word, "pont");
       
     });
 
@@ -269,8 +304,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['TikTok', 'Tik', 'Tok'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -279,7 +315,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "TikTok");
+      assert.equal(tokens[0].checkWordResult.word, "TikTok");
       
       
     });
@@ -289,8 +325,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['yes','no'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -299,9 +336,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "Yes");
+      assert.equal(tokens[0].checkWordResult.word, "yes");
       assert.equal(tokens[1].content, "/");
-      assert.equal(tokens[2].content, "No");
+      assert.equal(tokens[2].checkWordResult.word, "no");
       
       
     });
@@ -311,8 +348,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['Russia'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -321,7 +359,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "Russia");
+      assert.equal(tokens[0].checkWordResult.word, "Russia");
       
       
     });
@@ -332,8 +370,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['he'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -342,7 +381,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "he");
+      assert.equal(tokens[0].checkWordResult.word, "he");
       
       
     });
@@ -352,8 +391,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['he'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -362,7 +402,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "he");
+      assert.equal(tokens[0].checkWordResult.word, "he");
       
       
     });
@@ -372,8 +412,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['hello', 'Buendía'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -382,9 +423,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "Hello");
+      assert.equal(tokens[0].checkWordResult.word, "hello");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "Buendía");
+      assert.equal(tokens[2].checkWordResult.word, "Buendía");
             
     });
 
@@ -393,8 +434,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['C¸atal', 'Hu¨yu¨k', 'Çatalhöyük'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -403,11 +445,11 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 5);
       
-      assert.equal(tokens[0].content, "C¸atal");
+      assert.equal(tokens[0].checkWordResult.word, "C¸atal");
       assert.equal(tokens[1].content, " ");
-      assert.equal(tokens[2].content, "Hu¨yu¨k");
+      assert.equal(tokens[2].checkWordResult.word, "Hu¨yu¨k");
       assert.equal(tokens[3].content, " ");
-      assert.equal(tokens[4].content, "Çatalhöyük");
+      assert.equal(tokens[4].checkWordResult.word, "Çatalhöyük");
             
     });
 
@@ -417,8 +459,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['CEO', 'CEOs'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -427,7 +470,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "CEO");     
+      assert.equal(tokens[0].checkWordResult.word, "CEO");     
             
     });
 
@@ -436,8 +479,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['D.C.'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -446,7 +490,7 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "D.C.");     
+      assert.equal(tokens[0].checkWordResult.word, "D.C.");     
             
     });
 
@@ -455,8 +499,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['U.S.', 'designated'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -465,9 +510,9 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 3);
       
-      assert.equal(tokens[0].content, "U.S.");     
+      assert.equal(tokens[0].checkWordResult.word, "U.S.");     
       assert.equal(tokens[1].content, "-");     
-      assert.equal(tokens[2].content, "designated");     
+      assert.equal(tokens[2].checkWordResult.word, "designated");     
             
     });
 
@@ -477,8 +522,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['the'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -487,17 +533,18 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 1);
       
-      assert.equal(tokens[0].content, "The");     
+      assert.equal(tokens[0].checkWordResult.word, "the");     
             
     });
 
-    it('new word positions', async function () {
+    it('new word positions boyat', async function () {
       
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['boy', 'at'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -506,8 +553,8 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 2);
       
-      assert.equal(tokens[0].content, 'boy');
-      assert.equal(tokens[1].content, 'at');            
+      assert.equal(tokens[0].checkWordResult.word, 'boy');
+      assert.equal(tokens[1].checkWordResult.word, 'at');            
     });
 
     it('new word positions compound', async function () {
@@ -515,8 +562,9 @@ describe('tokenizer', function () {
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
         let words = ['spin', 'off'];
-        if(words.includes(text)){
-          return { word: text };
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
         }else {
           return null;
         }
@@ -525,8 +573,8 @@ describe('tokenizer', function () {
       
       assert.equal(tokens.length, 4);
       
-      assert.equal(tokens[0].content, 'spin');
-      assert.equal(tokens[2].content, 'off');            
+      assert.equal(tokens[0].checkWordResult.word, 'spin');
+      assert.equal(tokens[2].checkWordResult.word, 'off');            
     });
 
   });
@@ -536,8 +584,9 @@ describe('tokenizer', function () {
     let tokens = tokenizeSentence((text)=> {
       //console.log('checkWord:'+text);
       let words = ['tower'];
-      if(words.includes(text)){
-        return { word: text };
+      const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+      if(result){
+          return { word: result };
       }else {
         return null;
       }
@@ -546,7 +595,7 @@ describe('tokenizer', function () {
     
     assert.equal(tokens.length, 2);
     
-    assert.equal(tokens[0].content, 'tower');
+    assert.equal(tokens[0].checkWordResult.word, 'tower');
     assert.equal(tokens[1].content, '1');
   });
 
@@ -555,8 +604,9 @@ describe('tokenizer', function () {
     let tokens = tokenizeSentence((text)=> {
       //console.log('checkWord:'+text);
       let words = ['crow'];
-      if(words.includes(text)){
-        return { word: text };
+      const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+      if(result){
+          return { word: result };
       }else {
         return null;
       }
@@ -565,7 +615,7 @@ describe('tokenizer', function () {
     
     assert.equal(tokens.length, 1);
     
-    assert.equal(tokens[0].content, 'crow');
+    assert.equal(tokens[0].checkWordResult.word, 'crow');
     
   });
 

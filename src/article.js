@@ -357,17 +357,17 @@ function parseArticleTextNodes(article, element, options, siteOptions){
             if(token
                 && node.parentElement.tagName == 'MEA-TOKEN'
                 && (
-                    getWordFromElement(node.parentElement) != token.content
+                    getWordFromElement(node.parentElement) != token.checkWordResult?.word
                     || getBaseWordFromElement(node.parentElement) != token.checkWordResult?.baseWord
                 )
             ){
                 let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
                 let showAnnotation = firstNodeOfTheToken;
 
-                if(token.content && token.content.trim().length > 0) {
+                if(token.checkWordResult) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
                     //console.log(contentWithoutPunctuation);
-                    let searchResult = searchWord(contentWithoutPunctuation, {
+                    let searchResult = searchWord(token.checkWordResult.word, {
                         allowLemma: true,
                         lookupBase: 'Always',
                         transform: token.transform,
