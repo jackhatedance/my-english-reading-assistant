@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <el-tooltip v-bind="$attrs" show-after="200">
+    <el-tooltip v-bind="$attrs" :show-after="200">
         <template #content>
             <p>{{ content }}<ExternalLink :type="props.linkType" :keyword="props.linkKeyword"/></p>
         </template>
