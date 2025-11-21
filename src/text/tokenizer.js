@@ -426,33 +426,45 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         }else{
             matchEndIndex = match.index + match[0].length;
         }
-
+        const length = matchEndIndex - matchStartIndex;
+        
         let submask = mask.substring(matchStartIndex, matchEndIndex);
 
         let originalContent = originalSentence.substring(matchStartIndex, matchEndIndex);
-        originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
-
         let content = sentence.substring(matchStartIndex, matchEndIndex);
         
-        //console.log('originalContent:'+originalContent);
-        let cleanContent = removeMaskedChars(content, submask);
-        cleanContent = sameLengthTrimPunctuations(cleanContent);
-        
-        let contentWithoutPunctuation = trimPunctuations(cleanContent);
-        //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
-        let partContent = cleanContent;
         let checkWordResult;
         let checked = false;
-        if(checkWord){
-            checkWordResult = checkWord(contentWithoutPunctuation,'Always');
+        let partContent;        
+        
+        //text from script tag could be very long, and inefficient
+        let valid = length < 32;
+        
+        if(valid){
+
+            originalContent = replaceMaskedChars(originalContent, submask, originalMaskedChar);
+
+            //console.log('originalContent:'+originalContent);
+            let cleanContent = removeMaskedChars(content, submask);
+            cleanContent = sameLengthTrimPunctuations(cleanContent);
             
-            if(checkWordResult){
-                partContent = checkWordResult.word;
-                checked = true;
-            } else {
-                partContent = contentWithoutPunctuation;
-                checked = false;
+            let contentWithoutPunctuation = trimPunctuations(cleanContent);
+            //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
+            partContent = cleanContent;
+            
+            if(checkWord){
+                checkWordResult = checkWord(contentWithoutPunctuation,'Always');
+                
+                if(checkWordResult){
+                    partContent = checkWordResult.word;
+                    checked = true;
+                } else {
+                    partContent = contentWithoutPunctuation;
+                    checked = false;
+                }
             }
+        } else {
+            partContent = content;
         }
         //console.log('partContent:'+partContent);
 
@@ -463,8 +475,8 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
             checkWordResult: checkWordResult,
             checked: checked,
             //relative to sentence
-            offset: match.index + baseIndex,
-            length: match[0].length,
+            offset: matchStartIndex + baseIndex,
+            length: length,
         };
         parts.push(part);
 
