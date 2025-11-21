@@ -121,18 +121,21 @@ let pageMessageListener = function(request, sender, sendResponse) {
   };
 chrome.runtime.onMessage.addListener(pageMessageListener);
 
-setInterval(async ()=>{
+setInterval(()=>{
   if(page.monitoring){
     console.log('skip DOM monitor');
     return;
   }
 
   page.monitoring = true;
-  try {
-    await domMonitor(page);
-  } finally {
-    page.monitoring = false;
-  }
+  setTimeout(async () => {
+    try {
+      await domMonitor(page);
+    } finally {
+      page.monitoring = false;
+    }
+  }, 10);
+  
 }, page.domMonitorInterval);
 
 
