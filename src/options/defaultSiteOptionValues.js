@@ -179,6 +179,26 @@ function patch_v_1_9_0(options){
         };
     }
 
+    //fix data type issue about element plus input component model value, convert string to number or null
+    options.annotation.fontSize = string2Number(options.annotation.fontSize);
+    options.annotation.opacity = string2Number(options.annotation.opacity);
+    options.annotation.maxMeaningNumber = string2Number(options.annotation.maxMeaningNumber);
+    options.annotation.lineHeight = string2Number(options.annotation.lineHeight);
+    
+
+}
+
+function string2Number(str){
+    var result = str;
+
+    if(typeof str === "string"){
+        try {
+            result = Number(str);
+        }catch(e){
+            
+        }
+    }
+    return result;
 }
 
 export { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues };

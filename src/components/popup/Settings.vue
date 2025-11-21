@@ -90,7 +90,7 @@ provide('unknownWordColor', unknownWordColor);
 const unknownWordWidth = ref(1);
 provide('unknownWordWidth', unknownWordWidth);
 
-const textFontSize = ref('');
+const textFontSize = ref();
 provide('textFontSize', textFontSize);
 
 const bionicEnabled = ref(false);
