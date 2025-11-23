@@ -8,6 +8,7 @@ import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDi
 import log from 'loglevel'
 import { initLog } from './log.js'
 import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} from './service/tabInfoService.js';
+import { synchronized } from './user-activity/lock.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -184,6 +185,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function onInitPageFinished(tabId, newTabInfo){
 
+  await synchronized(async ()=> {
     //console.log('new tab info:'+ JSON.stringify(newTabInfo));
     let oldTabInfo = await getTabInfo(tabId);
     
@@ -193,62 +195,70 @@ async function onInitPageFinished(tabId, newTabInfo){
 
     await saveTabInfo(tabId, newTabInfo);
     setIcon(tabId, true);
+  });
 }
 
 async function onCleanPageFinished(tabId){
-  let oldTabInfo = await getTabInfo(tabId);
-  
-  if(oldTabInfo && oldTabInfo.startTime){
-    await saveReadingActivityAndClearStartTime(oldTabInfo);
-  }
+  await synchronized(async ()=> {
+    let oldTabInfo = await getTabInfo(tabId);
+    
+    if(oldTabInfo && oldTabInfo.startTime){
+      await saveReadingActivityAndClearStartTime(oldTabInfo);
+    }
 
-  await removeTabInfo(tabId);
-  setIcon(tabId, false);
+    await removeTabInfo(tabId);
+    setIcon(tabId, false);
+  });
 }
 
 async function onWindowFocus(tabId){
-  
-  let tabInfo = await getTabInfo(tabId);
-  if(tabInfo){
-    //console.log('focus');
-    if(tabInfo.startTime ==null){
-      gLogger.debug('start time is null, set start time');
-      tabInfo.startTime = new Date().getTime();
-      await saveTabInfo(tabId, tabInfo);
-    }else {
-      gLogger.debug('start time is not null');
+  await synchronized(async ()=> {
+    let tabInfo = await getTabInfo(tabId);
+    if(tabInfo){
+      //console.log('focus');
+      if(tabInfo.startTime ==null){
+        gLogger.debug('start time is null, set start time');
+        tabInfo.startTime = new Date().getTime();
+        await saveTabInfo(tabId, tabInfo);
+      }else {
+        gLogger.debug('start time is not null');
+      }
     }
-  }
+  });
 }
 
 async function onTabBlur(tabId){
-  let tabInfo = await getTabInfo(tabId);
-  if(tabInfo){
-    //console.log('blur');
-    await saveReadingActivityAndClearStartTime(tabInfo);
-    await saveTabInfo(tabId, tabInfo);
-  }
+  await synchronized(async ()=> {
+    let tabInfo = await getTabInfo(tabId);
+    if(tabInfo){
+      //console.log('blur');
+      await saveReadingActivityAndClearStartTime(tabInfo);
+      await saveTabInfo(tabId, tabInfo);
+    }
+  });
 }
 
 async function onUrlChanged(tabId, newTabInfo){
-
-  let oldTabInfo = await getTabInfo(tabId);
-  if(oldTabInfo){
-    await saveReadingActivityAndClearStartTime(oldTabInfo);
-    await saveTabInfo(tabId, newTabInfo);
-  }
+  await synchronized(async ()=> {
+    let oldTabInfo = await getTabInfo(tabId);
+    if(oldTabInfo){
+      await saveReadingActivityAndClearStartTime(oldTabInfo);
+      await saveTabInfo(tabId, newTabInfo);
+    }
+  });
 }
 
 async function onMarkWord(tabId, wordChanges){
-  let tabInfo = await getTabInfo(tabId);
+  await synchronized(async ()=> {
+    let tabInfo = await getTabInfo(tabId);
 
-  if(tabInfo){
-    tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
-    await saveTabInfo(tabId, tabInfo);
-  }else{
-    console.error(`tabInfo not found of tab id: ${tabId}`);
-  }
-  
+    if(tabInfo){
+      tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
+      await saveTabInfo(tabId, tabInfo);
+    }else{
+      console.error(`tabInfo not found of tab id: ${tabId}`);
+    }
+  });
   //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
 }
 
@@ -297,12 +307,14 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 */
 
 chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
-  //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
-  let tabInfo = await getTabInfo(tabId);
-  if(tabInfo){
-    await saveReadingActivityAndClearStartTime(tabInfo);
-  }
-  removeTabInfo(tabId);
+  await synchronized(async ()=> {
+    //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
+    let tabInfo = await getTabInfo(tabId);
+    if(tabInfo){
+      await saveReadingActivityAndClearStartTime(tabInfo);
+    }
+    removeTabInfo(tabId);
+  });
 });
 
 chrome.idle.onStateChanged.addListener(async (newState)=>{
@@ -312,19 +324,22 @@ chrome.idle.onStateChanged.addListener(async (newState)=>{
     return;
   }
 
-  const tab = tabs[0];
-  let tabId = tab.id;
-  let tabInfo = await getTabInfo(tabId);
-  if(tabInfo){
-    if(newState !=='active'){
-      //console.log('save activity and clear');
-      await saveReadingActivityAndClearStartTime(tabInfo);
-    }else {
-      //console.log('start activity');
-      tabInfo.startTime = new Date().getTime();
-      await saveTabInfo(tabId, tabInfo);
+  await synchronized(async ()=> {
+    const tab = tabs[0];
+    let tabId = tab.id;
+    let tabInfo = await getTabInfo(tabId);
+    if(tabInfo){
+      gLogger.debug(`${tabInfo.title}`);
+      if(newState !=='active'){
+        //console.log('save activity and clear');
+        await saveReadingActivityAndClearStartTime(tabInfo);
+      }else {
+        //console.log('start activity');
+        tabInfo.startTime = new Date().getTime();
+        await saveTabInfo(tabId, tabInfo);
+      }
     }
-  }
+  });
 });
 
 async function saveReadingActivityAndClearStartTime(tabInfo){
