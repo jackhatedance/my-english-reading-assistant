@@ -135,7 +135,7 @@ init();
       <div class="input">
         <div>
           <label>{{ t('optionsRootAndAffixModeLabel') }}</label>
-          <el-switch class="right" data-testid="root-and-affix-mode" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode" size="small" />
+          <el-switch class="right" data-testid="root-and-affix-mode" v-model="enableRootAndAffix" @change="onChangeRootAndAffixMode" />
         </div>
         
       </div>
