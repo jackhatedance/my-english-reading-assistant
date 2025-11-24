@@ -10,7 +10,7 @@ import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
 import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveInteractionOption } from '../interaction-utils.js'
 import { getCurrentSiteOptions } from '../page.js'
-
+import { isFeatureEnabled, FEATURE_NOTE } from '../feature-toggle.js'
 
 async function mouseUpEventListenerWithParams(event, document, options, currentSiteOption, gDocumentArticleMap) {
   //console.log(event);
@@ -110,7 +110,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
         filteredNotes.push(note);
       }
       //console.log('search notes:' + JSON.stringify(filteredNotes));
-      if(filteredNotes.length>0){
+      if(isFeatureEnabled(siteOptions, FEATURE_NOTE) && filteredNotes.length>0){
         menuItems.push(MenuItems.ViewNote);
       }
     } 
@@ -118,7 +118,9 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
     let selectTextEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_SELECT_TEXT);
     if (!isSelectionCollapsed && selectTextEnabled) {
       type = 'select-text';
-      menuItems.push(MenuItems.AddNote);
+      if(isFeatureEnabled(siteOptions, FEATURE_NOTE)){
+        menuItems.push(MenuItems.AddNote);
+      }
     }
     
 

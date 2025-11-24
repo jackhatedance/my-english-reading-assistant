@@ -2,7 +2,7 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import Word from './Word.vue';
 import Notes from './Notes.vue';
-
+import { isFeatureEnabled, FEATURE_NOTE } from '../../feature-toggle.js'
 
 const props = defineProps({
     page: Object,
@@ -27,7 +27,7 @@ init();
 <template>
     <div class="actiontab-items">
         <Word v-if="props.word" :siteOptions="toRaw(page.siteOptions)" :dictionary="props.dictionary" :word="props.word"></Word>
-        <Notes v-if="!isNotesEmpty" :items="props.notes" />
+        <Notes v-if="isFeatureEnabled(page.siteOptions, FEATURE_NOTE) && !isNotesEmpty" :items="props.notes" />
     </div>
 </template>
 

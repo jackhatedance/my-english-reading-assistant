@@ -25,6 +25,7 @@ import { xbbcToText } from './note/note-util.js'
 import { sendMessageToBackground } from './message.js'
 import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_HOVER_LISTENER } from './document/process.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
+import { isFeatureEnabled, FEATURE_NOTE } from './feature-toggle.js'
 
 var knownWords;
 
@@ -116,7 +117,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       });
     }
   
-  if(siteOptions.notes.enabled){
+  if(isFeatureEnabled(siteOptions, FEATURE_NOTE)){
 
   
     if (types.includes('note')) {
