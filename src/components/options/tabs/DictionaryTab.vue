@@ -381,7 +381,7 @@ init();
       <div class="input dictionary">
         <div class="dictionaries">
           <div class="list">
-            <select class="dictionaries" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
+            <select class="dictionary-select" v-model="selectedDictionary" :size="12" @change="onChangeSelectedDictionary">
               <option :class="{support_ok: supportOk(meta), support_ok_upgradable: supportOkUpgradable(meta), support_invalid: supportInvalid(meta), not_support: notSupport(meta)}" v-for="(meta, index) in dictionaryMetas" :key="meta.name" :value="meta.name">{{ meta.enabled? `[✓]`:''}}{{ meta.displayName }}</option>
             </select>          
           </div>
@@ -426,14 +426,11 @@ init();
 
     
 
-    * {
-      margin-left: 5px;
-    }
-
     .list {
       width: 50%;
-    
-      .dictionaries{
+      margin: 8px;
+      
+      .dictionary-select{
         
         width: 100%;
         overflow-y: auto;

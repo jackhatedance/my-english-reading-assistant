@@ -2,6 +2,8 @@
 import { ref, inject, computed, watch } from 'vue'
 import { humanRemain } from '../../../utils/dateUtils.js'
 import { DICTIONARY_INDEX_STATUS_OK } from '../../../dictionary/dictConstants.js'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
 
 const emits = defineEmits(['value-changed']);
 
@@ -78,7 +80,7 @@ init();
             <span>{{ jobStatus }}</span>
 
             <label>{{ t('options_dictionary_detail_enabled') }}</label>
-            <input type="checkbox" v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support">
+            <el-switch v-model="enabled" @change="$emit('value-changed')" :disabled="!props.dict.data.index?.support" />
             
         </div>
     </div>
@@ -92,5 +94,6 @@ init();
     label {
         font-weight: bold;
     }
+    align-items: center;
   }
 </style>
