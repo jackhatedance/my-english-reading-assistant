@@ -37,7 +37,7 @@ const extractable = computed(() => {
 
   
   let isUser = meta.type == 'user';
-  console.log(meta);
+  //console.log(meta);
 
   let support = ! notSupport(meta);
 
@@ -429,7 +429,7 @@ init();
     .list {
       width: 50%;
       margin: 8px;
-      
+
       .dictionary-select{
         
         width: 100%;
