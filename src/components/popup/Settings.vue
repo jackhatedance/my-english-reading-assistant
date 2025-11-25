@@ -411,7 +411,7 @@ init();
             </label>
           </div>
           <div class="switch-mode">
-            <label>{{ t('popupSiteSwitchMode') }}<InformationTooltip :content="t('popupSiteSwitchModeTip')" linkType="guide" linkKeyword="站点开关模式" /></label>
+            <label>{{ t('popupSiteSwitchMode') }}<InformationTooltip :content="t('popupSiteSwitchModeTip')" linkType="guide" linkKeyword="站点开关模式" effect="dark" /></label>
             
             
             

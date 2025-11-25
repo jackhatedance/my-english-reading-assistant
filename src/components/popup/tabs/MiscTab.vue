@@ -70,7 +70,7 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_interaction_select_text_Label') }}<InformationTooltip :content="t('popup_interaction_select_text_tip')" /></label>
+        <label>{{ t('popup_interaction_select_text_Label') }}<InformationTooltip :content="t('popup_interaction_select_text_tip')" effect="dark"/></label>
         <div class="inputs">
           <el-select data-testid="select-text" v-model="selectText" @change="onChangeSetting" size="small">
             <el-option :value="SELECT_OPTION_UNSET" :label="getInteractionDefaultLabel('selectText') + '(' +t('default') + ')'" />
@@ -81,7 +81,7 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_site_category_Label') }}<InformationTooltip :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别" /></label>
+        <label>{{ t('popup_site_category_Label') }}<InformationTooltip :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别" effect="dark" /></label>
         
         <div class="inputs">
           <el-select data-testid="site-category" v-model="siteCategory" @change="onChangeSetting" size="small">
@@ -93,7 +93,7 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记" /></label>
+        <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记" effect="dark"/></label>
         
         
         <div class="inputs">

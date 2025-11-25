@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
-import HelpLink from '../../HelpLink.vue'
+import ExternalLink from '../../common/ExternalLink.vue'
 import { SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../../switch-mode.js'
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
@@ -91,7 +91,7 @@ init();
       </div>
       <div class="input">
         <div>
-          <label>{{ t('options_general_switch_mode_label') }}<HelpLink type="guide" keyword="默认开关模式"/></label>
+          <label>{{ t('options_general_switch_mode_label') }}<ExternalLink type="guide" keyword="默认开关模式"/></label>
           <el-select data-testid="switch-mode" class="switch-mode" v-model="selectedSwitchMode" @change="onChangeSwitchMode" >
             
             <el-option :value="SWITCH_MODE_OPTION_ON" :label="t('options_general_switch_mode_on')" />

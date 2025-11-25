@@ -36,7 +36,7 @@ init();
           <div class="field" id="dictionaryField" >
             
             
-            <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span><InformationTooltip :content="t('popupAdditionalDictionaryTip')" linkType="guide" linkKeyword="指定附加词典"/></label>
+            <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span><InformationTooltip :content="t('popupAdditionalDictionaryTip')" linkType="guide" linkKeyword="指定附加词典" effect="dark" /></label>
             
             <div class="inputs">
                        

@@ -11,9 +11,14 @@ const props = defineProps({
     },
     type: String,
     keyword: String,    
+    effect: String,
 });
 
 const imageUrl = chrome.runtime.getURL("icons/external-link.svg");
+
+const isDark = computed(()=>{
+    return props.effect == 'dark';
+});
 
 const url = computed(() => {
     let document = getWebSiteDocumentUrl('guide');
@@ -34,7 +39,7 @@ init();
 </script>
 
 <template>
-    <a class="external-link" target=_blank :href="url">{{ props.message }}
+    <a :class="{ 'external-link': true, dark: isDark }" target=_blank :href="url">{{ props.message }}
         
 
             <svg viewBox="0 0 24 24" width="1em" height="1em" class="link-icon"><path fill="currentColor" d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794l-1.414-1.414L17.585 5H13V3h8z"></path></svg>
@@ -44,7 +49,11 @@ init();
 <style>
    a.external-link {
     text-decoration: none;
-    color: white;
+    color: black;
+    &.dark{
+        color: white;
+    }
+    
    }
 
 </style>

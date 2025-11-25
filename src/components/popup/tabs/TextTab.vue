@@ -69,7 +69,7 @@ init();
           </div>
 
           <div class="field">
-            <label>{{ t('popup_settings_text_font_size_label') }}<InformationTooltip :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸" /></label>
+            <label>{{ t('popup_settings_text_font_size_label') }}<InformationTooltip :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸" effect="dark" /></label>
             
             <div class="inputs">
               <el-input-number v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
@@ -79,7 +79,7 @@ init();
           </div>
 
           <div class="field">
-            <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读" /></label>
+            <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读" effect="dark" /></label>
             
             
             <div class="inputs">

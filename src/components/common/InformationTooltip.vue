@@ -10,7 +10,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Tooltip v-bind="$props" placement="top-start"  effect="dark" >
+    <Tooltip v-bind="$props" placement="top-start" >
         ⓘ
     </Tooltip>
 </template>

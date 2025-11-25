@@ -63,7 +63,7 @@ init();
 <template>
     <div class="annotation-settings">
         <div class="field">
-            <label>{{ t('popupDualAnnotationEnabledLabel') }}<InformationTooltip :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解" /></label>
+            <label>{{ t('popupDualAnnotationEnabledLabel') }}<InformationTooltip :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解" effect="dark"/></label>
             
             <div class="inputs">
                 <el-switch v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" size="small"/>
