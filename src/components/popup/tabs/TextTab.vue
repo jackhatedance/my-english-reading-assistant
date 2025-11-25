@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
-import Tooltip from '../../common/Tooltip.vue'
+import InformationTooltip from '../../common/InformationTooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElInputNumber } from 'element-plus'
@@ -69,9 +69,7 @@ init();
           </div>
 
           <div class="field">
-            <Tooltip placement="top-start"  effect="dark" :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸">
-              <label>{{ t('popup_settings_text_font_size_label') }}</label>
-            </Tooltip>
+            <label>{{ t('popup_settings_text_font_size_label') }}<InformationTooltip :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸" /></label>
             
             <div class="inputs">
               <el-input-number v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
@@ -81,9 +79,8 @@ init();
           </div>
 
           <div class="field">
-            <Tooltip placement="top-start"  effect="dark" :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读">
-              <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span></label>
-            </Tooltip>
+            <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读" /></label>
+            
             
             <div class="inputs">
               <el-switch v-model="bionicEnabled" @change="onChangeSetting" size="small" />

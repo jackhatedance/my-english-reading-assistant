@@ -12,7 +12,7 @@ import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
-import Tooltip from '../common/Tooltip.vue'
+import InformationTooltip from '../common/InformationTooltip.vue'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
 import { fixCategory } from '../../site-category.js'
 
@@ -411,9 +411,7 @@ init();
             </label>
           </div>
           <div class="switch-mode">
-            <Tooltip placement="top-start"  effect="dark" :content="t('popupSiteSwitchModeTip')" linkType="guide" linkKeyword="站点开关模式">
-              <label>{{ t('popupSiteSwitchMode') }}</label>
-            </Tooltip>
+            <label>{{ t('popupSiteSwitchMode') }}<InformationTooltip :content="t('popupSiteSwitchModeTip')" linkType="guide" linkKeyword="站点开关模式" /></label>
             
             
             

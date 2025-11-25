@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import HelpLink from '../../HelpLink.vue'
-import Tooltip from '../../common/Tooltip.vue'
+import InformationTooltip from '../../common/InformationTooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElInputNumber } from 'element-plus'
@@ -63,9 +63,8 @@ init();
 <template>
     <div class="annotation-settings">
         <div class="field">
-            <Tooltip placement="top-start"  effect="dark" :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解">
-                <label>{{ t('popupDualAnnotationEnabledLabel') }}</label>
-            </Tooltip>
+            <label>{{ t('popupDualAnnotationEnabledLabel') }}<InformationTooltip :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解" /></label>
+            
             <div class="inputs">
                 <el-switch v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" size="small"/>
             </div>

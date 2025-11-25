@@ -18,6 +18,11 @@ function createDefaultOptions(){
         },
         switch: {
             mode: SWITCH_MODE_OPTION_OFF
+        },
+        interaction: {
+            clickWord: true,
+            hoverWord: true,
+            selectText: true
         }
     };
 }
@@ -113,7 +118,7 @@ function patch_v_1_4_0(options){
         interactionOptions.hoverWord = true;
     }
     if(!interactionOptions.hasOwnProperty('selectText')){
-        interactionOptions.selectText = false;
+        interactionOptions.selectText = true;
     }
 }
 

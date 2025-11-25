@@ -7,6 +7,7 @@ import 'element-plus/es/components/switch/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
 import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
 import Tooltip from '../../common/Tooltip.vue'
+import InformationTooltip from '../../common/InformationTooltip.vue'
 
 const emit = defineEmits(['change-setting']);
 
@@ -69,7 +70,7 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_interaction_select_text_Label') }}</label>
+        <label>{{ t('popup_interaction_select_text_Label') }}<InformationTooltip :content="t('popup_interaction_select_text_tip')" /></label>
         <div class="inputs">
           <el-select data-testid="select-text" v-model="selectText" @change="onChangeSetting" size="small">
             <el-option :value="SELECT_OPTION_UNSET" :label="getInteractionDefaultLabel('selectText') + '(' +t('default') + ')'" />
@@ -80,9 +81,7 @@ init();
       </div>
 
       <div class="field" >
-        <Tooltip placement="top-start"  effect="dark" :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别">
-          <label>{{ t('popup_site_category_Label') }}</label>
-        </Tooltip>
+        <label>{{ t('popup_site_category_Label') }}<InformationTooltip :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别" /></label>
         
         <div class="inputs">
           <el-select data-testid="site-category" v-model="siteCategory" @change="onChangeSetting" size="small">
@@ -94,9 +93,8 @@ init();
       </div>
 
       <div class="field" >
-        <Tooltip placement="top-start"  effect="dark" :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记">
-          <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span></label>
-        </Tooltip>
+        <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记" /></label>
+        
         
         <div class="inputs">
           <el-switch v-model="notesEnabled" @change="onChangeSetting" size="small" />
