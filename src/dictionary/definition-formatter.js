@@ -69,12 +69,21 @@ function pronunciationToText(pronunciation){
 
 function regionPronunciationsToText(region, pronunciations){
     let texts = pronunciations.map(item => pronunciationToText(item));
+
+    region = getLocalizedRegion(region);
+
     if(region && region.length > 0){
         return `${region} /${texts.join(',')}/`;
     } else{
         return `/${texts.join(',')}/`;
     }
     
+}
+
+function getLocalizedRegion(regionCode){
+    let key = `annotation_pronunciation_region_${regionCode}`;
+    let region = chrome.i18n.getMessage(key);
+    return region;
 }
 
 /**

@@ -961,5 +961,12 @@
     },
     "dictionaryPage_button_lookup":{
         "message":"查找"
+    },
+
+    "annotation_pronunciation_region_us":{
+        "message":"美"
+    },
+    "annotation_pronunciation_region_uk":{
+        "message":"英"
     }
 }

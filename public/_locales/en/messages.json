@@ -962,5 +962,12 @@
     },
     "dictionaryPage_button_lookup":{
         "message":"Lookup"
+    },
+
+    "annotation_pronunciation_region_us":{
+        "message":"us"
+    },
+    "annotation_pronunciation_region_uk":{
+        "message":"uk"
     }
 }
