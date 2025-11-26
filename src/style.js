@@ -200,7 +200,12 @@ function generateCssRulesOfAnnotation(options, suffix, contentExpr, unknownWordO
 
     let fontSize = `${options.fontSize}em`;
     let opacity = `${options.opacity}`;
-    let color = `${options.color}`;
+    let colorStyle;
+    if(options.color!=null){
+      colorStyle = `color: ${options.color};`;
+    }else{
+      colorStyle = '';
+    }
     
     let ruleVisibility;
     if(unknownWordOnly){
@@ -225,7 +230,7 @@ function generateCssRulesOfAnnotation(options, suffix, contentExpr, unknownWordO
       left: 0;
       ${pos};
       font-size: ${fontSize} !important;
-      color: ${color};
+      ${colorStyle}
       opacity: ${opacity};
     }`;
     return [ruleVisibility, rule];
@@ -290,7 +295,10 @@ function generateCssRules(options, extraStyle) {
             }`;
     }
     
-
+    if(extraStyle==null){
+      extraStyle = '';
+    }
+    
     let highlightRule = `.mea-highlight {  
       position: relative;
       margin-top: 0px;
