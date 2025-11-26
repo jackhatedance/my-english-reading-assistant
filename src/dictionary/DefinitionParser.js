@@ -215,7 +215,7 @@ class DefinitionParser {
         text = this.beforeParsePronunciationText(text);
         text  = text.trim();
 
-        let pattern = `((?<name>[\\w\\s]+)\\s+)?\\/(?<phonetics>[^\\/]+)\\/`;
+        let pattern = `((?<name>[\\w\\s]+)\\s?)?\\/(?<phonetics>[^\\/]+)\\/`;
         let matchResult = text.match(pattern);
         if(matchResult != null){
             let name = matchResult.groups.name;
