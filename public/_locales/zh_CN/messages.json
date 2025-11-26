@@ -712,8 +712,8 @@
     "report_page_title":{
         "message":"阅读报告"
     },
-    "report_header_vocabulary":{
-        "message":"词汇量"
+    "report_header_time":{
+        "message":"阅读时间"
     },
     "report_header_site":{
         "message":"网站"
@@ -889,25 +889,25 @@
         "message":"词汇量变化"
     },
 
-    "reportVocabularyChartTitle":{
-        "message":"词汇量与阅读时间"
+    "reportTimeChartTitle":{
+        "message":"阅读时间词与汇量"
     },
-    "reportVocabularyChartDesc":{
+    "reportTimeChartDesc":{
         "message":"瞧瞧我的努力和进步"
     },
-    "reportVocabularyChartLabel":{
+    "reportTimeChartLabel":{
         "message":"词汇量"
     },
-    "reportVocabularyChartTimeLabel":{
+    "reportTimeChartTimeLabel":{
         "message":"时间(小时)"
     },
-    "reportVocabularyChartTimeTextLabel":{
+    "reportTimeChartTimeTextLabel":{
         "message":"文本"
     },
-    "reportVocabularyChartTimeVideoLabel":{
+    "reportTimeChartTimeVideoLabel":{
         "message":"视频"
     },
-    "reportVocabularyChartTimeOtherLabel":{
+    "reportTimeChartTimeOtherLabel":{
         "message":"其他"
     },
     "total_reading_time":{

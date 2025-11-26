@@ -210,7 +210,7 @@ function renderVocabularyChart(vocabularyChartData){
                 position: 'left', // Position the bar chart's y-axis on the left
                 title: {
                     display: true,
-                    text: t('reportVocabularyChartLabel')
+                    text: t('reportTimeChartLabel')
                 }
             },
             'y-axis-bar': {
@@ -223,7 +223,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 title: {
                     display: true,
-                    text: t('reportVocabularyChartTimeLabel')
+                    text: t('reportTimeChartTimeLabel')
                 }
             }
         }
@@ -232,7 +232,7 @@ function renderVocabularyChart(vocabularyChartData){
             datasets: [
                 {
                     yAxisID: 'y-axis-line',
-                    label: chrome.i18n.getMessage('reportVocabularyChartLabel'),
+                    label: chrome.i18n.getMessage('reportTimeChartLabel'),
                     data: vocabularyChartData.vocabulary,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -255,7 +255,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 {
                     yAxisID: 'y-axis-bar',
-                    label: chrome.i18n.getMessage('reportVocabularyChartTimeTextLabel'),
+                    label: chrome.i18n.getMessage('reportTimeChartTimeTextLabel'),
                     data: vocabularyChartData.duration['text'],
                     type: 'bar',
                     stacked: true,
@@ -268,7 +268,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 {
                     yAxisID: 'y-axis-bar',
-                    label: chrome.i18n.getMessage('reportVocabularyChartTimeVideoLabel'),
+                    label: chrome.i18n.getMessage('reportTimeChartTimeVideoLabel'),
                     data: vocabularyChartData.duration['video'],
                     type: 'bar',
                     stacked: true,
@@ -281,7 +281,7 @@ function renderVocabularyChart(vocabularyChartData){
                 },
                 {
                     yAxisID: 'y-axis-bar',
-                    label: chrome.i18n.getMessage('reportVocabularyChartTimeOtherLabel'),
+                    label: chrome.i18n.getMessage('reportTimeChartTimeOtherLabel'),
                     data: vocabularyChartData.duration['other'],
                     type: 'bar',
                     stacked: true,
@@ -331,8 +331,8 @@ init();
 
     <div class="chart-wrapper">
         <div class="chart">     
-            <h1>{{ t('reportVocabularyChartTitle') }}</h1>
-            <p>{{ t('reportVocabularyChartDesc') }}</p>
+            <h1>{{ t('reportTimeChartTitle') }}</h1>
+            <p>{{ t('reportTimeChartDesc') }}</p>
             <canvas id="vocabularyChart"></canvas>
         </div>
     </div>

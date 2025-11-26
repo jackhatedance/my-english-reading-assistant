@@ -714,8 +714,8 @@
     "report_page_title":{
         "message":"Report"
     },
-    "report_header_vocabulary":{
-        "message":"Vocabulary"
+    "report_header_time":{
+        "message":"Time"
     },
     "report_header_site":{
         "message":"Site"
@@ -890,25 +890,25 @@
         "message":"Vocab. Chg."
     },
 
-    "reportVocabularyChartTitle":{
-        "message":"Vocabulary & Reading time"
+    "reportTimeChartTitle":{
+        "message":"Reading time & Vocabulary"
     },
-    "reportVocabularyChartDesc":{
+    "reportTimeChartDesc":{
         "message":"Look at my efforts and progress"
     },
-    "reportVocabularyChartLabel":{
+    "reportTimeChartLabel":{
         "message":"Vocabulary"
     },
-    "reportVocabularyChartTimeLabel":{
+    "reportTimeChartTimeLabel":{
         "message":"Time(hours)"
     },
-    "reportVocabularyChartTimeTextLabel":{
+    "reportTimeChartTimeTextLabel":{
         "message":"Text"
     },
-    "reportVocabularyChartTimeVideoLabel":{
+    "reportTimeChartTimeVideoLabel":{
         "message":"Video"
     },
-    "reportVocabularyChartTimeOtherLabel":{
+    "reportTimeChartTimeOtherLabel":{
         "message":"Other"
     },
     "total_reading_time":{
