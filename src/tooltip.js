@@ -456,8 +456,15 @@ function generateDefinitionHtml(entry) {
       }*/
       let definitionTexts = definitions.map(item => item.text );
       
-      let definitionsText = definitionTexts.join(',');
-      let groupText = `${wordClass} ${definitionsText}`;
+      let definitionsText = definitionTexts.join('; ');
+      let wordClassHtml;
+      if(wordClass) {
+        wordClassHtml = `<b>${wordClass}</b> `;
+      } else {
+        wordClassHtml = '';
+      }
+
+      let groupText = `${wordClassHtml}${definitionsText}`;
       groupTexts.push(groupText);
   }
   let groupsText = groupTexts.join('<br> ');
