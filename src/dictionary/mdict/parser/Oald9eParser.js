@@ -1,5 +1,5 @@
 import { JsonSelectorParser } from './JsonSelectorParser.js'
-
+import { SUBDEFINITION_SEPARATORS_TYPE_STATIC } from '../../DefinitionParser.js'
 
 class Oald9eParser extends JsonSelectorParser {
     constructor(options) {
@@ -126,6 +126,13 @@ class Oald9eParser extends JsonSelectorParser {
             uk: 'BrE',
             us: 'NAmE',
         };
+
+        //for english definition, remove comma
+        this.subdefinitionSeparator = {
+            type: SUBDEFINITION_SEPARATORS_TYPE_STATIC,
+            value: ';'
+        };
+        
     }
 
     beforeParsePronunciationText(text) {

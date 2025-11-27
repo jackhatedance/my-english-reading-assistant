@@ -12,6 +12,7 @@ function initLog(){
     log.getLogger("document").setLevel("warn");
     log.getLogger("tooltip").setLevel("info");
     log.getLogger("activity-service").setLevel("info");
+    log.getLogger("dictionary").setLevel("info");
 }
 
 export { initLog }

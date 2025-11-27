@@ -132,7 +132,9 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "the name or type of a machine,piece of equipment,etc. that is made by a particular company");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "the name or type of a machine, piece of equipment, etc. that is made by a particular company");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].subdefinitions.length, 1);
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].subdefinitions[0], "the name or type of a machine, piece of equipment, etc. that is made by a particular company");
       
     });
 
@@ -193,7 +195,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "prɪˈzaɪd");
       
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "to lead or be in charge of a meeting,ceremony,etc");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "to lead or be in charge of a meeting, ceremony, etc");
       
     });
 
@@ -333,7 +335,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 3);
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "= technology");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "= technical college");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "see also high-tech,low-tech");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "see also high-tech, low-tech");
     });
 
     it('oald9e titty', async function () {
@@ -425,7 +427,7 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "secret or hidden,making it difficult to notice");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "secret or hidden, making it difficult to notice");
       
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
@@ -487,7 +489,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 10);
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "used to refer to somebody/something that has already been mentioned or is easily understood");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "used to refer to somebody/something that is the only,normal or obvious one of their kind");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "used to refer to somebody/something that is the only, normal or obvious one of their kind");
       assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "used when explaining which person or thing you mean");
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "used to refer to a thing in general rather than a particular example");
       assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "used with adjectives to refer to a thing or a group of people described by the adjective");
@@ -495,7 +497,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "enough of something for a particular purpose");
       assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "used with a unit of measurement to mean ‘every’");
       assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "used with a unit of time to mean ‘the present’");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[9].text, "used,stressing the,to show that the person or thing referred to is famous or important");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[9].text, "used, stressing the, to show that the person or thing referred to is famous or important");
 
       
     });
@@ -522,7 +524,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "determiner");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "smallest in size,amount,degree,etc");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "smallest in size, amount, degree, etc");
       
 
       assert.equal(parseResult[1].headword.pronunciations.length, 2);
@@ -562,7 +564,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "adverb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 6);
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "in a good,right or acceptable way");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "in a good, right or acceptable way");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "thoroughly and completely");
       assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "to a great extent or degree");
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "easily");
@@ -590,9 +592,9 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[2].definitionGroups[0].name, "exclamation");
       assert.equal(parseResult[2].definitionGroups[0].definitions.length, 9);
 
-      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "used to express surprise,anger or relief");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "used to express surprise, anger or relief");
       assert.equal(parseResult[2].definitionGroups[0].definitions[1].text, "used to show that you accept that something cannot be changed");
-      assert.equal(parseResult[2].definitionGroups[0].definitions[2].text, "used to agree to something,rather unwillingly");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[2].text, "used to agree to something, rather unwillingly");
       assert.equal(parseResult[2].definitionGroups[0].definitions[3].text, "used when continuing a conversation after a pause");
       assert.equal(parseResult[2].definitionGroups[0].definitions[4].text, "used to say that something is uncertain");
       assert.equal(parseResult[2].definitionGroups[0].definitions[5].text, "used to show that you are waiting for somebody to say something");
@@ -606,7 +608,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[3].definitionGroups[0].definitions[0].text, "a deep hole in the ground from which people obtain water. The sides of wells are usually covered with brick or stone and there is usually some covering or a small wall at the top of the well");
       assert.equal(parseResult[3].definitionGroups[0].definitions[1].text, "a narrow space in a building that drops down from a high to a low level and usually contains stairs or a lift/elevator");
-      assert.equal(parseResult[3].definitionGroups[0].definitions[2].text, "the space in front of the judge in a court,where the lawyers sit");
+      assert.equal(parseResult[3].definitionGroups[0].definitions[2].text, "the space in front of the judge in a court, where the lawyers sit");
       
 
 

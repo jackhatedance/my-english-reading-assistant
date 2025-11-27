@@ -5,6 +5,9 @@ import { standardizePunctuations, removeParentheses, splitButIgnoreParentheses }
 import { DICTIONARY_DEFINITION_TYPE_FORM, DICTIONARY_DEFINITION_TYPE_LINK, MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_MAX_SUBDEFINITION_NUMBER, PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS, PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY, ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE } from './dictConstants.js'
 import { deduplicateSubdefinitions } from './entry-utils.js'
 
+export const SUBDEFINITION_SEPARATORS_TYPE_FIRST_FOUND = "firstFound";
+export const SUBDEFINITION_SEPARATORS_TYPE_STATIC = "static";
+
 class DefinitionParser {
     constructor(name, version, jsonSchemaVersion, options){
         this.name = name;
@@ -14,6 +17,13 @@ class DefinitionParser {
             options = {};
         }
         this.options = options;
+
+        //comma is for Chinese meanings
+        this.subdefinitionSeparator = {
+            type: SUBDEFINITION_SEPARATORS_TYPE_FIRST_FOUND,
+            value: [';', ',', '!']
+        };
+        
     }
 
     getMaxSubdefinitionNumber(){
@@ -115,19 +125,27 @@ class DefinitionParser {
 
         let noParenthesesText = removeParentheses(text);
 
-        let separaters = [';', ',', '!'];
-        let separater = separaters.find(item => noParenthesesText.indexOf(item) >= 0);
-        if(!separater){
-            separater = ',';
-        }
-        
-        for(let s of separaters){
-            if(s!=separater){
-                text = text.replaceAll(s, '/');
+        let separator;
+        if(this.subdefinitionSeparator.type == SUBDEFINITION_SEPARATORS_TYPE_FIRST_FOUND){
+            let separators = this.subdefinitionSeparator.value;
+
+            separator = separators.find(item => noParenthesesText.indexOf(item) >= 0);
+            if(!separator){
+                separator = ',';
             }
+            
+            for(let s of separators){
+                if(s!=separator){
+                    text = text.replaceAll(s, '/');
+                }
+            }
+        }else{
+            //static
+            separator = this.subdefinitionSeparator.value;
         }
         
-        let subdefinitions = splitButIgnoreParentheses(text, separater); 
+        
+        let subdefinitions = splitButIgnoreParentheses(text, separator); 
         subdefinitions = subdefinitions.map(item => this.trimSubdefinition(item));         
         return subdefinitions;
     }
