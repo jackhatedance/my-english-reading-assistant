@@ -1,7 +1,9 @@
 import { getWordClassAbbreviation } from './wordClass.js'
 import { mergeEntries } from './entry-utils.js'
 import { pronunciationsToText, entriesToHtml } from './definition-formatter.js'
+import log from 'loglevel'
 
+const gLogger = log.getLogger("dictionary");
 class Dictionary {
     size = 0;
     name = null;
@@ -111,6 +113,10 @@ class Dictionary {
         let result = null;
         if(this.data.index && this.data.index.data.hasOwnProperty(query)){
             result = this.data.index.data[query];                
+        }
+        
+        if (gLogger.getLevel() <= log.levels.DEBUG) {
+            gLogger.debug('lookupIndex '+ query + ':' + JSON.stringify(result));
         }
         return result;
     }
