@@ -206,6 +206,11 @@ function generateCssRulesOfAnnotation(options, suffix, contentExpr, unknownWordO
     }else{
       colorStyle = '';
     }
+
+    let widthStyle='';
+    if(options.width){
+      widthStyle = `width: ${options.width * 100}%;`;
+    }
     
     let ruleVisibility;
     if(unknownWordOnly){
@@ -223,10 +228,10 @@ function generateCssRulesOfAnnotation(options, suffix, contentExpr, unknownWordO
     let rule = `.mea-highlight::${suffix} {
       content: ${contentExpr};
       position: absolute;
-      width:max-content;
+      ${widthStyle}
       line-height: 90%;
       text-indent: 0px;
-      white-space: pre;
+      white-space: normal;
       left: 0;
       ${pos};
       font-size: ${fontSize} !important;
@@ -298,7 +303,7 @@ function generateCssRules(options, extraStyle) {
     if(extraStyle==null){
       extraStyle = '';
     }
-    
+
     let highlightRule = `.mea-highlight {  
       position: relative;
       margin-top: 0px;

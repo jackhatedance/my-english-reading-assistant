@@ -38,6 +38,9 @@ const opacity2 = inject('opacity2');
 const interlaced = inject('interlaced');
 const interlaced2 = inject('interlaced2');
 
+const width = inject('width');
+const width2 = inject('width2');
+
 const maxMeaningNumber = inject('maxMeaningNumber');
 const hideWordClass = inject('hideWordClass');
 
@@ -155,6 +158,17 @@ init();
             <div class="inputs">
             <el-switch class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" size="small" />
             <el-switch id="interlaced" v-model="interlaced" @change="onChangeSetting" size="small" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ t('popupWidthLabel') }}</label>
+            <div class="inputs">
+                <el-input-number v-show="dualAnnotationEnabled" v-model="width2" :min="1" :max="99" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
+                </el-input-number>
+
+                <el-input-number v-model="width" :min="1" :max="99" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
+                </el-input-number>
             </div>
         </div>
 

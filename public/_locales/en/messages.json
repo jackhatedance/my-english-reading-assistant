@@ -123,6 +123,9 @@
     "popupInterlacedLabel":{
         "message":"Interlaced"
     },
+    "popupWidthLabel":{
+        "message":"Width"
+    },
     "popupMaxMeaningNumberLabel":{
         "message":"Max Meaning Number"
     },

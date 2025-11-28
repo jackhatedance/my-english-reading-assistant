@@ -123,6 +123,9 @@
     "popupInterlacedLabel":{
         "message":"交错显示"
     },
+    "popupWidthLabel":{
+        "message":"宽度"
+    },
     "popupMaxMeaningNumberLabel":{
         "message":"最大词义数量"
     },

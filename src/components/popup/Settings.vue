@@ -78,6 +78,11 @@ provide('interlaced', interlaced);
 const interlaced2 = ref(false);
 provide('interlaced2', interlaced2);
 
+const width = ref(3);
+provide('width', width);
+const width2 = ref(3);
+provide('width2', width2);
+
 const maxMeaningNumber = ref(3);
 provide('maxMeaningNumber', maxMeaningNumber);
 const hideWordClass = ref(false);
@@ -180,6 +185,7 @@ function buildOptions(){
       maxMeaningNumber: maxMeaningNumber.value,
       hideWordClass: hideWordClass.value,        
       interlaced: interlaced.value,
+      width: width.value,
     },
     secondaryAnnotation: {
         content: content2.value,
@@ -188,6 +194,7 @@ function buildOptions(){
         opacity: opacity2.value,
         color: color2.value,  
         interlaced: interlaced2.value,
+        width2: width2.value,
     },
     content: {
       enabled: contentStyleEnabled.value,
@@ -345,6 +352,9 @@ function updateViewModel(siteOptions, settingsOnly = false){
 
   interlaced.value = annotationOptions.interlaced;
   interlaced2.value = annotationOptions2.interlaced;
+
+  width.value = annotationOptions.width;
+  width2.value = annotationOptions2.width;
 
   lineHeight.value = annotationOptions.lineHeight;
 

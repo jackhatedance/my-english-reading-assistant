@@ -13,6 +13,7 @@ function createFactoryDefaultSiteOptions(){
             opacity: 0.5,
             color: '#0000ff',
             interlaced: false,
+            width: 3,
             
             lineHeight: 1.2,
             maxMeaningNumber: 3,
@@ -25,6 +26,7 @@ function createFactoryDefaultSiteOptions(){
             opacity: 0.5,
             color: '#e56910',
             interlaced: false,
+            width: 3,
         },
         content: {
             enabled: false,
@@ -74,6 +76,7 @@ function patchAll(options) {
     patch_v_1_4_0(options);
     patch_v_1_7_0(options);
     patch_v_1_9_0(options);
+    patch_v_1_10_0(options);
 }
 
 function patch_v_1_3_0(options){
@@ -186,6 +189,20 @@ function patch_v_1_9_0(options){
     options.annotation.lineHeight = string2Number(options.annotation.lineHeight);
     
 
+}
+
+
+function patch_v_1_10_0(options){
+
+    let annotationOptions = options.annotation;
+    if(!annotationOptions.width){
+        annotationOptions.width = 3;
+    }
+
+    let secondaryAnnotationOptions = options.secondaryAnnotation;
+    if(!secondaryAnnotationOptions.width){
+        secondaryAnnotationOptions.width = 3;
+    }
 }
 
 function string2Number(str){
