@@ -84,14 +84,8 @@
     "popup_settings_content_pronunciation_and_definition":{
         "message":"Pronunciation + Definition"
     },
-    "popup_settings_content_pronunciation_newline_definition":{
-        "message":"Pronunciation + Definition(2 lines)"
-    },
     "popup_settings_content_pronunciation_and_note":{
         "message":"Pronunciation + Note"
-    },
-    "popup_settings_content_pronunciation_and_note_2_lines":{
-        "message":"Pronunciation + Note(2 lines)"
     },
     "popupFontSizeLabel":{
         "message":"Font Size"
