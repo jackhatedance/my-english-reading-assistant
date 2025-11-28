@@ -61,7 +61,7 @@
         "message":"Dual Annotation"
     },
     "popupDualAnnotationEnabledTip": {
-        "message":"annotations on top and bottom of text"
+        "message":"annotations above and below the text"
     },
     "popupContentLabel": {
         "message":"Content"

@@ -58,7 +58,7 @@
         "message":"双注解"
     },
     "popupDualAnnotationEnabledTip": {
-        "message":"允许在正文上下都有注解"
+        "message":"在正文上下都有注解"
     },
     "popupContentLabel": {
         "message":"内容"
