@@ -118,8 +118,23 @@ function pronunciationsToText(pronunciations, region = 'all'){
     }
 }
 
+function generatePartsHtml(wordPartObjs) {
+  //let wordPartObjs = getWordPartObjects(word);
+  let parts = '';
+  if (wordPartObjs) {
+      let partArray = [];
+      for (let partObj of wordPartObjs) {
+          partArray.push(partObj.word);
+      }
+      parts = partArray.join(' ');
+  }
+  let partsHtml = parts ? ` [${parts}]` : '';  
+  return partsHtml;
+}
 
-function entriesToHtml(word, entries, pronunciationRegion){
+function entriesToHtml(word, entries, pronunciationRegion=null, wordPartObjs=null, options={ supportLink: true}){
+    let wordHtml = `<span style="font-size: x-large;">${word}</span> `;
+
     if(!entries || entries.length == 0){
         return '';
     }
@@ -128,47 +143,71 @@ function entriesToHtml(word, entries, pronunciationRegion){
 
     let definitionObj = entry;
 
+    let partsHtml = generatePartsHtml(wordPartObjs);
+
+    //compact, normal
+    let mode = 'compact';
+    
+    const SHORT_DEFINITION_LENGTH_LIMIT = 20;
+    for(const definitionGroup of definitionObj.definitionGroups){
+        for(const definition of definitionGroup.definitions){
+        const hasLongSubdefintion = definition.subdefinitions.some(item => item.length > SHORT_DEFINITION_LENGTH_LIMIT);
+        if(hasLongSubdefintion){
+            mode = 'normal';
+            break;
+        }
+        }
+    }
+    const definitionTextSeparator = mode=='compact'? '; ' : '<br>';
+    const wordClassTail = mode == 'compact' ? ' ' : '<br>';
+
     let groupTexts = [];
     for(let definitionGroup of definitionObj.definitionGroups){
         let wordClass = definitionGroup.name;
 
-        let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+        let definitions = definitionGroup.definitions;
 
         /*
         let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
         if(shortDefinitions.length >= 3){
             definitions = shortDefinitions;
         }*/
-        let definitionTexts = definitions.map(item => definitionToHtml(item));
+        let definitionTexts = definitions.map(item => definitionToHtml(item, options.supportLink));
         
-        let definitionsText = definitionTexts.join(',');
-        let groupText = `${wordClass} ${definitionsText}`;
+        let definitionsText = definitionTexts.join(definitionTextSeparator);
+        
+        let wordClassHtml;
+        if(wordClass) {
+            wordClassHtml = `<b>${wordClass}</b>${wordClassTail}`;
+        } else {
+            wordClassHtml = '';
+        }
+        let groupText = `${wordClassHtml}${definitionsText}`;
         groupTexts.push(groupText);
     }
     let groupsText = groupTexts.join('<br> ');
 
     let pronunciation = pronunciationsToText(definitionObj.headword.pronunciations, pronunciationRegion);    
-
+    let pronunciationHtml = pronunciation ? `${pronunciation} ` : '';
     let text = groupsText;
-    if(pronunciation){
-        text = `${word} ${pronunciation}<br>${groupsText}`;
-    } else {
-        text = `${word}<br>${groupsText}`;
-    }       
+    
+    text = `<p>${wordHtml}${pronunciationHtml}${partsHtml}</p>
+        <p>${groupsText}</p>`;
     
     //console.log(text);
     return text;
 }
 
-function definitionToHtml(definition){
-    
-    if(definition.type == 'form'){
-        return makeWordLink(definition.text, definition.base);
-    } else if(definition.type == 'link'){
-        return makeWordLink(definition.text, definition.link);
-    } else {
-        return definition.text;
+function definitionToHtml(definition, supportLink){
+    if(supportLink){
+        if(definition.type == 'form'){
+            return makeWordLink(definition.text, definition.base);
+        } else if(definition.type == 'link'){
+            return makeWordLink(definition.text, definition.link);
+        }
     }
+
+    return definition.subdefinitions.join('; ');
 }
 
 function makeWordLink(text, word){

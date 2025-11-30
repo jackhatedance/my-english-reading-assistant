@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeUpdate, onUpdated, computed, inject, watch } fr
 import { lookup } from '../../dictionaries.js';
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 import { sendMessageMarkWordToBackground } from '../../message.js'; 
-import { isKnown } from '../../language.js'
+import { isKnown, getWordPartObjects } from '../../language.js'
 import { getEnabledDictionaryNamesFromCache } from '../../dictionary/customDictionary.js'
 import { getSystemDictionaryAlias, isSystemDictionary } from '../../dictionary/systemDictionary.js'
 import { getOptions } from '../../service/optionService.js'
@@ -80,7 +80,8 @@ async function _lookup(query, dicts){
         }
 
         let entries = lookupResult.json;
-        lookupResult.formattedText = entriesToHtml(lookupResult.query, entries, options.pronunciation.region);
+        let wordPartObjects = getWordPartObjects(lookupResult.query);
+        lookupResult.formattedText = entriesToHtml(lookupResult.query, entries, options.pronunciation.region, wordPartObjects);
         
         if(lookupResult.html){
             let html = lookupResult.html;

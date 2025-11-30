@@ -1,5 +1,5 @@
 import { mergeEntries, hasOnlyLinkOrFormDefinition } from './dictionary/entry-utils.js'
-import { pronunciationsToText } from './dictionary/definition-formatter.js'
+import { entriesToHtml } from './dictionary/definition-formatter.js'
 import { searchWord, buildDictionaryOptions, getWordPartObjects, isKnown } from './language.js';
 import { sendMessageMarkWordToBackground } from './message.js'; 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
@@ -426,68 +426,11 @@ function searchResultToHtml(tooltipElement, searchResult, targetWord, pronunciat
 }
 
 function lookupResultToHtml(word, lookupResult, pronunciationRegion, isBold){
-  let wordHtml = isBold? `<b>${word}</b>` : word;
-  let partsHtml = generatePartsHtml(word);
-  let entries = lookupResult.json;
-  if(!entries){
-    entries = [];
-  }
-  let entry = mergeEntries(entries);
-  let definitionHtml = generateDefinitionHtml(entry);
-  let pronunciationText = pronunciationsToText(entry.headword.pronunciations, pronunciationRegion);    
-  return `<p>${wordHtml} ${pronunciationText} ${partsHtml}</p>
-  <p>${definitionHtml}</p>
-  `;
-}
-
-function generateDefinitionHtml(entry) {
-  let definitionObj = entry;
-
-  let groupTexts = [];
-  for(let definitionGroup of definitionObj.definitionGroups){
-      let wordClass = definitionGroup.name;
-
-      let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
-
-      /*
-      let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
-      if(shortDefinitions.length >= 3){
-          definitions = shortDefinitions;
-      }*/
-      let definitionTexts = definitions.map(item => item.text );
-      
-      let definitionsText = definitionTexts.join('; ');
-      let wordClassHtml;
-      if(wordClass) {
-        wordClassHtml = `<b>${wordClass}</b> `;
-      } else {
-        wordClassHtml = '';
-      }
-
-      let groupText = `${wordClassHtml}${definitionsText}`;
-      groupTexts.push(groupText);
-  }
-  let groupsText = groupTexts.join('<br> ');
-
   
-  let text = groupsText;
-  //console.log(text);
-  return text;
-}
-
-
-function generatePartsHtml(word) {
-  let wordPartObjs = getWordPartObjects(word);
-  let parts = '';
-  if (wordPartObjs) {
-      let partArray = [];
-      for (let partObj of wordPartObjs) {
-          partArray.push(partObj.word);
-      }
-      parts = partArray.join(' ');
-  }
-  let partsHtml = parts ? ` [${parts}]` : '';  
-  return partsHtml;
+  let entries = lookupResult.json;
+    
+  let wordPartObjects = getWordPartObjects(word);
+  return entriesToHtml(word, entries, pronunciationRegion, wordPartObjects, { supportLink:false});
 }
 
 function adjustIfOutOfViewPort(tooltipElement, baseTop, baseLeft, targetRect, tooltipWidth){

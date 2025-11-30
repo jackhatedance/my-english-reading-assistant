@@ -90,14 +90,14 @@ function simplifyDefinition(word, searchType, originalLookupResult, baseWord, ba
 
         let definitionStr = '';
 
-        if(!hideWordClass){
-            definitionStr = def.wordClass;
+        if(!hideWordClass && def.wordClass != ''){
+            definitionStr = def.wordClass + ' ';
         }
 
         let visitedMeaningArray = getVisitedMeanings(def);
         
         visitedMeaningArray = visitedMeaningArray.map(item => item.split('/')[0].trim());
-        let visitedMeanings = visitedMeaningArray.join(',');                
+        let visitedMeanings = visitedMeaningArray.join('; ');                
 
         definitionStr = definitionStr + visitedMeanings;
 
@@ -108,7 +108,7 @@ function simplifyDefinition(word, searchType, originalLookupResult, baseWord, ba
         definitionStrList.push('...');
     }
 
-    let definitionStr = definitionStrList.join('; ');   
+    let definitionStr = definitionStrList.join(' ');   
     return prefix + definitionStr;
 }
 
