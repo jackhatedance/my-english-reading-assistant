@@ -15,13 +15,22 @@ const props = defineProps({
 
 });
 
+const predefineColors = [
+  '#ff4500',
+  '#ff8c00',
+  '#ffd700',
+  '#90ee90',
+  '#00ced1',
+  '#1e90ff',
+  '#c71585',
+];
+
 const lineHeight = inject('lineHeight');
 const unknownWordColor = inject('unknownWordColor');
 const unknownWordWidth = inject('unknownWordWidth');
 const textFontSize = inject('textFontSize');
 const bionicEnabled = inject('bionicEnabled');
 
-const contentStyleEnabled = inject('contentStyleEnabled');
 
 const t = chrome.i18n.getMessage;
 
@@ -51,9 +60,8 @@ init();
           <div class="field">
             <label>{{ t('popupUnknownWordColorLabel') }}</label>
             <div class="inputs">
-              <el-switch id="contentStyleEnabled" v-model="contentStyleEnabled" @change="onChangeSetting" size="small" />
               
-              <el-color-picker v-model="unknownWordColor" @change="onChangeSetting" size="small"/>
+              <el-color-picker v-model="unknownWordColor" @change="onChangeSetting" :predefine="predefineColors" size="small"/>
 
               
             </div>

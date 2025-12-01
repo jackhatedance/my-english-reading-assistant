@@ -288,7 +288,7 @@ function generateCssRules(options, extraStyle) {
     */
 
     let unknownWordColorStyle = '';
-    if(contentOptions.enabled){
+    if(contentOptions.unknownWordColor != null){
        unknownWordColorStyle = `color: ${contentOptions.unknownWordColor} !important;`;
     }
 

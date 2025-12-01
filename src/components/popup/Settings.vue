@@ -88,8 +88,6 @@ provide('maxMeaningNumber', maxMeaningNumber);
 const hideWordClass = ref(false);
 provide('hideWordClass', hideWordClass);
 
-const contentStyleEnabled = ref(false);
-provide('contentStyleEnabled', contentStyleEnabled);
 const unknownWordColor = ref('');
 provide('unknownWordColor', unknownWordColor);
 const unknownWordWidth = ref(1);
@@ -197,7 +195,6 @@ function buildOptions(){
         width2: width2.value,
     },
     content: {
-      enabled: contentStyleEnabled.value,
       unknownWordColor: unknownWordColor.value,
       unknownWordWidth: unknownWordWidth.value,
       textFontSize: textFontSize.value,
@@ -363,7 +360,6 @@ function updateViewModel(siteOptions, settingsOnly = false){
 
   let contentOptions = siteOptions.content;
 
-  contentStyleEnabled.value = contentOptions.enabled;
   unknownWordColor.value = contentOptions.unknownWordColor;
   unknownWordWidth.value = contentOptions.unknownWordWidth;
 

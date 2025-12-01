@@ -17,6 +17,15 @@ const props = defineProps({
     
 });
 
+const predefineColors = [
+  '#ff4500',
+  '#ff8c00',
+  '#ffd700',
+  '#90ee90',
+  '#00ced1',
+  '#1e90ff',
+  '#c71585',
+];
 
 const dualAnnotationEnabled = inject('dualAnnotationEnabled');
 
@@ -130,8 +139,8 @@ init();
         <div class="field">
             <label for="color">{{ t('popupColorLabel') }}</label>
             <div class="inputs">
-            <el-color-picker :class="{ 'hidden-component': !dualAnnotationEnabled }" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting" size="small"/>
-            <el-color-picker v-model="color" @change="onChangeSetting" size="small"/>
+            <el-color-picker :class="{ 'hidden-component': !dualAnnotationEnabled }" v-show="dualAnnotationEnabled" v-model="color2" @change="onChangeSetting" :predefine="predefineColors" size="small"/>
+            <el-color-picker v-model="color" @change="onChangeSetting" :predefine="predefineColors" size="small"/>
             </div>
         </div>
 

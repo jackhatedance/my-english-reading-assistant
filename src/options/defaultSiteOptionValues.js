@@ -29,7 +29,7 @@ function createFactoryDefaultSiteOptions(){
             width: 3,
         },
         content: {
-            enabled: false,
+            //enabled: true,
             unknownWordColor: '#0000ff',
             unknownWordWidth: 1,
             textFontSize: 0,
