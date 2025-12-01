@@ -2,11 +2,19 @@ import { DefinitionParser } from '../DefinitionParser.js'
 import { splitIntoDefinitionGroups, parseWordClass, splitWordMeanings } from './textDefinitionUtils.js'
 import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
+import { SUBDEFINITION_SEPARATORS_TYPE_STATIC } from '../DefinitionParser.js'
 
 class TextDefinitionParser extends DefinitionParser {
     
     constructor(options){
         super("TextParser", "1.1.0", "1.0.0", options);
+
+        if(this.options.formatVersion=='2'){
+            this.subdefinitionSeparator = {
+                type: SUBDEFINITION_SEPARATORS_TYPE_STATIC,
+                value: ';'
+            };
+        }
     }
 
     parse(rawDefinition) {
@@ -71,7 +79,8 @@ class TextDefinitionParser extends DefinitionParser {
     }
 
     parseDefinitionGroups(text){
-        let definitionGroupTexts = splitIntoDefinitionGroups(text);
+        let formatVersion = this.options.formatVersion;
+        let definitionGroupTexts = splitIntoDefinitionGroups(text, formatVersion);
     
         let definitionGroups = [];
         for(let definitionGroupText of definitionGroupTexts){
@@ -88,7 +97,7 @@ class TextDefinitionParser extends DefinitionParser {
         name=name.trim();
 
         let definitionGroupText = standardizePunctuations(wordClassResult.meanings);
-        let definitionTexts = splitWordMeanings(definitionGroupText);
+        let definitionTexts = splitWordMeanings(definitionGroupText, this.options.formatVersion);
 
         let definitions = [];
         for(let definitionText of definitionTexts){

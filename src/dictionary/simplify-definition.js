@@ -108,7 +108,7 @@ function simplifyDefinition(word, searchType, originalLookupResult, baseWord, ba
         definitionStrList.push('...');
     }
 
-    let definitionStr = definitionStrList.join(' ');   
+    let definitionStr = definitionStrList.join('; ');   
     return prefix + definitionStr;
 }
 

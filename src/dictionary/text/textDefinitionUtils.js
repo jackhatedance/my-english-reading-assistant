@@ -1,7 +1,18 @@
 import { trimByCharacters } from '../../utils/stringUtils.js'
 
-function splitIntoDefinitionGroups(definition){
-    let matches = definition.matchAll(/((\w{1,6}\.((& ?)?\w{1,6}\.)*)|;)(?![^()]*\))/g);
+
+function getDefinitionGroupSeparatorRegexp(formatVersion){
+    if(formatVersion=='1'){
+        return /((\w{1,6}\.((& ?)?\w{1,6}\.)*)|;)(?![^()]*\))/g;
+    } else{
+        return /((\w{1,6}\.((& ?)?\w{1,6}\.)*)|;;)(?![^()]*\))/g;
+    }
+}
+
+function splitIntoDefinitionGroups(definition, formatVersion = '1'){
+    let regexp = getDefinitionGroupSeparatorRegexp(formatVersion);
+    
+    let matches = definition.matchAll(regexp);
     let matchArray = [...matches];
 
     let groups = [];
@@ -34,18 +45,29 @@ function splitIntoDefinitionGroups(definition){
         groups.push(definition);
     }
 
-    groups = groups.filter(item => item.trim());
+    groups = groups.map(item => item.trim());
     groups = groups.filter(item => item.length > 0);
     
     return groups;
 }
 
-function splitWordMeanings(meaningsStr){
+function getDefintionSeparatorRegexp(formatVersion){
+    let regexp;
+    if(formatVersion=='1'){
+        regexp = /[,;](?![^()]*\))/;
+    }else{
+        regexp = /[;](?![^()]*\))/;
+    }
+    return regexp;
+}
+
+function splitWordMeanings(meaningsStr, formatVersion=1){
     let meanings;
     if(meaningsStr === ''){
         meanings = [];
     }else {
-        meanings = meaningsStr.split(/[,;](?![^()]*\))/);
+        let regexp = getDefintionSeparatorRegexp(formatVersion);
+        meanings = meaningsStr.split(regexp);
     }
 
     meanings = meanings.map(item => item.trim());

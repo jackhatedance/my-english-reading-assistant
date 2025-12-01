@@ -3,6 +3,9 @@ import { dataURItoText } from '../../utils/fileUtils.js'
 import { TextDefinitionParser } from './TextDefinitionParser.js'
 import { parseLine } from './textDefinitionUtils.js'
 
+const COMMENT_PREFIX = '#';
+const META_PREFIX = '@@@';
+
 class TextDictionary extends Dictionary {
     constructor(data, name, options) {
         super(data, name, options);
@@ -17,9 +20,16 @@ class TextDictionary extends Dictionary {
             let array = text.split(/\r*\n/);
             this.size = array.length;
 
-            this.map = this.generateMap(array);
+            let {map, meta} = this.generateMap(array);
+            this.map = map;
 
-            this.definitionParser = new TextDefinitionParser();
+            let formatVersion = meta.version;
+            if(formatVersion==''){
+                formatVersion = '1';
+            }
+
+            let parserOptions = { formatVersion: formatVersion };
+            this.definitionParser = new TextDefinitionParser(parserOptions);
         }        
     }
 
@@ -27,6 +37,7 @@ class TextDictionary extends Dictionary {
         let lines = array;
 
         let map = {};
+        let meta = {};
         for(let line of lines){
             if(!line){
                 continue;
@@ -39,14 +50,24 @@ class TextDictionary extends Dictionary {
             try{
                 const { word, definition } = parseLine(line);
 
-                map[word] = definition;
+                let isComment = word.startsWith(COMMENT_PREFIX);
+                if(isComment){
+                    let commentContent = word.substring(1);
+                    let isMeta = commentContent.startsWith(META_PREFIX);
+                    if(isMeta){
+                        let metaKey = commentContent.substring(META_PREFIX.length);
+                        meta[metaKey] = definition;
+                    }    
+                } else{
+                    map[word] = definition;
+                }
             } catch(e){
                 console.warn('failed to parse dictionary line:'+line);
             }
             
         }
 
-        return map;
+        return { meta, map };
     }
 
     getRawMeta(){

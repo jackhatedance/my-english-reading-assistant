@@ -57,7 +57,7 @@ describe('simplifyDefinition test', function () {
             //console.log(parseResult);
             //assert(tokens.length === 2,"test");
 
-            assert.equal(result, '站,竖放; 立场; ...');
+            assert.equal(result, '站; 竖放; 立场; ...');
 
         });
 
@@ -88,7 +88,7 @@ describe('simplifyDefinition test', function () {
             //console.log(parseResult);
             //assert(tokens.length === 2,"test");
 
-            assert.equal(result, '没有学识的,不通世故的');
+            assert.equal(result, '没有学识的; 不通世故的');
 
         });
 
@@ -101,7 +101,7 @@ describe('simplifyDefinition test', function () {
             //console.log(parseResult);
             //assert(tokens.length === 2,"test");
 
-            assert.equal(result, 'past and past participle of say. SAY的过去式和过去分词; 上述的,该');
+            assert.equal(result, 'past and past participle of say. SAY的过去式和过去分词; 上述的; 该');
 
         });
 
