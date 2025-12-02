@@ -8,6 +8,9 @@ import { getEnabledDictionaryNamesFromCache } from '../../dictionary/customDicti
 import { getSystemDictionaryAlias, isSystemDictionary } from '../../dictionary/systemDictionary.js'
 import { getOptions } from '../../service/optionService.js'
 import { entriesToHtml } from '../../dictionary/definition-formatter.js'
+import { ElSwitch } from 'element-plus'
+import 'element-plus/es/components/switch/style/css'
+import { truncateString } from '../../utils/stringUtils.js'
 
 const props = defineProps({
     dictionary: String,
@@ -25,7 +28,10 @@ let clearImgUrl = chrome.runtime.getURL("icons/clear.png");
 
 const dictionaryIframeHtml = ref(null);
 const dictionaryIframeText = ref(null);
+
+const definitionFormatFull = ref(false);
 const definitionFormat = ref('text');
+
 const lookupResultRef = ref(null);
 watch(() => props.word, async (newValue) => {
     lookupResultRef.value = null;    
@@ -163,16 +169,8 @@ async function onMarkAsUnknown() {
     sendMessageMarkWordToBackground(wordChanges);
 }
 
-function switchToText(){
-    if(definitionFormat.value != 'text'){
-        definitionFormat.value = 'text';
-    }
-}
-
-function switchToHtml(){
-    if(definitionFormat.value != 'html'){
-        definitionFormat.value = 'html';
-    }
+function onChangeDefinitionFormatFull(){
+    definitionFormat.value = definitionFormatFull.value ? 'html' : 'text';
 }
 
 function openToDictionaryPage(){
@@ -232,7 +230,10 @@ init();
     <div class="word-container">
         <h3 class="title">{{ t('sidepanelActionsTabWordLabelWord') }}</h3>
         <div class="word-definition">
-            <div class="dictionary"><span>{{ dictionaryName }}</span> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToText">{{ t('sidepanel_word_action_dictionary_concise') }}</button> <button v-if="lookupResultRef?.formattedText && lookupResultRef?.html" @click="switchToHtml">{{ t('sidepanel_word_action_dictionary_full') }}</button> <button @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button></div>
+            <div class="dictionary"><b>{{ truncateString(dictionaryName, 40) }}</b> 
+                <el-switch v-if="lookupResultRef?.formattedText && lookupResultRef?.html" v-model="definitionFormatFull" @change="onChangeDefinitionFormatFull" size="small" :active-text="t('sidepanel_word_action_dictionary_full')" :inactive-text="t('sidepanel_word_action_dictionary_concise')"/>
+                <button @click="openToDictionaryPage">{{ t('sidepanel_word_action_dictionary_open_in_dictionary') }}</button>
+            </div>
             
             <iframe v-if="definitionFormat == 'html'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeHtml" id="dictionary-iframe-html" class="content-iframe" src="definition.html" ></iframe>
             <iframe v-if="definitionFormat == 'text'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeText" id="dictionary-iframe-text" class="content-iframe" src="definition.html" ></iframe>
@@ -258,6 +259,10 @@ init();
     .dictionary {
         font-size: smaller;
         margin: 5px;
+
+        .el-switch {
+            margin: 5px;
+        }
     }
     .word-definition-content {
         white-space: pre-line;

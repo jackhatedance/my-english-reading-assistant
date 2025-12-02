@@ -23,4 +23,16 @@ function isAllUpperCase(entry){
     return (entry && entry.match(/[^a-z]+/));
 }
 
-export { trimByCharacters, commonStart, isAllUpperCase }
+function truncateString(str, lengthLimit){
+  if(str==null){
+    str = '';
+  }
+
+  if(str.length > lengthLimit){
+    return str.substring(0, lengthLimit) + '...';
+  } else {
+    return str;
+  }
+}
+
+export { trimByCharacters, commonStart, isAllUpperCase, truncateString }
