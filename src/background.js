@@ -243,8 +243,8 @@ async function onUrlChanged(tabId, newTabInfo){
     let oldTabInfo = await getTabInfo(tabId);
     if(oldTabInfo){
       await saveReadingActivityAndClearStartTime(oldTabInfo);
-      await saveTabInfo(tabId, newTabInfo);
     }
+    await saveTabInfo(tabId, newTabInfo);
   });
 }
 
@@ -312,8 +312,9 @@ chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
       await saveReadingActivityAndClearStartTime(tabInfo);
+      removeTabInfo(tabId);
     }
-    removeTabInfo(tabId);
+    
   });
 });
 
@@ -329,13 +330,13 @@ chrome.idle.onStateChanged.addListener(async (newState)=>{
     let tabId = tab.id;
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
-      gLogger.debug(`${tabInfo.title}`);
-      if(newState !=='active'){
-        //console.log('save activity and clear');
+      gLogger.debug(`${tabInfo.title}:${newState}`);
+
+      //idle won't come together with BLUR;
+      //lock will come together with BLUR
+      //active will come together with FOCUS
+      if(newState =='idle'){
         await saveReadingActivityAndClearStartTime(tabInfo);
-      }else {
-        //console.log('start activity');
-        tabInfo.startTime = new Date().getTime();
         await saveTabInfo(tabId, tabInfo);
       }
     }
@@ -360,7 +361,7 @@ async function saveReadingActivityAndClearStartTime(tabInfo){
     var duration = endTime - tabInfo.startTime;
     
     gLogger.debug(`finish read page <<${tabInfo.url}>> in ${duration/1000} seconds, word changes:${tabInfo.wordChanges}`);
-    addActivityToStorage({
+    await addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,
       site: tabInfo.site,
