@@ -1,7 +1,7 @@
 'use strict';
 
 import {lookup } from './dictionaries.js';
-import { hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createEntryForLink, createTransformDefinition, getDefinitionText } from './dictionary/entry-utils.js'
+import { hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createEntryForLink, createTransformDefinition, getDefinitionTextFromEntries } from './dictionary/entry-utils.js'
 import {existWordRecord} from './vocabularyStore.js';
 import { getWordParts } from './word-parts-utils.js';
 import {getOptionsFromCache } from './service/optionService.js';
@@ -397,10 +397,10 @@ function getBaseWord(word, options, dicts, lookupResult){
 }
 
 function related(lookupResult1, lookupResult2){
-    let definitionText1 = getDefinitionText(lookupResult1.json);
+    let definitionText1 = getDefinitionTextFromEntries(lookupResult1.json);
     definitionText1 = removeMeaninglessChar(definitionText1);
 
-    let definitionText2 = getDefinitionText(lookupResult2.json);
+    let definitionText2 = getDefinitionTextFromEntries(lookupResult2.json);
     definitionText2 = removeMeaninglessChar(definitionText2);
     
     let _similarity = similarity(definitionText1, definitionText2);

@@ -7,7 +7,7 @@ describe('mdict oalecd9e parser', function () {
   
   describe('Olaecd9eParser parse', function () {
     before(function() {
-      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false });
+      this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false, generateDefinitionText : true });
 
       this.mdx = new MDX('./test/mdict/mdx/牛津高阶英汉双解词典（第9版）.mdx');
       this.lookup = function(word) {
@@ -70,7 +70,7 @@ describe('mdict oalecd9e parser', function () {
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(对某人)有好处,有用处,有益");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "(对某人)有好处; 有用处; 有益");      
       
     });
 
@@ -95,7 +95,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[3].phonetics, 'juː');
 
       assert.equal(parseResult[0].definitionGroups[0].name, "pronoun");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "你,您,你们");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "你; 您; 你们");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "(与名词及形容词连用,直接称呼某人)");      
 
     });
@@ -143,7 +143,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(机器、设备等的)品牌,型号");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(机器、设备等的)品牌; 型号");
       
     });
 
@@ -162,11 +162,11 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 2);
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "快速移动,迅速前往");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "快速移动; 迅速前往");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "快速移动");
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "迅速前往");
       
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "急剧增长,猛涨");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "急剧增长; 猛涨");
       
       assert.equal(parseResult[1].headword.pronunciations[0].region, 'uk');
       assert.equal(parseResult[1].headword.pronunciations[0].phonetics, 'zuːm');
@@ -220,7 +220,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[1].phonetics, "prɪˈzaɪd");
       
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "主持(会议、仪式等),担任(会议)主席");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "主持(会议、仪式等); 担任(会议)主席");
       
     });
 
@@ -276,9 +276,9 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 4);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "提到,谈及,说起");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "描述,涉及,与…相关");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "查阅,参考,征询");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "提到; 谈及; 说起");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "描述; 涉及; 与…相关");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "查阅; 参考; 征询");
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "将…送交给(以求获得帮助等)");
     });
 
@@ -298,7 +298,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "接到,得到");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "接到; 得到");
       
       assert.equal(parseResult[0].definitionGroups[1].name, "verb");
       assert.equal(parseResult[0].definitionGroups[1].definitions.length, 1);
@@ -342,7 +342,7 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "习惯于,适应");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "习惯于; 适应");
     });
 
 
@@ -362,7 +362,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 3);
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "=  technology");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "=  technical college");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "➡  see also high-tech,low-tech");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "➡  see also high-tech; low-tech");
     });
 
     it('oalecd9e titty', async function () {
@@ -454,11 +454,11 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "秘密的,隐蔽的,暗中的");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "秘密的; 隐蔽的; 暗中的");
       
       assert.equal(parseResult[1].definitionGroups[0].name, "noun");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(动物可藏身的)矮树丛,灌木林");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "(动物可藏身的)矮树丛; 灌木林");
       
     });
 
@@ -479,7 +479,7 @@ describe('mdict oalecd9e parser', function () {
       
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "看,看见");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "看; 看见");
       
     });
 
@@ -521,9 +521,9 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "(用以泛指)");
       assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "(与形容词连用,指事物或统称的人)");
       assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "(用于姓氏的复数形式前,指家庭或夫妇)");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "(指特定用途的事物)足够,恰好");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "(与计量单位连用)每,一");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "(与时间单位连用)当前的,本,此");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[6].text, "(指特定用途的事物)足够; 恰好");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[7].text, "(与计量单位连用)每; 一");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[8].text, "(与时间单位连用)当前的; 本; 此");
       assert.equal(parseResult[0].definitionGroups[0].definitions[9].text, "(重读,表示所指的为知名或重要的人或事物)");
 
       
@@ -551,7 +551,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "determiner");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 1);
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "最小的,最少的,程度最轻的");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "最小的; 最少的; 程度最轻的");
       
 
       assert.equal(parseResult[1].headword.pronunciations.length, 2);
@@ -566,7 +566,7 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[1].definitionGroups[0].name, "adverb");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 1);
 
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "最小,最少,微不足道");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "最小; 最少; 微不足道");
       
     });
 
@@ -591,12 +591,12 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[0].definitionGroups[0].name, "adverb");
       assert.equal(parseResult[0].definitionGroups[0].definitions.length, 6);
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好,对,令人满意地");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "完全地,彻底地,全部地");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "很,相当,大大地,远远地");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "容易地,轻松地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好; 对; 令人满意地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "完全地; 彻底地; 全部地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "很; 相当; 大大地; 远远地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "容易地; 轻松地");
       assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "很可能");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "有充分理由,合理地");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "有充分理由; 合理地");
       
 
       assert.equal(parseResult[1].headword.pronunciations.length, 2);
@@ -611,20 +611,20 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[1].definitionGroups[0].name, "adjective");
       assert.equal(parseResult[1].definitionGroups[0].definitions.length, 3);
 
-      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "健康,身体好");
-      assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "状态良好,情况良好");
-      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "明智,可取,好主意");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "健康; 身体好");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "状态良好; 情况良好");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "明智; 可取; 好主意");
       
 
       assert.equal(parseResult[2].definitionGroups[0].name, "exclamation");
       assert.equal(parseResult[2].definitionGroups[0].definitions.length, 9);
 
-      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "(表示惊奇、愤怒或宽慰)哎呀,哟,啊,好啦");
-      assert.equal(parseResult[2].definitionGroups[0].definitions[1].text, "(承认某事不可改变)唉,好吧");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[0].text, "(表示惊奇、愤怒或宽慰)哎呀; 哟; 啊; 好啦");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[1].text, "(承认某事不可改变)唉; 好吧");
       assert.equal(parseResult[2].definitionGroups[0].definitions[2].text, "(勉强同意)嗯");
-      assert.equal(parseResult[2].definitionGroups[0].definitions[3].text, "(停顿后继续交谈)唔,这个,噢");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[3].text, "(停顿后继续交谈)唔; 这个; 噢");
       assert.equal(parseResult[2].definitionGroups[0].definitions[4].text, "(表示不肯定)哦");
-      assert.equal(parseResult[2].definitionGroups[0].definitions[5].text, "(等待别人说话)嘿,嗨");
+      assert.equal(parseResult[2].definitionGroups[0].definitions[5].text, "(等待别人说话)嘿; 嗨");
       assert.equal(parseResult[2].definitionGroups[0].definitions[6].text, "(结束交谈)就这样");
       assert.equal(parseResult[2].definitionGroups[0].definitions[7].text, "(说话时稍微停顿)对了");
       assert.equal(parseResult[2].definitionGroups[0].definitions[8].text, "(纠正或改变刚说过的话时用)");
@@ -633,8 +633,8 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[3].definitionGroups[0].name, "noun");
       assert.equal(parseResult[3].definitionGroups[0].definitions.length, 3);
 
-      assert.equal(parseResult[3].definitionGroups[0].definitions[0].text, "井,水井");
-      assert.equal(parseResult[3].definitionGroups[0].definitions[1].text, "楼梯井,电梯井道");
+      assert.equal(parseResult[3].definitionGroups[0].definitions[0].text, "井; 水井");
+      assert.equal(parseResult[3].definitionGroups[0].definitions[1].text, "楼梯井; 电梯井道");
       assert.equal(parseResult[3].definitionGroups[0].definitions[2].text, "(法庭中的)律师席");
       
 
@@ -642,8 +642,8 @@ describe('mdict oalecd9e parser', function () {
       assert.equal(parseResult[4].definitionGroups[0].name, "verb");
       assert.equal(parseResult[4].definitionGroups[0].definitions.length, 2);
 
-      assert.equal(parseResult[4].definitionGroups[0].definitions[0].text, "涌出,冒出,流出,溢出");
-      assert.equal(parseResult[4].definitionGroups[0].definitions[1].text, "涌起,迸发");
+      assert.equal(parseResult[4].definitionGroups[0].definitions[0].text, "涌出; 冒出; 流出; 溢出");
+      assert.equal(parseResult[4].definitionGroups[0].definitions[1].text, "涌起; 迸发");
       
       
     });

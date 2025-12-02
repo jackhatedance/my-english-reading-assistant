@@ -7,7 +7,7 @@ describe('mdict oalecd9e parser', function () {
   
   describe('Oald9eParser parse', function () {
     before(function() {
-      this.parser = new Oald9eParser({ debugPrintSelectorFind: true });
+      this.parser = new Oald9eParser({ debugPrintSelectorFind: true, generateDefinitionText: true });
 
       this.mdx = new MDX("./test/mdict/mdx/Oxford Advanced Learner's Dictionary, 9th Ed.mdx");
       this.lookup = function(word) {
@@ -586,7 +586,7 @@ describe('mdict oalecd9e parser', function () {
 
       assert.equal(parseResult[1].definitionGroups[0].definitions[0].text, "in good health");
       assert.equal(parseResult[1].definitionGroups[0].definitions[1].text, "in a good state or position");
-      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "sensible,a good idea");
+      assert.equal(parseResult[1].definitionGroups[0].definitions[2].text, "sensible; a good idea");
       
 
       assert.equal(parseResult[2].definitionGroups[0].name, "exclamation");

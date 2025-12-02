@@ -21,6 +21,8 @@ export const PARSER_OPTION_MAX_SUBDEFINITION_NUMBER = 'maxSubdefinitionNumber';
 export const PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS = 'deduplicateSubdefinitions';
 export const PARSER_OPTION_DEBUG_PRINT_SELECTOR_FIND = 'debugPrintSelectorFind';
 export const PARSER_OPTION_ALL_UPPER_CASE_ENTRY_POLICY = 'allUpperCaseEntryPolicy';
+export const PARSER_OPTION_GENERATE_DEFINITION_TEXT = 'generateDefinitionText';
+
 export const ALL_UPPER_CASE_ENTRY_POLICY_LOWER_CASE = 'lowerCase';
 
 export const DICTIONARY_INDEX_STATUS_NOT_SUPPORT = 'NOT_SUPPORT';

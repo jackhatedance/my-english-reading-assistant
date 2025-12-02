@@ -27,12 +27,14 @@ function deduplicatePronunciations(pronunciations){
     return array;
 }
 
-function deduplicateSubdefinitions(definitionGroup){
+function deduplicateSubdefinitions(definitionGroup, generateDefinitionText){
     let subdefinitionSet = new Set();
     for(let definition of definitionGroup.definitions){
         let duplicatedSubdefinitions = definition.subdefinitions.filter( item => !subdefinitionSet.has(item));
         definition.subdefinitions = duplicatedSubdefinitions;
-        definition.text = duplicatedSubdefinitions.join(',');
+        if(generateDefinitionText){
+            definition.text = duplicatedSubdefinitions.join('; ');
+        }
 
         for(let duplicatedSubdefinition of duplicatedSubdefinitions){
             subdefinitionSet.add(duplicatedSubdefinition);
@@ -132,7 +134,7 @@ function findDefinitionsByTypes(entries, types){
     return result;
 }
 
-function getDefinitionText(entries){
+function getDefinitionTextFromEntries(entries){
     let result = [];
 
     for(let entry of entries){
@@ -145,6 +147,12 @@ function getDefinitionText(entries){
         }
     }
     return result.join('');
+}
+
+function generateDefinitionText(definition){
+    let subdefinitions = definition.subdefinitions;
+    let text = subdefinitions ? subdefinitions.join('; '): '';
+    return text;
 }
 
 function findAllDefinitionGroups(entries){
@@ -255,4 +263,4 @@ function createEntryForLink(link){
     return entry;
 }
 
-export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createLinkDefinition, createTransformDefinition, createEntryForLink, containsDefinitionGroupNames, getDefinitionText }
+export { mergeEntries, deduplicateSubdefinitions, hasLinkEntryOnly, hasLinkDefinitionOnly, getTheOnlyLinkDefintion, isOnlyTransform, getTheOnlyBaseForm, hasOnlyLinkOrFormDefinition, findDefinitionsByTypes, createLinkDefinition, createTransformDefinition, createEntryForLink, containsDefinitionGroupNames, getDefinitionTextFromEntries, generateDefinitionText }

@@ -62,7 +62,7 @@ class DefinitionParser {
 
     afterParseDefinitionGroup(definitionGroup){
         if(this.options[PARSER_OPTION_DEDUPLICATE_SUBDEFINITIONS] != false){
-            deduplicateSubdefinitions(definitionGroup);
+            deduplicateSubdefinitions(definitionGroup, this.options.generateDefinitionText);
         }        
 
         const { definitions } = definitionGroup;
@@ -91,7 +91,9 @@ class DefinitionParser {
             let definition = definitions[definitionIndex];
             if(definition.subdefinitions.length >0){
                 definition.subdefinitions.length = subdefinitionIndexes[definitionIndex];
-                definition.text = definition.subdefinitions.join(',');
+                if(this.options.generateDefinitionText){
+                    definition.text = definition.subdefinitions.join('; ');
+                }
             }            
         }
     }
@@ -112,7 +114,10 @@ class DefinitionParser {
         
         
         let subdefinitions = this.parseSubdefinitions(text);       
-        let definition = { text: originalText, subdefinitions: subdefinitions };
+        let definition = { subdefinitions: subdefinitions };
+        if(this.options.generateDefinitionText){
+            definition.text = subdefinitions.join('; ');
+        }
 
         if(typedDefinition){
             this.assginTypedDefinition(definition, typedDefinition);

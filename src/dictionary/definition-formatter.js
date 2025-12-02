@@ -1,5 +1,5 @@
 
-import { mergeEntries } from './entry-utils.js'
+import { mergeEntries, generateDefinitionText } from './entry-utils.js'
 
 const REGION_EMPTY = 'empty';
 
@@ -201,9 +201,9 @@ function entriesToHtml(word, entries, pronunciationRegion=null, wordPartObjs=nul
 function definitionToHtml(definition, supportLink){
     if(supportLink){
         if(definition.type == 'form'){
-            return makeWordLink(definition.text, definition.base);
+            return makeWordLink(generateDefinitionText(definition), definition.base);
         } else if(definition.type == 'link'){
-            return makeWordLink(definition.text, definition.link);
+            return makeWordLink(generateDefinitionText(definition), definition.link);
         }
     }
 

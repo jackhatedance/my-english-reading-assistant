@@ -1,4 +1,5 @@
 import { Progress } from './Progress.js'
+import { generateDefinitionText } from './entry-utils.js'
 
 // index data version should always match below program version. any change to index building should increase it.
 export const INDEX_VERSION = 29;
@@ -6,7 +7,7 @@ export const JSON_SCHEMA_MAJOR_VERSION = 1;
 
 const jobName = chrome.i18n.getMessage('options_dictionary_detail_job_extract');
 
-function findDefinition(entries){
+function hasDefinition(entries){
     if(!entries){
         return null;
     }
@@ -14,15 +15,15 @@ function findDefinition(entries){
     for(let entry of entries){
         for(let definitionGroup of entry.definitionGroups){
             for(let definition of definitionGroup.definitions){
-                let text = definition.text;
+                let text = generateDefinitionText(definition);
                 if(text && text.length > 0){
-                    return definition;
+                    return true;
                 }
             }
         }
     }
     
-    return null;    
+    return false;    
 }
 
 function addPhrase(entries, phrase){
@@ -56,8 +57,8 @@ async function generateIndex(dictionary, updateProgress, addPhraseToMainEntry, s
             console.log(`no result found by key: ${key}`);
             continue;
         }
-        let definition = findDefinition(result.json);
-        if(definition){
+        let hasDef = hasDefinition(result.json);
+        if(hasDef){
             map[key] = result;
 
             let isPhrase = key.includes(' ');

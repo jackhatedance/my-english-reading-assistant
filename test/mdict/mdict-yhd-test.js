@@ -7,7 +7,7 @@ describe('mdict yhd parser', function () {
   
   describe('YhdParser parse', function () {
     before(function() {
-      this.parser = new YhdParser({debugPrintSelectorFind: false});
+      this.parser = new YhdParser({debugPrintSelectorFind: false, generateDefinitionText: true});
 
       this.mdx = new MDX('./test/mdict/mdx/英汉大词典（第2版）.mdx');
       this.lookup = function(word) {
@@ -24,8 +24,8 @@ describe('mdict yhd parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ɡʊd");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好的,出色的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "正当的,正确的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "好的; 出色的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "正当的; 正确的");      
 
       assert.equal(parseResult[0].phrases.length, 33);      
       assert.equal(parseResult[0].phrases[0], "a good one");
@@ -52,7 +52,7 @@ describe('mdict yhd parser', function () {
       //assert(tokens.length === 2,"test");
       
       assert.equal(parseResult[0].definitionGroups[0].name, "n.");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[植]海草,海藻");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[植]海草; 海藻");
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "海草灰");
       
       

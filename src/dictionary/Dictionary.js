@@ -1,5 +1,5 @@
 import { getWordClassAbbreviation } from './wordClass.js'
-import { mergeEntries } from './entry-utils.js'
+import { mergeEntries, generateDefinitionText } from './entry-utils.js'
 import { pronunciationsToText, entriesToHtml } from './definition-formatter.js'
 import log from 'loglevel'
 
@@ -138,9 +138,10 @@ class Dictionary {
         for(let definitionGroup of definitionObj.definitionGroups){
             let wordClass = definitionGroup.name;
 
-            let definitions = definitionGroup.definitions.filter(item => item.text && item.text.length > 0);
+            let definitions = definitionGroup.definitions.filter(definition => generateDefinitionText(definition).length > 0);
 
-            let shortDefinitions = definitions.filter(item => item.text && item.text.length < 10);
+            let shortDefinitions = definitions.filter(definition => generateDefinitionText(definition).length < 10);
+
             if(shortDefinitions.length >= 3){
                 definitions = shortDefinitions;
             }
