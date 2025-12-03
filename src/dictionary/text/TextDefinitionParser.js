@@ -3,6 +3,7 @@ import { splitIntoDefinitionGroups, parseWordClass, splitWordMeanings } from './
 import { trimByCharacters } from '../../utils/stringUtils.js'
 import { standardizePunctuations } from '../../text/textUtils.js'
 import { SUBDEFINITION_SEPARATORS_TYPE_STATIC } from '../DefinitionParser.js'
+import { generateDefinitionText } from '../entry-utils.js'
 
 class TextDefinitionParser extends DefinitionParser {
     
@@ -43,7 +44,7 @@ class TextDefinitionParser extends DefinitionParser {
             let index = groups.indexOf(group);
             groups.splice(index, 1);
         
-            phrases = group.definitions.map(item => item.text);
+            phrases = group.definitions.map(definition => generateDefinitionText(definition));
         }
 
         entry.phrases = phrases;

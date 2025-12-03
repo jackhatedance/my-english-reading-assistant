@@ -7,7 +7,7 @@ describe('TextDefinitionParser test', function () {
   
   describe('parse', function () {
     before(function() {
-      this.parser = new TextDefinitionParser();
+      this.parser = new TextDefinitionParser({ generateDefinitionText: true, });
     });
 
     it('Alice', async function () {

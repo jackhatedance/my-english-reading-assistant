@@ -142,16 +142,17 @@ function getDefinitionTextFromEntries(entries){
         for(let definitionGroup of definitionGroups){
             let definitions = definitionGroup.definitions;
             for(let definition of definitions){
-                result.push(definition.text);
+                let definitionText = generateDefinitionText(definition, '');
+                result.push(definitionText);
             }
         }
     }
     return result.join('');
 }
 
-function generateDefinitionText(definition){
+function generateDefinitionText(definition, separator='; '){
     let subdefinitions = definition.subdefinitions;
-    let text = subdefinitions ? subdefinitions.join('; '): '';
+    let text = subdefinitions ? subdefinitions.join(separator): '';
     return text;
 }
 

@@ -145,7 +145,7 @@ class Dictionary {
             if(shortDefinitions.length >= 3){
                 definitions = shortDefinitions;
             }
-            let definitionTexts = definitions.map(item => item.text );
+            let definitionTexts = definitions.map(definition => generateDefinitionText(definition) );
             
             let definitionsText = definitionTexts.join(',');
             let groupText = `${wordClass} ${definitionsText}`;

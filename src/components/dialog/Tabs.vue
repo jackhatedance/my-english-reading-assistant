@@ -83,7 +83,7 @@ onUpdated(() => {
             <TabHeader v-if="false" tabId="notes-tab" :name="sidepanelTabNotes" :isActive="activeTabId === 'notes-tab'" @activeTab="onActiveTab" >
             </TabHeader>
             <TabHeader tabId="book-tab" :name="sidepanelTabBook" :isActive="activeTabId === 'book-tab'" @activeTab="onActiveTab"></TabHeader>
-            <TabHeader tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
+            <TabHeader data-testid="vocabulary-tab-header" tabId="vocabulary-tab" :name="sidepanelTabVocabulary" :isActive="activeTabId === 'vocabulary-tab'" @activeTab="onActiveTab"></TabHeader>
 
             <TabHeader tabId="actions-tab" :name="sidepanelTabActions" :isActive="activeTabId === 'actions-tab'" @activeTab="onActiveTab"></TabHeader>
         </ul>

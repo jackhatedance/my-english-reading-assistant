@@ -71,7 +71,7 @@ function clickHideDefinition(event){
             <div class="tips">{{ sidepanelTitleDesc }}</div>
 
             <div class="actions">
-                <button id="showAllDefinitions" @click="clickShowDefinition" :title="sidepanelShowDefinitions">+</button>
+                <button data-testid="showAllDefinitions" id="showAllDefinitions" @click="clickShowDefinition" :title="sidepanelShowDefinitions">+</button>
                 <button id="hideAllDefinitions" @click="clickHideDefinition" :title="sidepanelHideDefinitions">-</button>
             </div>    
         </div>
