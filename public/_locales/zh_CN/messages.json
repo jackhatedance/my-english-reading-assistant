@@ -117,6 +117,9 @@
     "popupInterlacedLabel":{
         "message":"交错显示"
     },
+    "popup_interlaced_tips":{
+        "message":"注解以交错的方式显示"
+    },
     "popupWidthLabel":{
         "message":"宽度"
     },

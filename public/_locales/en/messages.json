@@ -117,6 +117,9 @@
     "popupInterlacedLabel":{
         "message":"Interlaced"
     },
+    "popup_interlaced_tips":{
+        "message":"annotations are displayed in an interlaced way"
+    },
     "popupWidthLabel":{
         "message":"Width"
     },

@@ -160,7 +160,9 @@ init();
         </div>
 
         <div class="field">
-            <label>{{ t('popupInterlacedLabel') }}</label>
+            <label>{{ t('popupInterlacedLabel') }}
+                <InformationTooltip :content="t('popup_interlaced_tips')" linkType="guide" linkKeyword="交错显示" effect="dark"/>
+            </label>
             <div class="inputs">
             <el-switch class="annotation-input-2" v-show="dualAnnotationEnabled" v-model="interlaced2" @change="onChangeSetting" size="small" />
             <el-switch id="interlaced" v-model="interlaced" @change="onChangeSetting" size="small" />
