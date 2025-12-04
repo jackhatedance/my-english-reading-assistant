@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import HelpLink from '../../HelpLink.vue'
 import InformationTooltip from '../../common/InformationTooltip.vue'
+import RefreshTooltip from '../../common/RefreshTooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElInputNumber } from 'element-plus'
@@ -178,7 +179,7 @@ init();
         </div>
 
          <div class="field">
-            <label>{{ t('popupMaxMeaningNumberLabel') }}<span class="red">*</span></label>
+            <label>{{ t('popupMaxMeaningNumberLabel') }}<RefreshTooltip /></label>
             <div class="inputs">
                 
                 <el-input-number v-model="maxMeaningNumber" :min="1" :max="20" :step="1" @change="onChangeSetting" controls-position="right" size="small">
@@ -188,7 +189,7 @@ init();
         </div>
 
         <div class="field">
-            <label>{{ t('popupHideWordClassLabel') }}<span class="red">*</span></label>
+            <label>{{ t('popupHideWordClassLabel') }}<RefreshTooltip /></label>
             <div class="inputs">
                 <el-switch id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" size="small" />
             </div>

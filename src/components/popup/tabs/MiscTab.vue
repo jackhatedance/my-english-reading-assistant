@@ -6,8 +6,8 @@ import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
 import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
-import Tooltip from '../../common/Tooltip.vue'
 import InformationTooltip from '../../common/InformationTooltip.vue'
+import RefreshTooltip from '../../common/RefreshTooltip.vue'
 
 const emit = defineEmits(['change-setting']);
 
@@ -93,7 +93,10 @@ init();
       </div>
 
       <div class="field" >
-        <label>{{ t('popup_notes_enabled_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记" effect="dark"/></label>
+        <label>{{ t('popup_notes_enabled_label') }}
+          <InformationTooltip :content="t('popup_notes_enabled_tip')" linkType="guide" linkKeyword="启用笔记" effect="dark"/>
+          <RefreshTooltip/>
+        </label>
         
         
         <div class="inputs">

@@ -130,7 +130,7 @@
         "message":"Unknown Word Color"
     },
     "popupAdditionalDictionaryLabel":{
-        "message":"Additional Dictionaries"
+        "message":"Addt'l. Dictionaries"
     },
     "popupAdditionalDictionaryTip":{
         "message":"additional dictionaries"
@@ -172,9 +172,6 @@
         "message":"only enable notes when needed"
     },
 
-    "popupFootNotes":{
-        "message":"Some settings require refreshing the page to take effect"
-    },
     "popupResetButton":{
         "message":"Reset"
     },
@@ -196,6 +193,10 @@
     },
     "popup_tab_misc":{
         "message":"misc."
+    },
+
+    "popup_page_refresh_required":{
+        "message": "require refreshing the page to take effect"
     },
     
     "optionsPageTitle":{

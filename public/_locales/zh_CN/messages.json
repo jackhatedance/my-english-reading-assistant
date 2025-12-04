@@ -172,9 +172,6 @@
         "message":"有需要时才开启笔记功能"
     },
 
-    "popupFootNotes":{
-        "message":"部分设置需要刷新页面才能生效"
-    },
     "popupResetButton":{
         "message":"重置"
     },
@@ -198,6 +195,10 @@
         "message":"杂项"
     },
     
+    "popup_page_refresh_required":{
+        "message": "需要刷新页面才能生效"
+    },
+
     "optionsPageTitle":{
         "message":"设置"
     },

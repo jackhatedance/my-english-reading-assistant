@@ -439,9 +439,6 @@ init();
             <el-button id="saveAsDefault" @click="onSaveAsDefault">{{ t('popupSaveAsDefault') }}</el-button>
           </div>
 
-          <div class="footnote">
-            <span class="red">*</span>{{ t('popupFootNotes') }}
-          </div>
 
         </div>
 

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import InformationTooltip from '../../common/InformationTooltip.vue'
+import RefreshTooltip from '../../common/RefreshTooltip.vue'
 import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElInputNumber } from 'element-plus'
@@ -87,7 +88,10 @@ init();
           </div>
 
           <div class="field">
-            <label>{{ t('popup_settings_text_bionic_reading_label') }}<span class="red">*</span><InformationTooltip :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读" effect="dark" /></label>
+            <label>{{ t('popup_settings_text_bionic_reading_label') }}
+              <InformationTooltip :content="t('popup_settings_text_bionic_reading_tip')" linkType="guide" linkKeyword="仿生阅读" effect="dark" />
+              <RefreshTooltip />
+            </label>
             
             
             <div class="inputs">

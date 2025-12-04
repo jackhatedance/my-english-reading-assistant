@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 import InformationTooltip from '../../common/InformationTooltip.vue'
+import RefreshTooltip from '../../common/RefreshTooltip.vue'
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 
@@ -36,7 +37,10 @@ init();
           <div class="field" id="dictionaryField" >
             
             
-            <label>{{ t('popupAdditionalDictionaryLabel') }}<span class="red">*</span><InformationTooltip :content="t('popupAdditionalDictionaryTip')" linkType="guide" linkKeyword="指定附加词典" effect="dark" /></label>
+            <label>{{ t('popupAdditionalDictionaryLabel') }}
+              <InformationTooltip :content="t('popupAdditionalDictionaryTip')" linkType="guide" linkKeyword="指定附加词典" effect="dark" />
+              <RefreshTooltip/>
+            </label>
             
             <div class="inputs">
                        
