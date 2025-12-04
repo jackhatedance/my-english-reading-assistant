@@ -170,7 +170,9 @@ init();
         </div>
 
         <div class="field">
-            <label>{{ t('popupWidthLabel') }}</label>
+            <label>{{ t('popupWidthLabel') }}
+                <InformationTooltip :content="t('popup_width_tips')" linkType="guide" linkKeyword="注解宽度" effect="dark"/>
+            </label>
             <div class="inputs">
                 <el-input-number v-show="dualAnnotationEnabled" v-model="width2" :min="1" :max="99" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
                 </el-input-number>

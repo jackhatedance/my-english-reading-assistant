@@ -19,8 +19,6 @@ const t = chrome.i18n.getMessage;
 <style>
 
 .refresh-tooltip {
-    font-size: 1.5em;
-    line-height: 1;
     color: red;
 }
 

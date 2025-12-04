@@ -123,6 +123,9 @@
     "popupWidthLabel":{
         "message":"Width"
     },
+    "popup_width_tips":{
+        "message":"The ratio of annotation width to word width"
+    },
     "popupMaxMeaningNumberLabel":{
         "message":"Max Meaning Number"
     },
