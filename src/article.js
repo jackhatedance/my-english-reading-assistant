@@ -14,6 +14,7 @@ import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'
 import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
+import { getMeaTokenElement, getFirstTextNode } from './token.js'
 
 const gLogger = log.getLogger('article');
 /**
@@ -353,16 +354,32 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                 //console.log(node.textContent);
                 //console.log(token);
             }
-             
+            
+            var meaTokenElement, dataWord, dataBaseWord;
+            if(token){
+                meaTokenElement = getMeaTokenElement(node);
+                if(meaTokenElement){
+                    dataWord = getWordFromElement(meaTokenElement);
+                    dataBaseWord = getBaseWordFromElement(meaTokenElement);
+                }
+            }
+            
             if(token
-                && node.parentElement.tagName == 'MEA-TOKEN'
+                && meaTokenElement
                 && (
-                    getWordFromElement(node.parentElement) != token.checkWordResult?.word
-                    || getBaseWordFromElement(node.parentElement) != token.checkWordResult?.baseWord
+                    dataWord != token.checkWordResult?.word
+                    || dataBaseWord != token.checkWordResult?.baseWord
                 )
             ){
-                let firstNodeOfTheToken = nodeInfo.offset === token.articleOffset;
-                let showAnnotation = firstNodeOfTheToken;
+                let firstChildNode = getFirstTextNode(meaTokenElement);
+                let firstChildNodeInfo;
+                if(node == firstChildNode){
+                    firstChildNodeInfo = nodeInfo;
+                } else {
+                    firstChildNodeInfo = article.textNodeMap.get(firstChildNode);
+                }
+                let nodeOfFirstElementOfToken = firstChildNodeInfo.offset === token.articleOffset;
+                let showAnnotation = nodeOfFirstElementOfToken;
 
                 if(token.checkWordResult) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
