@@ -164,7 +164,7 @@ async function onUserStateChanged(newState){
       let size = activeTabInfos.length;
       if(size>0){
         let activeTabTitles = activeTabInfos.map(activeTab => activeTab.title);
-        let activeTabTitlesStr = activeTabTitles.joib(';');
+        let activeTabTitlesStr = activeTabTitles.join(';');
         gLogger.error(`more than one active tab: ${activeTabTitlesStr}`);
       }
 
