@@ -95,7 +95,7 @@ init();
             
             
             <div class="inputs">
-              <el-switch v-model="bionicEnabled" @change="onChangeSetting" size="small" />
+              <el-switch data-testid="bionic-switch" v-model="bionicEnabled" @change="onChangeSetting" size="small" />
               
             </div>
           </div>

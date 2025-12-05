@@ -59,7 +59,7 @@ onUpdated(() => {
 
         <ul v-show="true" class="tabs clearfix">
             <TabHeader tabId="annotation-tab" :name="t('popup_tab_annotation')" :isActive="activeTabId === 'annotation-tab'" @activeTab="onActiveTab"></TabHeader>
-            <TabHeader tabId="text-tab" :name="t('popup_tab_text')" :isActive="activeTabId === 'text-tab'" @activeTab="onActiveTab"></TabHeader>
+            <TabHeader data-testid="text-tab-header" tabId="text-tab" :name="t('popup_tab_text')" :isActive="activeTabId === 'text-tab'" @activeTab="onActiveTab"></TabHeader>
             <TabHeader tabId="dictionary-tab" :name="t('popup_tab_dictionary')" :isActive="activeTabId === 'dictionary-tab'" @activeTab="onActiveTab"></TabHeader>
             <TabHeader tabId="misc-tab" :name="t('popup_tab_misc')" :isActive="activeTabId === 'misc-tab'" @activeTab="onActiveTab"></TabHeader>
         </ul>
