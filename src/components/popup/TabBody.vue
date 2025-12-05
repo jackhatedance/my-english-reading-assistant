@@ -21,6 +21,6 @@ init();
     padding: 5px;
     padding-top: 10px;
     border-radius: 10px;
-    min-height: 250px;
+    min-height: 280px;
 }
 </style>
