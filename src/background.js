@@ -3,12 +3,11 @@
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
-import {addActivityToStorage} from './service/activityService.js';
 import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
-import { getTabInfoMap, saveTabInfoMap, getTabInfo, saveTabInfo, removeTabInfo} from './service/tabInfoService.js';
-import { synchronized } from './user-activity/lock.js'
+import { getTabInfo } from './service/tabInfoService.js';
+import { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onUrlChanged, onMarkWord, onUserStateChanged } from './service/user-activity-service.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -143,7 +142,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type === 'PAGE_LOADED_WITHOUT_AUTO_ENABLE'){
     setIcon(tabId, false);
   } else if(request.type === 'WINDOW_FOCUS'){
-    onWindowFocus(tabId);
+    onTabFocus(tabId);
   } else if(request.type === 'WINDOW_BLUR'){
     onTabBlur(tabId);
   } else if(request.type === 'PAGE_URL_CHANGED'){
@@ -184,82 +183,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function onInitPageFinished(tabId, newTabInfo){
-
-  await synchronized(async ()=> {
-    //console.log('new tab info:'+ JSON.stringify(newTabInfo));
-    let oldTabInfo = await getTabInfo(tabId);
-    
-    if(oldTabInfo && oldTabInfo.startTime){
-      await saveReadingActivityAndClearStartTime(oldTabInfo);
-    }
-
-    await saveTabInfo(tabId, newTabInfo);
-    setIcon(tabId, true);
-  });
+  await onTabInitialized(tabId, newTabInfo);
+  setIcon(tabId, true);
 }
 
 async function onCleanPageFinished(tabId){
-  await synchronized(async ()=> {
-    let oldTabInfo = await getTabInfo(tabId);
-    
-    if(oldTabInfo && oldTabInfo.startTime){
-      await saveReadingActivityAndClearStartTime(oldTabInfo);
-    }
-
-    await removeTabInfo(tabId);
-    setIcon(tabId, false);
-  });
-}
-
-async function onWindowFocus(tabId){
-  await synchronized(async ()=> {
-    let tabInfo = await getTabInfo(tabId);
-    if(tabInfo){
-      //console.log('focus');
-      if(tabInfo.startTime ==null){
-        gLogger.debug('start time is null, set start time');
-        tabInfo.startTime = new Date().getTime();
-        await saveTabInfo(tabId, tabInfo);
-      }else {
-        gLogger.debug('start time is not null');
-      }
-    }
-  });
-}
-
-async function onTabBlur(tabId){
-  await synchronized(async ()=> {
-    let tabInfo = await getTabInfo(tabId);
-    if(tabInfo){
-      //console.log('blur');
-      await saveReadingActivityAndClearStartTime(tabInfo);
-      await saveTabInfo(tabId, tabInfo);
-    }
-  });
-}
-
-async function onUrlChanged(tabId, newTabInfo){
-  await synchronized(async ()=> {
-    let oldTabInfo = await getTabInfo(tabId);
-    if(oldTabInfo){
-      await saveReadingActivityAndClearStartTime(oldTabInfo);
-    }
-    await saveTabInfo(tabId, newTabInfo);
-  });
-}
-
-async function onMarkWord(tabId, wordChanges){
-  await synchronized(async ()=> {
-    let tabInfo = await getTabInfo(tabId);
-
-    if(tabInfo){
-      tabInfo.wordChanges = tabInfo.wordChanges + wordChanges;
-      await saveTabInfo(tabId, tabInfo);
-    }else{
-      console.error(`tabInfo not found of tab id: ${tabId}`);
-    }
-  });
-  //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
+  await onTabCleaned(tabId);
+  setIcon(tabId, false);
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
@@ -307,76 +237,14 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 */
 
 chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
-  await synchronized(async ()=> {
-    //console.log('tab removed: '+ 'tabId:' + tabId +','+ JSON.stringify(removeInfo));
-    let tabInfo = await getTabInfo(tabId);
-    if(tabInfo){
-      await saveReadingActivityAndClearStartTime(tabInfo);
-      removeTabInfo(tabId);
-    }
-    
-  });
+  await onTabRemoved(tabId);
 });
 
 chrome.idle.onStateChanged.addListener(async (newState)=>{
   gLogger.debug(newState);
-  let tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  if(tabs && tabs.length==0){
-    return;
-  }
-
-  await synchronized(async ()=> {
-    const tab = tabs[0];
-    let tabId = tab.id;
-    let tabInfo = await getTabInfo(tabId);
-    if(tabInfo){
-      gLogger.debug(`${tabInfo.title}:${newState}`);
-
-      //idle won't come together with BLUR;
-      //lock will come together with BLUR
-      //active will come together with FOCUS
-      if(newState =='idle'){
-        await saveReadingActivityAndClearStartTime(tabInfo);
-        await saveTabInfo(tabId, tabInfo);
-      }
-    }
-  });
+  await onUserStateChanged(newState);
 });
 
-async function saveReadingActivityAndClearStartTime(tabInfo){
-  gLogger.debug('saveReadingActivityAndClearStartTime()');
-  let options = await getOptions();
-  //console.log('get options from cache:'+JSON.stringify(options));
-  if(!options.report.enabled){
-    return;
-  }
-
-  if(tabInfo.startTime == null){
-    gLogger.error('tabInfo.startTime is null');
-  }
-
-  if(tabInfo.startTime){
-
-    let endTime = new Date().getTime();
-    var duration = endTime - tabInfo.startTime;
-    
-    gLogger.debug(`finish read page <<${tabInfo.url}>> in ${duration/1000} seconds, word changes:${tabInfo.wordChanges}`);
-    await addActivityToStorage({
-      startTime: tabInfo.startTime,
-      endTime: endTime,
-      site: tabInfo.site,
-      url: tabInfo.url,
-      isbn: tabInfo.isbn,
-      sessionId: tabInfo.tabId,
-      duration: duration,
-      title: tabInfo.title,
-      totalWordCount: tabInfo.totalWordCount,
-      wordChanges: tabInfo.wordChanges, 
-    });
-
-    tabInfo.startTime = null;
-  }
-}
 
 function setEnabled(enabled) {
     // Communicate with content script of
@@ -397,9 +265,6 @@ function setEnabled(enabled) {
         }
       );
     });
-      
-     
-   
 }
 
 function refresh(){
