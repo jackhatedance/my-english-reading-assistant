@@ -18,6 +18,8 @@ import log from 'loglevel'
 
 const gLogger = log.getLogger('tooltip');
 
+const TOOLTIP_DELAY_IN_MILLISECOND = 500;
+
 const DEFINITION_TOOLTIP_ID = 'mea-definition-tooltip';
 
 const TOOLTIP_MARK_TOGGLE_ID = 'mea-tooltip-mark-toggle';
@@ -257,7 +259,7 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
         if(!isElementDetached(ele)){
           showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
         }
-      }, 500); 
+      }, TOOLTIP_DELAY_IN_MILLISECOND); 
       clearAndSetTooltipTimeout(timeout);      
     
     });
