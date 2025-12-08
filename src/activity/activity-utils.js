@@ -7,7 +7,7 @@ function activityToString(activity){
     
     let durationStr = formatDuration(activity.duration) 
 
-    return `${startTimeStr} - ${endTimeStr}: ${durationStr}: ${activity.url}, ${activity.title}`;
+    return `${startTimeStr} - ${endTimeStr}: ${durationStr}`;
 }
 
 

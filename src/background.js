@@ -6,8 +6,8 @@ import { getOptions } from './service/optionService.js';
 import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
 import log from 'loglevel'
 import { initLog } from './log.js'
-import { getTabInfo } from './service/tabInfoService.js';
-import { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onUrlChanged, onMarkWord, onUserStateChanged } from './service/user-activity-service.js'
+import { getTabInfo } from './service/tab-service.js';
+import { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onMarkWord, onIdleStateChanged } from './service/activity-core-service.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -145,20 +145,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     onTabFocus(tabId);
   } else if(request.type === 'WINDOW_BLUR'){
     onTabBlur(tabId);
-  } else if(request.type === 'PAGE_URL_CHANGED'){
-
-    //console.log('page changed, type:' + request.type);
-    //console.log('page url changed, tabId:'+ sender.tab.id +', title:'+request.payload.title);
-    
-    let startTime = new Date().getTime();
-    let title = request.payload.title;
-    let url = request.payload.url;
-    let isbn = request.payload.isbn;
-    let site = request.payload.site;
-    let totalWordCount = request.payload.totalWordCount;
-    let newTabInfo = {tabId: tabId, title: title, url:url, isbn: isbn, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
-    
-    onUrlChanged(tabId, newTabInfo);
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
@@ -237,12 +223,13 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 */
 
 chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
+  gLogger.debug(`on message: tabRemoved, tabId:${tabId}`);
   await onTabRemoved(tabId);
 });
 
 chrome.idle.onStateChanged.addListener(async (newState)=>{
-  gLogger.debug(newState);
-  await onUserStateChanged(newState);
+  gLogger.debug(`on event: StateChanged, newState:${newState}`);
+  await onIdleStateChanged(newState);
 });
 
 

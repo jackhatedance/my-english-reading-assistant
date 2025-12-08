@@ -1,14 +1,14 @@
 'use strict';
 import log from 'loglevel'
 
-const gLogger = log.getLogger('user-tabs-service');
+const gLogger = log.getLogger('tabs-service');
 
 async function getUserTabs(){
     let object = await chrome.storage.local.get(['userTabs']);
     let userTabs = object.userTabs;
     if(!userTabs){
         userTabs = {
-            userState: null,
+            idleState: null,
             tabs: []
         };
     }
@@ -19,6 +19,19 @@ async function saveUserTabs(userTabs){
     //console.log('save sitesOptions:'+JSON.stringify(sitesOptions));
     let object = {userTabs: userTabs};     
     await  chrome.storage.local.set(object);
+}
+
+async function collectGarbageTabs(userTabs){
+    let chromeTabs = await chrome.tabs.query({ });
+    let existingTabIds = chromeTabs.map(tab => tab.id);
+
+    let filteredTabInfos = userTabs.tabs.filter(tabInfo => existingTabIds.includes(tabInfo.tabId));
+    /*
+    console.log(`userTabs.tabs.length: ${userTabs.tabs.length}`);
+    console.log(`existingTabIds.length: ${existingTabIds.length}`);
+    console.log(`filteredTabInfos.length: ${filteredTabInfos.length}`);
+    */
+    userTabs.tabs =  filteredTabInfos;
 }
 
 async function getTabInfo(tabId){
@@ -64,4 +77,4 @@ function removeTab(tabs, tabId){
 }
 
 
-export { getUserTabs, saveUserTabs, findTab, setTab, removeTab, getTabInfo };
+export { getUserTabs, saveUserTabs, collectGarbageTabs, findTab, setTab, removeTab, getTabInfo };

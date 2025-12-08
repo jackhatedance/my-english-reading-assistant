@@ -86,11 +86,6 @@ async function domMonitor(page) {
   }
 
   let url = page.siteProfile.getUrl(document);
-  //console.log('page.url:'+page.url +',\nurl:'+url);
-  if (page.url && page.url !== url) {
-    let pageInfo = await getPageInfo(page.siteProfile, page.documentArticleMap);
-    sendMessageToBackground(page.siteProfile, 'PAGE_URL_CHANGED', pageInfo);
-  }
 
   //update gloabl variable
   page.url = url;
