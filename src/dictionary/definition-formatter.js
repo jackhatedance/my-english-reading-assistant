@@ -133,7 +133,7 @@ function generatePartsHtml(wordPartObjs) {
 }
 
 function entriesToHtml(word, entries, pronunciationRegion=null, wordPartObjs=null, options={ supportLink: true}){
-    let wordHtml = `<span style="font-size: x-large;">${word}</span> `;
+    let wordHtml = `<span style="font-size: large;">${word}</span> `;
 
     if(!entries || entries.length == 0){
         return '';
