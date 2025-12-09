@@ -1228,6 +1228,7 @@ division
 divorce
 dizzy
 do
+doing
 doctor
 document
 doesn't
@@ -3583,6 +3584,7 @@ than
 thank
 thankful
 that
+that's
 the
 theatre
 theft

@@ -1591,6 +1591,7 @@ division
 divorce
 dizzy
 do
+doing
 dock
 doctor
 document
@@ -5019,6 +5020,7 @@ than
 thank
 thankful
 that
+that's
 the
 theatre
 theft

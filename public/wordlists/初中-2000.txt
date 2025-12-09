@@ -573,6 +573,7 @@ disturb
 dive
 divide
 do
+doing
 doctor
 doesn't
 doeth
@@ -1936,6 +1937,7 @@ than
 thank
 thankful
 that
+that's
 the
 theatre
 their

@@ -930,6 +930,7 @@ divide
 division
 divorce
 do
+doing
 doctor
 document
 doesn't
@@ -2988,6 +2989,7 @@ than
 thank
 thanks
 that
+that's
 the
 theater
 their

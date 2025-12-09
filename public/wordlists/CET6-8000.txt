@@ -2622,6 +2622,7 @@ divisive
 divorce
 dizzy
 do
+doing
 dock
 doctor
 doctoral
@@ -8180,6 +8181,7 @@ thank
 thankful
 thanksgiving
 that
+that's
 the
 theater
 theatre

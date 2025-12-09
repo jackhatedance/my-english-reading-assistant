@@ -1330,6 +1330,7 @@ divine
 division
 divorce
 do
+doing
 dock
 doctor
 doctrine
@@ -4310,6 +4311,7 @@ than
 thank
 thanks
 that
+that's
 the
 theater
 their
