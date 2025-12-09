@@ -117,8 +117,12 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  gLogger.debug(`on message, type:${request.type}, tabId:${sender.tab.id}`);
-
+  gLogger.debug(`on message, type:${request.type}, tabId:${sender.tab?.id}`);
+  
+  if(sender.tab==null){
+    gLogger.warn(`sender.tab is null`);
+  }
+  
   let tabId =sender.tab.id;
 
   let message = 'ok';
