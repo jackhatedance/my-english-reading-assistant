@@ -276,7 +276,7 @@ test('definition link crenels', async ({ testPage, extensionId, popupPage }) => 
 });
 
 
-test('new word tag SUP', async ({ testPage, extensionId, popupPage }) => {
+test('unfamiliar word tag SUP', async ({ testPage, extensionId, popupPage }) => {
   
   
   await testPage.goto();
