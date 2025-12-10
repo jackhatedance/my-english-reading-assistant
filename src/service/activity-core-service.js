@@ -29,9 +29,9 @@ async function synchonizedUserTabs(asyncCallback){
   });
 }
 
-async function onTabInitialized(tabId, newTabInfo){
+async function onTabInitialized(tabId, newTabInfo, tab){
   await synchonizedUserTabs(async (userTabs)=> {
-    let args = {tabId, newTabInfo, saveReadingActivity};
+    let args = {tabId, newTabInfo, tab, saveReadingActivity};
     await process(userTabs, EVENT_INITIALIZED, args);
   });
 }
