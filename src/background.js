@@ -7,7 +7,7 @@ import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDi
 import log from 'loglevel'
 import { initLog } from './log.js'
 import { getTabInfo } from './service/tab-service.js';
-import { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onMarkWord, onIdleStateChanged } from './service/activity-core-service.js'
+import { onTabUpdate, onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onMarkWord, onIdleStateChanged } from './service/activity-core-service.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -183,8 +183,13 @@ async function onCleanPageFinished(tabId){
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
+  
   if(changeInfo.status==='complete'){
+    gLogger.debug(`on event: tabUpdated, tabId:${tabId}, changeInfo:${JSON.stringify(changeInfo)}`);
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
+    
+    await onTabUpdate(tabId, changeInfo, tab);
+
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
       //it is impossible to get tabInfo here. the tabInfo is set after this event
@@ -227,7 +232,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 */
 
 chrome.tabs.onRemoved.addListener(async (tabId,removeInfo) => {
-  gLogger.debug(`on message: tabRemoved, tabId:${tabId}`);
+  gLogger.debug(`on event: tabRemoved, tabId:${tabId}`);
   await onTabRemoved(tabId);
 });
 

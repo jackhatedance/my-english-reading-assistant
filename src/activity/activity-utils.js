@@ -27,4 +27,4 @@ function formatDuration(milliseconds) {
     return fh + ":" + fm + ":" + fs;
 }
 
-export { activityToString }
+export { activityToString, formatDuration }
