@@ -121,6 +121,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
   if(sender.tab==null){
     gLogger.warn(`sender.tab is null`);
+  }else{
+    //gLogger.warn(`sender.tab: ${JSON.stringify(sender.tab)}`);
   }
   
   let tabId =sender.tab.id;
@@ -140,7 +142,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let totalWordCount = request.payload.totalWordCount;
     let newTabInfo = {tabId: tabId, title: title, url:url, isbn: isbn, site:site, startTime: startTime, wordChanges:0, totalWordCount: totalWordCount};
     
-    onInitPageFinished(tabId, newTabInfo);
+    onInitPageFinished(tabId, newTabInfo, sender.tab);
   } else if(request.type === 'PAGE_ANNOTATION_CLEANED'){
     onCleanPageFinished(tabId);
   } else if(request.type === 'PAGE_LOADED_WITHOUT_AUTO_ENABLE'){
@@ -172,8 +174,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
 });
 
-async function onInitPageFinished(tabId, newTabInfo){
-  await onTabInitialized(tabId, newTabInfo);
+async function onInitPageFinished(tabId, newTabInfo, tab){
+  await onTabInitialized(tabId, newTabInfo, tab);
   setIcon(tabId, true);
 }
 

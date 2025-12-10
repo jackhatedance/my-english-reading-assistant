@@ -20,12 +20,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             assert.equal(newTabInfo.startTime, time1);
             assert.equal(saveCounter, 0);
@@ -60,12 +62,14 @@ describe('activity core', function () {
                 startTime: time2,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             assert.equal(newTabInfo.startTime, time1);
             assert.equal(saveCounter, 0);
@@ -100,12 +104,14 @@ describe('activity core', function () {
                 startTime: time2,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             assert.equal(newTabInfo.startTime, time2);
             assert.equal(saveCounter, 1);
@@ -132,12 +138,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             await process(userTabs, 'cleaned', { tabId, saveReadingActivity});
@@ -165,12 +173,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             await process(userTabs, 'blur', { tabId, saveReadingActivity});
@@ -198,13 +208,14 @@ describe('activity core', function () {
                 wordChanges: 0,
                 startTime: time1,
             };
+            let tab = { active:true};
 
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             await process(userTabs, 'blur', { tabId, saveReadingActivity});
@@ -236,12 +247,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let idleState = 'idle';
@@ -269,12 +282,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let idleState = 'idle';
@@ -306,12 +321,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let idleState = 'idle';
@@ -356,13 +373,15 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
             let newTabInfo = newTabInfo1;
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let idleState = 'idle';
@@ -372,13 +391,13 @@ describe('activity core', function () {
 
 
             let changeInfo = {};
-            let tab = { active:true};
             await process(userTabs, 'tabUpdated', { tabId, changeInfo, tab, saveReadingActivity});
             assert.equal(userTabs.idleState, null);
+            assert.equal(newTabInfo.startTime, null);
 
             saveCounter = 0;
             newTabInfo = newTabInfo2;
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             assert.equal(userTabs.tabs.length, 1);
             assert.notEqual(newTabInfo.startTime, null);
@@ -404,12 +423,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = async ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let collectGarbageTabs = async ()=> {};
@@ -438,12 +459,14 @@ describe('activity core', function () {
                 startTime: time1,
             };
 
+            let tab = { active:true};
+
             let tabId = '123';
 
             var saveCounter = 0;
             let saveReadingActivity = ()=>{saveCounter++};
 
-            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
 
             saveCounter = 0;
             let wordChanges = 1;
