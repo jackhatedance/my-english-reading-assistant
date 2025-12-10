@@ -537,7 +537,7 @@ describe('tokenizer', function () {
             
     });
 
-    it('new word positions boyat', async function () {
+    it('unfamiliar word positions boyat', async function () {
       
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
@@ -557,7 +557,7 @@ describe('tokenizer', function () {
       assert.equal(tokens[1].checkWordResult.word, 'at');            
     });
 
-    it('new word positions compound', async function () {
+    it('unfamiliar word positions compound', async function () {
       
       let tokens = tokenizeSentence((text)=> {
         //console.log('checkWord:'+text);
