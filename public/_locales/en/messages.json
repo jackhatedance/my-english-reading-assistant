@@ -3,7 +3,7 @@
         "message":"Mera English Reading Assistant"
     },
     "extensionDescription":{
-        "message":"Automatically display definitions for new words."
+        "message":"automatic inline hints for unfamiliar words"
     },
     "yes":{
         "message":"Yes"
@@ -234,7 +234,7 @@
         "message":"Copy & Paste is allowed"
     },
     "options_edit_vocabulary_field_tip":{
-        "message":"These are familiar words, not new words!"
+        "message":"These are familiar words, not unfamiliar words!"
     },
     "optionsEditVocabularyTotal":{
         "message":"total:"

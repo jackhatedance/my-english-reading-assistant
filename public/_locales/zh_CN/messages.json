@@ -3,7 +3,7 @@
         "message":"Mera英文阅读助手"
     },
     "extensionDescription":{
-        "message":"自动显示生词释义。"
+        "message":"自动內联提示生词释义"
     },
     "yes":{
         "message":"是"
