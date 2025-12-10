@@ -11,6 +11,13 @@ import log from 'loglevel'
 
 const gLogger = log.getLogger('activity-service');
 
+async function onTabUpdate(tabId, changeInfo, tab){
+  await synchonizedUserTabs(async (userTabs)=> {
+    let args = {tabId, changeInfo, tab, saveReadingActivity};
+    await process(userTabs, EVENT_FOCUS, args);
+  });
+}
+
 async function synchonizedUserTabs(asyncCallback){
   await synchronized(async ()=> {
     //console.log('new tab info:'+ JSON.stringify(newTabInfo));
@@ -121,4 +128,4 @@ async function saveReadingActivity(tabInfo){
   }
 }
 
-export { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onMarkWord, onIdleStateChanged }
+export { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabUpdate, onTabRemoved, onMarkWord, onIdleStateChanged }

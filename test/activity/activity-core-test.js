@@ -327,6 +327,65 @@ describe('activity core', function () {
         });
     });
 
+    describe('tabUpdated', function () {
+        it('initialized -> idle -> tabUpdate -> initialized', async function () {
+            let time1 = new Date().getTime();
+            let userTabs = {
+                tabs:[]
+            };
+
+            let newTabInfo1 = {
+                tabId: '123',
+                title: 'foo',
+                url: 'https://example.com/xyz.html',
+                isbn: '456',
+                site: 'example.com',
+                totalWordCount: 100,
+                wordChanges: 0,
+                startTime: time1,
+            };
+
+            let newTabInfo2 = {
+                tabId: '123',
+                title: 'foo',
+                url: 'https://example.com/xyz.html',
+                isbn: '456',
+                site: 'example.com',
+                totalWordCount: 100,
+                wordChanges: 0,
+                startTime: time1,
+            };
+
+            let tabId = '123';
+
+            var saveCounter = 0;
+            let saveReadingActivity = ()=>{saveCounter++};
+
+            let newTabInfo = newTabInfo1;
+            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+
+            saveCounter = 0;
+            let idleState = 'idle';
+            await process(userTabs, 'idleStateChanged', { tabId, idleState, saveReadingActivity});
+
+            assert.equal(userTabs.idleState, 'idle');
+
+
+            let changeInfo = {};
+            let tab = { active:true};
+            await process(userTabs, 'tabUpdated', { tabId, changeInfo, tab, saveReadingActivity});
+            assert.equal(userTabs.idleState, null);
+
+            saveCounter = 0;
+            newTabInfo = newTabInfo2;
+            await process(userTabs, 'initialized', { tabId, newTabInfo, saveReadingActivity});
+
+            assert.equal(userTabs.tabs.length, 1);
+            assert.notEqual(newTabInfo.startTime, null);
+            assert.equal(saveCounter, 0);
+        });
+    });
+
     describe('tabRemoved', function () {
         it('initialized -> tabRemoved', async function () {
             let time1 = new Date().getTime();

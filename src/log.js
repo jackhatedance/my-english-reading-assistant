@@ -5,8 +5,8 @@ function initLog(){
     log.getLogger("background").setLevel("debug");
     log.getLogger("mera").setLevel("warn");
     //article is about tokenize text
-    log.getLogger("article").setLevel("info");
-    log.getLogger("page").setLevel("debug");
+    log.getLogger("article").setLevel("debug");
+    log.getLogger("page").setLevel("info");
     log.getLogger("page-change-monitor").setLevel("info");
     log.getLogger("mutation-observer").setLevel("info");
     log.getLogger("document").setLevel("warn");
