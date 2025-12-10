@@ -14,7 +14,7 @@ function createMutationObserver(document, page){
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {
         //console.log("A child node has been added or removed.");
-        //console.log(mutation);
+        
         let addedNodeTextContentArray = [];
         for(let node of mutation.addedNodes){
           if(node.textContent && node.textContent != ''){
@@ -42,7 +42,7 @@ function createMutationObserver(document, page){
         let triggeredBySelf = triggeredByTokenize || triggeredInMeaElement;
         let siteIgnoreDomChange = siteProfile.ignoreDomChange(mutation, addedNodeTextContents);
         if(!triggeredBySelf && !ignoreAddedNodeTextContentsSmallChange && !siteIgnoreDomChange){
-          gLogger.debug(addedNodeTextContents);
+          gLogger.debug(`addedNodeText: ${addedNodeTextContents}`);
           gLogger.debug(mutation);
           page.domChanges ++;
         }        
