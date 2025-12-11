@@ -392,7 +392,66 @@ describe('activity core', function () {
 
             let changeInfo = {};
             await process(userTabs, 'tabUpdated', { tabId, changeInfo, tab, saveReadingActivity});
-            assert.equal(userTabs.idleState, null);
+            assert.equal(userTabs.idleState, 'idle');
+            assert.equal(newTabInfo.startTime, null);
+
+            saveCounter = 0;
+            newTabInfo = newTabInfo2;
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
+
+            assert.equal(userTabs.tabs.length, 1);
+            assert.equal(newTabInfo.startTime, null);
+            assert.equal(saveCounter, 0);
+        });
+
+        it('initialized -> idle -> tabCreated -> initialized', async function () {
+            let time1 = new Date().getTime();
+            let userTabs = {
+                tabs:[]
+            };
+
+            let newTabInfo1 = {
+                tabId: '123',
+                title: 'foo',
+                url: 'https://example.com/xyz.html',
+                isbn: '456',
+                site: 'example.com',
+                totalWordCount: 100,
+                wordChanges: 0,
+                startTime: time1,
+            };
+
+            let newTabInfo2 = {
+                tabId: '123',
+                title: 'foo',
+                url: 'https://example.com/xyz.html',
+                isbn: '456',
+                site: 'example.com',
+                totalWordCount: 100,
+                wordChanges: 0,
+                startTime: time1,
+            };
+
+            let tab = { active:true};
+
+            let tabId = '123';
+
+            var saveCounter = 0;
+            let saveReadingActivity = ()=>{saveCounter++};
+
+            let newTabInfo = newTabInfo1;
+            await process(userTabs, 'initialized', { tabId, newTabInfo, tab, saveReadingActivity});
+
+            saveCounter = 0;
+            let idleState = 'idle';
+            await process(userTabs, 'idleStateChanged', { tabId, idleState, saveReadingActivity});
+
+            assert.equal(userTabs.idleState, 'idle');
+
+
+            let changeInfo = {};
+            await process(userTabs, 'tabCreated', { tab, saveReadingActivity});
+            assert.notEqual(userTabs.idleState, 'idle');
             assert.equal(newTabInfo.startTime, null);
 
             saveCounter = 0;
@@ -442,7 +501,7 @@ describe('activity core', function () {
     });
 
     describe('mark word', function () {
-        it('initialized -> markWord', async function () {
+        it('initialized -> wordMarked', async function () {
             let time1 = new Date().getTime();
             let userTabs = {
                 tabs:[]
@@ -470,7 +529,7 @@ describe('activity core', function () {
 
             saveCounter = 0;
             let wordChanges = 1;
-            await process(userTabs, 'markWord', { tabId, wordChanges});
+            await process(userTabs, 'wordMarked', { tabId, wordChanges});
 
             assert.equal(userTabs.tabs.length, 1);
             assert.equal(newTabInfo.wordChanges, 11);
