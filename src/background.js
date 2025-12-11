@@ -69,7 +69,7 @@ chrome.runtime.onInstalled.addListener(async function () {
   
   let options = await getOptions();
   if(options.dictionary.automigration == true){
-    console.log('check dictionaries');
+    gLogger.info('check dictionaries');
     migrateAllDictionaries((name, progress) => sendMsgOfIndexBuildingProgress(name, progress));        
   }
 });
