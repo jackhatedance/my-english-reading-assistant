@@ -20,28 +20,31 @@ export const EVENT_FOCUS = 'focus';
 
 export const EVENT_IDLE_STATE_CHANGED = 'idleStateChanged';
 
+export const EVENT_TAB_CREATED = 'tabCreated';
 export const EVENT_TAB_UPDATED = 'tabUpdated';
 export const EVENT_TAB_REMOVED = 'tabRemoved';
 
-export const EVENT_MARK_WORD = 'markWord';
+export const EVENT_WORD_MARKED = 'wordMarked';
 
 async function process(userTabs, event, args){
     if(event == EVENT_INITIALIZED){
-        await initialized(userTabs, args);
+        await annotationInitialized(userTabs, args);
     } else if(event == EVENT_CLEANED){
-        await cleaned(userTabs, args);
+        await annotationCleaned(userTabs, args);
     } else if(event == EVENT_BLUR){
-        await blur(userTabs, args);
+        await windowBlurred(userTabs, args);
     } else if(event == EVENT_FOCUS){
-        await focus(userTabs, args);
+        await windowFocused(userTabs, args);
     } else if(event == EVENT_IDLE_STATE_CHANGED){
         await idleStateChanged(userTabs, args);
+    } else if(event == EVENT_TAB_CREATED){
+        await tabCreated(userTabs, args);
     } else if(event == EVENT_TAB_UPDATED){
         await tabUpdated(userTabs, args);
     } else if(event == EVENT_TAB_REMOVED){
         await tabRemoved(userTabs, args);
-    } else if(event == EVENT_MARK_WORD){
-        await markWord(userTabs, args);
+    } else if(event == EVENT_WORD_MARKED){
+        await wordMarked(userTabs, args);
     }
 }
 
@@ -50,7 +53,7 @@ async function process(userTabs, event, args){
  * @param {*} userTabs 
  * @param {*} args 
  */
-async function initialized(userTabs, args){
+async function annotationInitialized(userTabs, args){
     const { tabId, newTabInfo, tab, saveReadingActivity } = args;
 
     let tabs = userTabs.tabs;
@@ -69,20 +72,20 @@ async function initialized(userTabs, args){
         if(bActiveReadingTab){
             if(tabInfo.startTime){
                 if(sameUrl){
-                    let duration = new Date().getTime() - tabInfo.startTime;
-                    logReading(newTabInfo, 'continue')
                     newTabInfo.startTime = tabInfo.startTime;
+                    logReading(newTabInfo, 'continue')
                 }else{
-                    await saveReadingActivity(tabInfo);
-                    tabInfo.startTime = null;
+                    gLogger.debug(`URL changed from ${tabInfo.url} to ${newTabInfo.url}`);
+                    await saveAndStopReading(saveReadingActivity, tabInfo);
+
+                    logReading(newTabInfo, 'start');
                 }
             }else{
                 logReading(newTabInfo, 'start');
             }
         }else{
             if(tabInfo.startTime){
-                await saveReadingActivity(tabInfo);
-                tabInfo.startTime = null;
+                await saveAndStopReading(saveReadingActivity, tabInfo);
             }
 
             logReading(newTabInfo, 'inactive');
@@ -104,26 +107,21 @@ async function initialized(userTabs, args){
 
 }
 
-function logReading(tabInfo, action){
-    gLogger.debug(`${action} reading [${truncateString(tabInfo.title, 20)}]`);
-}
-
-async function cleaned(userTabs, args){
+async function annotationCleaned(userTabs, args){
     const { tabId, saveReadingActivity } = args;
 
     let tabs = userTabs.tabs;
     let tabInfo = findTab(tabs, tabId);
     
     if(tabInfo && tabInfo.startTime){
-      await saveReadingActivity(tabInfo);
-      tabInfo.startTime = null;
+        await saveAndStopReading(saveReadingActivity, tabInfo);
     }
 
     tabs = removeTab(tabs, tabId);
     userTabs.tabs = tabs;
 }
 
-async function blur(userTabs, args){
+async function windowBlurred(userTabs, args){
     const { tabId, saveReadingActivity } = args;
 
     let tabInfo = findTab(userTabs.tabs, tabId);
@@ -131,8 +129,7 @@ async function blur(userTabs, args){
         //console.log('blur');
 
         if(userTabs.idleState == null || userTabs.idleState == IDLE_STATE_ACTIVE){
-            await saveReadingActivity(tabInfo);
-            tabInfo.startTime = null;
+            await saveAndStopReading(saveReadingActivity, tabInfo);
         }
         
         tabInfo.windowState = WINDOW_STATE_BLURRED;
@@ -142,7 +139,7 @@ async function blur(userTabs, args){
     setIdleState(userTabs, null);
 }
 
-async function focus(userTabs, args){
+async function windowFocused(userTabs, args){
     const { tabId, saveReadingActivity } = args;
     
     let tabInfo = findTab(userTabs.tabs, tabId);
@@ -154,9 +151,10 @@ async function focus(userTabs, args){
       }
 
       //anyway, set start time to now.
+      let now = new Date();
+      tabInfo.startTime = now.getTime();
       gLogger.debug(`Start reading [${truncateString(tabInfo.title, 20)}]`);
-      tabInfo.startTime = new Date().getTime();
-      
+
       tabInfo.windowState = WINDOW_STATE_FOCUSED;
 
       
@@ -212,8 +210,10 @@ async function active(userTabs, args){
         //set start time of the (only) active tab
         let activeTabInfo = tabs.find(tabInfo => tabInfo.tabId == userTabs.inactiveTabId);
         if(activeTabInfo){
+            let now = new Date();
+            activeTabInfo.startTime = now.getTime();
             gLogger.debug(`Start reading [${truncateString(activeTabInfo.title, 20)}]`);
-            activeTabInfo.startTime = new Date().getTime();
+
             userTabs.inactiveTabId = null;
         }
     } else if(userTabs.idleState==IDLE_STATE_LOCKED){
@@ -238,14 +238,20 @@ async function inactive(userTabs, args){
     //save time of the (first) active tab
     let activeTabInfo = tabInfoArray.find(tabInfo => tabInfo.startTime!=null);
     if(activeTabInfo){
-        await saveReadingActivity(activeTabInfo);
-        activeTabInfo.startTime = null;
+        await saveAndStopReading(saveReadingActivity, activeTabInfo);
+
         userTabs.inactiveTabId = activeTabInfo.tabId;
     }
     
     //clear startTime for all tabs
     tabInfoArray.forEach(tabInfo => tabInfo.startTime = null);
     
+}
+
+async function tabCreated(userTabs, args){
+    const { tab, saveReadingActivity } = args;
+
+    setIdleState(userTabs, null);
 }
 
 async function tabUpdated(userTabs, args){
@@ -255,7 +261,9 @@ async function tabUpdated(userTabs, args){
     let tabInfo = findTab(tabs, tabId);
     if(tabInfo){
 
-        userTabs.idleState=null;
+        //shot not change idleState here.
+        //userTabs.idleState=null;
+
         /* tab.active will also be passed into the initialize event
         if(tab.active==true){
             gLogger.debug(`window state is active`);
@@ -280,8 +288,7 @@ async function tabRemoved(userTabs, args){
         let bActiveReadingTab = isActiveReadingTab(userTabs, tabInfo);
         if(bActiveReadingTab){
             if(tabInfo.startTime){
-                await saveReadingActivity(tabInfo);
-                tabInfo.startTime = null;
+                await saveAndStopReading(saveReadingActivity, tabInfo);
             }else{
                 gLogger.debug(`tab ${tabId} has not been read at all`);
             }
@@ -291,11 +298,12 @@ async function tabRemoved(userTabs, args){
         }
     }
     await collectGarbageTabs(userTabs);
-    
+
+    setIdleState(userTabs, null);
 }
 
 
-async function markWord(userTabs, args){
+async function wordMarked(userTabs, args){
     const { tabId, wordChanges } = args;
 
     let tabInfo = findTab(userTabs.tabs, tabId);
@@ -306,6 +314,23 @@ async function markWord(userTabs, args){
     }else{
         console.error(`tabInfo not found of tab id: ${tabId}`);
     }
+}
+
+function logReading(tabInfo, action){
+    let durationStr = '';
+    if(tabInfo.startTime != null){
+        let now = new Date();
+        let duration = now.getTime() - tabInfo.startTime;
+        durationStr = `, for ${formatDuration(duration)}`;
+    }
+
+    gLogger.debug(`${action} reading "${truncateString(tabInfo.title, 20)}"${durationStr}`);
+}
+
+async function saveAndStopReading(saveReadingActivity, tabInfo){
+    logReading(tabInfo, 'stop');
+    await saveReadingActivity(tabInfo);
+    tabInfo.startTime = null;
 }
 
 export { process }
