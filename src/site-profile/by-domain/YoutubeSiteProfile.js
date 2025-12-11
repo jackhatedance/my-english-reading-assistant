@@ -33,7 +33,7 @@ class YoutubeSiteProfile extends DefaultSiteProfile {
     }
 
     ignoreDomChange(mutation){
-        const ignoredClassesOfItselfOrDescendant = [ 'ytp-caption-window-container'];
+        const ignoredClassesOfItselfOrDescendant = [ 'ytp-caption-window-container', 'ytp-tooltip-text-wrapper'];
         let ignored = isSelfOrDecendantOfClass(mutation.target, ignoredClassesOfItselfOrDescendant, 5);
         if(ignored){
             return true;
