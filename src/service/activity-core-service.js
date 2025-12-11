@@ -3,7 +3,8 @@ import { synchronized } from '../user-activity/lock.js'
 import { getUserTabs, saveUserTabs, collectGarbageTabs } from './tab-service.js';
 import { addActivityToStorage } from './activityService.js';
 import { truncateString } from '../utils/stringUtils.js'
-import { process, EVENT_INITIALIZED, EVENT_CLEANED, EVENT_BLUR, EVENT_FOCUS, EVENT_IDLE_STATE_CHANGED, EVENT_TAB_REMOVED, EVENT_MARK_WORD } from '../activity/activity-core.js'
+import { process, EVENT_INITIALIZED, EVENT_CLEANED, EVENT_BLUR, EVENT_FOCUS, EVENT_IDLE_STATE_CHANGED, EVENT_TAB_CREATED, EVENT_TAB_UPDATED, EVENT_TAB_REMOVED, EVENT_WORD_MARKED } from '../activity/activity-core.js'
+import { formatDuration } from '../activity/activity-utils.js'
 
 import log from 'loglevel'
 
@@ -11,10 +12,17 @@ import log from 'loglevel'
 
 const gLogger = log.getLogger('activity-service');
 
-async function onTabUpdate(tabId, changeInfo, tab){
+async function onTabCreated(tab){
+  await synchonizedUserTabs(async (userTabs)=> {
+    let args = {tab, saveReadingActivity};
+    await process(userTabs, EVENT_TAB_CREATED, args);
+  });
+}
+
+async function onTabUpdated(tabId, changeInfo, tab){
   await synchonizedUserTabs(async (userTabs)=> {
     let args = {tabId, changeInfo, tab, saveReadingActivity};
-    await process(userTabs, EVENT_FOCUS, args);
+    await process(userTabs, EVENT_TAB_UPDATED, args);
   });
 }
 
@@ -29,14 +37,14 @@ async function synchonizedUserTabs(asyncCallback){
   });
 }
 
-async function onTabInitialized(tabId, newTabInfo, tab){
+async function onAnnotationInitialized(tabId, newTabInfo, tab){
   await synchonizedUserTabs(async (userTabs)=> {
     let args = {tabId, newTabInfo, tab, saveReadingActivity};
     await process(userTabs, EVENT_INITIALIZED, args);
   });
 }
 
-async function onTabCleaned(tabId){
+async function onAnnotationCleaned(tabId){
   await synchonizedUserTabs(async (userTabs)=> {
     let args = {tabId, saveReadingActivity};
     await process(userTabs, EVENT_CLEANED, args);
@@ -47,7 +55,7 @@ async function onTabCleaned(tabId){
  * when user switch from current tab
  * @param {*} tabId 
  */
-async function onTabBlur(tabId){
+async function onTabBlurred(tabId){
 
   await synchonizedUserTabs(async (userTabs)=> {
     let args = {tabId, saveReadingActivity};
@@ -59,7 +67,7 @@ async function onTabBlur(tabId){
  * this event followed after the BLUR event
  * @param {*} tabId 
  */
-async function onTabFocus(tabId){
+async function onTabFocused(tabId){
   await synchonizedUserTabs(async (userTabs)=> {
     let args = {tabId, saveReadingActivity};
     await process(userTabs, EVENT_FOCUS, args);
@@ -75,11 +83,11 @@ async function onTabRemoved(tabId){
   });
 }
 
-async function onMarkWord(tabId, wordChanges){
+async function onWordMarked(tabId, wordChanges){
   await synchonizedUserTabs(async (userTabs)=> {
     
     const args = { tabId, wordChanges };
-    await process(userTabs, EVENT_MARK_WORD, args);
+    await process(userTabs, EVENT_WORD_MARKED, args);
   });
   //console.log(`mark word, tabId:${tabId}, changes:${wordChanges}`);
 }
@@ -110,7 +118,7 @@ async function saveReadingActivity(tabInfo){
     let endTime = new Date().getTime();
     var duration = endTime - tabInfo.startTime;
     
-    gLogger.debug(`Stop reading [${truncateString(tabInfo.title, 20)}], ${duration/1000} seconds`);
+    gLogger.debug(`save reading activity. "${truncateString(tabInfo.title, 20)}", ${formatDuration(duration)}`);
     await addActivityToStorage({
       startTime: tabInfo.startTime,
       endTime: endTime,
@@ -128,4 +136,4 @@ async function saveReadingActivity(tabInfo){
   }
 }
 
-export { onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabUpdate, onTabRemoved, onMarkWord, onIdleStateChanged }
+export { onAnnotationInitialized, onAnnotationCleaned, onTabBlurred, onTabFocused, onTabCreated, onTabUpdated, onTabRemoved, onWordMarked, onIdleStateChanged }

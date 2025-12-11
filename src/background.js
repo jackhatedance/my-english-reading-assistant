@@ -7,7 +7,8 @@ import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDi
 import log from 'loglevel'
 import { initLog } from './log.js'
 import { getTabInfo } from './service/tab-service.js';
-import { onTabUpdate, onTabInitialized, onTabCleaned, onTabBlur, onTabFocus, onTabRemoved, onMarkWord, onIdleStateChanged } from './service/activity-core-service.js'
+import { onTabCreated, onTabUpdated, onAnnotationInitialized, onAnnotationCleaned, onTabBlurred, onTabFocused, onTabRemoved, onWordMarked, onIdleStateChanged } from './service/activity-core-service.js'
+import { truncateString } from './utils/stringUtils.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -117,13 +118,16 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  gLogger.debug(`on message, type:${request.type}, tabId:${sender.tab?.id}`);
-  
+
+  let tabTitle = '';
   if(sender.tab==null){
     gLogger.warn(`sender.tab is null`);
   }else{
     //gLogger.warn(`sender.tab: ${JSON.stringify(sender.tab)}`);
+    tabTitle = truncateString(sender.tab.title,20);
   }
+
+  gLogger.debug(`on message:${request.type}, ${tabTitle}`);
   
   let tabId =sender.tab.id;
 
@@ -148,9 +152,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if(request.type === 'PAGE_LOADED_WITHOUT_AUTO_ENABLE'){
     setIcon(tabId, false);
   } else if(request.type === 'WINDOW_FOCUS'){
-    onTabFocus(tabId);
+    onTabFocused(tabId);
   } else if(request.type === 'WINDOW_BLUR'){
-    onTabBlur(tabId);
+    onTabBlurred(tabId);
   } else if(request.type === 'MARK_WORD'){
     let tabId;
     if(request.payload.contentTabId){
@@ -160,7 +164,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     let wordChanges = request.payload.wordChanges;
     
-    onMarkWord(tabId, wordChanges);
+    onWordMarked(tabId, wordChanges);
   } else if(request.type === 'DICTIONARY_CHANGE'){
     
     //console.log('DICTIONARY_CHANGE event:' + JSON.stringify(request.payload));
@@ -175,22 +179,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function onInitPageFinished(tabId, newTabInfo, tab){
-  await onTabInitialized(tabId, newTabInfo, tab);
+  await onAnnotationInitialized(tabId, newTabInfo, tab);
   setIcon(tabId, true);
 }
 
 async function onCleanPageFinished(tabId){
-  await onTabCleaned(tabId);
+  await onAnnotationCleaned(tabId);
   setIcon(tabId, false);
 }
+
+chrome.tabs.onCreated.addListener(async (tab) => {
+  
+  gLogger.debug(`on event: tabCreated, tabId:${tab.id}`);
+  //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
+  
+  await onTabCreated(tab);
+  
+});
 
 chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
   
   if(changeInfo.status==='complete'){
-    gLogger.debug(`on event: tabUpdated, tabId:${tabId}, changeInfo:${JSON.stringify(changeInfo)}`);
+    gLogger.debug(`on event: tabUpdated, tabId:${tabId}`);
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
     
-    await onTabUpdate(tabId, changeInfo, tab);
+    await onTabUpdated(tabId, changeInfo, tab);
 
     let tabInfo = await getTabInfo(tabId);
     if(tabInfo){
