@@ -5,7 +5,9 @@ import { createDictionaryInstance, getIndexStatus, isIndexValid, canBeParsed, ha
 import { generateIndex } from './index.js'
 import { createSystemDictionaryMeta, loadSystemDictionariesToCache } from './systemDictionary.js'
 import { DICTIONARY_INDEX_STATUS_OK } from './dictConstants.js'
+import log from 'loglevel'
 
+const gLogger = log.getLogger('custom-dictionary');
 
 //memory copies of dictionary from store
 var gCustomDictionaries = {};
@@ -296,7 +298,8 @@ async function migrateAllDictionaries(updateProgress){
             priority: 0
         }); 
     }
-    console.log(`${count} dictionary has been upgraded.`);
+
+    gLogger.info(`${count} dictionaries have been upgraded.`);
 }
 
 async function getDictionaryWithInvalidIndexes(){
