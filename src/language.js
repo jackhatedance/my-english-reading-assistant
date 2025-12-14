@@ -180,8 +180,7 @@ function searchWordWithDict(query, options, dicts){
         }
 
         if(!baseWord && options.lookupBase == 'Always'){
-            
-            let baseWordResult = getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options);
+            let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
             
             if(baseWordResult){
                 //console.log(baseWordResult);
@@ -189,18 +188,6 @@ function searchWordWithDict(query, options, dicts){
                 baseWord = baseWordResult.word;
                 deepLookupResult = baseWordResult;
             }
-
-            if(!baseWordResult){
-                let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
-                
-                if(baseWordResult){
-                    //console.log(baseWordResult);
-                    baseSearchType='lemma';
-                    baseWord = baseWordResult.word;
-                    deepLookupResult = baseWordResult;
-                }
-            }
-        
         }
 
         if(!baseWord && options.lookupBase == 'Must'){
@@ -345,6 +332,21 @@ function getBaseWord(word, options, dicts, lookupResult){
         }
     }
     */
+
+    let baseWordResult = getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options);
+    if(baseWordResult){
+        baseWord = baseWordResult.word;
+
+        if(baseWord !== word){
+            let _baseLookupResult = lookup(baseWord, options, dicts);
+            if(_baseLookupResult){
+                let _related = related(_baseLookupResult, lookupResult);
+                if(_related){
+                    baseLookupResult = _baseLookupResult;
+                }
+            }
+        }
+    }
    
     //word-parts dictionary has higher priority than lemmatize lib
     if(!baseLookupResult) {
@@ -399,10 +401,12 @@ function getBaseWord(word, options, dicts, lookupResult){
 function related(lookupResult1, lookupResult2){
     let definitionText1 = getDefinitionTextFromEntries(lookupResult1.json);
     definitionText1 = removeMeaninglessChar(definitionText1);
+    let length1 = definitionText1.length;
 
     let definitionText2 = getDefinitionTextFromEntries(lookupResult2.json);
     definitionText2 = removeMeaninglessChar(definitionText2);
-    
+    let length2 = definitionText2.length;
+
     let _similarity = similarity(definitionText1, definitionText2);
 
     /*
@@ -410,8 +414,18 @@ function related(lookupResult1, lookupResult2){
     console.log(definitionText1);
     console.log(definitionText2);
     */
+    
+    let avgLength = (length1 + length2)/2;
 
-    return _similarity > 0.03;
+    let result;
+    
+    if(avgLength > 20){
+        result = _similarity > 0.1;
+    } else {
+        result = _similarity > 0.03;
+    }
+    
+    return result;
 }
 
 function removeMeaninglessChar(definitionText){
