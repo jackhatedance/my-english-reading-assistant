@@ -14,7 +14,7 @@ import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'
 import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
-import { getMeaTokenElement, getFirstTextNode } from './token.js'
+import { getMeaTokenElement } from './token.js'
 
 const gLogger = log.getLogger('article');
 /**
@@ -355,12 +355,20 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                 //console.log(token);
             }
             
-            var meaTokenElement, dataWord, dataBaseWord;
+            var meaTokenElement, dataWord, dataBaseWord, showAnnotation;
             if(token){
                 meaTokenElement = getMeaTokenElement(node);
                 if(meaTokenElement){
                     dataWord = getWordFromElement(meaTokenElement);
                     dataBaseWord = getBaseWordFromElement(meaTokenElement);
+                    const regex = /[a-zA-Z]/;
+                    const firstAlphabetIndex = token.content.search(regex);
+                    const firstAlphabetIndexOfArticle = token.articleOffset + firstAlphabetIndex;
+                    
+                    const containsFirstAlphabet = nodeInfo.offset <= firstAlphabetIndexOfArticle
+                        && nodeInfo.offset + nodeInfo.length > firstAlphabetIndexOfArticle;
+
+                    showAnnotation = containsFirstAlphabet;
                 }
             }
             
@@ -369,18 +377,9 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                 && (
                     dataWord != token.checkWordResult?.word
                     || dataBaseWord != token.checkWordResult?.baseWord
+                    || !showAnnotation
                 )
-            ){
-                let firstChildNode = getFirstTextNode(meaTokenElement);
-                let firstChildNodeInfo;
-                if(node == firstChildNode){
-                    firstChildNodeInfo = nodeInfo;
-                } else {
-                    firstChildNodeInfo = article.textNodeMap.get(firstChildNode);
-                }
-                let nodeOfFirstElementOfToken = firstChildNodeInfo.offset === token.articleOffset;
-                let showAnnotation = nodeOfFirstElementOfToken;
-
+            ){  
                 if(token.checkWordResult) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
                     //console.log(contentWithoutPunctuation);
