@@ -23,7 +23,7 @@ function initLog(){
     log.getLogger("article").setLevel("info");
     log.getLogger("page").setLevel("info");
     log.getLogger("page-change-monitor").setLevel("info");
-    log.getLogger("mutation-observer").setLevel("debug");
+    log.getLogger("mutation-observer").setLevel("info");
     log.getLogger("document").setLevel("warn");
     log.getLogger("tooltip").setLevel("info");
     log.getLogger("tab-service").setLevel("debug");
