@@ -200,7 +200,7 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 chrome.tabs.onUpdated.addListener(async (tabId,changeInfo, tab) => {
   
   if(changeInfo.status==='complete'){
-    gLogger.debug(`on event: tabUpdated, tabId:${tabId}`);
+    gLogger.debug(`on event: tabUpdated, tabId:${tabId}, status:${changeInfo.status}`);
     //console.log('tab updated: ' + 'tabId:' + tabId + 'changeInfo:' +JSON.stringify(changeInfo) + ', '+ JSON.stringify(tab));
     
     await onTabUpdated(tabId, changeInfo, tab);
