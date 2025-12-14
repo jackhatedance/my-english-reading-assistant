@@ -32,12 +32,12 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
 
       assert.equal(parseResult[0].definitionGroups[0].name, "adjective");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的; 满意的");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "合意的, 满意的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[1].text, "合格的; 胜任的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[2].text, "善的; 有德行的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[3].text, "让人高兴的; 令人愉快的; 令人满意的");      
       assert.equal(parseResult[0].definitionGroups[0].definitions[4].text, "彻底的");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "天哪; 啊呀");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[5].text, "天哪!啊呀");      
       
       assert.equal(parseResult[0].definitionGroups[1].name, "noun");      
       assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "善; 正义");      
@@ -83,7 +83,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈdrægl");
 
       assert.equal(parseResult[0].definitionGroups[0].name, "verb");      
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏; 拖湿");      
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "拖脏, 拖湿");      
       
     });
 
@@ -210,7 +210,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "强bʌt, 弱bət");
 
-      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰, 苏格兰, 非正式>[用于句尾]但是; 然而");
+      assert.equal(parseResult[0].definitionGroups[2].definitions[1].text, "<澳/新西兰, 苏格兰, 非正式>[用于句尾]但是, 然而");
       
       
     });
@@ -238,7 +238,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "ˈzəʊəfaɪt");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[动]<旧>植形动物; 植虫(如珊瑚、海葵、海绵、海百合等)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "[动]<旧>植形动物, 植虫(如珊瑚、海葵、海绵、海百合等)");
       
       
     });
@@ -252,9 +252,8 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].region, "");
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "nəˈbəʊkɒf");
 
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "纳巴科夫; 弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "纳巴科夫");
-      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[1], "弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名/ 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "纳巴科夫, 弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名; 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
+      assert.equal(parseResult[0].definitionGroups[0].definitions[0].subdefinitions[0], "纳巴科夫, 弗拉基米尔(·弗拉迪莫洛维奇)(1899-1977, 俄国出生的美国诗人和小说家, 以小说《洛莉塔》[1955]最为著名; 该小说讲述了一个中年男人对一个12岁女孩的迷恋)");
       
     });
 
@@ -268,7 +267,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
       assert.equal(parseResult[0].headword.pronunciations[0].phonetics, "sed");
 
       assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "say的过去式和过去分词");
-      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的; 该(用于法律语言或幽默中)");
+      assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "上述的, 该(用于法律语言或幽默中)");
       
     });
 
