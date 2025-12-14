@@ -16,18 +16,19 @@ prefix.apply(log, {
 
 function initLog(){
     log.setDefaultLevel('info');
-    log.getLogger("background").setLevel("info");
+    log.getLogger("background").setLevel("debug");
     log.getLogger("mera").setLevel("info");
     //article is about tokenize text
+    log.getLogger("site-profile").setLevel("info");
     log.getLogger("article").setLevel("info");
     log.getLogger("page").setLevel("info");
     log.getLogger("page-change-monitor").setLevel("info");
     log.getLogger("mutation-observer").setLevel("info");
     log.getLogger("document").setLevel("warn");
     log.getLogger("tooltip").setLevel("info");
-    log.getLogger("tab-service").setLevel("info");
-    log.getLogger("activity-service").setLevel("info");
-    log.getLogger("activity-core").setLevel("info");
+    log.getLogger("tab-service").setLevel("debug");
+    log.getLogger("activity-service").setLevel("debug");
+    log.getLogger("activity-core").setLevel("debug");
     log.getLogger("activity-core-service").setLevel("info");
     log.getLogger("dictionary").setLevel("info");
     log.getLogger("custom-dictionary").setLevel("info");

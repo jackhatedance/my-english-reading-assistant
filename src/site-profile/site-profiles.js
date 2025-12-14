@@ -1,4 +1,6 @@
 
+import { FlowossSiteProfile } from './by-domain/FlowossSiteProfile.js'
+
 import { RedditSiteProfile } from './by-domain/RedditSiteProfile.js';
 import { CnnSiteProfile } from './by-domain/CnnSiteProfile.js';
 import { YoutubeSiteProfile } from './by-domain/YoutubeSiteProfile.js';
@@ -14,12 +16,18 @@ import { DefaultSiteProfile } from './DefaultSiteProfile.js';
 import { DefaultSiteConfig } from './config/DefaultSiteConfig.js';
 import { searchSubIframesRecursively } from './utils.js';
 
+import log from 'loglevel'
+
+var gLogger = log.getLogger('site-profile');
+
 let name = 'default';
 let matcher = new Matcher('default');
 let config = new DefaultSiteConfig();
 const defaultSiteProfile = new DefaultSiteProfile(name, matcher, config); 
 
 const siteProfiles = [
+    new FlowossSiteProfile(),
+
     new RedditSiteProfile(),
     new CnnSiteProfile(),
     new YoutubeSiteProfile(),
@@ -46,7 +54,7 @@ function findSiteProfile(document) {
     if(!searchResult){
         searchResult = defaultSiteProfile;
     }
-    //console.log('find site profile:'+searchResult.name);
+    gLogger.debug(`find site profile:${searchResult.name}`);
     return searchResult;
 }
 

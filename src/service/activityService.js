@@ -25,11 +25,11 @@ function loadActivitiesFromStorage(){
 }
 
 async function addActivityToStorage(newActivity){
-    gLogger.debug('add new activity:'+ activityToString(newActivity));
+    gLogger.debug('add activity:'+ activityToString(newActivity));
 
     const MIN_DURATION_IN_MILLISECONDS = 1 * 1000;
     const MIN_PAGE_WORD_COUNT = 10;
-    const MAX_SESSION_TIME_IN_MILLISECONDS = 4 * 3600 * 1000;
+    const MAX_SESSION_TIME_IN_MILLISECONDS = 1 * 3600 * 1000;
 
     if(newActivity.duration < MIN_DURATION_IN_MILLISECONDS
         && newActivity.wordChanges == 0){
