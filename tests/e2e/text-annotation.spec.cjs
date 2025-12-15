@@ -127,6 +127,21 @@ test('base form rushes', async ({ testPage, extensionId, popupPage }) => {
   
 });
 
+test('base form glaciers', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let rode = testPage.page.locator("#base-form mea-token[data-query='glaciers']");
+  await expect(rode).toHaveAttribute('data-target-word', 'glacier');
+  await expect(rode).toHaveAttribute('data-base-word', 'glacier');
+  await expect(rode).toHaveAttribute('data-footnote', 'n. 冰川');
+  await expect(rode).toHaveAttribute('data-footnote-short', 'n. 冰川');
+  
+});
+
 test('iregular only transform rode', async ({ testPage, extensionId, popupPage }) => {
   
   
@@ -444,7 +459,7 @@ test('pdf line end hyphen', async ({ testPage, extensionId, popupPage }) => {
 
 
   let compile = testPage.page.locator("mea-token[data-word='compile']").first();
-  await expect(compile).toHaveText('com-', 10000);
+  await expect(compile).toHaveText('com-', { timeout: 10000 });
   await expect(compile).toHaveAttribute('data-footnote', 'vt. 编译; 编辑; 编纂; 收集');
   await expect(compile).toHaveAttribute('data-footnote-short', 'vt. 编译; 编辑; 编纂; ...');
   

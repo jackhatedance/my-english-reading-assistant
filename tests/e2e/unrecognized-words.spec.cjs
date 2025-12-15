@@ -12,11 +12,11 @@ test('unrecognized words capturing', async ({ optionsPage, testPage, extensionId
   await popupPage.goto(extensionId);
   await popupPage.toggle();
 
-  let rode = testPage.page.locator("#unregonized-words mea-token[data-query='Alice']");
+  let rode = testPage.page.locator("#unrecognized-words mea-token[data-query='Alice']");
   await expect(rode).toHaveAttribute('data-word', '');
   
   await optionsPage.goto(extensionId); 
   await optionsPage.gotoTab('unrecognized-words');
-  await expect(optionsPage.unrecognizedWords).toHaveValue('am.\nAlice');
+  await expect(optionsPage.unrecognizedWords).toHaveValue('am.\nAlice\ntokenization');
   
 });
