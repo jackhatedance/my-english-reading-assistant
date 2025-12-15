@@ -304,7 +304,7 @@ function guessPartPhraseBaseWord(checkWord, parts, part){
     }
 
     if(!baseWordOfPhrase){
-        let checkWordResult = checkWord(word, 'Must');
+        let checkWordResult = checkWord(word, 'Always');
         if(checkWordResult && checkWordResult.baseWord){
             baseWordOfPhrase = checkWordResult.baseWord;
         }

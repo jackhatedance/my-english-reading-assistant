@@ -22,4 +22,19 @@ function getMeaTokenElement(node){
     return null;
 }
 
-export { getMeaTokenElement }
+function getFirstTextNode(meaTokenElement){
+    let node = meaTokenElement.firstChild;
+    if(node.nodeName ==='#text'){
+        return node;
+    }
+
+    if(node.nodeName ==='B'){
+        node = meaTokenElement.firstChild.firstChild;
+
+        if(node.nodeName ==='#text'){
+            return node;
+        }
+    }
+}
+
+export { getMeaTokenElement, getFirstTextNode }

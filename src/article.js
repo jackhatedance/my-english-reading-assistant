@@ -14,7 +14,7 @@ import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'
 import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
-import { getMeaTokenElement } from './token.js'
+import { getMeaTokenElement, getFirstTextNode } from './token.js'
 
 const gLogger = log.getLogger('article');
 /**
@@ -361,14 +361,27 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                 if(meaTokenElement){
                     dataWord = getWordFromElement(meaTokenElement);
                     dataBaseWord = getBaseWordFromElement(meaTokenElement);
+                    
                     const regex = /[a-zA-Z]/;
                     const firstAlphabetIndex = token.content.search(regex);
                     const firstAlphabetIndexOfArticle = token.articleOffset + firstAlphabetIndex;
-                    
-                    const containsFirstAlphabet = nodeInfo.offset <= firstAlphabetIndexOfArticle
-                        && nodeInfo.offset + nodeInfo.length > firstAlphabetIndexOfArticle;
 
-                    showAnnotation = containsFirstAlphabet;
+                    //firstTextNodeOfMeaTokenElement
+                    const firstTextNode = getFirstTextNode(meaTokenElement);
+                    let firstTextNodeInfo;
+                    if(node == firstTextNode){
+                        firstTextNodeInfo = nodeInfo;
+                    } else {
+                        firstTextNodeInfo = article.textNodeMap.get(firstTextNode);
+                    }
+
+                    const meaTokenElementOffset = firstTextNodeInfo.offset;
+                    const meaTokenElementTextLength = meaTokenElement.textContent.length;
+
+                    const meaTokenElementContainsFirstAlphabet = meaTokenElementOffset <= firstAlphabetIndexOfArticle
+                        && meaTokenElementOffset + meaTokenElementTextLength > firstAlphabetIndexOfArticle;
+
+                    showAnnotation = meaTokenElementContainsFirstAlphabet;
                 }
             }
             

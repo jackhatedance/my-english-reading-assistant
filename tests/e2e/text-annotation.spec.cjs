@@ -175,7 +175,7 @@ test('iregular not only tranform abode', async ({ testPage, extensionId, popupPa
 
   let rode = testPage.page.locator("#transform mea-token[data-query='abode']");
   await expect(rode).toHaveAttribute('data-word', 'abode');
-  await expect(rode).toHaveAttribute('data-base-word', 'abide');
+  await expect(rode).toHaveAttribute('data-base-word', '');
   await expect(rode).toHaveAttribute('data-target-word', 'abode');
   await expect(rode).toHaveAttribute('data-footnote', 'n. 住所; 住处; abide的过去式和过去分词');
   await expect(rode).toHaveAttribute('data-footnote-short', 'n. 住所; 住处; abide的过去式和过去分词');

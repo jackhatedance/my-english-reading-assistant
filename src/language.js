@@ -169,6 +169,7 @@ function searchWordWithDict(query, options, dicts){
         }
 
         if(!baseWord && options.lookupBase == 'WhenNecessary'){
+            //only link or form has no actual meaning, we have to do deep lookup.
             if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
                 deepLookupResult = deepLookup(lookupResult, options);
 
@@ -332,19 +333,13 @@ function getBaseWord(word, options, dicts, lookupResult){
         }
     }
     */
+    
+    if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
+        const deepLookupResult = deepLookup(lookupResult, options);
 
-    let baseWordResult = getBaseWordFromLinkOrDefinitionOrOption(lookupResult, options);
-    if(baseWordResult){
-        baseWord = baseWordResult.word;
-
-        if(baseWord !== word){
-            let _baseLookupResult = lookup(baseWord, options, dicts);
-            if(_baseLookupResult){
-                let _related = related(_baseLookupResult, lookupResult);
-                if(_related){
-                    baseLookupResult = _baseLookupResult;
-                }
-            }
+        if(deepLookupResult){
+            baseWord = deepLookupResult.word;
+            baseLookupResult = deepLookupResult.lookupResult;
         }
     }
    
