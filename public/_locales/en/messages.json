@@ -204,6 +204,25 @@
     "popup_page_refresh_required":{
         "message": "require refreshing the page to take effect"
     },
+
+    "popup_tips":{
+        "message": "Tips"
+    },
+    "popup_tips_1":{
+        "message": "This software can be used to read original English books and foreign magazines, as well as various English websites."
+    },
+    "popup_tips_2":{
+        "message": "If you find reading the original texts not engaging enough, checking out some lighthearted and entertaining English websites."
+    },
+    "popup_tips_3":{
+        "message": "The reading report allows you to view information such as daily reading time, reading speed, and vocabulary progress."
+    },
+    "popup_tips_4":{
+        "message": "English proficiency is closely related to the amount of time spent reading English every day."
+    },
+    "popup_tips_5":{
+        "message": "The secret to maintaining a reading habit is finding enjoyable and interesting content."
+    },
     
     "optionsPageTitle":{
         "message":"Options"

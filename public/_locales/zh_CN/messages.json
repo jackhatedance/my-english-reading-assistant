@@ -205,6 +205,25 @@
         "message": "需要刷新页面才能生效"
     },
 
+    "popup_tips":{
+        "message": "提示"
+    },
+    "popup_tips_1":{
+        "message": "本软件既可以用来看英文原著、外刊，也可以看各种英文网站。"
+    },
+    "popup_tips_2":{
+        "message": "如果觉得看原著不够有趣，找一些轻松快乐的英文网站看看。"
+    },
+    "popup_tips_3":{
+        "message": "在阅读报告里可以查看每日阅读时间，阅读速度，词汇量进步等信息。"
+    },
+    "popup_tips_4":{
+        "message": "英语水平与每天英文阅读时间有很大关系"
+    },
+    "popup_tips_5":{
+        "message": "坚持阅读的诀窍是找到快乐，有趣的内容"
+    },
+    
     "optionsPageTitle":{
         "message":"设置"
     },
