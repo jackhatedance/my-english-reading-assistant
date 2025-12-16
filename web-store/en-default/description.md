@@ -17,7 +17,7 @@ Main functions include:
 
 5. Supporting root and affix memorization methods.
 
-6. Viewing reading reports.
+6. Viewing reading reports(daily reading time, vocabulary change, read speed, etc).
 
 7. Highlighting and taking notes on web page content.
 
