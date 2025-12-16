@@ -4,7 +4,7 @@ refer to [message file](./public/_locales/en/messages.json), key: extensionDescr
 
 ### Long Description
 
-English beginners often struggle to persevere in reading English articles due to insufficient vocabulary. This software automatically prompts for the meanings of unfamiliar words, improving the reading experience, making English reading smoother, allowing readers to enjoy the content, and improving their English level unconsciously.
+English beginners often struggle with reading English texts due to a limited vocabulary, constantly having to look up words in a dictionary, which disrupts the reading flow and makes it difficult to persevere. This software automatically provides definitions for unfamiliar words, improving the reading experience and making English reading smoother.  It allows readers to enjoy the content of the articles and improve their English skills unconsciously.
 
 Main functions include:
 1. Initialization/import/export of personal vocabulary list.
