@@ -19,5 +19,3 @@
 8. 支持epub/pdf格式的电子书（小说，外刊等），以及绝大部分英文网站。
 9. 导入用户词典，支持Mdict格式，支持英汉，英英词典。
 
-
-原名：我的英文阅读助手/My English Reading Assistant
