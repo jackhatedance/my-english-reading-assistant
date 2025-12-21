@@ -38,6 +38,7 @@ function patchAll(options) {
     patch_v_0_11_1(options);
     patch_v_0_13_4(options);
     patch_v_1_4_0(options);
+    patch_v_1_11_0(options);
 }
 
 function earlyPatch(options){
@@ -120,6 +121,29 @@ function patch_v_1_4_0(options){
     if(!interactionOptions.hasOwnProperty('selectText')){
         interactionOptions.selectText = true;
     }
+}
+
+function patch_v_1_11_0(options){
+    
+    if(!options.hasOwnProperty('advanced')){
+        options.advanced = {};
+    }
+
+    let advancedOptions = options.advanced;
+    if(!advancedOptions.hasOwnProperty('primaryAnnotationPositionMin')){
+        advancedOptions.primaryAnnotationPositionMin = -0.2;
+    }
+    if(!advancedOptions.hasOwnProperty('primaryAnnotationPositionMax')){
+        advancedOptions.primaryAnnotationPositionMax = 0.5;
+    }
+
+    if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMin')){
+        advancedOptions.secondaryAnnotationPositionMin = -1.2;
+    }
+    if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMax')){
+        advancedOptions.secondaryAnnotationPositionMax = -0.8;
+    }
+
 }
 
 export { createDefaultOptions, patchDefaultOptionValues };

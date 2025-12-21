@@ -67,7 +67,7 @@
         "message":"Content"
     },
     "popupPositionLabel":{
-        "message":"Position Up/Down"
+        "message":"Pos. Up/Down"
     },
     "popup_settings_content_none":{
         "message":"None"
@@ -343,6 +343,27 @@
         "message":"import successfully"
     },
 
+    "options_advanced_label":{
+        "message":"Advanced"
+    },
+    "options_advanced_popup_label":{
+        "message":"Popup"
+    },
+    "options_advanced_warning":{
+        "message":"Don't change unless you know what you are doing."
+    },
+    "options_advanced_primary_annotation_position_min_label":{
+        "message":"primary annotation position min value"
+    },
+    "options_advanced_primary_annotation_position_max_label":{
+        "message":"primary annotation position max value"
+    },
+    "options_advanced_secondary_annotation_position_min_label":{
+        "message":"secondary annotation position min value"
+    },
+    "options_advanced_secondary_annotation_position_max_label":{
+        "message":"secondary annotation position max value"
+    },
 
     "options_report_export_label_desc":{
         "message":"backup report data to file"

@@ -30,6 +30,8 @@ const predefineColors = [
   '#c71585',
 ];
 
+const options = inject('options');
+
 const dualAnnotationEnabled = inject('dualAnnotationEnabled');
 
 const content = inject('content');
@@ -114,11 +116,11 @@ init();
             <label>{{ t('popupPositionLabel') }}</label>
             <div class="inputs">
             
-                <el-slider v-show="dualAnnotationEnabled" v-model="position2" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-show="dualAnnotationEnabled" v-model="position2" :min="options.advanced.secondaryAnnotationPositionMin" :max="options.advanced.secondaryAnnotationPositionMax" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
                 </el-slider>
 
-                <el-slider v-model="position" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-model="position" :min="options.advanced.primaryAnnotationPositionMin" :max="options.advanced.primaryAnnotationPositionMax" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
                 </el-slider>
             </div>
@@ -211,6 +213,7 @@ init();
     .inputs {
       >* {
         width: 7em;
+        padding-left: 5px;
       }
     }
 

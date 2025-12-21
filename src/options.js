@@ -12,6 +12,7 @@ import NotesTab from './components/options/tabs/NotesTab.vue'
 import BookTab from './components/options/tabs/BookTab.vue'
 import ReportTab from './components/options/tabs/ReportTab.vue'
 import DictionaryTab from './components/options/tabs/DictionaryTab.vue'
+import AdvancedTab from './components/options/tabs/AdvancedTab.vue'
 import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab.vue'
 
 import { localizeHtmlPage} from './locale.js'
@@ -28,6 +29,7 @@ const routes = [
     { path: '/book', component: BookTab },
     { path: '/report', component: ReportTab },
     { path: '/dictionary', component: DictionaryTab },
+    { path: '/advanced', component: AdvancedTab },
     { path: '/unrecognized-words', component: UnrecognizedWordsTab },
 ]
 
