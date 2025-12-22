@@ -320,8 +320,14 @@
     "optionsEditNotesTotal":{
         "message":"total:"
     },
+    "optionsClearNotesActionDesc":{
+        "message":"Clear Notes Data"
+    },
     "optionsClearNotesAction":{
         "message":"Clear"
+    },
+    "optionsClearNotesActionWarning":{
+        "message":"Dangerous, backup first."
     },
 
     "optionsRootAndAffixLabel":{

@@ -86,7 +86,7 @@ init();
             <div class="input">
                 <textarea class="notes" v-model="notes" rows="10" maxlength="500000" readonly></textarea>
                 <p>{{ t('optionsEditNotesTotal') }}<span>{{ noteCount }}</span></p>
-                <el-button round @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
+                
             </div>
             <div class="action">
                 
@@ -112,6 +112,20 @@ init();
 
             <div class="input">
                 <el-button round @click="onExport">{{ t('optionsExportNotesAction') }}</el-button>
+            </div>
+            <div class="action">
+                
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="label">
+                <p>{{ t('optionsClearNotesActionDesc') }}</p>
+            </div>
+            <div class="input">
+                
+                <p class="warning">{{ t('optionsClearNotesActionWarning') }}</p>
+                <el-button round @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
             </div>
             <div class="action">
                 

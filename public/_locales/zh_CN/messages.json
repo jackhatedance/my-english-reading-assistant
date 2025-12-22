@@ -320,8 +320,14 @@
     "optionsEditNotesTotal":{
         "message":"总数:"
     },
+    "optionsClearNotesActionDesc":{
+        "message":"清除笔记数据"
+    },
     "optionsClearNotesAction":{
         "message":"清除"
+    },
+    "optionsClearNotesActionWarning":{
+        "message":"危险，操作前先备份"
     },
 
     "optionsRootAndAffixLabel":{
