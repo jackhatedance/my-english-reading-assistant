@@ -100,7 +100,7 @@
         "message":"Font Size"
     },
     "popup_settings_text_font_size_tip":{
-        "message":"size not changed when it is 0"
+        "message":"size not changed when 0"
     },
     "popup_settings_text_bionic_reading_label":{
         "message":"Bionic reading"
@@ -386,6 +386,9 @@
     "options_advanced_secondary_annotation_position_max_label":{
         "message":"secondary annotation position max value"
     },
+    "options_advanced_secondary_text_font_size_max_label":{
+        "message":"text font size max value"
+    },
 
     "options_report_export_label_desc":{
         "message":"backup report data to file"
@@ -433,7 +436,7 @@
     },
     
     "options_general_interaction_label":{
-        "message":"Interaction"
+        "message":"Interaction default settings"
     },
     "options_general_interaction_click_word_label":{
         "message":"Click word to show dialog"

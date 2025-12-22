@@ -28,7 +28,8 @@ function createDefaultOptions(){
             primaryAnnotationPositionMin: -0.2,
             primaryAnnotationPositionMax: 0.5,
             secondaryAnnotationPositionMin: -1.2,
-            secondaryAnnotationPositionMax: -0.8
+            secondaryAnnotationPositionMax: -0.8,
+            textFontSizeMax: 28,
         },
         annotation: {
             dualAnnotation: {
@@ -160,6 +161,10 @@ function patch_v_1_11_0(options){
     }
     if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMax')){
         advancedOptions.secondaryAnnotationPositionMax = -0.8;
+    }
+
+    if(!advancedOptions.hasOwnProperty('textFontSizeMax')){
+        advancedOptions.textFontSizeMax = 28;
     }
 
 }

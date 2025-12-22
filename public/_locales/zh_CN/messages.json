@@ -385,6 +385,9 @@
     "options_advanced_secondary_annotation_position_max_label":{
         "message":"副注解位置最大值"
     },
+    "options_advanced_secondary_text_font_size_max_label":{
+        "message":"正文字体尺寸最大值"
+    },
 
     "options_report_export_label_desc":{
         "message":"备份报告数据到文件"
@@ -432,7 +435,7 @@
     },
 
     "options_general_interaction_label":{
-        "message":"交互"
+        "message":"默认交互设置"
     },
     "options_general_interaction_click_word_label":{
         "message":"点击单词弹出对话框"
