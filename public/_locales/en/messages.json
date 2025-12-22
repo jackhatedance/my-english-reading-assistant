@@ -349,8 +349,14 @@
     "optionsReportModeLabel":{
         "message":"Enable Report"
     },
-    "optionsDeleteReadingHistoryAction":{
+    "optionsDeleteReadingHistoryLabelDesc":{
         "message":"Clear Report Data"
+    },
+    "optionsDeleteReadingHistoryAction":{
+        "message":"Clear"
+    },
+    "optionsDeleteReadingHistoryActionWarning":{
+        "message":"Dangerous, backup first."
     },
     "options_report_import_label_desc":{
         "message":"read report data from file"

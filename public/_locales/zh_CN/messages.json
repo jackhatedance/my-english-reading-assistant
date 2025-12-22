@@ -348,10 +348,16 @@
     "optionsReportModeLabel":{
         "message":"启用报告"
     },
-    "optionsDeleteReadingHistoryAction":{
+    "optionsDeleteReadingHistoryLabelDesc":{
         "message":"清除报告数据"
     },
-     "options_report_import_label_desc":{
+    "optionsDeleteReadingHistoryAction":{
+        "message":"清除"
+    },
+    "optionsDeleteReadingHistoryActionWarning":{
+        "message":"危险，请先备份。"
+    },
+    "options_report_import_label_desc":{
         "message":"从文件读取报告数据记录"
     },
     "options_report_import":{
@@ -363,6 +369,7 @@
     "options_report_import_notification_message_success":{
         "message":"导入成功"
     },
+    
 
     "options_advanced_label":{
         "message":"高级"

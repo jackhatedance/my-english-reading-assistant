@@ -84,9 +84,7 @@ init();
           <label>{{ t('optionsReportModeLabel') }}</label>
           <el-switch class="right" @change="onChange" v-model="enableReport" />
         </div>
-        <div class="option">
-          <el-button round @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
-        </div>
+        
       </div>
       <div class="action">
         
@@ -113,6 +111,21 @@ init();
 
         <div class="input">
             <el-button round @click="onExport">{{ t('options_report_export') }}</el-button>
+        </div>
+        <div class="action">
+            
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="label">
+            {{ t('optionsDeleteReadingHistoryLabelDesc') }}
+        </div>
+        <div class="input">
+            <div class="option">
+              <p class="warning">{{ t('optionsDeleteReadingHistoryActionWarning') }}</p>
+              <el-button round @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
+          </div>
         </div>
         <div class="action">
             
