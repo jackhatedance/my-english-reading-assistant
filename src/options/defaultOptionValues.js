@@ -35,7 +35,7 @@ function createDefaultOptions(){
                 enabled: true,
             },
             interlaced: {
-                enabled: true,
+                enabled: false,
             },
             hideWordClass: {
                 enabled: true,
@@ -179,7 +179,7 @@ function patch_v_1_12_0(options){
     }
     if(!annotationOptions.hasOwnProperty('interlaced')){
         annotationOptions.interlaced ={
-            enabled:true
+            enabled:false
         };
     }
 
