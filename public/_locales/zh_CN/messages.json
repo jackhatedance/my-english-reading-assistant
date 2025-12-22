@@ -100,7 +100,7 @@
         "message":"字体尺寸"
     },
     "popup_settings_text_font_size_tip":{
-        "message":"为空时表示不改变字体尺寸"
+        "message":"为0时不改变字体尺寸"
     },
     "popup_settings_text_bionic_reading_label":{
         "message":"仿生阅读"
@@ -272,6 +272,25 @@
     },
     "optionsExportAction":{
         "message":"导出"
+    },
+
+    "options_section_annotation_title":{
+        "message": "注解"
+    },
+    "options_annotation_features":{
+        "message": "功能启用"
+    },
+    "options_annotation_features_description":{
+        "message": "禁用不需要的功能可以简化弹窗设置界面"
+    },
+    "options_annotation_feature_dual_enanbled":{
+        "message": "双注解"
+    },
+    "options_annotation_feature_interlaced_enanbled":{
+        "message": "交错显示"
+    },
+    "options_annotation_feature_hide_word_class_enanbled":{
+        "message": "隐藏词性"
     },
 
     "optionsImportNotesLabelDesc":{

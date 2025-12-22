@@ -333,14 +333,15 @@ function deleteStyleRule(styleSheet, selector){
     }    
 }
 
-function changeStyle(document, siteOptions, siteProfile) {
+function changeStyle(document, sysOptions, siteOptions, siteProfile) {
     let styleSheet = findStyleSheet(document);
     if (styleSheet) {
 
-        changeAnnotationStyle(styleSheet, siteOptions.annotation, 'after', 'bottom');
+        changeAnnotationStyle(sysOptions, styleSheet, siteOptions.annotation, 'after', 'bottom');
 
-        let annotation2 = siteOptions.dualAnnotationEnabled? siteOptions.secondaryAnnotation : null;
-        changeAnnotationStyle(styleSheet, annotation2, 'before', 'top');
+        let dualAnnotationEnabled = sysOptions.annotation.dualAnnotation.enabled && siteOptions.dualAnnotationEnabled;
+        let annotation2 = dualAnnotationEnabled? siteOptions.secondaryAnnotation : null;
+        changeAnnotationStyle(sysOptions, styleSheet, annotation2, 'before', 'top');
         
         //console.log('changed style, insert rule');
 
@@ -383,7 +384,7 @@ function getContentInfo(content){
     return { contentExpr, unknownWordOnly };
 }
 
-function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
+function changeAnnotationStyle(sysOptions, styleSheet, annotationOptions, suffix, align) {
 
     //for pronunciation and definition
     let selectorEven = `mea-token:nth-child(2n of .mea-word)::${suffix}`;
@@ -416,7 +417,8 @@ function changeAnnotationStyle(styleSheet, annotationOptions, suffix, align) {
         styleSheet.insertRule(ruleDefaultNonword, 0);
 
         const annotationOptions2 = JSON.parse(JSON.stringify(annotationOptions));
-        if (annotationOptions.interlaced) {
+        let interlacedEnabled = sysOptions.annotation.interlaced.enabled && annotationOptions.interlaced;
+        if (interlacedEnabled) {
             offset = 1;
         }
         let ruleOdd = generateCssRuleOfSubAnnotation(annotationOptions2, selectorOdd, offset, align);

@@ -4,10 +4,12 @@ import { elButton } from './element-plus/element-plus.cjs'
 export class PopupPage {
     private readonly switch: Locator;
     private readonly switchMode: Locator;
+    private readonly dualAnnotation: Locator;
 
     constructor(public readonly page: Page) {
         this.switch = this.page.getByTestId('switch');
         this.switchMode = this.page.getByTestId('switch-mode');
+        this.dualAnnotation = this.page.getByTestId('dual-annotation');
     }
 
     async goto(extensionId) {

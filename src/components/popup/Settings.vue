@@ -327,7 +327,12 @@ function updateViewModel(siteOptions, settingsOnly = false){
   }
   siteCategory.value = fixCategory(siteOptions.siteCategory);
 
-  dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;
+  if(!props.options.annotation.dualAnnotation.enabled){
+    dualAnnotationEnabled.value = false;
+  } else{
+    dualAnnotationEnabled.value = siteOptions.dualAnnotationEnabled;  
+  }
+  
 
   let annotationOptions = siteOptions.annotation;
   let annotationOptions2 = siteOptions.secondaryAnnotation;
@@ -347,8 +352,13 @@ function updateViewModel(siteOptions, settingsOnly = false){
   opacity.value = annotationOptions.opacity;
   opacity2.value = annotationOptions2.opacity;
 
-  interlaced.value = annotationOptions.interlaced;
-  interlaced2.value = annotationOptions2.interlaced;
+  if(!props.options.annotation.interlaced.enabled){
+    interlaced.value = false;
+    interlaced2.value = false;
+  }else{
+    interlaced.value = annotationOptions.interlaced;
+    interlaced2.value = annotationOptions2.interlaced;
+  }
 
   width.value = annotationOptions.width;
   width2.value = annotationOptions2.width;
@@ -356,7 +366,13 @@ function updateViewModel(siteOptions, settingsOnly = false){
   lineHeight.value = annotationOptions.lineHeight;
 
   maxMeaningNumber.value = annotationOptions.maxMeaningNumber;
-  hideWordClass.value = annotationOptions.hideWordClass;
+
+  if(!props.options.annotation.hideWordClass.enabled){
+    hideWordClass.value = false;
+  } else{
+    hideWordClass.value = annotationOptions.hideWordClass;
+  }
+
 
   let contentOptions = siteOptions.content;
 

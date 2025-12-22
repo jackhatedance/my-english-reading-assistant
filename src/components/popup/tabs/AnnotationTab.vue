@@ -79,11 +79,11 @@ init();
 
 <template>
     <div class="annotation-settings">
-        <div class="field">
+        <div class="field" v-show="options.annotation.dualAnnotation.enabled">
             <label>{{ t('popupDualAnnotationEnabledLabel') }}<InformationTooltip :content="t('popupDualAnnotationEnabledTip')" linkType="guide" linkKeyword="双注解" effect="dark"/></label>
             
             <div class="inputs">
-                <el-switch v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" size="small"/>
+                <el-switch data-testid="dual-annotation" v-model="dualAnnotationEnabled" @change="onChangeDualAnnotationEnabled" size="small"/>
             </div>
         </div>
 
@@ -163,7 +163,7 @@ init();
             </div>
         </div>
 
-        <div class="field">
+        <div class="field" v-show="options.annotation.interlaced.enabled" >
             <label>{{ t('popupInterlacedLabel') }}
                 <InformationTooltip :content="t('popup_interlaced_tips')" linkType="guide" linkKeyword="交错显示" effect="dark"/>
             </label>
@@ -197,7 +197,7 @@ init();
             </div>
         </div>
 
-        <div class="field">
+        <div class="field" v-show="options.annotation.hideWordClass.enabled" >
             <label>{{ t('popupHideWordClassLabel') }}<RefreshTooltip /></label>
             <div class="inputs">
                 <el-switch id="hideWordClass" v-model="hideWordClass" @change="onChangeSetting" size="small" />

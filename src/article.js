@@ -23,7 +23,7 @@ const gLogger = log.getLogger('article');
  * @param {*} document 
  */
 function tokenizeTextNode(document, options, siteOptions, siteProfile) {
-    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
+    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
@@ -325,7 +325,7 @@ function checkWord(siteOptions, text, lookupBase){
 }
 
 function parseArticleTextNodes(article, element, options, siteOptions){
-    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(siteOptions);
+    let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
     let offset = 0;
     traverseNode(element, (node) => {

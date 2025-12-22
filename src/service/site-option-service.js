@@ -101,9 +101,10 @@ function setSiteOptions(siteDomain, options){
 }
 
 
-function getSimplifyDefinitionOptions(siteOptions){
+function getSimplifyDefinitionOptions(sysOptions, siteOptions){
+    let hideWordClass = sysOptions.annotation.hideWordClass.enabled && siteOptions.annotation.hideWordClass;
     let simplifyDefinitionOptions = {
-        hideWordClass: siteOptions.annotation.hideWordClass,
+        hideWordClass: hideWordClass,
         maxMeaningNumber: siteOptions.annotation.maxMeaningNumber,
     };
     return simplifyDefinitionOptions;

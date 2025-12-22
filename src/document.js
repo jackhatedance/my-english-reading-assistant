@@ -77,10 +77,11 @@ function getAllDocuments(siteProfile) {
   }
 
   function changeStyleForAllDocuments(siteProfile, siteOptions) {
+    let sysOptions = getOptionsFromCache();
     let documents = getAllDocuments(siteProfile);
     
     for (let document of documents) {
-      changeStyle(document, siteOptions, siteProfile);
+      changeStyle(document, sysOptions, siteOptions, siteProfile);
     }
   }
 
@@ -279,7 +280,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
         }        
     }
 
-    let options = getOptionsFromCache();
+    let sysOptions = getOptionsFromCache();
     let currentSiteOption = await getCurrentSiteOptions();
 
     let article = null;
@@ -293,7 +294,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
 
             if (containsMeaStyle(document)) {
                 //console.log('containsMeaStyle');
-                changeStyle(document, currentSiteOption, siteProfile);
+                changeStyle(document, sysOptions, currentSiteOption, siteProfile);
                 window.clearInterval(intervalID);
             };
 
@@ -304,20 +305,20 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
       
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
-        tokenizeTextNode(document, options, currentSiteOption, siteProfile);
+        tokenizeTextNode(document, sysOptions, currentSiteOption, siteProfile);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
         let documentInfo = page.getDocumentInfo(document);
         if(!documentInfo.mouseUpEventListener){
-            addDocumentEventListener(page, window, document, options, currentSiteOption);
+            addDocumentEventListener(page, window, document, sysOptions, currentSiteOption);
         }else {
             gLogger.debug('already has mouseUpEventListener, skip adding');
         }
       }
     
       if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
-        article = parseDocument(document, options, currentSiteOption);
+        article = parseDocument(document, sysOptions, currentSiteOption);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_WORD_HOVER_LISTENER)){
@@ -326,7 +327,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
     } else {
         //empty article
-        article = parseDocument(document, options, currentSiteOption, true);
+        article = parseDocument(document, sysOptions, currentSiteOption, true);
     }
     return article;
 
@@ -349,9 +350,6 @@ async function cleanDocumentAnnotations(page, document, isIframe, siteProfile, d
             removeTooltip(document);
         }        
     }
-
-    let options = getOptionsFromCache();
-    let currentSiteOption = await getCurrentSiteOptions();
 
     if (documentConfig.canProcess) {
         detokenizeTextNode(document);

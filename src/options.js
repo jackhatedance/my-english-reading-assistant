@@ -8,6 +8,7 @@ import 'vue-loading-overlay/dist/css/index.css';
 import Options from './components/options/Options.vue'
 import GeneralTab from './components/options/tabs/GeneralTab.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
+import AnnotationTab from './components/options/tabs/AnnotationTab.vue'
 import NotesTab from './components/options/tabs/NotesTab.vue'
 import BookTab from './components/options/tabs/BookTab.vue'
 import ReportTab from './components/options/tabs/ReportTab.vue'
@@ -25,6 +26,7 @@ const routes = [
     { path: '/', redirect: '/general' },
     { path: '/general', component: GeneralTab },
     { path: '/vocabulary', component: VocabularyTab },
+    { path: '/annotation', component: AnnotationTab },
     { path: '/notes', component: NotesTab },
     { path: '/book', component: BookTab },
     { path: '/report', component: ReportTab },

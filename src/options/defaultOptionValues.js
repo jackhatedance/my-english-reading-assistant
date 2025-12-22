@@ -23,6 +23,23 @@ function createDefaultOptions(){
             clickWord: true,
             hoverWord: true,
             selectText: true
+        },
+        advanced:{
+            primaryAnnotationPositionMin: -0.2,
+            primaryAnnotationPositionMax: 0.5,
+            secondaryAnnotationPositionMin: -1.2,
+            secondaryAnnotationPositionMax: -0.8
+        },
+        annotation: {
+            dualAnnotation: {
+                enabled: true,
+            },
+            interlaced: {
+                enabled: true,
+            },
+            hideWordClass: {
+                enabled: true,
+            },
         }
     };
 }
@@ -39,6 +56,7 @@ function patchAll(options) {
     patch_v_0_13_4(options);
     patch_v_1_4_0(options);
     patch_v_1_11_0(options);
+    patch_v_1_12_0(options);
 }
 
 function earlyPatch(options){
@@ -142,6 +160,33 @@ function patch_v_1_11_0(options){
     }
     if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMax')){
         advancedOptions.secondaryAnnotationPositionMax = -0.8;
+    }
+
+}
+
+
+function patch_v_1_12_0(options){
+    
+    if(!options.hasOwnProperty('annotation')){
+        options.annotation = {};
+    }
+
+    let annotationOptions = options.annotation;
+    if(!annotationOptions.hasOwnProperty('dualAnnotation')){
+        annotationOptions.dualAnnotation = {
+            enabled:true
+        };
+    }
+    if(!annotationOptions.hasOwnProperty('interlaced')){
+        annotationOptions.interlaced ={
+            enabled:true
+        };
+    }
+
+    if(!annotationOptions.hasOwnProperty('hideWordClass')){
+        annotationOptions.hideWordClass = {
+            enabled:true
+        };
     }
 
 }

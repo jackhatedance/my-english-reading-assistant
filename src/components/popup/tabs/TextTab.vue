@@ -83,7 +83,7 @@ init();
             <label>{{ t('popup_settings_text_font_size_label') }}<InformationTooltip :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸" effect="dark" /></label>
             
             <div class="inputs">
-              <el-slider v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+              <el-slider v-model="textFontSize" :min="0" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
                     
               </el-slider>
             </div>

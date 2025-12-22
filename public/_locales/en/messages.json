@@ -100,7 +100,7 @@
         "message":"Font Size"
     },
     "popup_settings_text_font_size_tip":{
-        "message":"size not changed when empty"
+        "message":"size not changed when it is 0"
     },
     "popup_settings_text_bionic_reading_label":{
         "message":"Bionic reading"
@@ -272,6 +272,25 @@
     },
     "optionsExportAction":{
         "message":"Export"
+    },
+
+    "options_section_annotation_title":{
+        "message": "Annotation"
+    },
+    "options_annotation_features":{
+        "message": "Features"
+    },
+    "options_annotation_features_description":{
+        "message": "disabling unnecessary features can simplify the popup settings UI"
+    },
+    "options_annotation_feature_dual_enanbled":{
+        "message": "Dual Annotation"
+    },
+    "options_annotation_feature_interlaced_enanbled":{
+        "message": "Interlaced"
+    },
+    "options_annotation_feature_hide_word_class_enanbled":{
+        "message": "Hide Word Class"
     },
 
     "optionsImportNotesLabelDesc":{
