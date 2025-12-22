@@ -12,6 +12,14 @@ import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
+import { ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
+import 'element-plus/es/components/dropdown/style/css'
+import 'element-plus/es/components/dropdown-menu/style/css'
+import 'element-plus/es/components/dropdown-item/style/css'
+import { ElIcon } from 'element-plus'
+import 'element-plus/es/components/icon/style/css'
+import { ArrowDown } from '@element-plus/icons-vue'
+
 import InformationTooltip from '../common/InformationTooltip.vue'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
 import { fixCategory } from '../../site-category.js'
@@ -411,6 +419,13 @@ async function onSaveAsDefault(){
   setSiteOptionsAsDefault(newOptions);
 }
 
+async function onDefaultCommand(command){
+  if(command == 'resetDefault'){
+    setSiteOptionsAsDefault(null);//delete
+  }
+  
+}
+
 const init = async () => {
   enabled.value = props.pageInfo.visible;
   additionalDictionaryMetas.value = await getAdditionalDictionaryMetas();
@@ -452,7 +467,17 @@ init();
           
           <div class="buttons">
             <el-button id="resetAnnotationSettings" @click="onReset">{{ t('popupResetButton') }}</el-button>
-            <el-button id="saveAsDefault" @click="onSaveAsDefault">{{ t('popupSaveAsDefault') }}</el-button>
+            <el-dropdown @click="onSaveAsDefault" @command="onDefaultCommand" split-button trigger="click" placement="top-start">
+             
+                {{ t('popupSaveAsDefault') }}
+              
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="resetDefault">{{ t('popupResetDefault') }}</el-dropdown-item>
+                  
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </div>
 
 

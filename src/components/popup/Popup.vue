@@ -248,6 +248,11 @@ input:checked + .slider:before {
 
   .buttons {
     text-align: center;
+
+    &>* {
+      margin-right: 4px;
+      margin-left: 4px;
+    }
   }
 }
 

@@ -184,6 +184,9 @@
     "popupSaveAsDefault":{
         "message":"Save As Default"
     },
+    "popupResetDefault":{
+        "message":"Reset Default"
+    },
 
     "popupNothingToDoTitle":{
         "message":"Nothing to do on this page"

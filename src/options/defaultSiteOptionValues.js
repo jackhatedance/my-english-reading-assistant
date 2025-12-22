@@ -30,7 +30,7 @@ function createFactoryDefaultSiteOptions(){
         },
         content: {
             //enabled: true,
-            unknownWordColor: '#0000ff',
+            unknownWordColor: null,
             unknownWordWidth: 1,
             textFontSize: 0,
             bionic: {

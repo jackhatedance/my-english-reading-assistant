@@ -184,6 +184,9 @@
     "popupSaveAsDefault":{
         "message":"保存为默认值"
     },
+    "popupResetDefault":{
+        "message":"重置默认值"
+    },
 
     "popupNothingToDoTitle":{
         "message":"当前页面无事可做"
