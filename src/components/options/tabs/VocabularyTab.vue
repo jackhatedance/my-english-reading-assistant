@@ -103,7 +103,7 @@ init();
                 <option value="TOEFL-4500">TOEFL(4500)不含常用词汇</option>
             </select>
             
-            <p class="warnning">{{ t('optionsInitializeVocabularyActionWarning') }}</p>
+            <p class="warning">{{ t('optionsInitializeVocabularyActionWarning') }}</p>
             <el-button @click="onInitializeVocabulary" round>{{ t('optionsInitializeVocabularyAction') }}</el-button>
         </div>
         <div class="action">
@@ -118,7 +118,7 @@ init();
             <p>{{ t('optionsEditVocabularyLabelDesc') }}</p>
         </div>
         <div class="input">
-            <p class="warnning">{{ t('options_edit_vocabulary_field_tip') }}</p>
+            <p class="warning">{{ t('options_edit_vocabulary_field_tip') }}</p>
             <textarea v-model="knownWords" rows="10" maxlength="500000"></textarea>
             <p>{{ t('optionsEditVocabularyTotal') }}<span>{{ count }}</span></p>
         </div>
@@ -156,7 +156,5 @@ init();
     
 </template>
 <style>
-.warnning {
-    color: red;
-}
+
 </style>

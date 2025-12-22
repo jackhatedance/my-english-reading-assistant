@@ -8,6 +8,8 @@ import { ElInputNumber } from 'element-plus'
 import 'element-plus/es/components/input-number/style/css'
 import { ElColorPicker } from 'element-plus'
 import 'element-plus/es/components/color-picker/style/css'
+import { ElSlider } from 'element-plus'
+import 'element-plus/es/components/slider/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -52,9 +54,9 @@ init();
         <div class="field">
             <label>{{ t('popupLineHeightLabel') }}</label>
             <div class="inputs">
-              <el-input-number v-model="lineHeight" :min="1" :max="3" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+              <el-slider v-model="lineHeight" :min="1" :max="3" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-              </el-input-number>
+              </el-slider>
             </div>
           </div>
 
@@ -71,9 +73,9 @@ init();
           <div class="field">
             <label>{{ t('popupUnknownWordWidthLabel') }}</label>
             <div class="inputs">
-              <el-input-number v-model="unknownWordWidth" :min="1" :max="5" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+              <el-slider v-model="unknownWordWidth" :min="1" :max="5" :step="1" @change="onChangeSetting" controls-position="right" size="small">
                     
-              </el-input-number>
+              </el-slider>
             </div>
           </div>
 
@@ -81,9 +83,9 @@ init();
             <label>{{ t('popup_settings_text_font_size_label') }}<InformationTooltip :content="t('popup_settings_text_font_size_tip')" linkType="guide" linkKeyword="正文字体尺寸" effect="dark" /></label>
             
             <div class="inputs">
-              <el-input-number v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+              <el-slider v-model="textFontSize" :min="14" :max="28" :step="1" @change="onChangeSetting" controls-position="right" size="small">
                     
-              </el-input-number>
+              </el-slider>
             </div>
           </div>
 

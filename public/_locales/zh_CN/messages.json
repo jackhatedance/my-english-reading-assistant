@@ -85,7 +85,7 @@
         "message":"设置"
     },
     "popupPositionLabel":{
-        "message":"上下位置调整"
+        "message":"上下位置"
     },
     "popupFontSizeLabel":{
         "message":"字体尺寸"
@@ -342,6 +342,27 @@
         "message":"导入成功"
     },
 
+    "options_advanced_label":{
+        "message":"高级"
+    },
+    "options_advanced_popup_label":{
+        "message":"弹窗"
+    },
+    "options_advanced_warning":{
+        "message":"不要改动，除非你知道你在做什么。"
+    },
+    "options_advanced_primary_annotation_position_min_label":{
+        "message":"主注解位置最小值"
+    },
+    "options_advanced_primary_annotation_position_max_label":{
+        "message":"主注解位置最大值"
+    },
+    "options_advanced_secondary_annotation_position_min_label":{
+        "message":"副注解位置最小值"
+    },
+    "options_advanced_secondary_annotation_position_max_label":{
+        "message":"副注解位置最大值"
+    },
 
     "options_report_export_label_desc":{
         "message":"备份报告数据到文件"

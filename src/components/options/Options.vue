@@ -74,4 +74,8 @@ input[type="file"]::file-selector-button:hover {
 .option {
     clear: both;
 }
+
+.warning{
+    color: red;
+}
 </style>

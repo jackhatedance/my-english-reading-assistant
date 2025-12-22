@@ -11,6 +11,8 @@ import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { ElColorPicker } from 'element-plus'
 import 'element-plus/es/components/color-picker/style/css'
+import { ElSlider } from 'element-plus'
+import 'element-plus/es/components/slider/style/css'
 
 const emit = defineEmits(['change-setting']);
 
@@ -27,6 +29,8 @@ const predefineColors = [
   '#1e90ff',
   '#c71585',
 ];
+
+const options = inject('options');
 
 const dualAnnotationEnabled = inject('dualAnnotationEnabled');
 
@@ -112,13 +116,13 @@ init();
             <label>{{ t('popupPositionLabel') }}</label>
             <div class="inputs">
             
-                <el-input-number v-show="dualAnnotationEnabled" v-model="position2" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-show="dualAnnotationEnabled" v-model="position2" :min="options.advanced.secondaryAnnotationPositionMin" :max="options.advanced.secondaryAnnotationPositionMax" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
 
-                <el-input-number v-model="position" :min="-2" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-model="position" :min="options.advanced.primaryAnnotationPositionMin" :max="options.advanced.primaryAnnotationPositionMax" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
             </div>
         </div>
 
@@ -127,13 +131,13 @@ init();
             <div class="inputs">
             
 
-                <el-input-number v-show="dualAnnotationEnabled" v-model="fontSize2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-show="dualAnnotationEnabled" v-model="fontSize2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
 
-                <el-input-number v-model="fontSize" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-model="fontSize" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
             </div>
         </div>
         
@@ -149,12 +153,12 @@ init();
             <label>{{ t('popupOpacityLabel') }}</label>
             <div class="inputs">
             
-                <el-input-number v-show="dualAnnotationEnabled" v-model="opacity2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-show="dualAnnotationEnabled" v-model="opacity2" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
-                <el-input-number v-model="opacity" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
+                </el-slider>
+                <el-slider v-model="opacity" :min="0.1" :max="1" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
 
             </div>
         </div>
@@ -174,11 +178,11 @@ init();
                 <InformationTooltip :content="t('popup_width_tips')" linkType="guide" linkKeyword="注解宽度" effect="dark"/>
             </label>
             <div class="inputs">
-                <el-input-number v-show="dualAnnotationEnabled" v-model="width2" :min="1" :max="99" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
-                </el-input-number>
+                <el-slider v-show="dualAnnotationEnabled" v-model="width2" :min="1" :max="9" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
+                </el-slider>
 
-                <el-input-number v-model="width" :min="1" :max="99" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
-                </el-input-number>
+                <el-slider v-model="width" :min="1" :max="9" :step="0.5" @change="onChangeSetting" controls-position="right" size="small">
+                </el-slider>
             </div>
         </div>
 
@@ -186,9 +190,10 @@ init();
             <label>{{ t('popupMaxMeaningNumberLabel') }}<RefreshTooltip /></label>
             <div class="inputs">
                 
-                <el-input-number v-model="maxMeaningNumber" :min="1" :max="20" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-model="maxMeaningNumber" :min="1" :max="20" :step="1" @change="onChangeSetting" controls-position="right" size="small">
                     
-                </el-input-number>
+                </el-slider>
+
             </div>
         </div>
 
@@ -208,6 +213,7 @@ init();
     .inputs {
       >* {
         width: 7em;
+        padding-left: 5px;
       }
     }
 

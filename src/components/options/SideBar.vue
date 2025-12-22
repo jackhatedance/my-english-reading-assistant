@@ -29,6 +29,7 @@ init();
                 <RouterLink to="/book">{{ t('options_section_book_title') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
                 <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
+                <RouterLink to="/advanced">{{ t('options_advanced_label') }}</RouterLink>
                 <hr></hr>
                 <RouterLink data-testid="unrecognized-words" to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>
             </nav>              
