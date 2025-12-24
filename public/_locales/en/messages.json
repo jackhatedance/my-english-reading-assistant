@@ -281,7 +281,7 @@
         "message": "Annotation"
     },
     "options_annotation_features":{
-        "message": "Features"
+        "message": "Feature toggles"
     },
     "options_annotation_features_description":{
         "message": "disabling unnecessary features can simplify the popup settings UI"
@@ -375,6 +375,10 @@
     },
     "options_report_import_notification_message_success":{
         "message":"import successfully"
+    },
+
+    "options_interaction_label":{
+        "message":"Interaction"
     },
 
     "options_advanced_label":{
@@ -542,7 +546,7 @@
         "message": "formats：.txt, .zip(mdict)"
     },
     "options_dictionary_find_tips": {
-        "message": "Where to find dictionary"
+        "message": "Where to find dictionary?"
     },
     "optionsAddDictionaryAction":{
         "message":"Import"
@@ -558,6 +562,10 @@
     },
     "optionsDictionaryMoveDownAction":{
         "message":"Move Down"
+    },
+
+    "options_section_site_title":{
+        "message":"Site"
     },
 
     "options_section_book_title":{

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
 import ExternalLink from '../../common/ExternalLink.vue'
 import { ElSelect, ElOption } from 'element-plus'

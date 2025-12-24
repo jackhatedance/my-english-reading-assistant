@@ -10,27 +10,15 @@ import 'element-plus/es/components/switch/style/css'
 
 const t = chrome.i18n.getMessage;
 const selectedRegion = ref('none');
-const selectedSwitchMode = ref('none');
+
 
 const enableRootAndAffix = ref(false);
-
-const clickWord = ref(true);
-const hoverWord = ref(true);
-const selectText = ref(false);
 
 async function onChangeRegion() {
   const pronunciation = {
     region: selectedRegion.value,
   };
   let newOptions = { pronunciation };
-  await updateOptions(newOptions);
-}
-
-async function onChangeSwitchMode() {
-  const _switch = {
-    mode: selectedSwitchMode.value,
-  };
-  let newOptions = { switch: _switch };
   await updateOptions(newOptions);
 }
 
@@ -42,40 +30,18 @@ async function onChangeRootAndAffixMode(){
     await updateOptions(newOptions);
 }
 
-async function onChangeInteraction() {
-  const _interaction = {
-    clickWord: clickWord.value,
-    hoverWord: hoverWord.value,
-    selectText: selectText.value,
-  };
-  let newOptions = { interaction: _interaction };
-  await updateOptions(newOptions);
-}
-
 function updateRegion(options){
   selectedRegion.value = options.pronunciation.region;
-}
-
-function updateSwitchMode(options){
-  selectedSwitchMode.value = options.switch.mode;
 }
 
 function updateRootAndAffixMode(options){
   enableRootAndAffix.value = options.rootAndAffix?.enabled;
 }
 
-function updateInteraction(options){
-  clickWord.value = options.interaction.clickWord;
-  hoverWord.value = options.interaction.hoverWord;
-  selectText.value = options.interaction.selectText;
-}
-
 const init = async () => {
   let options = await getOptions();
   updateRegion(options);  
-  updateSwitchMode(options);
   updateRootAndAffixMode(options);  
-  updateInteraction(options);
 };
 
 init();
@@ -84,27 +50,6 @@ init();
 <template>
 
   <div class="sections">
-
-    <div class="section">
-      <div class="label">
-        <h3>{{ t('options_general_switch_label') }}</h3>        
-      </div>
-      <div class="input">
-        <div>
-          <label>{{ t('options_general_switch_mode_label') }}<ExternalLink type="guide" keyword="默认开关模式"/></label>
-          <el-select data-testid="switch-mode" class="switch-mode" v-model="selectedSwitchMode" @change="onChangeSwitchMode" >
-            
-            <el-option :value="SWITCH_MODE_OPTION_ON" :label="t('options_general_switch_mode_on')" />
-            <el-option :value="SWITCH_MODE_OPTION_OFF" :label="t('options_general_switch_mode_off')" />
-            <el-option :value="SWITCH_MODE_OPTION_AUTO" :label="t('options_general_switch_mode_auto')" />
-            
-          </el-select> 
-        </div>
-      </div>
-      <div class="action">
-
-      </div>
-    </div>
     
     <div class="section">
       <div class="label">
@@ -144,33 +89,6 @@ init();
       </div>
     </div>
 
-    <div class="section">
-      <div class="label">
-        <h3>{{ t('options_general_interaction_label') }}</h3>        
-      </div>
-      <div class="input">
-        <div>
-          <div class="option">
-            <label>{{ t('options_general_interaction_click_word_label') }}</label>
-            <el-switch class="right" @change="onChangeInteraction" v-model="clickWord" />
-          </div>
-          
-          <div class="option">
-            <label>{{ t('options_general_interaction_hover_word_label') }}</label>
-            <el-switch class="right" @change="onChangeInteraction" v-model="hoverWord" />
-  
-          </div>
-
-          <div class="option">
-            <label>{{ t('options_general_interaction_select_text_label') }}</label>
-            <el-switch class="right" @change="onChangeInteraction" v-model="selectText" />
-          </div>
-        </div>
-      </div>
-      <div class="action">
-
-      </div>
-    </div>
     
   </div>
 

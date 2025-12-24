@@ -27,9 +27,11 @@ init();
                 <RouterLink to="/vocabulary">{{ t('optionsSectionVocabularyTitle') }}</RouterLink>
                 <RouterLink to="/annotation" data-testid="annotation">{{ t('options_section_annotation_title') }}</RouterLink>
                 <RouterLink to="/dictionary">{{ t('optionsSectionDictionaryTitle') }}</RouterLink>
+                <RouterLink data-testid="site" to="/site">{{ t('options_section_site_title') }}</RouterLink>
                 <RouterLink to="/book">{{ t('options_section_book_title') }}</RouterLink>
                 <RouterLink to="/notes">{{ t('optionsEditNotesLabel') }}</RouterLink>
                 <RouterLink to="/report">{{ t('optionsReportLabel') }}</RouterLink>
+                <RouterLink to="/interaction">{{ t('options_interaction_label') }}</RouterLink>
                 <RouterLink to="/advanced">{{ t('options_advanced_label') }}</RouterLink>
                 <hr></hr>
                 <RouterLink data-testid="unrecognized-words" to="/unrecognized-words">{{ t('optionsUnrecognizedWordsLabel') }}</RouterLink>

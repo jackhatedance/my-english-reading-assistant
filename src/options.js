@@ -10,9 +10,11 @@ import GeneralTab from './components/options/tabs/GeneralTab.vue'
 import VocabularyTab from './components/options/tabs/VocabularyTab.vue'
 import AnnotationTab from './components/options/tabs/AnnotationTab.vue'
 import NotesTab from './components/options/tabs/NotesTab.vue'
+import SiteTab from './components/options/tabs/SiteTab.vue'
 import BookTab from './components/options/tabs/BookTab.vue'
 import ReportTab from './components/options/tabs/ReportTab.vue'
 import DictionaryTab from './components/options/tabs/DictionaryTab.vue'
+import InteractionTab from './components/options/tabs/InteractionTab.vue'
 import AdvancedTab from './components/options/tabs/AdvancedTab.vue'
 import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab.vue'
 
@@ -28,9 +30,11 @@ const routes = [
     { path: '/vocabulary', component: VocabularyTab },
     { path: '/annotation', component: AnnotationTab },
     { path: '/notes', component: NotesTab },
+    { path: '/site', component: SiteTab },
     { path: '/book', component: BookTab },
     { path: '/report', component: ReportTab },
     { path: '/dictionary', component: DictionaryTab },
+    { path: '/interaction', component: InteractionTab },
     { path: '/advanced', component: AdvancedTab },
     { path: '/unrecognized-words', component: UnrecognizedWordsTab },
 ]

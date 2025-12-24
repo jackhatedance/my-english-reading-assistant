@@ -5,7 +5,7 @@ import { elSelect } from '../element-plus/element-plus.cjs'
 test('switch mode - default global switch mode is off', async ({ optionsPage, testPage, extensionId, popupPage }) => {
   
   await optionsPage.goto(extensionId);  
-  await optionsPage.gotoTab('general');
+  await optionsPage.gotoTab('site');
 
   const switchModeSelect = elSelect(optionsPage.page.getByTestId('switch-mode'));
   
@@ -27,7 +27,7 @@ test('switch mode - default site switch mode is unset', async ({ optionsPage, te
 test('switch mode - set global switch mode to auto and visit Chinese page', async ({ optionsPage, testPage, extensionId, popupPage }) => {
   
   await optionsPage.goto(extensionId);  
-  await optionsPage.gotoTab('general');
+  await optionsPage.gotoTab('site');
 
   const switchModeSelect = elSelect(optionsPage.page.getByTestId('switch-mode'));
   await switchModeSelect.selectOptionByText('auto');
@@ -47,7 +47,7 @@ test('switch mode - set global switch mode to auto and visit Chinese page', asyn
 test('switch mode - set global switch mode to auto and visit English page', async ({ optionsPage, testPage, extensionId, popupPage }) => {
   
   await optionsPage.goto(extensionId);  
-  await optionsPage.gotoTab('general');
+  await optionsPage.gotoTab('site');
 
   await elSelect(optionsPage.page.getByTestId('switch-mode')).selectOptionByText('auto');
   
