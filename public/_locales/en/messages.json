@@ -171,6 +171,13 @@
         "message":"Other"
     },
 
+    "popup_site_virtual_Label":{
+        "message":"Book site"
+    },
+    "popup_site_virtual_tip":{
+        "message":"allow book has its own settings"
+    },
+
     "popup_notes_enabled_label":{
         "message":"Notes"
     },
@@ -284,7 +291,7 @@
         "message": "Feature toggles"
     },
     "options_annotation_features_description":{
-        "message": "disabling unnecessary features can simplify the popup settings UI"
+        "message": "disabling unnecessary features can simplify the popup user interface"
     },
     "options_annotation_feature_dual_enanbled":{
         "message": "Dual Annotation"

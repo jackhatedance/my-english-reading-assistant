@@ -81,7 +81,7 @@ function getDaySummaries(activities, allSiteOptions){
 
         //duration group by site category
         let siteOptions = allSiteOptions[activity.site]
-        let siteCategory = siteOptions?.siteCategory;
+        let siteCategory = siteOptions?.site.category;
         if(siteCategory == null){
             siteCategory = 'text';
         }

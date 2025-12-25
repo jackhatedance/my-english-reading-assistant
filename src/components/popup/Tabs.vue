@@ -16,7 +16,7 @@ const t = chrome.i18n.getMessage;
 const props = defineProps({
     
     activeTabId: String,
-    
+    virtualSite: Boolean,
 });
 
 //console.log('Tabs notes:' + JSON.stringify(props.notes));
@@ -73,7 +73,7 @@ onUpdated(() => {
             <DictionaryTab @change-setting="onChangeSetting"></DictionaryTab>
         </TabBody>
         <TabBody id="misc-tab" v-show="activeTabId === 'misc-tab'" :isActive="activeTabId === 'misc-tab'">
-            <MiscTab @change-setting="onChangeSetting"></MiscTab>
+            <MiscTab :virtualSite="props.virtualSite" @change-setting="onChangeSetting"></MiscTab>
         </TabBody>
        
         
