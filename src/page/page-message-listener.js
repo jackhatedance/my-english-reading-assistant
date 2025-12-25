@@ -1,7 +1,8 @@
 import { refreshOptionsCache, } from '../service/optionService.js';
 import { sendMessageToEmbeddedApp, resizeEmbeddedApp } from '../embed/iframe-embed.js';
 import { isAllDocumentsAnnotationInitialized, isAnyDocumentsAnnotationInitialized, changeStyleForAllDocuments } from '../document.js';
-import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, cleanPageAnnotations, getCurrentSiteOptions, refreshCurrentSiteOptionsCache, isPageAnnotationInitialized, clearPagePreprocessMark } from '../page.js'
+import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, cleanPageAnnotations, isPageAnnotationInitialized, clearPagePreprocessMark } from '../page.js'
+import { getCurrentSiteOptions, refreshCurrentSiteOptionsCache } from '../current-site-options.js'
 import { updateAdditionalDictionariesInCache } from '../dictionary/customDictionary.js'
 import { closeDialog } from '../dialog.js' 
 import { resetPageAnnotationVisibilityAndNotify } from './page-utils.js'
@@ -121,7 +122,7 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
     //console.log(`change site options`);
     if (request.payload) {      
       //annotationOptions = request.payload;
-      getCurrentSiteOptions().then(async (siteOptions) => {
+      getCurrentSiteOptions(page.siteProfile).then(async (siteOptions) => {
         await refreshCurrentSiteOptionsCache(siteOptions);
         await updateAdditionalDictionariesInCache(siteOptions.other.additionalDictionaries, ['index']);
         changeStyleForAllDocuments(page.siteProfile, siteOptions);

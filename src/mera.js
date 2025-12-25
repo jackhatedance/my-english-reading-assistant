@@ -3,7 +3,8 @@
 import './content.css';
 import './side-panel-component.css';
 import { findSiteProfile } from './site-profile/site-profiles.js';
-import { initPageAnnotations, getCurrentSiteOptions } from './page.js'
+import { initPageAnnotations } from './page.js'
+import { getCurrentSiteOptions } from './current-site-options.js'
 import { domMonitor } from './page/page-change-monitor.js'
 import { pageMessageListenerWithParams } from './page/page-message-listener.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
@@ -96,7 +97,7 @@ function myMain() {
       page.siteProfile = findSiteProfile(document);
     }    
 
-    Promise.all([getOptions(), getCurrentSiteOptions()]).then((values) => {
+    Promise.all([getOptions(), getCurrentSiteOptions(page.siteProfile)]).then((values) => {
       let options = values[0];
       let siteOptions = values[1];
 

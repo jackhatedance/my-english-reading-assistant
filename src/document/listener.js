@@ -9,10 +9,10 @@ import { MenuItems } from '../menu.js';
 import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
 import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveInteractionOption } from '../interaction-utils.js'
-import { getCurrentSiteOptions } from '../page.js'
+import { getCurrentSiteOptions } from '../current-site-options.js'
 import { isFeatureEnabled, FEATURE_NOTE } from '../feature-toggle.js'
 
-async function mouseUpEventListenerWithParams(event, document, options, currentSiteOption, gDocumentArticleMap) {
+async function mouseUpEventListenerWithParams(event, document, options, currentSiteOption, gDocumentArticleMap, siteProfile) {
   //console.log(event);
   //mouse up event on dialog itself, ignore
   let supplementary = event.target.closest('.mea-supplementary');
@@ -58,7 +58,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
     let dictionaryName;
     
     let filteredNotes = [];
-    let siteOptions = await getCurrentSiteOptions();
+    let siteOptions = await getCurrentSiteOptions(siteProfile);
     let clickWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_CLICK_WORD);
     if (isSelectionCollapsed && clickWordEnabled) {
 

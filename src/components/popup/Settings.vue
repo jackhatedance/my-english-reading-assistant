@@ -128,12 +128,21 @@ provide('siteCategory', siteCategory);
 const notesEnabled = ref(false);
 provide('notesEnabled', notesEnabled);
 
+const virtualSiteEnabled = ref(false);
+provide('virtualSiteEnabled', virtualSiteEnabled);
+
 //const emit = defineEmits(['reload-page-info']);
 
 
 const site = computed(() => {
     console.log(props.pageInfo?.domain);
-    return props.pageInfo?.domain;
+    let displaySite;
+    if(props.pageInfo?.siteOptions?.virtualSite){
+      displaySite = `${props.pageInfo?.domain} - ${props.pageInfo?.siteOptions?.virtualSite.path}`;
+    }else{
+      displaySite = props.pageInfo?.domain;
+    }
+    return displaySite;
 });
 
 const defaultSwitchMode = computed(() => {
@@ -179,7 +188,10 @@ function buildOptions(){
   let newOptions = {
     switch: { mode: getSwitchModeValue(switchMode.value) },
     dualAnnotationEnabled: dualAnnotationEnabled.value,
-    siteCategory: siteCategory.value,
+    site:{
+      virtualSiteEnabled: virtualSiteEnabled.value,
+      category: siteCategory.value,
+    },
 
     annotation:{    
       content: content.value,
@@ -229,10 +241,10 @@ function buildOptions(){
 async function applyStyles(){
     let newOptions = buildOptions();
 
-    let siteDomain = props.pageInfo.domain;
+    let site = props.pageInfo.siteOptions.siteName;
 
     //console.log('set site options, domain:'+siteDomain + ', options:'+ JSON.stringify(newOptions))
-    await setSiteOptions(siteDomain, newOptions);
+    await setSiteOptions(site, newOptions);
     console.log(newOptions);
     let queryOptions = { active: true, currentWindow: true };
     if(gQueryParams.index){
@@ -333,7 +345,9 @@ function updateViewModel(siteOptions, settingsOnly = false){
   if(!settingsOnly){
     setSwitchModeValue(siteOptions.switch.mode);
   }
-  siteCategory.value = fixCategory(siteOptions.siteCategory);
+  siteCategory.value = fixCategory(siteOptions.site.category);
+
+  virtualSiteEnabled.value = siteOptions.site.virtualSiteEnabled;
 
   if(!props.options.annotation.dualAnnotation.enabled){
     dualAnnotationEnabled.value = false;
@@ -463,7 +477,7 @@ init();
         </div>
                 
         <div class="popup-settings">
-          <Tabs :activeTabId="activeTabId" @change-setting="onChangeSetting"></Tabs>
+          <Tabs :activeTabId="activeTabId" :virtualSite="props.pageInfo.siteOptions.virtualSite" @change-setting="onChangeSetting"></Tabs>
           
           <div class="buttons">
             <el-button id="resetAnnotationSettings" @click="onReset">{{ t('popupResetButton') }}</el-button>

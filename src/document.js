@@ -7,7 +7,7 @@ import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
-import { getCurrentSiteOptions } from './page.js'
+import { getCurrentSiteOptions } from './current-site-options.js'
 import { mouseUpEventListenerWithParams } from './document/listener.js'
 import { createMutationObserver } from './document/mutation-observer.js'
 import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
@@ -211,7 +211,7 @@ function addDocumentEventListener(page, window, document, options, currentSiteOp
   if(!mouseUpEventListener){
     gLogger.debug('create mouseUpEventListener');
     mouseUpEventListener = function(event) {
-      mouseUpEventListenerWithParams(event, document, options, currentSiteOption, page.documentArticleMap);
+      mouseUpEventListenerWithParams(event, document, options, currentSiteOption, page.documentArticleMap, page.siteProfile);
     }
     documentInfo.mouseUpEventListener = mouseUpEventListener;
   }
@@ -281,7 +281,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
     }
 
     let sysOptions = getOptionsFromCache();
-    let currentSiteOption = await getCurrentSiteOptions();
+    let currentSiteOption = await getCurrentSiteOptions(siteProfile);
 
     let article = null;
     if (documentConfig.canProcess) {

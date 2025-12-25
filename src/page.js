@@ -1,6 +1,5 @@
 'use strict';
 
-import { getSiteOptions, } from './service/site-option-service.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
@@ -9,12 +8,12 @@ import { searchBookByUrlAsync } from './service/bookService.js';
 import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWords } from './service/dictionaryService.js';
 import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
+import { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache } from './current-site-options.js'
 
 import log from 'loglevel'
 
 const gLogger = log.getLogger("page");
 
-var gCurrentSiteOptions;
 /**
  * 
  * @returns unknownWords, unknownWordsRatio, annotationOptions
@@ -73,7 +72,7 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
 
     
     let visible = isPageAnnotationVisible();
-    let siteOptions = await getCurrentSiteOptions();
+    let siteOptions = await getCurrentSiteOptions(siteProfile);
     let domain = document.location.hostname;
     if (!domain) {
         domain = 'NULL';
@@ -132,50 +131,24 @@ function isPageAnnotationVisible() {
     }
 }
 
-/**
- * DON'T import it from popup.js, I don't know why. otherwise the project cannot be built.
- * @returns 
- */
-async function getCurrentSiteOptions() {
-    let siteDomain = document.location.hostname;
-    let options = await getSiteOptions(siteDomain);
-
-    return options;
-}
-
-async function initializeCurrentSiteOptionCache(){
-    gCurrentSiteOptions = await getCurrentSiteOptions();
-}
-
-async function refreshCurrentSiteOptionsCache(currentSiteOptions) {
-    if(currentSiteOptions){
-        gCurrentSiteOptions = currentSiteOptions;
-    }else {
-        gCurrentSiteOptions = await getCurrentSiteOptions();
-    }
-}
-
-function getCurrentSiteOptionsFromCache() {
-    return gCurrentSiteOptions;
-}
 
 function isPageAnnotationInitialized() {
     return isDocumentAnnotationInitialized(document)
 }
 
 var gServiceInitialized = false;
-async function initializeServiceOnlyOnce(){
+async function initializeServiceOnlyOnce(siteProfile){
     if(!gServiceInitialized){
-        await doInitializeService();
+        await doInitializeService(siteProfile);
         gServiceInitialized = true;
     }
 }
 
-async function doInitializeService(){
+async function doInitializeService(siteProfile){
     await initializeOptionService();
     let options = getOptionsFromCache();
 
-    await initializeCurrentSiteOptionCache();
+    await initializeCurrentSiteOptionCache(siteProfile);
     let siteOptions = await getCurrentSiteOptionsFromCache();
     //console.log(`get site options:`+ JSON.stringify(siteOptions));
     let additionalDictionaryNames = siteOptions.other.additionalDictionaries;
@@ -191,7 +164,7 @@ async function initPageAnnotations(page) {
     const { siteProfile, documentArticleMap } = page;
 
     //console.log('initPageAnnotations');
-    await initializeServiceOnlyOnce();
+    await initializeServiceOnlyOnce(siteProfile);
 
     let newDocumentArticleMap = new Map();
     /*
@@ -283,7 +256,7 @@ async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, en
       types = ['word-definition', 'note'];
     }
   
-    let siteOptions = await getCurrentSiteOptions();
+    let siteOptions = await getCurrentSiteOptions(siteProfile);
 
     let windows = getAllWindows(siteProfile);
     for (const window of windows) {
@@ -304,4 +277,4 @@ function clearPagePreprocessMark(siteProfile) {
     });
 }
 
-export { getPageInfo, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, getCurrentSiteOptions, getCurrentSiteOptionsFromCache, refreshCurrentSiteOptionsCache, isPageAnnotationInitialized, clearPagePreprocessMark };
+export { getPageInfo, initPageAnnotations, cleanPageAnnotations, resetPageAnnotationVisibility, isPageAnnotationVisible, isPageAnnotationInitialized, clearPagePreprocessMark };

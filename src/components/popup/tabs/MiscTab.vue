@@ -12,7 +12,7 @@ import RefreshTooltip from '../../common/RefreshTooltip.vue'
 const emit = defineEmits(['change-setting']);
 
 const props = defineProps({
-    
+    virtualSite: Boolean,
 
 });
 
@@ -24,6 +24,8 @@ const selectText = inject('selectText');
 
 const siteCategory = inject('siteCategory');
 const notesEnabled = inject('notesEnabled');
+const virtualSiteEnabled = inject('virtualSiteEnabled');
+
 
 function getInteractionDefaultLabel(key){
   let interactionOptions = options.value.interaction;
@@ -80,7 +82,7 @@ init();
         </div> 
       </div>
 
-      <div class="field" >
+      <div class="field" v-show="!props.virtualSite">
         <label>{{ t('popup_site_category_Label') }}<InformationTooltip :content="t('popup_site_category_tip')" linkType="guide" linkKeyword="站点类别" effect="dark" /></label>
         
         <div class="inputs">
@@ -89,6 +91,14 @@ init();
             <el-option :value="SITE_CATEGORY_VIDEO" :label="t('popup_site_category_video_Label')" />
             <el-option :value="SITE_CATEGORY_OTHER" :label="t('popup_site_category_other_Label')" />
           </el-select> 
+        </div> 
+      </div>
+
+      <div class="field" v-show="!props.virtualSite">
+        <label>{{ t('popup_site_virtual_Label') }}<InformationTooltip :content="t('popup_site_virtual_tip')" linkType="guide" linkKeyword="书籍站点" effect="dark" /></label>
+        
+        <div class="inputs">
+          <el-switch v-model="virtualSiteEnabled" @change="onChangeSetting" size="small" />
         </div> 
       </div>
 

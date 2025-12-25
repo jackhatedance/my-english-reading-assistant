@@ -171,6 +171,13 @@
         "message":"其他"
     },
 
+    "popup_site_virtual_Label":{
+        "message":"书籍站点"
+    },
+    "popup_site_virtual_tip":{
+        "message":"允许书籍有自己独立的设置"
+    },
+
     "popup_notes_enabled_label":{
         "message":"笔记"
     },
@@ -284,7 +291,7 @@
         "message": "功能开关"
     },
     "options_annotation_features_description":{
-        "message": "禁用不需要的功能可以简化弹窗设置界面"
+        "message": "禁用不需要的功能可以简化弹窗用户界面"
     },
     "options_annotation_feature_dual_enanbled":{
         "message": "双注解"

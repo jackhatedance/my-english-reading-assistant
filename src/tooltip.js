@@ -11,7 +11,7 @@ import { isRegularTransform } from './lemma.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import { isElementDetached } from './html.js'
 import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
-import { getCurrentSiteOptionsFromCache } from './page.js'
+import { getCurrentSiteOptionsFromCache } from './current-site-options.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 
 import log from 'loglevel'

@@ -57,7 +57,7 @@ function renderSiteSummaries(summaries, allSiteOptions){
         let {site, wordChanges, duration, startTime, lastTime} = item;
 
         let siteOptions = allSiteOptions[site];
-        let category = siteOptions?.siteCategory;
+        let category = siteOptions?.site.category;
         if(category == null){
             category = 'text';
         }

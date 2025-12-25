@@ -37,9 +37,23 @@ function loadSiteOptionsFromStorage(siteDomain){
 
 async function getAllSiteOptions(){
     let result = await chrome.storage.local.get(['sitesOptions']);
-    return result?.sitesOptions;
-}
 
+    let sitesOptions = result?.sitesOptions;
+    if(sitesOptions != null){
+        for (const [key, value] of Object.entries(sitesOptions)) {
+            //console.log(key);
+            patchDefaultSiteOptionValues(value);
+        }
+    }
+    
+    return sitesOptions;
+}
+/**
+ * 
+ * @param {*} siteDomain 
+ * @param {*} options delete if null
+ * @returns 
+ */
 function saveSiteOptionsToStorage(siteDomain, options){
     //console.log('save site options, domain:'+siteDomain+',options:'+options);
     return new Promise(resolve => {
@@ -48,10 +62,16 @@ function saveSiteOptionsToStorage(siteDomain, options){
             if(!sitesOptions){
                 sitesOptions = {};
             }
-            sitesOptions[siteDomain] = options;
+
+            if(options !=null){
+                sitesOptions[siteDomain] = options;
+            }else{
+                delete sitesOptions[siteDomain];
+            }
+            
 
             let object = {sitesOptions: sitesOptions};
-            //console.log('save sitesOptions:'+JSON.stringify(sitesOptions));
+            console.log('save sitesOptions:'+JSON.stringify(sitesOptions));
             chrome.storage.local.set(object, resolve);
         });
     });    
