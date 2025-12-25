@@ -8,7 +8,7 @@ function createFactoryDefaultSiteOptions(){
         //siteCategory: 'text',//move to site.category
         site: {
             category: 'text',
-            virtualSiteEnabled: true,
+            virtualSiteEnabled: false,
         },
         annotation: {
             content: 'AC_DEFINITION',
@@ -17,7 +17,7 @@ function createFactoryDefaultSiteOptions(){
             opacity: 0.5,
             color: '#0000ff',
             interlaced: false,
-            width: 3,
+            width: 5,
             
             lineHeight: 1.2,
             maxMeaningNumber: 3,
@@ -30,7 +30,7 @@ function createFactoryDefaultSiteOptions(){
             opacity: 0.5,
             color: '#e56910',
             interlaced: false,
-            width: 3,
+            width: 5,
         },
         content: {
             //enabled: true,
@@ -199,12 +199,12 @@ function patch_v_1_10_0(options){
 
     let annotationOptions = options.annotation;
     if(!annotationOptions.width){
-        annotationOptions.width = 3;
+        annotationOptions.width = 5;
     }
 
     let secondaryAnnotationOptions = options.secondaryAnnotation;
     if(!secondaryAnnotationOptions.width){
-        secondaryAnnotationOptions.width = 3;
+        secondaryAnnotationOptions.width = 5;
     }
 }
 
@@ -216,7 +216,7 @@ function patch_v_1_13_0(options){
 
     let siteOptions = options.site;
     if(siteOptions.virtualSiteEnabled == null){
-        siteOptions.virtualSiteEnabled = true;
+        siteOptions.virtualSiteEnabled = false;
     }
     
     if(siteOptions.category==null){

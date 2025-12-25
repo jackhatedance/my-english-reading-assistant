@@ -98,7 +98,7 @@ init();
         <label>{{ t('popup_site_virtual_Label') }}<InformationTooltip :content="t('popup_site_virtual_tip')" linkType="guide" linkKeyword="书籍站点" effect="dark" /></label>
         
         <div class="inputs">
-          <el-switch v-model="virtualSiteEnabled" @change="onChangeSetting" size="small" />
+          <el-switch data-testid="virtual-site" v-model="virtualSiteEnabled" @change="onChangeSetting" size="small" />
         </div> 
       </div>
 
