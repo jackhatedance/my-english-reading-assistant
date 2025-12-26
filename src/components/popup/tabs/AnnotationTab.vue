@@ -113,9 +113,11 @@ init();
         </div>
         
         <div class="field">
-            <label>{{ t('popupPositionLabel') }}</label>
+            <label>{{ t('popupPositionLabel') }}
+                <InformationTooltip :content="t('popupPositionLabelTip')" effect="dark"/>
+            </label>
             <div class="inputs">
-            
+                
                 <el-slider v-show="dualAnnotationEnabled" v-model="position2" :min="options.advanced.secondaryAnnotationPositionMin" :max="options.advanced.secondaryAnnotationPositionMax" :step="0.1" @change="onChangeSetting" controls-position="right" size="small">
                     
                 </el-slider>

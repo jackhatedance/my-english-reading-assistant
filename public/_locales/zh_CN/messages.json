@@ -85,7 +85,10 @@
         "message":"设置"
     },
     "popupPositionLabel":{
-        "message":"上下位置"
+        "message":"垂直位置"
+    },
+    "popupPositionLabelTip":{
+        "message":"左边向下，右边向上"
     },
     "popupFontSizeLabel":{
         "message":"字体尺寸"

@@ -67,7 +67,10 @@
         "message":"Content"
     },
     "popupPositionLabel":{
-        "message":"Pos. Up/Down"
+        "message":"Vertical Position"
+    },
+    "popupPositionLabelTip":{
+        "message":"left side goes down, right side goes up."
     },
     "popup_settings_content_none":{
         "message":"None"
