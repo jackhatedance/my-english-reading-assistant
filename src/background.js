@@ -5,7 +5,7 @@ import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
 import log from 'loglevel'
-import { initLog } from './log.js'
+import { initLog, setDebugLoggers } from './log.js'
 import { getTabInfo } from './service/tab-service.js';
 import { onTabCreated, onTabUpdated, onAnnotationInitialized, onAnnotationCleaned, onTabBlurred, onTabFocused, onTabRemoved, onWordMarked, onIdleStateChanged } from './service/activity-core-service.js'
 import { truncateString } from './utils/stringUtils.js'
@@ -16,6 +16,13 @@ import { truncateString } from './utils/stringUtils.js'
 
 
 initLog();
+
+async function doSetLogLevels(){
+  let sysOptions = await getOptions();
+  setDebugLoggers(sysOptions.advanced.debugLoggers);
+}
+doSetLogLevels();
+
 const gLogger = log.getLogger("background");
 chrome.idle.setDetectionInterval(5 * 60);//5 minutes
 

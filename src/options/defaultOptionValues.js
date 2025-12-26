@@ -31,6 +31,8 @@ function createDefaultOptions(){
             secondaryAnnotationPositionMax: -0.8,
             textFontSizeMax: 28,
             maxMeaningNumberMax: 20,
+
+            debugLoggers: [],
         },
         annotation: {
             dualAnnotation: {
@@ -172,6 +174,10 @@ function patch_v_1_11_0(options){
         advancedOptions.maxMeaningNumberMax = 20;
     }
 
+    if(!advancedOptions.hasOwnProperty('debugLoggers')){
+        advancedOptions.debugLoggers = [];
+    }
+    
 }
 
 

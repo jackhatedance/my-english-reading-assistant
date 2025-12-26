@@ -9,7 +9,7 @@ import { domMonitor } from './page/page-change-monitor.js'
 import { pageMessageListenerWithParams } from './page/page-message-listener.js'
 import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
 import log from 'loglevel'
-import { initLog } from './log.js'
+import { initLog, setDebugLoggers } from './log.js'
 import { getOptions } from './service/optionService.js'
 import { getEnabled } from './switch-mode.js'
 import { sendMessageToBackground } from './message.js'
@@ -100,6 +100,8 @@ function myMain() {
     Promise.all([getOptions(), getCurrentSiteOptions(page.siteProfile)]).then((values) => {
       let options = values[0];
       let siteOptions = values[1];
+
+      setDebugLoggers(options.advanced.debugLoggers);
 
       let enabled = getEnabled(options.switch.mode, siteOptions.switch.mode, page.language);
       if (enabled) {

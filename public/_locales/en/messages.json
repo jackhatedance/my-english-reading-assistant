@@ -419,6 +419,13 @@
         "message":"max meaning number max value"
     },
 
+    "options_advanced_log_label":{
+        "message":"Log"
+    },
+    "options_advanced_log_debug_loggers_label":{
+        "message":"Debug loggers"
+    },
+
     "options_report_export_label_desc":{
         "message":"backup report data to file"
     },

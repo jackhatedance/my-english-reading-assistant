@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive, toRaw } from 'vue';
 import { getOptions, updateOptions } from '../../../service/optionService.js';
 import ExternalLink from '../../common/ExternalLink.vue'
 import { ElSelect, ElOption } from 'element-plus'
@@ -21,6 +21,27 @@ const textFontSizeMax = ref(28);
 
 const maxMeaningNumberMax = ref(20);
 
+const debugLoggers = ref([]);
+
+const logNames = [
+  'background',
+  'mera',
+  'site-profile',
+  'article',
+  'page',
+  'page-change-monitor',
+  'mutation-observer',
+  'document',
+  'tooltip',
+  'tab-service',
+  'activity-service',
+  'activity-core',
+  'activity-core-service',
+  'dictionary',
+  'custom-dictionary',
+];
+
+
 async function onChangeSetting() {
   const advanced = {
     primaryAnnotationPositionMin: primaryAnnotationPositionMin.value,
@@ -32,6 +53,8 @@ async function onChangeSetting() {
     textFontSizeMax: textFontSizeMax.value,
 
     maxMeaningNumberMax: maxMeaningNumberMax.value,
+
+    debugLoggers: toRaw(debugLoggers.value),
   };
   let newOptions = { advanced };
   await updateOptions(newOptions);
@@ -51,6 +74,9 @@ const init = async () => {
   textFontSizeMax.value = advancedOptions.textFontSizeMax;
 
   maxMeaningNumberMax.value = advancedOptions.maxMeaningNumberMax;
+
+  debugLoggers.value = advancedOptions.debugLoggers;
+  
 };
 
 init();
@@ -99,6 +125,29 @@ init();
           <el-input-number v-model="maxMeaningNumberMax" @change="onChangeSetting" :step="1" size="small" class="right"/>
           
         </div>
+      </div>
+      <div class="action">
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="label">
+        <h3>{{ t('options_advanced_log_label') }}</h3>        
+      </div>
+      <div class="input">
+        <div class="option">
+          <label>{{ t('options_advanced_log_debug_loggers_label') }}</label>
+          <el-select v-model="debugLoggers" @change="onChangeSetting" multiple size="small" class="right">
+            <el-option
+              v-for="item in logNames"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select> 
+        </div>
+        
       </div>
       <div class="action">
 

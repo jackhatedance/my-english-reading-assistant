@@ -418,6 +418,13 @@
         "message":"最大词义数量最大值"
     },
 
+    "options_advanced_logging_label":{
+        "message":"日志"
+    },
+    "options_advanced_log_debug_loggers_label":{
+        "message":"调试日志"
+    },
+
     "options_report_export_label_desc":{
         "message":"备份报告数据到文件"
     },
