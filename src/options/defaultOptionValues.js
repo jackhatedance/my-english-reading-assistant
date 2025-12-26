@@ -30,6 +30,7 @@ function createDefaultOptions(){
             secondaryAnnotationPositionMin: -1.2,
             secondaryAnnotationPositionMax: -0.8,
             textFontSizeMax: 28,
+            maxMeaningNumberMax: 20,
         },
         annotation: {
             dualAnnotation: {
@@ -165,6 +166,10 @@ function patch_v_1_11_0(options){
 
     if(!advancedOptions.hasOwnProperty('textFontSizeMax')){
         advancedOptions.textFontSizeMax = 28;
+    }
+
+    if(!advancedOptions.hasOwnProperty('maxMeaningNumberMax')){
+        advancedOptions.maxMeaningNumberMax = 20;
     }
 
 }

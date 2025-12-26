@@ -415,6 +415,9 @@
     "options_advanced_secondary_text_font_size_max_label":{
         "message":"text font size max value"
     },
+    "options_advanced_max_meaning_number_max_label":{
+        "message":"max meaning number max value"
+    },
 
     "options_report_export_label_desc":{
         "message":"backup report data to file"

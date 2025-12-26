@@ -192,7 +192,7 @@ init();
             <label>{{ t('popupMaxMeaningNumberLabel') }}<RefreshTooltip /></label>
             <div class="inputs">
                 
-                <el-slider v-model="maxMeaningNumber" :min="1" :max="20" :step="1" @change="onChangeSetting" controls-position="right" size="small">
+                <el-slider v-model="maxMeaningNumber" :min="1" :max="options.advanced.maxMeaningNumberMax" :step="1" @change="onChangeSetting" controls-position="right" size="small">
                     
                 </el-slider>
 

@@ -414,6 +414,9 @@
     "options_advanced_secondary_text_font_size_max_label":{
         "message":"正文字体尺寸最大值"
     },
+    "options_advanced_max_meaning_number_max_label":{
+        "message":"最大词义数量最大值"
+    },
 
     "options_report_export_label_desc":{
         "message":"备份报告数据到文件"

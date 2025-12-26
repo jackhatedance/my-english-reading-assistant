@@ -19,6 +19,8 @@ const secondaryAnnotationPositionMax = ref(-0.8);
 
 const textFontSizeMax = ref(28);
 
+const maxMeaningNumberMax = ref(20);
+
 async function onChangeSetting() {
   const advanced = {
     primaryAnnotationPositionMin: primaryAnnotationPositionMin.value,
@@ -28,6 +30,8 @@ async function onChangeSetting() {
     secondaryAnnotationPositionMax: secondaryAnnotationPositionMax.value,
 
     textFontSizeMax: textFontSizeMax.value,
+
+    maxMeaningNumberMax: maxMeaningNumberMax.value,
   };
   let newOptions = { advanced };
   await updateOptions(newOptions);
@@ -45,6 +49,8 @@ const init = async () => {
   secondaryAnnotationPositionMax.value = advancedOptions.secondaryAnnotationPositionMax;
 
   textFontSizeMax.value = advancedOptions.textFontSizeMax;
+
+  maxMeaningNumberMax.value = advancedOptions.maxMeaningNumberMax;
 };
 
 init();
@@ -85,6 +91,12 @@ init();
         <div class="option">
           <label>{{ t('options_advanced_secondary_text_font_size_max_label') }}</label>
           <el-input-number v-model="textFontSizeMax" @change="onChangeSetting" :step="1" size="small" class="right"/>
+          
+        </div>
+
+        <div class="option">
+          <label>{{ t('options_advanced_secondary_text_font_size_max_label') }}</label>
+          <el-input-number v-model="maxMeaningNumberMax" @change="onChangeSetting" :step="1" size="small" class="right"/>
           
         </div>
       </div>
