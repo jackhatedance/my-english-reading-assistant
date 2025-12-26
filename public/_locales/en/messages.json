@@ -67,7 +67,7 @@
         "message":"Content"
     },
     "popupPositionLabel":{
-        "message":"Vertical Position"
+        "message":"Vertical position"
     },
     "popupPositionLabelTip":{
         "message":"left side goes down, right side goes up."
@@ -94,13 +94,13 @@
         "message":"Font Size"
     },
     "popupLineHeightLabel":{
-        "message":"Line Height"
+        "message":"Line height"
     },
     "popupUnknownWordWidthLabel":{
-        "message":"Unknown Word Width"
+        "message":"Unknown word width"
     },
     "popup_settings_text_font_size_label":{
-        "message":"Font Size"
+        "message":"Font size"
     },
     "popup_settings_text_font_size_tip":{
         "message":"size not changed when 0"
@@ -130,16 +130,16 @@
         "message":"The ratio of annotation width to word width"
     },
     "popupMaxMeaningNumberLabel":{
-        "message":"Max Meaning Number"
+        "message":"Max meaning number"
     },
     "popupHideWordClassLabel":{
-        "message":"Hide Word Class"
+        "message":"Hide word class"
     },
     "popupUnknownWordColorLabel":{
-        "message":"Unknown Word Color"
+        "message":"Unknown word color"
     },
     "popupAdditionalDictionaryLabel":{
-        "message":"Addt'l. Dictionaries"
+        "message":"Addt'l. dictionaries"
     },
     "popupAdditionalDictionaryTip":{
         "message":"additional dictionaries"
@@ -159,7 +159,7 @@
     },
 
     "popup_site_category_Label":{
-        "message":"Site Category"
+        "message":"Site category"
     },
     "popup_site_category_tip":{
         "message":"used in reading report"
