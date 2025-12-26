@@ -9,6 +9,7 @@ import { initializeDictionaryService, flushUnrecognizedWords, getUnrecognizedWor
 import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
 import { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache } from './current-site-options.js'
+import { fixSiteDomain } from './site.js'
 
 import log from 'loglevel'
 
@@ -74,9 +75,8 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
     let visible = isPageAnnotationVisible();
     let siteOptions = await getCurrentSiteOptions(siteProfile);
     let domain = document.location.hostname;
-    if (!domain) {
-        domain = 'NULL';
-    }
+    domain = fixSiteDomain(domain);
+
     let url = siteProfile.getUrl(document);
 
     let book = await searchBookByUrlAsync(url);

@@ -1,6 +1,6 @@
 import { createFactoryDefaultSiteOptions, patchDefaultSiteOptionValues } from '../options/defaultSiteOptionValues.js';
 import assign from 'assign-deep'
-
+import { fixSiteDomain } from '../site.js'
 
 async function getDefaultSiteOptions(){
 
@@ -92,13 +92,6 @@ function getEffectiveSiteOptions(siteOptions, defaultSiteOptions){
     //migrateSiteOptions(effectiveOptions);
 
     return effectiveOptions;
-}
-
-function fixSiteDomain(domain){
-    if(!domain){
-        return 'NULL';
-    }
-    return domain;
 }
 
 async function getSiteOptions(siteDomain){

@@ -4,4 +4,11 @@ function getWebSiteDocumentUrl(path){
     return `${MERA_WEB_URL}/${path}`
 }
 
-export { getWebSiteDocumentUrl }
+function fixSiteDomain(domain){
+    if(!domain){
+        return 'local';
+    }
+    return domain;
+}
+
+export { getWebSiteDocumentUrl, fixSiteDomain }

@@ -1,5 +1,5 @@
 'use strict';
-import { getBook } from './service/bookService.js';
+import { fixSiteDomain } from './site.js';
 
 function sendMessageMarkWordToBackground(wordChanges) {
     //send to background
@@ -39,9 +39,8 @@ function sendMessageToBackground(siteProfile, type, pageInfo) {
 
     
     let site = document.location.hostname;
-    if (!site) {
-        site = 'NULL';
-    }
+    site = fixSiteDomain(site);
+
     let url = siteProfile.getUrl(document);
     
     let title = document.title;
