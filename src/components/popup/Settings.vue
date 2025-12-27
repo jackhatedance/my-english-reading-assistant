@@ -19,6 +19,14 @@ import 'element-plus/es/components/dropdown-item/style/css'
 import { ElIcon } from 'element-plus'
 import 'element-plus/es/components/icon/style/css'
 import { ArrowDown } from '@element-plus/icons-vue'
+import { ElTabs, ElTabPane } from 'element-plus'
+import 'element-plus/es/components/tabs/style/css'
+import 'element-plus/es/components/tab-pane/style/css'
+
+import AnnotationTab from './tabs/AnnotationTab.vue'
+import TextTab from './tabs/TextTab.vue'
+import DictionaryTab from './tabs/DictionaryTab.vue'
+import MiscTab from './tabs/MiscTab.vue'
 
 import InformationTooltip from '../common/InformationTooltip.vue'
 import { convertUnsetToValue, convertValueToUnset, trueFalseNullDict, getValueByOption, getOptionByValue } from '../../element-plus-utils.js'
@@ -33,7 +41,7 @@ const props = defineProps({
 
 const gQueryParams = inject('gQueryParams');
 
-const activeTabId = 'annotation-tab';
+const activeTabName = ref('annotation');
 
 const enabled = ref(false);
 
@@ -41,6 +49,7 @@ const switchMode = ref('');
 function getSwitchModeValue(){
   return convertUnsetToValue(switchMode.value, '');
 }
+
 
 function setSwitchModeValue(value){
   switchMode.value = convertValueToUnset(value, '');
@@ -477,8 +486,22 @@ init();
         </div>
                 
         <div class="popup-settings">
-          <Tabs :activeTabId="activeTabId" :virtualSite="props.pageInfo.siteOptions.virtualSite" @change-setting="onChangeSetting"></Tabs>
-          
+          <el-tabs v-model="activeTabName" class="setting-tabs" @tab-click="handleClick">
+            <el-tab-pane :label="t('popup_tab_annotation')" name="annotation">
+              <AnnotationTab @change-setting="onChangeSetting"></AnnotationTab>
+            </el-tab-pane>
+            <el-tab-pane :label="t('popup_tab_text')" name="text">
+              <TextTab @change-setting="onChangeSetting"></TextTab>
+            </el-tab-pane>
+            <el-tab-pane :label="t('popup_tab_dictionary')" name="dictionary">
+              <DictionaryTab @change-setting="onChangeSetting"></DictionaryTab>
+            </el-tab-pane>
+            <el-tab-pane :label="t('popup_tab_misc')" name="misc">
+              <MiscTab :virtualSite="props.pageInfo.siteOptions.virtualSite" @change-setting="onChangeSetting"></MiscTab>
+            </el-tab-pane>
+            
+          </el-tabs>
+
           <div class="buttons">
             <el-button id="resetAnnotationSettings" @click="onReset">{{ t('popupResetButton') }}</el-button>
             <el-dropdown @click="onSaveAsDefault" @command="onDefaultCommand" split-button trigger="click" placement="top-start">
@@ -519,6 +542,11 @@ init();
     }
   }
 }
+
+.setting-tabs {
+  min-height: 280px;
+}
+
 .annotation-settings {
   padding:0 !important;
 }
