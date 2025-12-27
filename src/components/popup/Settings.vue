@@ -5,7 +5,7 @@ import { setSiteOptions, setSiteOptionsAsDefault, getDefaultSiteOptions, } from 
 import { getAdditionalDictionaryMetas } from '../../dictionary/customDictionary.js'
 import HelpLink from '../HelpLink.vue'
 import { SWITCH_MODE_OPTION_UNSET, SWITCH_MODE_OPTION_ON, SWITCH_MODE_OPTION_OFF, SWITCH_MODE_OPTION_AUTO } from '../../switch-mode.js'
-import Tabs from './Tabs.vue'
+
 import { ElSelect, ElOption } from 'element-plus'
 import 'element-plus/es/components/select/style/css'
 import { ElSwitch } from 'element-plus'

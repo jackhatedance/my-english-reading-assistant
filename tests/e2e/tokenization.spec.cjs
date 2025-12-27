@@ -6,7 +6,7 @@ test('tokenization - punctuation-leading-word', async ({ testPage, extensionId, 
   
   await popupPage.goto(extensionId);
 
-  await popupPage.page.getByTestId('text-tab-header').click();
+  await popupPage.textTabHeader.click();
   await popupPage.toggle();
 
   let rode = testPage.page.locator("#punctuation-leading-word .leading-punctuation mea-token");

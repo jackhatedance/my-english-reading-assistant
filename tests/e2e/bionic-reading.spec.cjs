@@ -6,7 +6,7 @@ test('bionic reading', async ({ testPage, extensionId, popupPage }) => {
   
   await popupPage.goto(extensionId);
 
-  await popupPage.page.getByTestId('text-tab-header').click();
+  await popupPage.textTabHeader.click();
   await popupPage.page.getByTestId('bionic-switch').click();
   await popupPage.toggle();
 

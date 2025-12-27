@@ -6,7 +6,11 @@ export class PopupPage {
     private readonly switchMode: Locator;
     private readonly dualAnnotation: Locator;
 
+    private readonly annotationTabHeader: Locator;
+    private readonly textTabHeader: Locator;
+    private readonly dictionaryTabHeader: Locator;
     private readonly miscTabHeader: Locator;
+
     private readonly virtualSite: Locator;
 
     constructor(public readonly page: Page) {
@@ -14,7 +18,11 @@ export class PopupPage {
         this.switchMode = this.page.getByTestId('switch-mode');
         this.dualAnnotation = this.page.getByTestId('dual-annotation');
 
-        this.miscTabHeader = this.page.getByTestId('misc-tab-header');
+        this.annotationTabHeader = this.page.locator('#tab-annotation');
+        this.textTabHeader = this.page.locator('#tab-text');
+        this.dictionaryTabHeader = this.page.locator('#tab-dictionary');
+        this.miscTabHeader = this.page.locator('#tab-misc');
+
         this.virtualSite = this.page.getByTestId('virtual-site');
     }
 
