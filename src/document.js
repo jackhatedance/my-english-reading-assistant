@@ -10,7 +10,7 @@ import { getNotes } from './service/noteService.js';
 import { getCurrentSiteOptions } from './current-site-options.js'
 import { mouseUpEventListenerWithParams } from './document/listener.js'
 import { createMutationObserver } from './document/mutation-observer.js'
-import { tokenizeTextNode, parseDocument, detokenizeTextNode} from './article.js';
+import { tokenizeTextNode, parseDocument, detokenizeTextNode, parseArticleTextNodes} from './article.js';
 import { getOptionsFromCache } from './service/optionService.js';
 import { addMeaStyle, removeMeaStyle, findStyleSheet, changeStyle, containsMeaStyle } from './style.js';
 import { generateHighlightName, NOTE_HIGHLIGH_TYPE_UNDERLINE, NOTE_HIGHLIGH_COLOR_BLUE } from './style/highlight-style.js';
@@ -304,8 +304,12 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
         }, 1000);
       }
       
+      if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
+        article = parseDocument(document, sysOptions, currentSiteOption);
+      }
+
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
-        tokenizeTextNode(document, sysOptions, currentSiteOption, siteProfile);
+        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
@@ -318,7 +322,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
     
       if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
-        article = parseDocument(document, sysOptions, currentSiteOption);
+        parseArticleTextNodes(article, document.body, sysOptions, currentSiteOption);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_WORD_HOVER_LISTENER)){

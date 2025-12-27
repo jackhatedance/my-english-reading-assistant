@@ -35,6 +35,10 @@ function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions 
     }
     
     guessPartsWord(checkWord, parts);
+
+    for(const part of parts){
+        part.sentenceOffsetOfArticle = offsetOfArticle;
+    }
     
     return parts;
 }

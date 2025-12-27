@@ -22,28 +22,67 @@ const gLogger = log.getLogger('article');
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document, options, siteOptions, siteProfile) {
+function tokenizeTextNode(document, article, options, siteOptions, siteProfile) {
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
     var tokenCount = 0;
 
-    traverseNode(document.body, (node) => {
-        
+    for(const nodeInfo of article.originalTextNodes){
+        const { node, offset, length, nodeContent } = nodeInfo;
         //return 'stop' will no longer process it internal content
         if(!siteProfile.canElementBeTokenized(node.parentElement)){
-            return 'stop';
+            continue;
         }
 
         if (node.nodeName === '#text') {
             if (!siteProfile.canNodeBeTokenized(node)) {
-                return;
+                continue;
             }
-            let textContent = node.textContent;
+            let textContent = nodeContent;
             //console.log(node.parentElement.nodeName);
             gLogger.debug(textContent);
-            let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
+
+            let firstToken = findTokenInArticle(article, offset);
+            if(!firstToken){
+                console.log('token not found');
+                firstToken = findTokenInArticle(article, offset);
+            }
+            let tokenIndex = article.tokens.indexOf(firstToken);
+            let nodeStartOffset = offset;
+            let nodeEndOffset = offset + length;
+
+            let tokens = [];
+            while(true){
+                if(tokenIndex >= article.tokens.length){
+                    break;
+                }
+                let articleToken = article.tokens[tokenIndex];
+                //console.log(articleToken);
+                let articleTokenStartOffset = articleToken.sentenceOffsetOfArticle + articleToken.offset;
+                if(articleTokenStartOffset >= nodeEndOffset){
+                    break;
+                }
+
+                let nodeTokenStartOffset = articleTokenStartOffset < nodeStartOffset ? nodeStartOffset : articleTokenStartOffset; 
+                
+                let articleTokenEndOffset = articleTokenStartOffset + articleToken.length;
+                let nodeTokenEndOffset = articleTokenEndOffset > nodeEndOffset ? nodeEndOffset : articleTokenEndOffset;
+
+                let nodeTokenOriginalContent = articleToken.originalContent.substring(nodeTokenStartOffset - articleTokenStartOffset, nodeTokenEndOffset - articleTokenStartOffset);
+
+                let nodeToken = {
+                    originalContent: nodeTokenOriginalContent,
+                    content: articleToken.content,
+                };
+                tokens.push(nodeToken);
+                //console.log('node token'+nodeToken.originalContent);
+
+                tokenIndex++;
+            }
+            
+            //let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
             //console.log(siteOptions);
 
             let tokenHtmls = [];
@@ -93,7 +132,9 @@ function tokenizeTextNode(document, options, siteOptions, siteProfile) {
             textTag.innerHTML = tokensHtml;
             node.parentNode.replaceChild(textTag, node);
         }
-    });
+    }
+
+    delete article.originalTextNodes;
 
     gLogger.info(`${tokenCount} tokens generated`);
 }
@@ -115,6 +156,15 @@ function detokenizeTextNode(document) {
 function parseDocument(document, options, siteOptions, skip = false) {
     
     let article = {
+        //snapshot begin
+        textContent: '',
+        newTagPositions: {},
+
+        originalTextNodes: [],
+        //snapshot end
+
+        tokens: [],
+
         currentSentenceNumber: 0,
         sentences: [],
         //<ID, info>
@@ -154,13 +204,15 @@ function parseDocument(document, options, siteOptions, skip = false) {
 
     if(!skip) {    
         //let lines = getParagraphLines2(document.body);
-        let lines = breakString(document.body.textContent, '\n');
-        let newTagPositions = getTagPositions(document.body);
+        
+        snapshot(document, article);
+        let lines = breakString(article.textContent, '\n');
+        let newTagPositions = article.newTagPositions;
         //console.log('newTagPositions');
         //parse paragraph, token
-        parseArticleContent(siteOptions, article, lines, newTagPositions);
+        parseArticleTextContent(siteOptions, article, lines, newTagPositions);
         //parse text node(offset)
-        parseArticleTextNodes(article, document.body, options, siteOptions);
+        //parseArticleTextNodes(article, document.body, options, siteOptions);
 
         article.contentLength = document.body.textContent.length;
         article.document = document;        
@@ -169,32 +221,6 @@ function parseDocument(document, options, siteOptions, skip = false) {
     return article;
 }
 
-function getTagPositions(bodyElement){
-    const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
-    const NEW_WORD_ELEMENTS = ['SUP'];
-    
-    let newLinePositionCollection = {
-        positions: [],
-        pos: 0,
-        content: ''
-    };
-
-    let newWordPositionCollection = {
-        positions: [],
-        pos: 0,
-        content: ''
-    };
-    
-    traverseNode(bodyElement, (node) => {
-        collectNodePositions(node, NEW_LINE_ELEMENTS, newLinePositionCollection);
-        collectNodePositions(node, NEW_WORD_ELEMENTS, newWordPositionCollection);
-    });
-
-    return {
-        newLinePositions: newLinePositionCollection.positions,
-        newWordPositions: newWordPositionCollection.positions,
-    };
-}
 
 function collectNodePositions(node, tags, collection){
     
@@ -213,7 +239,7 @@ function collectNodePositions(node, tags, collection){
     }
 }
 
-function parseArticleContent(siteOptions, article, lines, newTagPositions){
+function parseArticleTextContent(siteOptions, article, lines, newTagPositions){
     
     let offset =0;
     var paragraphNumber = 0;
@@ -324,6 +350,65 @@ function checkWord(siteOptions, text, lookupBase){
     return result;
 }
 
+/**
+ * snapshot of textContent and textNodes
+ * @param {*} document 
+ * @param {*} article 
+ */
+function snapshot(document, article){
+    var textContents = [];
+    let offset = 0;
+
+    const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
+    const NEW_WORD_ELEMENTS = ['SUP'];
+    
+    let newLinePositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
+
+    let newWordPositionCollection = {
+        positions: [],
+        pos: 0,
+        content: ''
+    };
+
+    traverseNode(document.body, (node) => {
+        collectNodePositions(node, NEW_LINE_ELEMENTS, newLinePositionCollection);
+        collectNodePositions(node, NEW_WORD_ELEMENTS, newWordPositionCollection);
+
+        if (node.nodeName === '#text') {
+            let nodeContent = node.textContent;
+            let length = nodeContent.length;
+            //console.log(node.textContent);
+
+            textContents.push(nodeContent);
+
+            let nodeInfo = { 
+                node: node,
+                offset: offset, 
+                length: length, 
+                content: nodeContent,
+            };
+            
+            //addArticleNode(article, nodeInfo);
+            article.originalTextNodes.push(nodeInfo);
+            
+            offset += length;
+        }
+    });
+
+    let textContent = textContents.join("");
+
+    article.textContent = textContent;
+    article.newTagPositions = {
+            newLinePositions: newLinePositionCollection.positions,
+            newWordPositions: newWordPositionCollection.positions,
+        };
+    
+}
+
 function parseArticleTextNodes(article, element, options, siteOptions){
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
@@ -364,7 +449,7 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                     
                     const regex = /[a-zA-Z]/;
                     const firstAlphabetIndex = token.content.search(regex);
-                    const firstAlphabetIndexOfArticle = token.articleOffset + firstAlphabetIndex;
+                    const firstAlphabetIndexOfArticle = token.sentenceOffsetOfArticle + token.offset + firstAlphabetIndex;
 
                     //firstTextNodeOfMeaTokenElement
                     const firstTextNode = getFirstTextNode(meaTokenElement);
@@ -467,6 +552,8 @@ function addParagraph(article, paragraphInfo){
 function addSentence(article, paragraph, sentenceInfo){
     let { sentences, sentenceMap, sentenceIdNumbersMap, segmentOffsetSentenceMap } = article;
 
+    article.tokens.push(...sentenceInfo.tokens);
+
     sentences.push(sentenceInfo);
 
     //update index
@@ -536,10 +623,9 @@ function findTokenInSentence(sentence, offset) {
     if(index>=0){
         let token = sentence.tokens[index];
         let tokenArtileOffset = sentence.offset + token.offset;
-        let result = Object.assign({}, token);
-        result.articleOffset = tokenArtileOffset;
+        //let result = Object.assign({}, token);
         //console.log('find token in sentence');
-        return result;
+        return token;
     }
     
     return null;
@@ -917,4 +1003,4 @@ function getSelectedTextOfNoteOfSentence(article, note) {
 
 
 
-export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode };
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes };
