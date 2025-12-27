@@ -68,9 +68,7 @@ init();
           </div>
         </div>
       </div>
-      <div class="action">
-
-      </div>
+      
     </div>
     
   </div>

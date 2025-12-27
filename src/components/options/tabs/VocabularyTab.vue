@@ -106,9 +106,7 @@ init();
             <p class="warning">{{ t('optionsInitializeVocabularyActionWarning') }}</p>
             <el-button @click="onInitializeVocabulary" round>{{ t('optionsInitializeVocabularyAction') }}</el-button>
         </div>
-        <div class="action">
-            
-        </div>
+        
         </div>
     
     
@@ -122,9 +120,7 @@ init();
             <textarea v-model="knownWords" rows="10" maxlength="500000"></textarea>
             <p>{{ t('optionsEditVocabularyTotal') }}<span>{{ count }}</span></p>
         </div>
-        <div class="action">
-            
-        </div>
+        
         </div>
 
         <div class="section">
@@ -136,9 +132,7 @@ init();
 
             <el-button @click="onImport" round>{{ t('optionsImportAction') }}</el-button>
         </div>
-        <div class="action">
-            
-        </div>
+        
         </div>
         <div class="section">
         <div class="label">
@@ -148,9 +142,7 @@ init();
         <div class="input">
             <el-button @click="onExport" round>{{ t('optionsExportAction') }}</el-button>
         </div>
-        <div class="action">
-            
-        </div>
+        
         </div>
     </div>
     

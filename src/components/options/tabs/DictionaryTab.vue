@@ -396,9 +396,7 @@ init();
           <el-button round @click="onMoveDown" >{{ t('optionsDictionaryMoveDownAction') }}</el-button>
         </div>
       </div>
-      <div class="action">
-        
-      </div>
+      
     </div>
     <div class="section">
       <div class="label">
@@ -409,9 +407,7 @@ init();
         <input type="file" ref="file" accept=".txt, .zip">
         <el-button round @click="onAdd">{{ t('optionsAddDictionaryAction') }}</el-button>
       </div>
-      <div class="action">
-        
-      </div>
+      
     </div>
     
   </div>

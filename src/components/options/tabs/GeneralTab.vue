@@ -66,9 +66,7 @@ init();
           </el-select> 
         </div>
       </div>
-      <div class="action">
-
-      </div>
+      
     </div>
     
     <div class="section">
@@ -84,9 +82,7 @@ init();
         </div>
         
       </div>
-      <div class="action">
-        
-      </div>
+      
     </div>
 
     

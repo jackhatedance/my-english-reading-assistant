@@ -88,9 +88,7 @@ init();
                 <p>{{ t('optionsEditNotesTotal') }}<span>{{ noteCount }}</span></p>
                 
             </div>
-            <div class="action">
-                
-            </div>
+            
         </div>
 
         <div class="section">
@@ -101,9 +99,7 @@ init();
                 <input type="file" ref="file">
                 <el-button round @click="onImport" >{{ t('optionsImportNotesAction') }}</el-button>
             </div>
-            <div class="action">
-                
-            </div>
+            
         </div>
         <div class="section">
             <div class="label">
@@ -113,9 +109,7 @@ init();
             <div class="input">
                 <el-button round @click="onExport">{{ t('optionsExportNotesAction') }}</el-button>
             </div>
-            <div class="action">
-                
-            </div>
+            
         </div>
 
         <div class="section">
@@ -127,9 +121,7 @@ init();
                 <p class="warning">{{ t('optionsClearNotesActionWarning') }}</p>
                 <el-button round @click="clearNotes" >{{ t('optionsClearNotesAction') }}</el-button>
             </div>
-            <div class="action">
-                
-            </div>
+            
         </div>
     </div>
 

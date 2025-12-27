@@ -61,9 +61,7 @@ init();
                     <el-switch class="right" data-testid="unregonized-words-enabled" v-model="enabled" @change="onChangeEnabled" />
                 </div>
             </div>
-            <div class="action">
-
-            </div>
+            
         </div>
         <div class="section">
             <div class="label">
@@ -75,9 +73,7 @@ init();
                 <p>{{ t('optionsUnrecognizedWordsTotal') }}<span>{{ unrecognizedWordsCount }}</span></p>
                 <el-button round @click="onClear" >{{ t('optionsClearUnrecognizedWordsAction') }}</el-button>
             </div>
-            <div class="action">
-                
-            </div>
+            
         </div>
     </div>
 

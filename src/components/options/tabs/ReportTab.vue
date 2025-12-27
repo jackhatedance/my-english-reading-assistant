@@ -86,9 +86,7 @@ init();
         </div>
         
       </div>
-      <div class="action">
-        
-      </div>
+      
     </div>
     
 
@@ -100,9 +98,7 @@ init();
             <input type="file" ref="file">
             <el-button round @click="onImport" >{{ t('options_report_import') }}</el-button>
         </div>
-        <div class="action">
-            
-        </div>
+        
     </div>
     <div class="section">
         <div class="label">
@@ -112,9 +108,7 @@ init();
         <div class="input">
             <el-button round @click="onExport">{{ t('options_report_export') }}</el-button>
         </div>
-        <div class="action">
-            
-        </div>
+        
     </div>
 
     <div class="section">
@@ -127,9 +121,7 @@ init();
               <el-button round @click="onDelete">{{ t('optionsDeleteReadingHistoryAction') }}</el-button>
           </div>
         </div>
-        <div class="action">
-            
-        </div>
+        
     </div>
   </div>
 
