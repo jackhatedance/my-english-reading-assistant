@@ -69,6 +69,7 @@ init();
     flex: 0 0 200px;
     height: 100%;
     padding-left: 10px;
+    padding-top: 10px;
 }
 
 .sidebar-middle {
