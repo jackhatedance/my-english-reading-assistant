@@ -23,7 +23,7 @@ import { MenuItems } from './menu.js';
 import { TOKEN_TAG } from './html.js'
 import { xbbcToText } from './note/note-util.js'
 import { sendMessageToBackground } from './message.js'
-import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_HOVER_LISTENER } from './document/process.js'
+import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_LISTENER } from './document/process.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 import { isFeatureEnabled, FEATURE_NOTE } from './feature-toggle.js'
 
@@ -325,9 +325,9 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
         parseArticleTextNodes(article, document.body, sysOptions, currentSiteOption);
       }
 
-      if(canProcessStep(documentConfig.processSteps, STEP_ADD_WORD_HOVER_LISTENER)){
+      if(canProcessStep(documentConfig.processSteps, STEP_ADD_WORD_LISTENER)){
         //console.log(JSON.stringify(article));
-        addWordHoverEventListener(page, document, documentConfig, currentSiteOption);
+        addWordEventListener(page, document, documentConfig, currentSiteOption);
       }
     } else {
         //empty article
@@ -366,7 +366,7 @@ async function cleanDocumentAnnotations(page, document, isIframe, siteProfile, d
     }
 }
 
-async function addWordHoverEventListener(page, document, documentConfig, currentSiteOption) {
+async function addWordEventListener(page, document, documentConfig, currentSiteOption) {
   let options = getOptionsFromCache();
   addTooltipEventListener(page, document, documentConfig,
     (word, dictionary) => {
