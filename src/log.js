@@ -14,32 +14,36 @@ prefix.apply(log, {
   },
 });
 
-function initLog(){
-    log.setDefaultLevel('info');
+const LOGGER_NAMES = [
+  'mera',
+  'background',
+  'site-profile',
+  'article',
+  'page',
+  'page-change-monitor',
+  'mutation-observer',
+  'document',
+  'tooltip',
+  'tab-service',
+  'activity-service',
+  'activity-core',
+  'activity-core-service',
+  'dictionary',
+  'custom-dictionary',
+];
 
-    
-    log.getLogger("background").setLevel("info");
-    log.getLogger("mera").setLevel("info");
-    //article is about tokenize text
-    log.getLogger("site-profile").setLevel("info");
-    log.getLogger("article").setLevel("info");
-    log.getLogger("page").setLevel("info");
-    log.getLogger("page-change-monitor").setLevel("info");
-    log.getLogger("mutation-observer").setLevel("info");
-    log.getLogger("document").setLevel("info");
-    log.getLogger("tooltip").setLevel("info");
-    log.getLogger("tab-service").setLevel("info");
-    log.getLogger("activity-service").setLevel("info");
-    log.getLogger("activity-core").setLevel("info");
-    log.getLogger("activity-core-service").setLevel("info");
-    log.getLogger("dictionary").setLevel("info");
-    log.getLogger("custom-dictionary").setLevel("info");
-    
-    
+function initLog(){
+  resetAll();
 }
 
+function resetAll(){
+  log.setDefaultLevel('info');
+  for(const name of LOGGER_NAMES){
+    log.getLogger(name).resetLevel();  
+  }
+}
 function setDebugLoggers(debugLoggers){
-  
+  resetAll();
   if(debugLoggers){
     for (const name of debugLoggers) {
 
@@ -55,4 +59,4 @@ function setDebugLoggers(debugLoggers){
 
 
 
-export { initLog, setDebugLoggers }
+export { initLog, setDebugLoggers, LOGGER_NAMES }

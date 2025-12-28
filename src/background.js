@@ -178,6 +178,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let dictionaryName = request.payload.dictionaryName;
     //dictionary migration
     migrateDictionary(dictionaryName, (progress) => sendMsgOfIndexBuildingProgress(dictionaryName, progress));        
+  } else if(request.type === 'OPTIONS_CHANGE'){
+    doSetLogLevels();
   }
 
   sendResponse({
