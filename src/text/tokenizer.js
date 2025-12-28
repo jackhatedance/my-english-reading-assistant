@@ -69,7 +69,7 @@ function splitWords(checkWord, parts){
     let parts2 = [];
     for(const part of parts){
         if(part.checked){
-            parts2.push(part);
+            checkAndPushPart(parts2, part);
             continue;
         }
 
@@ -83,7 +83,7 @@ function splitWords(checkWord, parts){
         } else if(containsHyphen(contentWithoutPunctuation)){
             splitCompoundWord(checkWord, part, parts2);
         } else {
-            parts2.push(part);
+            checkAndPushPart(parts2, part);
         }
     }
 
@@ -421,11 +421,13 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
     //console.log(matches);
 
     let lastMatchEndIndex=0;
-    let i=0;
-    for (const match of matches) {
+    
+    for (let i=0; i< matches.length; i++) {
+        const match = matches[i];
+
         let matchStartIndex = lastMatchEndIndex;
         let matchEndIndex;
-        if(i == matches.length){//last
+        if(i == matches.length-1){//last
             matchEndIndex = originalSentence.length;
         }else{
             matchEndIndex = match.index + match[0].length;
@@ -484,7 +486,6 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
         };
         parts.push(part);
 
-        i++;
         lastMatchEndIndex = matchEndIndex;
     }
 
@@ -521,13 +522,13 @@ function splitPartsTextByNewLines(checkWord, parts, sentenceOffsetOfArticle, new
             let subparts = _splitPartByNewLines(checkWord, part, positions);
 
             for(let subpart of subparts){
-                parts2.push(subpart);
+                checkAndPushPart(parts2, subpart);
             }
 
             let lastPositionIndex = positionIndexes[positionIndexes.length - 1];
             startPositionIndex = lastPositionIndex + 1;
         }else{
-            parts2.push(part);
+            checkAndPushPart(parts2, part);
         }
     }
     return parts2;
@@ -557,13 +558,13 @@ function splitPartsTextByNewWords(checkWord, parts, sentenceOffsetOfArticle, new
             let subparts = _splitPartByNewWords(checkWord, part, positions);
 
             for(let subpart of subparts){
-                parts2.push(subpart);
+                checkAndPushPart(parts2, subpart);
             }
 
             let lastPositionIndex = positionIndexes[positionIndexes.length - 1];
             startPositionIndex = lastPositionIndex + 1;
         }else{
-            parts2.push(part);
+            checkAndPushPart(parts2, part);
         }
     }
     return parts2;
@@ -656,7 +657,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
             length: subtext.length,
             lineBreak: true,
         };
-        parts2.push(subpart);        
+        checkAndPushPart(parts2, subpart);       
 
         //for next loop
         startTextIndex = endTextIndex;
@@ -691,7 +692,7 @@ function _splitPartByNewLines(checkWord, part, positions) {
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
-    parts2.push(subpart);        
+    checkAndPushPart(parts2, subpart);       
     
     return parts2;
 }
@@ -735,7 +736,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
             offset: startTextIndex + part.offset,
             length: originalContent.length,
         };
-        parts2.push(subpart);        
+        checkAndPushPart(parts2, subpart);        
 
         //for next loop
         startTextIndex = endTextIndex;
@@ -768,7 +769,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
         offset: startTextIndex + part.offset,
         length: originalContent.length,
     };
-    parts2.push(subpart);        
+    checkAndPushPart(parts2, subpart);     
     
     return parts2;
 }
@@ -791,6 +792,17 @@ function guessWordOfCrossLine(checkWord, originalContent, submask){
 
     //console.log('guess result:'+ JSON.stringify(guessResult));
     return guessResult;
+}
+
+function checkAndPushPart(parts, part){
+    if(parts.length>0){
+        let lastPart = parts[parts.length-1];
+        if(lastPart.offset+lastPart.length != part.offset){
+            console.log('part is not continuous');
+        }
+    }
+    
+    parts.push(part);
 }
 
 export { tokenizeSentence, tokenizeNodeText };

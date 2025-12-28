@@ -46,8 +46,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile) 
 
             let firstToken = findTokenInArticle(article, offset);
             if(!firstToken){
-                console.log('token not found');
-                firstToken = findTokenInArticle(article, offset);
+                gLogger.error('token not found');
             }
             let tokenIndex = article.tokens.indexOf(firstToken);
             let nodeStartOffset = offset;

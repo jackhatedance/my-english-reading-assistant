@@ -277,6 +277,29 @@ describe('tokenizer', function () {
       
     });
 
+    it('camel word GetID', async function () {
+      
+      let tokens = tokenizeSentence((text)=> {
+        //console.log('checkWord:'+text);
+        let words = ['get', 'id'];
+        const result = words.find(e => e.toLowerCase() == text.toLowerCase());
+        if(result){
+          return { word: result };
+        }else {
+          return null;
+        }
+      }, "GetID,", 0);
+      
+      
+      assert.equal(tokens.length, 1);
+      
+      assert.equal(tokens[0].checkWordResult, undefined);
+      assert.equal(tokens[0].originalContent, "GetID,");
+      
+      
+      
+    });
+
     it('camel word with punctuation DuPont,', async function () {
       
       let tokens = tokenizeSentence((text)=> {
