@@ -37,9 +37,11 @@ function initLog(){
 }
 
 function resetAll(){
-  log.setDefaultLevel('info');
+  let level = 'info';
+
+  log.setDefaultLevel(level);
   for(const name of LOGGER_NAMES){
-    log.getLogger(name).resetLevel();  
+    log.getLogger(name).setLevel(level);  
   }
 }
 function setDebugLoggers(debugLoggers){
