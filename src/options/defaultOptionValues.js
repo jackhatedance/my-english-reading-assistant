@@ -27,7 +27,7 @@ function createDefaultOptions(){
         advanced:{
             primaryAnnotationPositionMin: -0.2,
             primaryAnnotationPositionMax: 0.5,
-            secondaryAnnotationPositionMin: -1.2,
+            secondaryAnnotationPositionMin: -1.6,
             secondaryAnnotationPositionMax: -0.8,
             textFontSizeMax: 28,
             maxMeaningNumberMax: 20,
@@ -160,7 +160,7 @@ function patch_v_1_11_0(options){
     }
 
     if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMin')){
-        advancedOptions.secondaryAnnotationPositionMin = -1.2;
+        advancedOptions.secondaryAnnotationPositionMin = -1.6;
     }
     if(!advancedOptions.hasOwnProperty('secondaryAnnotationPositionMax')){
         advancedOptions.secondaryAnnotationPositionMax = -0.8;
