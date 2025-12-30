@@ -1,5 +1,5 @@
 import { isLeafTextTag, IGNORED_TAGS, containsTag, isInMeaElement, hasAnyId, hasAnyClass } from '../html.js';
-
+import { parsePageTitle, createUrlPattern } from '../book/book-title-utils.js'
 
 class DefaultSiteProfile {
     
@@ -98,6 +98,23 @@ class DefaultSiteProfile {
         
         return true;
     }
+
+    autofillTitle(pageTitle){
+        let bookTitle = pageTitle;
+
+        let parseResult = parsePageTitle(pageTitle);
+        if(parseResult){
+            bookTitle = parseResult.title;
+        }
+        return bookTitle;
+    }
+
+    autofillUrlPattern(pageUrl){
+        let urlPattern = createUrlPattern(pageUrl);
+
+        return urlPattern;
+    }
+    
 };
 
 export { DefaultSiteProfile };

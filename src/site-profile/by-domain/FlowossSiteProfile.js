@@ -20,6 +20,17 @@ class FlowossSiteProfile extends DefaultSiteProfile {
         return super.ignoreDomChange(mutation);
     }
 
+    /**
+     * e.g. https://app.flowoss.com/#A%20Clash%20of%20Kings%20(George%20R.%20R.%20Martin)%20(Z-Library).epub/OEBPS/Text/C63.xhtml
+     * @param {*} pageUrl 
+     * @returns 
+     */
+    autofillUrlPattern(pageUrl){
+        let index = pageUrl.lastIndexOf("\.epub/");
+        let urlPattern = pageUrl.substring(0, index+"\.epub/".length) + "**";
+
+        return urlPattern;
+    }
 };
 
 export { FlowossSiteProfile };

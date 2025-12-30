@@ -774,11 +774,14 @@
         "message":"Not Sure"
     },
     
+    "sidepanelBookTabPageTitleLabel":{
+        "message":"Page title"
+    },
     "sidepanelBookTabUrlLabel":{
         "message":"Page URL"
     },
     "sidepanelBookTabTitleLabel":{
-        "message":"Title"
+        "message":"Book title"
     },
     "sidepanelBookTabTitleErrorEmpty":{
         "message":"can not be empty"
@@ -797,6 +800,18 @@
     },
     "sidepanelBookTabAutofillAction":{
         "message":"Autofill"
+    },
+    "sidepanel_book_tab_autofill_action_single_page":{
+        "message":"Autofill Single Page"
+    },
+    "sidepanel_book_tab_autofill_action_single_folder":{
+        "message":"Autofill Single Folder"
+    },
+    "sidepanel_book_tab_autofill_action_2_level_folder":{
+        "message":"Autofill 2 Level Folder"
+    },
+    "sidepanel_book_tab_autofill_action_3_level_folder":{
+        "message":"Autofill 3 Level Folder"
     },
     "sidepanelBookTabSaveAction":{
         "message":"Save&Quit Edit"

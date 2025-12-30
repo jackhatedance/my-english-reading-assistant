@@ -58,6 +58,14 @@ function findSiteProfile(document) {
     return searchResult;
 }
 
+function getSiteProfileByName(name){
+    if(name== defaultSiteProfile.name){
+        return defaultSiteProfile;
+    }
+    
+    return siteProfiles.find(sp => sp.name == name);
+}
+
 function getSiteInfo(){
     let url = document.location.href;
     let iframes = getIframes();
@@ -108,4 +116,4 @@ function compareIframes(oldIframes, newIframes){
     return !changed;
 }
 
-export { findSiteProfile, getSiteInfo, compareSiteInfo };
+export { findSiteProfile, getSiteProfileByName, getSiteInfo, compareSiteInfo };

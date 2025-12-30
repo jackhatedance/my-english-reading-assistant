@@ -37,9 +37,6 @@ const notes = ref([]);
 const page = ref();
 
 const activeTabName = ref('tab-actions');
-
-
-
 const menuItems = ref([]);
 
 async function getPageInfo() {

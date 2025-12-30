@@ -771,11 +771,14 @@
         "message":"不确定"
     },
 
+    "sidepanelBookTabPageTitleLabel":{
+        "message":"网页标题"
+    },
     "sidepanelBookTabUrlLabel":{
-        "message":"网址"
+        "message":"网页地址"
     },
     "sidepanelBookTabTitleLabel":{
-        "message":"标题"
+        "message":"书籍标题"
     },
     "sidepanelBookTabTitleErrorEmpty":{
         "message":"不能为空"
@@ -794,6 +797,18 @@
     },
     "sidepanelBookTabAutofillAction":{
         "message":"自动填写"
+    },
+    "sidepanel_book_tab_autofill_action_single_page":{
+        "message":"自动填写单页书籍"
+    },
+    "sidepanel_book_tab_autofill_action_single_folder":{
+        "message":"自动填写单目录书籍"
+    },
+    "sidepanel_book_tab_autofill_action_2_level_folder":{
+        "message":"自动填写2级目录书籍"
+    },
+    "sidepanel_book_tab_autofill_action_3_level_folder":{
+        "message":"自动填写3级目录书籍"
     },
     "sidepanelBookTabSaveAction":{
         "message":"保存&退出编辑"

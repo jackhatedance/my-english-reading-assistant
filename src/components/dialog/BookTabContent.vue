@@ -3,10 +3,15 @@ import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } fr
 import { BookDao } from '../../service/BookDao.js';
 import { saveBook, searchBookByUrlAsync, matchUrl } from '../../service/bookService.js';
 import getfake from 'getfake';
-import { parseBookTitle } from '../../book/book-title-utils.js'
+import { createUrlPattern } from '../../book/book-title-utils.js'
+import { getSiteProfileByName } from '../../site-profile/site-profiles.js';
 
 import { ElButton } from 'element-plus'
 import 'element-plus/es/components/button/style/css'
+import { ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
+import 'element-plus/es/components/dropdown/style/css'
+import 'element-plus/es/components/dropdown-menu/style/css'
+import 'element-plus/es/components/dropdown-item/style/css'
 
 
 const t = chrome.i18n.getMessage;
@@ -157,50 +162,44 @@ async function clickAutofill() {
     //need a unique ID as book key
     isbn.value = getfake.isbn.v13.any();
 
-    let url = props.page.url;
+    let pageUrl = props.page.url;
     
-    let bookTitle = props.page.title;
+    let pageTitle = props.page.title;
     
-    let isFlowoss = isFlowossEpubUrl(url);
-    if(isFlowoss){
-        let parseResult = parseBookTitle(bookTitle);
-        if(parseResult){
-            bookTitle = parseResult.title;
+    let topDocument = { 
+        location:{
+            href: pageUrl,
+            host: props.page.domain,
         }
-    }
-
-    let bookUrlPattern = createUrlPattern(url);
-
-
-    title.value = bookTitle;
-    urlPattern.value = bookUrlPattern;
-
-}
-
-
-/**
- * e.g. https://app.flowoss.com/#A%20Clash%20of%20Kings%20(George%20R.%20R.%20Martin)%20(Z-Library).epub/OEBPS/Text/C63.xhtml
- * @param url 
- */
-function isFlowossEpubUrl(url){
-    let isFlowoss = url && url.includes('flowoss.com') && url.includes('.epub');
-    return isFlowoss;
-}
-
-function createUrlPattern(url){
-    let isFlowoss = isFlowossEpubUrl(url);
-
+    };
     
-    let index = url.lastIndexOf("/");
-    let pattern = url.substring(0, index+1) + "*";
+    let siteProfile = getSiteProfileByName(props.page.siteProfileName);
+    
+    
 
-    if(isFlowoss){
-        index = url.lastIndexOf("\.epub/");
-        pattern = url.substring(0, index+"\.epub/".length) + "**";
-    }
+    title.value = siteProfile.autofillTitle(pageTitle);
+    urlPattern.value = siteProfile.autofillUrlPattern(pageUrl);
 
-    return pattern;
 }
+
+async function onAutofillCommand(command){
+    let siteProfile = getSiteProfileByName(props.page.siteProfileName);
+    
+    let pageTitle = props.page.title;
+    title.value = siteProfile.autofillTitle(pageTitle);
+
+    let pageUrl = props.page.url;
+    if(command == 'singlePage'){
+        urlPattern.value = createUrlPattern(pageUrl, 0);
+    }else if(command == 'singleFolder'){
+        urlPattern.value = createUrlPattern(pageUrl, 1);
+    } else if(command == 'twoLevelFolder'){
+        urlPattern.value = createUrlPattern(pageUrl, 2);
+    }
+  
+}
+
+
 
 async function clickReset() {
     update(getPageUrl());
@@ -241,6 +240,11 @@ init();
     </div>
     <div v-show="mode =='edit'"  class="book">
         
+            <label>{{ t('sidepanelBookTabPageTitleLabel') }}</label>
+            <div class="input">
+                <div class="url">{{ props.page.title }}</div>
+            </div>
+
             <label>{{ t('sidepanelBookTabUrlLabel') }}</label>
             <div class="input">
                 <div class="url">{{ getPageUrl() }}</div>
@@ -262,7 +266,21 @@ init();
         
 
         <div class="line">
-            <el-button @click="clickAutofill">{{ t('sidepanelBookTabAutofillAction') }}</el-button>
+
+            <el-dropdown @click="clickAutofill" @command="onAutofillCommand" split-button trigger="click" placement="top-start">
+             
+                {{ t('sidepanelBookTabAutofillAction') }}
+              
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="singlePage">{{ t('sidepanel_book_tab_autofill_action_single_page') }}</el-dropdown-item>
+                  <el-dropdown-item command="singleFolder">{{ t('sidepanel_book_tab_autofill_action_single_folder') }}</el-dropdown-item>
+                  <el-dropdown-item command="twoLevelFolder">{{ t('sidepanel_book_tab_autofill_action_two_level_folder') }}</el-dropdown-item>
+                  
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+
             <el-button @click="clickSave">{{ t('sidepanelBookTabSaveAction') }}</el-button>
             <el-button @click="clickDelete">{{ t('sidepanelBookTabDeleteAction') }}</el-button>
             <el-button @click="clickReset">{{ t('sidepanelBookTabResetAction') }}</el-button>

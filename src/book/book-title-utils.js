@@ -3,7 +3,7 @@
  * e.g. A Clash of Kings (George R. R. Martin) (Z-Library).epub
  * @param title 
  */
-function parseBookTitle(text){
+function parsePageTitle(text){
     
     //ZlibBook
     let p1 = /(?<title>.+) \((?<author>[^)]+)\) \(Z-Library\)\.epub/;
@@ -31,4 +31,26 @@ function match(text, pattern) {
     }
 }
 
-export { parseBookTitle }
+function createUrlPattern(url, level=1){
+    if(level==0){
+        return url;
+    }
+
+    let index = nthLastIndexOf("/", level, url);
+    let asterisks = level==1? "*" : "**";
+    let pattern = url.substring(0, index+1) + asterisks;
+
+    return pattern;
+}
+
+function nthLastIndexOf(searchString, n, url) {
+    if (url === null) return -1;
+    let index = url.lastIndexOf(searchString);
+    while (n > 1 && index !== -1) {
+        index = url.lastIndexOf(searchString, index - 1);
+        n--;
+    }
+    return index;
+}
+
+export { parsePageTitle, createUrlPattern }

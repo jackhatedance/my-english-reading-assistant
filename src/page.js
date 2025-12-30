@@ -91,6 +91,7 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
         isbn: isbn,
         domain: domain,
         visible: visible,
+        siteProfileName: siteProfile.name,
         //word section begin
         totalWordCount: totalWordCount,
         unknownWordsCount: unknownWordsCount,
