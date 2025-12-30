@@ -11,7 +11,7 @@ function showDialog(menuItems = []){
   let request = {
     type: 'ACTIVE_APP_TAB',
     payload: {      
-      activeAppTabId: 'actions-tab',
+      activeAppTabName: 'actions',
       menuItems: menuItems,        
     },
   };

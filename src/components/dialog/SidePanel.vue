@@ -1,13 +1,22 @@
 <script setup>
-import { ref, onMounted, onBeforeUpdate, provide, toRaw } from 'vue';
+import { ref, onMounted, onBeforeUpdate, provide, toRaw, computed } from 'vue';
 import Unavailable from '../Unavailable.vue';
-import Tabs from '../dialog/Tabs.vue';
+import VocabularyTabContent from './VocabularyTabContent.vue';
+import ActionsTabContent from './ActionsTabContent.vue';
+import BookTabContent from './BookTabContent.vue';
 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 import { getNote } from '../../service/noteService.js';
 import { initializeCustomDictionaryService } from '../../dictionary/customDictionary.js';
 import { getEntryFromLink } from '../../dictionary/mdict/mdict-definition-utils.js'
 import { isPageAnnotationVisible } from '../../page.js';
+
+
+import { ElTabs, ElTabPane } from 'element-plus'
+import 'element-plus/es/components/tabs/style/css'
+import 'element-plus/es/components/tab-pane/style/css'
+
+const t = chrome.i18n.getMessage;
 
 const props = defineProps({
   // embedded (content page), standalone (side page)
@@ -27,9 +36,15 @@ const dictionary = ref();
 const notes = ref([]);
 const page = ref();
 
-const activeTabId = ref('menu-tab');
+const activeTabName = ref('tab-actions');
 
-const changeToggle = ref(false);
+const pageUrl = computed(() => {
+    if(props.page) {
+      return props.page.url;
+    }
+    return '';
+});
+
 
 const menuItems = ref([]);
 
@@ -111,10 +126,9 @@ function messageListener(request, sender, sendResponse) {
     onSelectionChange(request.payload);
 
   } else if (request.type === 'ACTIVE_APP_TAB') {
-    activeTabId.value = request.payload.activeAppTabId;
+    activeTabName.value = request.payload.activeAppTabName;
     menuItems.value = request.payload.menuItems;
 
-    changeToggle.value = !(changeToggle.value);
   } else if (request.type === 'DICTIONARY_LINK') {
     const href = request.data;
     let entry = getEntryFromLink(href);
@@ -165,49 +179,6 @@ async function onSelectionChange(payload){
 
 }
 
-async function onMarkWord(type) {
-  //console.log(`mark word:${type}`);
-
-  let targetWord = word.value;
-  if (targetWord) {
-    let wordChanges;
-    if (type === 'known') {
-      wordChanges = await markWordAsKnown(targetWord);
-    } else if (type === 'unknown') {
-      wordChanges = await markWordAsUnknown(targetWord);
-    } else if (type === 'clear') {
-      wordChanges = await removeWordMark(targetWord);
-    }
-
-    let visible = isPageAnnotationVisible();
-    //resetPageAnnotationVisibilityAndNotify(page, visible);
-    props.sendMessageToContentPage({
-      type: 'KNOWN_WORDS_UPDATED',
-      payload: {
-      },
-    },
-      null, (response) => { });
-
-    //showToolbar(false);
-    props.sendMessageToContentPage({
-      type: 'CLOSE_DIALOG',
-      payload: {
-      },
-    },
-      null, (response) => { });
-  }
-}
-
-function onVocabulary() {
-  activeTabId.value = 'vocabulary-tab';
-  changeToggle.value = !(changeToggle.value);
-}
-
-function onNote(type) {
-  activeTabId.value = 'notes-tab';
-  changeToggle.value = !(changeToggle.value);
-}
-
 onMounted(() => {
   props.setSendMessageToApp(messageListener);
 });
@@ -231,17 +202,44 @@ function onClickCloseButton() {
 
 <template>
   <Unavailable v-show="isShowUnavailable"></Unavailable>
-  <div class="header">
+  <div class="dialog-header">
     <button @click="onClickCloseButton">X</button>
   </div>
-  <Tabs v-if="isShowTabs" :word="word" :dictionary="dictionary" :notes="notes" :page="page" :menuItems="menuItems" :activeTabId="activeTabId"
-    :changeToggle="changeToggle" @markWord="onMarkWord" @vocabulary="onVocabulary" @note="onNote"></Tabs>
+  
+  <div v-if="isShowTabs" class="tab-container">
+
+    <el-tabs v-model="activeTabName" class="setting-tabs" >
+      <el-tab-pane :label="t('sidepanelTabActions')" name="actions">
+        <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :notes="props.notes"></ActionsTabContent>
+      </el-tab-pane>
+      
+      <el-tab-pane :label="t('sidepanelTabVocabulary')" name="vocabulary">
+        <VocabularyTabContent :page="page"></VocabularyTabContent>
+      </el-tab-pane>
+      
+      <el-tab-pane :label="t('sidepanelTabBook')" name="book">
+        <BookTabContent :url="pageUrl" :page="page"></BookTabContent>
+      </el-tab-pane>
+      
+      
+    </el-tabs>
+      
+  </div>
 </template>
 
 <style>
-.header {
+.dialog-header {
   float: right;
   border-radius: 10px;
-  padding: 10px
+  padding-top: 10px;
+  padding-right: 10px;
+}
+
+.tab-container{
+  margin: 0;
+  padding: 10px;
+  .el-tabs {
+    width: 100%;
+  }
 }
 </style>
