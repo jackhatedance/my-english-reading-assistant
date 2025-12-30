@@ -38,12 +38,6 @@ const page = ref();
 
 const activeTabName = ref('tab-actions');
 
-const pageUrl = computed(() => {
-    if(props.page) {
-      return props.page.url;
-    }
-    return '';
-});
 
 
 const menuItems = ref([]);
@@ -218,7 +212,7 @@ function onClickCloseButton() {
       </el-tab-pane>
       
       <el-tab-pane :label="t('sidepanelTabBook')" name="book">
-        <BookTabContent :url="pageUrl" :page="page"></BookTabContent>
+        <BookTabContent :page="page"></BookTabContent>
       </el-tab-pane>
       
       

@@ -5,18 +5,18 @@ import { saveBook, searchBookByUrlAsync, matchUrl } from '../../service/bookServ
 import getfake from 'getfake';
 import { parseBookTitle } from '../../book/book-title-utils.js'
 
+import { ElButton } from 'element-plus'
+import 'element-plus/es/components/button/style/css'
+
+
 const t = chrome.i18n.getMessage;
 
 const props = defineProps({
-    url: String,
     page: Object,
 });
 
 
 const bookDao = new BookDao();
-
-
-
 
 const mode = ref('view');//view, edit
 
@@ -35,11 +35,19 @@ watch(bookMeta, (newValue) => {
     isBook.value = (newValue != null);
 });
 
+function getPageUrl(){
+    let url = props.page?.url;
+    if(url==null){
+        url='';
+    }
+    return url;
+}
+
 onMounted(()=>{
-    update(props.url);
+    update(props.page?.url);
 });
 
-watch(() => props.url, (newValue) => {
+watch(() => props.page?.url, (newValue) => {
     //console.log('url changed:'+ newValue);
     update(newValue);
 });
@@ -103,7 +111,7 @@ function validateUrlPattern(){
         errors.push(t('sidepanelBookTabUrlPatternEmpty'));
     }
 
-    let matchUrlResult = matchUrl(props.url, value);
+    let matchUrlResult = matchUrl(getPageUrl(), value);
     if(!matchUrlResult){
         errors.push(t('sidepanelBookTabUrlPatternNotMatch'));
     }
@@ -117,7 +125,7 @@ async function clickSave() {
         return;
     }
     //console.log('click save');
-    let book = await searchBookByUrlAsync(props.url);
+    let book = await searchBookByUrlAsync(getPageUrl());
     if(book){
         await bookDao.delete(book.isbn);
     }
@@ -132,7 +140,7 @@ async function clickSave() {
     await saveBook(newBook);
 
     mode.value = 'view';
-    await update(props.url);
+    await update(getPageUrl());
 }
 
 async function clickDelete() {
@@ -140,7 +148,7 @@ async function clickDelete() {
     await bookDao.delete(isbn.value);
 
     mode.value = 'view';
-    await update(props.url);
+    await update(getPageUrl());
 }
 
 async function clickAutofill() {
@@ -195,7 +203,7 @@ function createUrlPattern(url){
 }
 
 async function clickReset() {
-    update(props.url);
+    update(getPageUrl());
 }
 
 const init = async () => {
@@ -235,7 +243,7 @@ init();
         
             <label>{{ t('sidepanelBookTabUrlLabel') }}</label>
             <div class="input">
-                <div class="url">{{ props.url }}</div>
+                <div class="url">{{ getPageUrl() }}</div>
             </div>
                 
             <label>{{ t('sidepanelBookTabTitleLabel') }}</label>
@@ -254,10 +262,10 @@ init();
         
 
         <div class="line">
-            <button class="button" @click="clickAutofill">{{ t('sidepanelBookTabAutofillAction') }}</button>
-            <button class="button" @click="clickSave">{{ t('sidepanelBookTabSaveAction') }}</button>
-            <button class="button" @click="clickDelete">{{ t('sidepanelBookTabDeleteAction') }}</button>
-            <button class="button" @click="clickReset">{{ t('sidepanelBookTabResetAction') }}</button>
+            <el-button @click="clickAutofill">{{ t('sidepanelBookTabAutofillAction') }}</el-button>
+            <el-button @click="clickSave">{{ t('sidepanelBookTabSaveAction') }}</el-button>
+            <el-button @click="clickDelete">{{ t('sidepanelBookTabDeleteAction') }}</el-button>
+            <el-button @click="clickReset">{{ t('sidepanelBookTabResetAction') }}</el-button>
         </div>
     </div>
 
