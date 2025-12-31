@@ -201,7 +201,7 @@ function onClickCloseButton() {
 
     <el-tabs v-model="activeTabName" class="setting-tabs" >
       <el-tab-pane :label="t('sidepanelTabActions')" name="actions">
-        <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :notes="props.notes"></ActionsTabContent>
+        <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :notes="notes"></ActionsTabContent>
       </el-tab-pane>
       
       <el-tab-pane :label="t('sidepanelTabVocabulary')" name="vocabulary">
