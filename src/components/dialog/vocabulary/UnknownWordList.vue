@@ -121,7 +121,7 @@ onUpdated(() => {
 
 <style>
 .mea-unknown-word-list {
-    height: 380px;
+    height: 340px;
     overflow: auto;
     overscroll-behavior-y: contain;
 
