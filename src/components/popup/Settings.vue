@@ -221,7 +221,7 @@ function buildOptions(){
         opacity: opacity2.value,
         color: color2.value,  
         interlaced: interlaced2.value,
-        width2: width2.value,
+        width: width2.value,
     },
     content: {
       unknownWordColor: unknownWordColor.value,
