@@ -801,10 +801,10 @@
     "sidepanelBookTabAutofillAction":{
         "message":"Autofill"
     },
-    "sidepanel_book_tab_autofill_action_single_page":{
+    "sidepanel_book_tab_autofill_action_0_level_folder":{
         "message":"Autofill Single Page"
     },
-    "sidepanel_book_tab_autofill_action_single_folder":{
+    "sidepanel_book_tab_autofill_action_1_level_folder":{
         "message":"Autofill Single Folder"
     },
     "sidepanel_book_tab_autofill_action_2_level_folder":{

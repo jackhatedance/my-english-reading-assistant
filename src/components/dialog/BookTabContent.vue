@@ -189,13 +189,19 @@ async function onAutofillCommand(command){
     title.value = siteProfile.autofillTitle(pageTitle);
 
     let pageUrl = props.page.url;
-    if(command == 'singlePage'){
-        urlPattern.value = createUrlPattern(pageUrl, 0);
-    }else if(command == 'singleFolder'){
-        urlPattern.value = createUrlPattern(pageUrl, 1);
-    } else if(command == 'twoLevelFolder'){
-        urlPattern.value = createUrlPattern(pageUrl, 2);
+
+    let level=0;
+    if(command == '0LevelFolder'){
+        level=0;
+    }else if(command == '1LevelFolder'){
+        level=1;
+    } else if(command == '2LevelFolder'){
+        level=2;
+    } else if(command == '3LevelFolder'){
+        level=3;
     }
+
+    urlPattern.value = createUrlPattern(pageUrl, level);
   
 }
 
@@ -273,10 +279,10 @@ init();
               
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item command="singlePage">{{ t('sidepanel_book_tab_autofill_action_single_page') }}</el-dropdown-item>
-                  <el-dropdown-item command="singleFolder">{{ t('sidepanel_book_tab_autofill_action_single_folder') }}</el-dropdown-item>
-                  <el-dropdown-item command="twoLevelFolder">{{ t('sidepanel_book_tab_autofill_action_two_level_folder') }}</el-dropdown-item>
-                  
+                  <el-dropdown-item command="0LevelFolder">{{ t('sidepanel_book_tab_autofill_action_0_level_folder') }}</el-dropdown-item>
+                  <el-dropdown-item command="1LevelFolder">{{ t('sidepanel_book_tab_autofill_action_1_level_folder') }}</el-dropdown-item>
+                  <el-dropdown-item command="2LevelFolder">{{ t('sidepanel_book_tab_autofill_action_2_level_folder') }}</el-dropdown-item>
+                  <el-dropdown-item command="3LevelFolder">{{ t('sidepanel_book_tab_autofill_action_3_level_folder') }}</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

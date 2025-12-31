@@ -798,10 +798,10 @@
     "sidepanelBookTabAutofillAction":{
         "message":"自动填写"
     },
-    "sidepanel_book_tab_autofill_action_single_page":{
+    "sidepanel_book_tab_autofill_action_0_level_folder":{
         "message":"自动填写单页书籍"
     },
-    "sidepanel_book_tab_autofill_action_single_folder":{
+    "sidepanel_book_tab_autofill_action_1_level_folder":{
         "message":"自动填写单目录书籍"
     },
     "sidepanel_book_tab_autofill_action_2_level_folder":{
