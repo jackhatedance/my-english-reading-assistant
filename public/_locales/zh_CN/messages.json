@@ -418,7 +418,7 @@
         "message":"最大词义数量最大值"
     },
 
-    "options_advanced_logging_label":{
+    "options_advanced_log_label":{
         "message":"日志"
     },
     "options_advanced_log_debug_loggers_label":{
