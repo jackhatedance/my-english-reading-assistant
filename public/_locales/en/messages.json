@@ -3,7 +3,7 @@
         "message":"Mera English Reading Assistant"
     },
     "extensionDescription":{
-        "message":"inline hints for unfamiliar words"
+        "message":"Automatically show definitions above unknown words, allowing for uninterrupted English reading."
     },
     "yes":{
         "message":"Yes"
