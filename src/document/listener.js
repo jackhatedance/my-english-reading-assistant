@@ -1,10 +1,10 @@
 import { loadKnownWords } from '../vocabularyStore.js';
 import { isKnown, searchWord, buildDictionaryOptions } from '../language.js';
-import { searchNote } from '../service/noteService.js';
+import { searchNote, getNotes } from '../service/noteService.js';
 import { getTargetWordFromElement, getQueryFromElement} from '../word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from '../sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from '../paragraph.js';
-import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote } from '../article.js';
+import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findArticleNotes } from '../article.js';
 import { MenuItems } from '../menu.js';
 import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
@@ -35,6 +35,14 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
   let selectedText = nodeSelection.toString();
 
   let article = gDocumentArticleMap.get(document);
+
+  let notes = await getNotes();
+  let articleNotes = findArticleNotes(article, notes);
+  for(const note of articleNotes){
+    let selectedText = getSelectedTextOfNote(article, note);
+    note.selectedText = selectedText;
+  }
+    
   if(article && nodeSelection.type !== 'None' && bothTextNode){
 
     
@@ -134,7 +142,8 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
           selectedText: selectedText,
           sentenceSelection: sentenceHashSelection,
           paragraphSelection: paragraphHashSelection,
-          notes: filteredNotes,
+          notes: articleNotes,
+          selectedNotes: filteredNotes,
         },
       };
       let sender = null;

@@ -13,6 +13,7 @@ import 'xbbcode-parser/xbbcode.css';
 const props = defineProps({
     note: Object,
     service: Object,
+    readonly: Boolean,
 });
 
 const t = chrome.i18n.getMessage;
@@ -214,7 +215,7 @@ init();
                 <div class="note-view" v-html="noteContentHtml"></div>
             </div>
             
-            <div class="note-actions">
+            <div class="note-actions" v-show="!props.readonly">
                 <div class="note-action">
                     <button class="addNoteAction" v-show="!props.note.persisted" @click="clickAdd">{{ sidepanelAddAction }}</button>
                 </div>
@@ -268,6 +269,9 @@ init();
 }
 .note-content {
     border: solid grey 1px;
+    border-radius: 5px;
+    background-color: beige;
+    min-height: 10px;
 }
 .note-actions {
     display: flex;

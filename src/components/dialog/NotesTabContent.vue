@@ -17,7 +17,7 @@ init();
 </script>
 
 <template>
-    <Notes :items="props.notes">
+    <Notes :items="props.notes" :readonly="true">
 
     </Notes>
 

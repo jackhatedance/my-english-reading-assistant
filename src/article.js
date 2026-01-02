@@ -177,7 +177,7 @@ function parseDocument(document, options, siteOptions, skip = false) {
         paragraphs: [],
         //<ID, info>
         paragraphMap: new Map(),
-        //<ID, number array>
+        //<ID, number array>, why number is an array? because some paragraphs have same text content.
         paragraphIdNumbersMap: new Map(),
         //segment offset, first sentence number of the segment
         segmentOffsetParagraphMap: new Map(),
@@ -638,7 +638,7 @@ function findTokenInArticle(article, offset) {
     return null;
 }
 
-function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelection) {
+function getArticleSelectionsFromSentenceHashSelection(article, sentenceHashSelection) {
 
     //console.log('get node selections from sentence hash selection');
     /*steps:
@@ -649,7 +649,7 @@ function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelecti
     */
     let startSentenceNumbers = article.sentenceIdNumbersMap.get(sentenceHashSelection.start.sentenceId);
 
-    let nodeSelections = [];
+    let articleSelections = [];
 
     if (startSentenceNumbers) {
         //console.log('find start sentence numbers:' + JSON.stringify(startSentenceNumbers));
@@ -659,18 +659,26 @@ function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelecti
             if (sentenceInstanceSelection) {
                 let articleSelection = getArticleSelectionFromSentenceInstanceSelection(article, sentenceInstanceSelection);
 
-                //let nodeSelection = this.getNodeSelectionFromSentenceSelection(sentenceHashSelection, startSentenceNumber);
-                let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
-
-                nodeSelections.push(nodeSelection);
-
+                articleSelections.push(articleSelection);
             }
         }
+    }
+    return articleSelections;
+}
+
+function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelection) {
+
+    let articleSelections = getArticleSelectionsFromSentenceHashSelection(article, sentenceHashSelection);
+
+    let nodeSelections = [];
+    for(const articleSelection of articleSelections){
+        let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
+        nodeSelections.push(nodeSelection);
     }
     return nodeSelections;
 }
 
-function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
+function getArticleSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
 
     //console.log('get node selections from paragraph hash selection');
     /*steps:
@@ -681,7 +689,7 @@ function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelec
     */
     let startParagraphNumbers = article.paragraphIdNumbersMap.get(paragraphHashSelection.start.paragraphId);
 
-    let nodeSelections = [];
+    let articleSelections = [];
 
     if (startParagraphNumbers) {
         //console.log('find start paragraph numbers:' + JSON.stringify(startParagraphNumbers));
@@ -691,14 +699,24 @@ function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelec
             if (paragraphInstanceSelection) {
                 let articleSelection = getArticleSelectionFromParagraphInstanceSelection(article, paragraphInstanceSelection);
 
-                //let nodeSelection = this.getNodeSelectionFromParagraphSelection(paragraphHashSelection, startParagraphNumber);
-                let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
-
-                nodeSelections.push(nodeSelection);
+                articleSelections.push(articleSelection);
 
             }
         }
     }
+    return articleSelections;
+}
+
+function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
+
+    let articleSelections = getArticleSelectionsFromParagraphHashSelection(article, paragraphHashSelection);
+    
+    let nodeSelections = [];
+    for(const articleSelection of articleSelections){
+        let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
+        nodeSelections.push(nodeSelection);
+    }
+    
     return nodeSelections;
 }
 
@@ -1000,6 +1018,26 @@ function getSelectedTextOfNoteOfSentence(article, note) {
     return buffer;
 }
 
+function findArticleNotes(article, notes){
+    let filteredNotes = [];
+    for (let note of notes) {
+        //one sentence selection could map to multiple node selections
+        //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
+        let articleSelections;
+        let selectionType = note.selection.type;
+        if(selectionType === 'paragraph'){
+            articleSelections = getArticleSelectionsFromParagraphHashSelection(article, note.selection);
+        } else {
+            articleSelections = getArticleSelectionsFromSentenceHashSelection(article, note.selection);
+        }
 
+        if(articleSelections.length>0){
+            filteredNotes.push(note);
+        }
 
-export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes };
+    }
+
+    return filteredNotes;
+}
+
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };

@@ -381,6 +381,7 @@ async function addWordEventListener(page, document, documentConfig, currentSiteO
           sentenceSelection: null,
           paragraphSelection: null,
           notes: [],
+          selectedNotes: [],
         },
       };
       let sender = null;

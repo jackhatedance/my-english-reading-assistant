@@ -4,6 +4,7 @@ import Unavailable from '../Unavailable.vue';
 import VocabularyTabContent from './VocabularyTabContent.vue';
 import ActionsTabContent from './ActionsTabContent.vue';
 import BookTabContent from './BookTabContent.vue';
+import NotesTabContent from './NotesTabContent.vue'
 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from '../../vocabularyStore.js';
 import { getNote } from '../../service/noteService.js';
@@ -34,6 +35,7 @@ const isShowTabs = ref(false);
 const word = ref();
 const dictionary = ref();
 const notes = ref([]);
+const selectedNotes = ref([]);
 const page = ref();
 
 const activeTabName = ref('tab-actions');
@@ -142,7 +144,7 @@ async function onSelectionChange(payload){
   word.value = payload.word;
   dictionary.value = payload.dictionary;
 
-  let noteArray = payload.notes;
+  let selectedNoteArray = payload.selectedNotes;
 
   //console.log('payload:' + JSON.stringify(request.payload));
   if (type === 'select-text') {
@@ -158,14 +160,21 @@ async function onSelectionChange(payload){
       note.content = noteEntity.content;
       note.persisted = true;
     }
-    noteArray = [note];
+    selectedNoteArray = [note];
   } else {
-    for (let note of noteArray) {
+    for (let note of selectedNoteArray) {
       note.persisted = true;
     }
   }
 
-  notes.value = noteArray;
+  selectedNotes.value = selectedNoteArray;
+
+
+  let articleNotes = payload.notes;
+  for (let note of articleNotes) {
+    note.persisted = true;
+  }
+  notes.value = articleNotes;
   //console.log('SELECTION_CHANGE, update notes:' + JSON.stringify(notes.value));
 
 }
@@ -201,7 +210,7 @@ function onClickCloseButton() {
 
     <el-tabs v-model="activeTabName" class="setting-tabs" >
       <el-tab-pane :label="t('sidepanelTabActions')" name="actions">
-        <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :notes="notes"></ActionsTabContent>
+        <ActionsTabContent :page="page" :word="word" :dictionary="dictionary" :selectedNotes="selectedNotes"></ActionsTabContent>
       </el-tab-pane>
       
       <el-tab-pane :label="t('sidepanelTabVocabulary')" name="vocabulary">
@@ -212,7 +221,9 @@ function onClickCloseButton() {
         <BookTabContent :page="page"></BookTabContent>
       </el-tab-pane>
       
-      
+      <el-tab-pane :label="t('sidepanelTabNotes')" name="notes">
+        <NotesTabContent :notes="notes"></NotesTabContent>
+      </el-tab-pane>
     </el-tabs>
       
   </div>

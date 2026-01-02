@@ -8,13 +8,14 @@ const props = defineProps({
     page: Object,
     word: String,
     dictionary: String,
-    notes: Array
+    notes: Array,
+    selectedNotes: Array
 
 });
 
 
-const isNotesEmpty = computed(() => {
-    return (props.notes.length===0);
+const isSelectedNotesEmpty = computed(() => {
+    return (props.selectedNotes.length===0);
 });
 
 const init = async () => {
@@ -27,7 +28,7 @@ init();
 <template>
     <div class="actiontab-items">
         <Word v-if="props.word" :siteOptions="toRaw(page.siteOptions)" :dictionary="props.dictionary" :word="props.word"></Word>
-        <Notes v-if="isFeatureEnabled(page.siteOptions, FEATURE_NOTE) && !isNotesEmpty" :items="props.notes" />
+        <Notes v-if="isFeatureEnabled(page.siteOptions, FEATURE_NOTE) && !isSelectedNotesEmpty" :items="props.selectedNotes" />
     </div>
 </template>
 
