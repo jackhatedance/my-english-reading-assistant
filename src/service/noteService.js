@@ -177,17 +177,11 @@ function noteMapToArray(map) {
 
 
 async function searchNote(sentenceHashPosition, paragraphHashPosition) {
-    let a1 = await searchNoteBySentencePosition(sentenceHashPosition);
-    let a2 = await searchNoteByParagraphPosition(paragraphHashPosition);
-    return a1.concat(a2);
-}
-
-async function searchNoteBySentencePosition(sentenceHashPosition) {
     let noteArray = await getNotes();
 
     let result = [];
     for (let note of noteArray) {
-        if (contains(note.selection, sentenceHashPosition)) {
+        if (contains(note.selection, sentenceHashPosition, paragraphHashPosition)) {
             result.push(note);
 
             let key = getNoteKey(note.selection);
@@ -197,22 +191,46 @@ async function searchNoteBySentencePosition(sentenceHashPosition) {
     return result;
 }
 
-async function searchNoteByParagraphPosition(paragraphHashPosition) {
-    let noteArray = await getNotes();
-
-    let result = [];
-    for (let note of noteArray) {
-        if (contains(note.selection, paragraphHashPosition)) {
-            result.push(note);
-
-            let key = getNoteKey(note.selection);
-            note.key = key;
-        }
+function contains(selection, sentenceHashPosition, paragraphHashPosition) {
+    
+    let selectionType = selection.type;
+    if(selectionType === 'paragraph'){
+        return containsParagraphPosition(selection, paragraphHashPosition);
+    } else {
+        return containsSentencePosition(selection, sentenceHashPosition);
     }
-    return result;
 }
 
-function contains(selection, position) {
+function containsParagraphPosition(selection, position) {
+    let { start, middle, end, endOffset } = selection;
+
+
+    //single paragraph
+    if(start.paragraphId === position.paragraphId 
+        && end.paragraphId === position.paragraphId
+        && endOffset === 0){
+        if(start.offset <= position.offset
+            && end.offset >= position.offset){
+                return true;
+            }
+    } else if (
+        //more than one paragraph
+        (start.paragraphId === position.paragraphId
+            && start.offset <= position.offset)
+        ||
+        middle.includes(position.paragraphId)
+        ||
+        (end.paragraphId === position.paragraphId
+            && end.offset >= position.offset)
+    ) {
+        return true;
+    }
+
+     
+    return false;
+}
+
+function containsSentencePosition(selection, position) {
     let { start, middle, end, endOffset } = selection;
 
 

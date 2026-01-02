@@ -17,8 +17,25 @@ init();
 </script>
 
 <template>
-    <Notes :items="props.notes" :readonly="true">
+    <div id="notes-wrapper">
 
-    </Notes>
+        <Notes :items="props.notes" >
 
+        </Notes>
+
+    </div>
+    
 </template>
+<style>
+#notes-wrapper .notes-container .notes {
+    height: 340px;
+    overflow: auto;
+    overscroll-behavior-y: contain;
+
+    text-align: left;
+
+}
+
+
+
+</style>
