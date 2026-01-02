@@ -94,29 +94,9 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       type = 'search-note';
       
 
-      let noteArray = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
+      let filteredNotes = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
 
-      for (let note of noteArray) {
-        let isContainsPosition;
-
-        let selectionType = note.selection.type;
-        if(selectionType === 'paragraph'){
-          let paragraphInstanceSelections = getParagraphInstanceSelectionsFromParagraphHashSelection(article, note.selection);
-          isContainsPosition = paragraphInstanceSelections.some((s) => containsParagraphInstancePosition(s, paragraphInstanceSelection.start));
-        } else {
-        let sentenceInstanceSelections = getSentenceInstanceSelectionsFromSentenceHashSelection(article, note.selection);
-          isContainsPosition = sentenceInstanceSelections.some((s) => containsSentenceInstancePosition(s, sentenceInstanceSelection.start));
-        }
-        
-        if(!isContainsPosition){
-          continue;
-        }
-
-        let selectedText = getSelectedTextOfNote(article, note);
-        note.selectedText = selectedText;
-
-        filteredNotes.push(note);
-      }
+      
       //console.log('search notes:' + JSON.stringify(filteredNotes));
       if(isFeatureEnabled(siteOptions, FEATURE_NOTE) && filteredNotes.length>0){
         menuItems.push(MenuItems.ViewNote);
