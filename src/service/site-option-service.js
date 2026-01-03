@@ -94,9 +94,15 @@ function getEffectiveSiteOptions(siteOptions, defaultSiteOptions){
     return effectiveOptions;
 }
 
-async function getSiteOptions(siteDomain){
+async function getSiteOptions(siteDomain, fallback){
     
     let options = await loadSiteOptionsFromStorage(fixSiteDomain(siteDomain));
+    
+    //fallback
+    if(options == null && fallback != null){
+        options = await getSiteOptions(fallback, null);
+    }
+
     if(!options){
         options ={};
     }

@@ -36,7 +36,7 @@ async function getCurrentSiteOptions(siteProfile) {
             let subsiteName = book.title;
             site = `${siteDomain}/${subsiteName}`;
 
-            siteOptions = await getSiteOptions(site);
+            siteOptions = await getSiteOptions(site, siteDomain);
 
             siteOptions.virtualSite = {
                 path: subsiteName,
