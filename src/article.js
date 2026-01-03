@@ -157,6 +157,7 @@ function parseDocument(document, options, siteOptions, skip = false) {
     let article = {
         //snapshot begin
         textContent: '',
+        textContentLength: 0,
         newTagPositions: {},
 
         originalTextNodes: [],
@@ -401,6 +402,8 @@ function snapshot(document, article){
     let textContent = textContents.join("");
 
     article.textContent = textContent;
+    article.textContentLength = textContent.length;
+
     article.newTagPositions = {
             newLinePositions: newLinePositionCollection.positions,
             newWordPositions: newWordPositionCollection.positions,
@@ -1032,11 +1035,26 @@ function findArticleNotes(article, notes){
         }
 
         if(articleSelections.length>0){
+            //note.articleSelections = articleSelections;
+            let positions = [];
+            for(const selection of articleSelections){
+                const position = selection.start / article.textContentLength;
+                positions.push(position);
+            }
+
+            note.positions = positions;
+
             filteredNotes.push(note);
         }
 
     }
 
+    filteredNotes = filteredNotes.sort(function(a, b){
+        let aPosition = a.positions.length>0? a.positions[0] : 0;
+        let bPosition = b.positions.length>0? b.positions[0] : 0;
+
+        return aPosition - bPosition;
+    });
     return filteredNotes;
 }
 

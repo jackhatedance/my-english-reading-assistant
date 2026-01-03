@@ -497,7 +497,7 @@ init();
               <DictionaryTab @change-setting="onChangeSetting"></DictionaryTab>
             </el-tab-pane>
             <el-tab-pane :label="t('popup_tab_misc')" name="misc">
-              <MiscTab :virtualSite="props.pageInfo.siteOptions._runtime.virtualSite" @change-setting="onChangeSetting"></MiscTab>
+              <MiscTab :virtualSite="props.pageInfo.siteOptions._runtime?.virtualSite" @change-setting="onChangeSetting"></MiscTab>
             </el-tab-pane>
             
           </el-tabs>

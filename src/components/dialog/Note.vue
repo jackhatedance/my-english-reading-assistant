@@ -62,6 +62,14 @@ function parseHighlightOption(highlightOption){
     return {type, backgroundColor, underlineType};
 }
 
+function formatNotePositions(positions){
+    if(positions == null){
+        return '';
+    }
+
+    const posStrs = positions.map(pos => (pos*100).toFixed(0)+'%');
+    return posStrs.join(',');
+}
 function clickAdd() {
     
     mode.value = 'edit';
@@ -208,8 +216,7 @@ init();
 
 <template>
     <div ref="rootElement" class="note">
-        <p class="highlight-text">{{ props.note.text }}</p>
-
+        <p><span class="highlight-text">{{ props.note.text }}</span><span v-show="props.note.positions && props.note.positions.length>0" class="positions">{{ formatNotePositions(props.note.positions) }}</span></p>
         <div class="view-note-container" v-show="mode === 'view'">
             <div class="note-content">                
                 <div class="note-view" v-html="noteContentHtml"></div>
@@ -264,6 +271,12 @@ init();
         }
         &::after{
             content: '"';
+        }
+    }
+
+    .positions {
+        &::before{
+            content: ' ~ ';
         }
     }
 }
