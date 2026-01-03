@@ -39,8 +39,10 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
   let notes = await getNotes();
   let articleNotes = findArticleNotes(article, notes);
   for(const note of articleNotes){
-    let selectedText = getSelectedTextOfNote(article, note);
-    note.selectedText = selectedText;
+    if(!note.text){
+      let text = getSelectedTextOfNote(article, note);
+      note.text = text;
+    }    
   }
     
   if(article && nodeSelection.type !== 'None' && bothTextNode){
@@ -65,7 +67,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
     let word;
     let dictionaryName;
     
-    let filteredNotes = [];
+    let selectedNotes = [];
     let siteOptions = await getCurrentSiteOptions(siteProfile);
     let clickWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_CLICK_WORD);
     if (isSelectionCollapsed && clickWordEnabled) {
@@ -94,11 +96,16 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       type = 'search-note';
       
 
-      let filteredNotes = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
-
+      selectedNotes = await searchNote(sentenceHashSelection.start, paragraphHashSelection.start);
+      for(const note of selectedNotes){
+        if(!note.text){
+          let text = getSelectedTextOfNote(article, note);
+          note.text = text;
+        }
+      }
       
-      //console.log('search notes:' + JSON.stringify(filteredNotes));
-      if(isFeatureEnabled(siteOptions, FEATURE_NOTE) && filteredNotes.length>0){
+      //console.log('search notes:' + JSON.stringify(selectedNotes));
+      if(isFeatureEnabled(siteOptions, FEATURE_NOTE) && selectedNotes.length>0){
         menuItems.push(MenuItems.ViewNote);
       }
     } 
@@ -123,7 +130,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
           sentenceSelection: sentenceHashSelection,
           paragraphSelection: paragraphHashSelection,
           notes: articleNotes,
-          selectedNotes: filteredNotes,
+          selectedNotes: selectedNotes,
         },
       };
       let sender = null;

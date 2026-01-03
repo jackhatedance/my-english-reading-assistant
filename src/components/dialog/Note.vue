@@ -89,7 +89,7 @@ async function clickDelete() {
 async function clickSave() {
     let noteBBCode = getScEditor().val();
     
-    let noteEntity = { text: props.note.selectedText, selection: props.note.selection, content: noteBBCode, highlight: parseHighlightOption(highlight.value) };
+    let noteEntity = { text: props.note.text, selection: props.note.selection, content: noteBBCode, highlight: parseHighlightOption(highlight.value) };
     await setNote(noteEntity);
 
     props.note.persisted = true;
@@ -208,7 +208,7 @@ init();
 
 <template>
     <div ref="rootElement" class="note">
-        <p class="highlight-text">{{ props.note.selectedText }}</p>
+        <p class="highlight-text">{{ props.note.text }}</p>
 
         <div class="view-note-container" v-show="mode === 'view'">
             <div class="note-content">                
