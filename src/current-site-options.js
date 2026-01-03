@@ -1,6 +1,8 @@
 import { getSiteOptions, } from './service/site-option-service.js';
 import { searchBookByUrlAsync } from './service/bookService.js';
 
+const RUNTIME_KEY = '_runtime';
+
 var gCurrentSiteOptions;
 
 
@@ -38,9 +40,15 @@ async function getCurrentSiteOptions(siteProfile) {
 
             siteOptions = await getSiteOptions(site, siteDomain);
 
-            siteOptions.virtualSite = {
-                path: subsiteName,
-            };
+            //book site must not be a virtual site
+            siteOptions.site.virtualSiteEnabled = false;
+
+            setRuntimeOptions(siteOptions, "virtualSite", 
+                {
+                    path: subsiteName,
+                }
+            );
+            
         }
 
     }
@@ -48,6 +56,22 @@ async function getCurrentSiteOptions(siteProfile) {
     siteOptions.siteName = site;
 
     return siteOptions;
+}
+
+function setRuntimeOptions(siteOptions, key, subOptions){
+    
+    if(siteOptions[RUNTIME_KEY]==null){
+       siteOptions[RUNTIME_KEY] = {};
+    }
+    const runtime = siteOptions[RUNTIME_KEY];
+    runtime[key] = subOptions;
+}
+
+function getRuntimeOptions(siteOptions, key){
+    const runtime = siteOptions[RUNTIME_KEY];
+
+    let value = runtime? runtime[key]: null;
+    return value;
 }
 
 export { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache, refreshCurrentSiteOptionsCache }

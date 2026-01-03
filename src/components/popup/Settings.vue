@@ -146,8 +146,8 @@ provide('virtualSiteEnabled', virtualSiteEnabled);
 const site = computed(() => {
     console.log(props.pageInfo?.domain);
     let displaySite;
-    if(props.pageInfo?.siteOptions?.virtualSite){
-      displaySite = `${props.pageInfo?.domain} - ${props.pageInfo?.siteOptions?.virtualSite.path}`;
+    if(props.pageInfo?.siteOptions?._runtime?.virtualSite){
+      displaySite = `${props.pageInfo?.domain} - ${props.pageInfo?.siteOptions?._runtime?.virtualSite.path}`;
     }else{
       displaySite = props.pageInfo?.domain;
     }
@@ -497,7 +497,7 @@ init();
               <DictionaryTab @change-setting="onChangeSetting"></DictionaryTab>
             </el-tab-pane>
             <el-tab-pane :label="t('popup_tab_misc')" name="misc">
-              <MiscTab :virtualSite="props.pageInfo.siteOptions.virtualSite" @change-setting="onChangeSetting"></MiscTab>
+              <MiscTab :virtualSite="props.pageInfo.siteOptions._runtime.virtualSite" @change-setting="onChangeSetting"></MiscTab>
             </el-tab-pane>
             
           </el-tabs>
