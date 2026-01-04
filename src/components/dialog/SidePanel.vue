@@ -149,7 +149,7 @@ async function onSelectionChange(payload){
   //console.log('payload:' + JSON.stringify(request.payload));
   if (type === 'select-text') {
     let note = {
-      selectedText: selectedText,
+      text: selectedText,
       selection: paragraphSelection,
       content: '',
       persisted: false,
