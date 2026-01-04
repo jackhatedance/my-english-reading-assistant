@@ -736,6 +736,10 @@
         "message":"笔记"
     },
 
+    "sidepanel_actions_note_text_location":{
+        "message":"页面位置"
+    },
+
     "sidepanel_actions_note_highlight_label":{
         "message":"高亮"
     },

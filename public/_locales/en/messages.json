@@ -738,6 +738,10 @@
         "message":"Notes"
     },
 
+    "sidepanel_actions_note_text_location":{
+        "message":"location of page"
+    },
+
     "sidepanel_actions_note_highlight_label":{
         "message":"Highlight"
     },

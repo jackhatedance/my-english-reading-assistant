@@ -216,7 +216,7 @@ init();
 
 <template>
     <div ref="rootElement" class="note">
-        <p><span class="highlight-text">{{ props.note.text }}</span><span v-show="props.note.positions && props.note.positions.length>0" class="positions">{{ formatNotePositions(props.note.positions) }}</span></p>
+        <p><span class="highlight-text">{{ props.note.text }}</span><span v-show="props.note.positions && props.note.positions.length>0" class="positions"> {{ t('sidepanel_actions_note_text_location') }}:{{ formatNotePositions(props.note.positions) }}</span></p>
         <div class="view-note-container" v-show="mode === 'view'">
             <div class="note-content">                
                 <div class="note-view" v-html="noteContentHtml"></div>
@@ -266,6 +266,7 @@ init();
     overflow: auto;
     
     .highlight-text {
+        font-size: large;
         &::before{
             content: '"';
         }
@@ -276,7 +277,7 @@ init();
 
     .positions {
         &::before{
-            content: ' ~ ';
+            content: ' ';
         }
     }
 }
