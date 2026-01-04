@@ -15,7 +15,7 @@ test('dialog vocabulary unknown word definition', async ({ testPage, extensionId
 
   const iframeLocator = testPage.page.frameLocator('#mea-vueapp-iframe');
 
-  await iframeLocator.getByTestId("vocabulary-tab-header").click();
+  await iframeLocator.locator("#tab-vocabulary").click();
   await iframeLocator.getByTestId("showAllDefinitions").click();
   
   let unknownWordListLocator = iframeLocator.locator("#unknownWordList");
