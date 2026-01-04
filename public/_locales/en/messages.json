@@ -465,10 +465,10 @@
         "message":"auto"
     },
     "options_general_switch_mode_on":{
-        "message":"always on"
+        "message":"on"
     },
     "options_general_switch_mode_off":{
-        "message":"always off"
+        "message":"off"
     },
     
     "options_general_interaction_label":{

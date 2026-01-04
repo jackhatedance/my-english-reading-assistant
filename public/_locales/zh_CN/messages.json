@@ -464,10 +464,10 @@
         "message":"自动"
     },
     "options_general_switch_mode_on":{
-        "message":"常开"
+        "message":"开"
     },
     "options_general_switch_mode_off":{
-        "message":"常关"
+        "message":"关"
     },
 
     "options_general_interaction_label":{
