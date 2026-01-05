@@ -30,7 +30,7 @@ init();
         .section {
             width: 100%;
             display: flex;
-            padding: 10px;
+            padding: 0;
 
             .label {
                 width: 250px;

@@ -19,7 +19,7 @@ init();
 <template>
     <div class="sidebar">
         <div class="sidebar-top">
-            <h1>{{ t('optionsTitle') }}</h1>
+            <h1 class="options-title">{{ t('optionsTitle') }}</h1>
         </div>
         <div class="sidebar-middle">
             <nav>
@@ -68,15 +68,30 @@ init();
     background-color: rgb(229, 229, 229);
     flex: 0 0 200px;
     height: 100%;
-    padding-left: 10px;
-    padding-top: 10px;
+    
+    
+
+    .sidebar-top {
+        padding-left: 10px;
+        padding-top: 10px;
+        height: 40px;
+
+        .options-title {
+            margin: 0;
+            
+        }
+    }
 }
 
 .sidebar-middle {
+    padding-left: 10px;
     text-align: left;
 
     hr {
         width: 100%;
+        
+        border-left: 0;
+        border-right: 0;
     }
 }
 
