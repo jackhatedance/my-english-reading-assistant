@@ -1,3 +1,6 @@
+/**
+ * refer to https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4
+ */
 import { getOrCreateClientId, getOrCreateSessionId } from './track-base.js'
 
 
