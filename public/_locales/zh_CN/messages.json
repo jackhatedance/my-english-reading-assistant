@@ -24,6 +24,9 @@
         "message": "请先选择文件"
     },
 
+    "popup_page_title":{
+        "message":"Mera 弹窗"
+    },
     "popupEpub":{
         "message":"Epub阅读器"
     },
