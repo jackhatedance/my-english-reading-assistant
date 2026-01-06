@@ -24,6 +24,9 @@
         "message": "Choose file first please"
     },
 
+    "popup_page_title":{
+        "message":"Mera Popup"
+    },
     "popupEpub":{
         "message":"Epub Reader"
     },
