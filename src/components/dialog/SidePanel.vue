@@ -243,5 +243,10 @@ function onClickCloseButton() {
   .el-tabs {
     width: 100%;
   }
+
+  .el-tabs__content {
+    height: 420px;
+    overflow: auto;
+  }
 }
 </style>
