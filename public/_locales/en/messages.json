@@ -500,7 +500,7 @@
         "message": "Warning: Enabling too many big dictionaries can result in large memory usage and slow processing"
     },
     "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
-        "message": "Please do not close your browser while the index is being created."
+        "message": "Please do not close your browser while structured data is being extracted."
     },
     "optionsEditDictionaryIndexColorTipsTitle": {
         "message": "Structured data"

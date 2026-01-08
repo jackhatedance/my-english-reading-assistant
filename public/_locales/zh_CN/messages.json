@@ -499,7 +499,7 @@
         "message": "警告：启用过多大词典会导致占用大量内存且降低处理速度"
     },
     "optionsEditDictionaryIndexColorTipsDontCloseBrowserWhenBuildingIndex": {
-        "message": "创建索引时请不要关闭浏览器"
+        "message": "提取结构化数据时请不要关闭浏览器"
     },
     "optionsEditDictionaryIndexColorTipsTitle": {
         "message": "结构化数据"
