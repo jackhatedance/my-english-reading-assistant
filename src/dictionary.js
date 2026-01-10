@@ -6,6 +6,9 @@ import Lookup from './components/dictionary/Lookup.vue'
 import { getEntryFromLink } from './dictionary/mdict/mdict-definition-utils.js'
 import { localizeHtmlPage} from './locale.js'
 
+import { sendTrackEventToBackground } from './message.js'
+import { generatePageViewEvent } from './track/google-analytics.js'
+
 localizeHtmlPage();
 
 
@@ -49,3 +52,6 @@ window.addEventListener('message', event => {
         }
     }
 }, false);
+
+
+sendTrackEventToBackground(generatePageViewEvent());

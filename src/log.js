@@ -30,6 +30,7 @@ const LOGGER_NAMES = [
   'activity-core-service',
   'dictionary',
   'custom-dictionary',
+  'google-analytics',
 ];
 
 function initLog(){

@@ -72,4 +72,23 @@ function sendMessageToBackground(siteProfile, type, pageInfo) {
     );
 }
 
-export { sendMessageMarkWordToBackground, sendMessageDictionaryChangeToBackground, sendMessageToBackground };
+function sendTrackEventToBackground(events){
+    if (!Array.isArray(events)) {
+        events = [events];
+    }
+
+    chrome.runtime.sendMessage(
+        {
+            type: 'TRACK_EVENTS',
+            payload: {
+                events: events
+            },
+        },
+        (response) => {
+            //console.log(response.message);
+        }
+    );
+
+}
+
+export { sendMessageMarkWordToBackground, sendMessageDictionaryChangeToBackground, sendMessageToBackground, sendTrackEventToBackground };

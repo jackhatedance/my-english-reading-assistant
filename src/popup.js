@@ -4,7 +4,8 @@ import { createApp, ref } from 'vue';
 import Popup from './components/popup/Popup.vue'
 import { initializeOptionService } from './service/optionService.js';
 import { initVocabularyIfEmpty } from './service/optionService.js';
-import { collect } from './track/google-analytics.js'
+import { sendTrackEventToBackground } from './message.js'
+import { generatePageViewEvent } from './track/google-analytics.js'
 
 import { localizeHtmlPage} from './locale.js'
 
@@ -40,13 +41,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-collect([
-    {
-        name: "page_view",
-        params: {
-            page_title: document.title,
-            page_location: document.location.href
-        },
-    }
-]);
+sendTrackEventToBackground(generatePageViewEvent());
     

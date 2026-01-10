@@ -8,6 +8,10 @@ import Page from './components/report/Page.vue'
 import Book from './components/report/Book.vue'
 import Activity from './components/report/Activity.vue'
 
+import { sendTrackEventToBackground } from './message.js'
+import { generatePageViewEvent } from './track/google-analytics.js'
+
+
 import { localizeHtmlPage} from './locale.js'
 
 localizeHtmlPage();
@@ -41,3 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 });
+
+
+sendTrackEventToBackground(generatePageViewEvent());

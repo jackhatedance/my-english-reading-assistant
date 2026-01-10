@@ -9,6 +9,7 @@ import { initLog, setDebugLoggers } from './log.js'
 import { getTabInfo } from './service/tab-service.js';
 import { onTabCreated, onTabUpdated, onAnnotationInitialized, onAnnotationCleaned, onTabBlurred, onTabFocused, onTabRemoved, onWordMarked, onIdleStateChanged } from './service/activity-core-service.js'
 import { truncateString } from './utils/stringUtils.js'
+import { collect } from './track/google-analytics.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -126,18 +127,15 @@ chrome.contextMenus.onClicked.addListener(async(item, tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
+  let tabId = null;
   let tabTitle = '';
-  if(sender.tab==null){
-    gLogger.warn(`sender.tab is null`);
-  }else{
-    //gLogger.warn(`sender.tab: ${JSON.stringify(sender.tab)}`);
+  if(sender.tab != null){
+    tabId =sender.tab.id;
     tabTitle = truncateString(sender.tab.title,20);
   }
 
   gLogger.debug(`on message:${request.type}, ${tabTitle}`);
   
-  let tabId =sender.tab.id;
-
   let message = 'ok';
   if(request.type === 'PAGE_ANNOTATION_INITIALIZED') {
 
@@ -180,6 +178,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     migrateDictionary(dictionaryName, (progress) => sendMsgOfIndexBuildingProgress(dictionaryName, progress));        
   } else if(request.type === 'OPTIONS_CHANGE'){
     doSetLogLevels();
+  } else if(request.type === 'TRACK_EVENTS'){
+    onTrackEvents(request.payload.events);
   }
 
   sendResponse({
@@ -356,4 +356,8 @@ function setIcon(tabId, active){
         tabId: tabId
       });
   }
+}
+
+async function onTrackEvents(events){
+  await collect(events);
 }

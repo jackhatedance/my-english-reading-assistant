@@ -18,6 +18,9 @@ import InteractionTab from './components/options/tabs/InteractionTab.vue'
 import AdvancedTab from './components/options/tabs/AdvancedTab.vue'
 import UnrecognizedWordsTab from './components/options/tabs/UnrecognizedWordsTab.vue'
 
+import { sendTrackEventToBackground } from './message.js'
+import { generatePageViewEvent } from './track/google-analytics.js'
+
 import { localizeHtmlPage} from './locale.js'
 
 localizeHtmlPage();
@@ -68,3 +71,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     sendResponse({});
 });
+
+
+sendTrackEventToBackground(generatePageViewEvent());

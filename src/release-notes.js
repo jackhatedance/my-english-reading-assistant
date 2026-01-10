@@ -11,6 +11,10 @@ import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import rehypeImageSize from './rehype/image-size.js'
 
+import { sendTrackEventToBackground } from './message.js'
+import { generatePageViewEvent } from './track/google-analytics.js'
+
+
 localizeHtmlPage();
 
 async function setup(){
@@ -37,3 +41,6 @@ async function setup(){
   //tocWrapper.appendChild(ul);
 }
 document.addEventListener('DOMContentLoaded', setup);
+
+
+sendTrackEventToBackground(generatePageViewEvent());
