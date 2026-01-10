@@ -278,7 +278,7 @@ init();
     }
 
     #dictionary-iframe-html {
-        height: 300px;
+        height: 290px;
     }
 }
 

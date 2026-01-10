@@ -9,7 +9,7 @@ test('switch mode - default global switch mode is off', async ({ optionsPage, te
 
   const switchModeSelect = elSelect(optionsPage.page.getByTestId('switch-mode'));
   
-  await expect(switchModeSelect.selected()).toHaveText('always off');
+  await expect(switchModeSelect.selected()).toHaveText('off');
   
 });
 
@@ -21,7 +21,7 @@ test('switch mode - default site switch mode is unset', async ({ optionsPage, te
   const switchModeSelect = elSelect(popupPage.switchMode);
   
   
-  await expect(switchModeSelect.selected()).toHaveText('always off(default)');
+  await expect(switchModeSelect.selected()).toHaveText('off(default)');
 });
 
 test('switch mode - set global switch mode to auto and visit Chinese page', async ({ optionsPage, testPage, extensionId, popupPage }) => {
