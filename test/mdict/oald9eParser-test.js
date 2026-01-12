@@ -9,7 +9,7 @@ describe('mdict oalecd9e parser', function () {
     before(function() {
       this.parser = new Oald9eParser({ debugPrintSelectorFind: true, generateDefinitionText: true });
 
-      this.mdx = new MDX("./test/mdict/mdx/Oxford Advanced Learner's Dictionary, 9th Ed.mdx");
+      this.mdx = new MDX("./test-resource/mdict/mdx/Oxford Advanced Learner's Dictionary, 9th Ed.mdx");
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };

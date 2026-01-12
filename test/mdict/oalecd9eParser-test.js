@@ -9,7 +9,7 @@ describe('mdict oalecd9e parser', function () {
     before(function() {
       this.parser = new Oalecd9eParser({ debugPrintSelectorFind: false, generateDefinitionText : true });
 
-      this.mdx = new MDX('./test/mdict/mdx/牛津高阶英汉双解词典（第9版）.mdx');
+      this.mdx = new MDX('./test-resource/mdict/mdx/牛津高阶英汉双解词典（第9版）.mdx');
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };

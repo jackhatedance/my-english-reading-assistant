@@ -14,7 +14,7 @@ describe('mdict mwalecd parser', function () {
       options[PARSER_OPTION_GENERATE_DEFINITION_TEXT] = true;      
       this.parser = new MwalecdParser(options);
 
-      this.mdx = new MDX('./test/mdict/mdx/韦氏高阶英汉双解词典.mdx');
+      this.mdx = new MDX('./test-resource/mdict/mdx/韦氏高阶英汉双解词典.mdx');
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };

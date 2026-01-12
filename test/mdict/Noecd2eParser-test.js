@@ -14,7 +14,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
         generateDefinitionText: true,
       });
 
-      this.mdx = new MDX('./test/mdict/mdx/新牛津英汉双解大词典（第2版）.mdx');
+      this.mdx = new MDX('./test-resource/mdict/mdx/新牛津英汉双解大词典（第2版）.mdx');
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };

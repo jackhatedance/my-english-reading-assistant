@@ -9,7 +9,7 @@ describe('mdict yhd parser', function () {
     before(function() {
       this.parser = new YhdParser({debugPrintSelectorFind: false, generateDefinitionText: true});
 
-      this.mdx = new MDX('./test/mdict/mdx/英汉大词典（第2版）.mdx');
+      this.mdx = new MDX('./test-resource/mdict/mdx/英汉大词典（第2版）.mdx');
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };

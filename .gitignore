@@ -14,7 +14,7 @@ npm-debug.log*
 # packed files
 /release
 
-/test/mdict/mdx
+/test-resource/
 
 # Playwright
 node_modules/
