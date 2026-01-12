@@ -12,7 +12,8 @@
     "test": "mocha --recursive",
     "e2e": "npx playwright test",
     "repack": "npm run clean && npm run build && npm run pack",
-    "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
+    "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\"",
+    "backup": "rsync -a --exclude '.git' --exclude-from='.gitignore' . ~/Library/CloudStorage/OneDrive-Personal/Jack/mera-code"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
