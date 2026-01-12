@@ -10,7 +10,7 @@ function createDefaultOptions(){
             enabled:false,
         },
         dictionary: {
-            enabled:false,
+            enabled: true,
             dictionaries:[]
         },
         unrecognizedWords: { 
