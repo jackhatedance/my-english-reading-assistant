@@ -7,10 +7,10 @@ function createDefaultOptions(){
             enabled: false,
         },
         report: {
-            enabled:false,
+            enabled:true,
         },
         dictionary: {
-            enabled: true,
+            enabled: false,
             dictionaries:[]
         },
         unrecognizedWords: { 

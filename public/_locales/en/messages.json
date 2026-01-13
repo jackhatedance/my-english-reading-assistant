@@ -362,12 +362,6 @@
     "optionsReportLabel":{
         "message":"Report"
     },
-    "optionsReportLabelDesc":{
-        "message":"save reading acitivity and show reading report"
-    },
-    "optionsReportModeLabel":{
-        "message":"Enable Report"
-    },
     "optionsDeleteReadingHistoryLabelDesc":{
         "message":"Clear Report Data"
     },

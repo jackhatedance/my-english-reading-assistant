@@ -77,7 +77,7 @@ init();
 
 <template>
     <div class="options-container">
-        <Header :options="options"></Header>
+        <Header ></Header>
         <Settings v-if="pageInfo" :pageInfo="pageInfo" :options="options" @reload-page-info="onReloadPageInfo"></Settings>
         <NothingToDo v-if="pageInfo === null"></NothingToDo>
     </div>

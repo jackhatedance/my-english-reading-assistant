@@ -3,7 +3,7 @@ import { ref, provide } from 'vue';
 import { getWebSiteDocumentUrl } from '../../site.js';
 
 const props = defineProps({
-    options: Object
+    
 });
 
 const t = chrome.i18n.getMessage;
@@ -55,7 +55,7 @@ init();
 
         <a id="dictionary" href="#" :title="t('popupDictionary')"><img src="icons/dictionary.png" alt="dictionary" @click="onClickDictionary"></a>
         
-        <a v-show="props.options.report.enabled" id="report" href="#" :title="t('popupReport')"><img src="icons/report.png" alt="report" @click="onClickReport"></a>
+        <a id="report" href="#" :title="t('popupReport')"><img src="icons/report.png" alt="report" @click="onClickReport"></a>
         
         <a id="help" href="#" :title="t('popupHelp')"><img src="icons/help.png" alt="help" @click="onClickHelp"></a>
         

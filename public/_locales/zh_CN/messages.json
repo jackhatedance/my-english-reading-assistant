@@ -361,12 +361,6 @@
     "optionsReportLabel":{
         "message":"报告"
     },
-    "optionsReportLabelDesc":{
-        "message":"保存阅读活动并展示阅读报告"
-    },
-    "optionsReportModeLabel":{
-        "message":"启用报告"
-    },
     "optionsDeleteReadingHistoryLabelDesc":{
         "message":"清除报告数据"
     },

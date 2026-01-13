@@ -12,7 +12,6 @@ import { ElNotification } from 'element-plus'
 import 'element-plus/es/components/notification/style/css'
 
 const t = chrome.i18n.getMessage;
-const enableReport = ref(false);
 
 const file = ref();
 
@@ -59,13 +58,8 @@ async function onExport() {
     saveTextAsFile(json, 'activity', 'json');
 }
 
-function updateReport(reportOptions){
-  enableReport.value = reportOptions.enabled;
-}
 
 const init = async () => {
-  let options = await getOptions();
-  updateReport(options.report);  
 };
 
 init();
@@ -74,20 +68,7 @@ init();
 <template>
 
   <div class="sections">
-    <div class="section">
-      <div class="label">
-
-        <p>{{ t('optionsReportLabelDesc') }}</p>  
-      </div>
-      <div class="input">
-        <div class="option">
-          <label>{{ t('optionsReportModeLabel') }}</label>
-          <el-switch class="right" @change="onChange" v-model="enableReport" />
-        </div>
-        
-      </div>
-      
-    </div>
+    
     
 
     <div class="section">

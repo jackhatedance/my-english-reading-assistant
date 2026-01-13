@@ -103,12 +103,7 @@ async function onIdleStateChanged(newState){
 
 async function saveReadingActivity(tabInfo){
   //gLogger.debug('saveReadingActivityAndClearStartTime()');
-  let options = await getOptions();
-  //console.log('get options from cache:'+JSON.stringify(options));
-  if(!options.report.enabled){
-    return;
-  }
-
+  
   if(tabInfo.startTime == null){
     gLogger.error(`page [${truncateString(tabInfo.title, 20)}] startTime is null`);
   }
