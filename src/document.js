@@ -8,7 +8,7 @@ import { getTargetWordFromElement } from './word.js';
 import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
 import { getNotes } from './service/noteService.js';
 import { getCurrentSiteOptions } from './current-site-options.js'
-import { mouseUpEventListenerWithParams } from './document/listener.js'
+import { mouseUpEventListenerWithParams, mouseMoveEventListenerWithParams } from './document/listener.js'
 import { createMutationObserver } from './document/mutation-observer.js'
 import { tokenizeTextNode, parseDocument, detokenizeTextNode, parseArticleTextNodes} from './article.js';
 import { getOptionsFromCache } from './service/optionService.js';
@@ -204,7 +204,7 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
   }
     //console.log('resetDocumentAnnotationVisibility end');
   }
-function addDocumentEventListener(page, window, document, options, currentSiteOption) {  
+function addDocumentEventListener(page, window, document, documentConfig, options, currentSiteOption) {  
   gLogger.debug('addDocumentEventListener:' + document.URL);
   let documentInfo = page.getDocumentInfo(document);
   let mouseUpEventListener = documentInfo.mouseUpEventListener;
@@ -218,6 +218,19 @@ function addDocumentEventListener(page, window, document, options, currentSiteOp
 
   gLogger.debug('add mouseup event listener');
   document.addEventListener("mouseup", mouseUpEventListener);
+
+
+  let mouseMoveEventListener = documentInfo.mouseMoveEventListener;
+  if(!mouseMoveEventListener){
+    gLogger.debug('create mouseMoveEventListener');
+    mouseMoveEventListener = function(event) {
+      mouseMoveEventListenerWithParams(event, page, document, documentConfig, options, currentSiteOption);
+    }
+    documentInfo.mouseMoveEventListener = mouseMoveEventListener;
+  }
+  gLogger.debug('add mousemove event listener');
+  document.addEventListener("mousemove", mouseMoveEventListener); 
+  
 
   //top window and iframe windows all need to send event 
   window.onfocus = () => {
@@ -260,6 +273,9 @@ function removeDocumentEventListener(page, document) {
   let mouseUpEventListener = documentInfo.mouseUpEventListener;
   document.removeEventListener("mouseup", mouseUpEventListener);
   
+  gLogger.debug('remove mousemove event listener');
+  let mouseMoveEventListener = documentInfo.mouseMoveEventListener;
+  document.removeEventListener("mousemove", mouseMoveEventListener);
 }
 
 
@@ -315,7 +331,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
         let documentInfo = page.getDocumentInfo(document);
         if(!documentInfo.mouseUpEventListener){
-            addDocumentEventListener(page, window, document, sysOptions, currentSiteOption);
+            addDocumentEventListener(page, window, document, documentConfig, sysOptions, currentSiteOption);
         }else {
             gLogger.debug('already has mouseUpEventListener, skip adding');
         }

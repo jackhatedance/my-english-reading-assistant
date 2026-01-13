@@ -931,10 +931,11 @@ function findSentenceInfo(article, articleOffset) {
     return null;
 }
 
-function findTokenInfoByNode(article, node){
+function findTokenInfoByNode(article, node, characterOffsetOfNode=0){
     let nodeInfo = article.textNodeMap.get(node);
-    let sentenceInfo = findSentenceInfo(article, nodeInfo.offset);
-    let tokenIndexOfSentence = findTokenIndexOfSentence(sentenceInfo, nodeInfo.offset);
+    let offsetOfArticle = nodeInfo.offset + characterOffsetOfNode;
+    let sentenceInfo = findSentenceInfo(article, offsetOfArticle);
+    let tokenIndexOfSentence = findTokenIndexOfSentence(sentenceInfo, offsetOfArticle);
     return { sentenceInfo: sentenceInfo, tokenIndex: tokenIndexOfSentence };
 }
 

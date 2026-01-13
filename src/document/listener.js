@@ -11,6 +11,9 @@ import { showDialog } from '../dialog.js'
 import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveInteractionOption } from '../interaction-utils.js'
 import { getCurrentSiteOptions } from '../current-site-options.js'
 import { isFeatureEnabled, FEATURE_NOTE } from '../feature-toggle.js'
+import { handleTooltipForCaretPosition } from '../tooltip.js'
+
+var gMouseMoveTimer;
 
 async function mouseUpEventListenerWithParams(event, document, options, currentSiteOption, gDocumentArticleMap, siteProfile) {
   //console.log(event);
@@ -148,5 +151,21 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
   }
 }
 
+function mouseStopped(event, page, document, documentConfig, options, siteOptions) {
+  let x = event.clientX;
+  let y = event.clientY;
+  const caretPosition = document.caretPositionFromPoint(x, y);
+  let position = {x, y};
+  
+  handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, position);
+}
 
-export { mouseUpEventListenerWithParams }
+function mouseMoveEventListenerWithParams(event, page, document, documentConfig, options, siteOptions) {
+  
+  clearTimeout(gMouseMoveTimer);
+
+  gMouseMoveTimer = setTimeout(()=> mouseStopped(event, page, document, documentConfig, options, siteOptions), 300);
+
+}
+
+export { mouseUpEventListenerWithParams, mouseMoveEventListenerWithParams }

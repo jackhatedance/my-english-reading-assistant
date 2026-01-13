@@ -8,7 +8,7 @@ import { getTargetWord } from './word.js'
 import { findTokenInfoByNode } from './article.js'
 import { findPhrase } from './phrase.js'
 import { isRegularTransform } from './lemma.js'
-import { resetPageAnnotationVisibilityAndNotify } from './page/page-utils.js'
+import { resetPageAnnotationVisibilityAndNotify, refreshPageAnnotation } from './page/page-utils.js'
 import { isElementDetached } from './html.js'
 import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
 import { getCurrentSiteOptionsFromCache } from './current-site-options.js'
@@ -33,6 +33,7 @@ const clearMarkTips = chrome.i18n.getMessage('sidepanelWordActionClearMark');
 
 var gPage;
 
+var gCursorInTooltip;
 var gTooltipTimeout;
 
 function clearAndSetTooltipTimeout(tooltipTimeout){
@@ -138,6 +139,7 @@ async function onMarkAsKnown(tooltipElement, word) {
   updateWordMarkToogle(tooltipElement, false);
 
   let visible = isPageAnnotationVisible();
+  //mea-token already existed, reset visibility is enough
   resetPageAnnotationVisibilityAndNotify(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);
@@ -149,7 +151,11 @@ async function onMarkAsUnknown(tooltipElement, word) {
   updateWordMarkToogle(tooltipElement, true);
 
   let visible = isPageAnnotationVisible();
-  resetPageAnnotationVisibilityAndNotify(gPage, visible);
+  //resetPageAnnotationVisibilityAndNotify(gPage, visible);
+  
+  //need to create tokens for unknown words
+  //TODO check if token already existed
+  await refreshPageAnnotation(gPage);
 
   sendMessageMarkWordToBackground(wordChanges);
 }
@@ -205,11 +211,13 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   });
 
   definitionTooltipElement.addEventListener('mouseenter', () => {
+    gCursorInTooltip = true;
     //console.log('clearTimeout 1');
     clearTooltipTimeout();
   });
 
   definitionTooltipElement.addEventListener('mouseleave', () => {
+    gCursorInTooltip = false;
     let timeout = setTimeout(() => {
       //console.log('timer 1');
       hideTooltip(definitionTooltipElement); 
@@ -234,31 +242,7 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
       
       let timeout = setTimeout(() => {
         //console.log('timer 2');
-        let query = ele.getAttribute('data-query');
-        
-        let article = page.documentArticleMap.get(document);
-
-        let textNode;
-        if(isBionicHighlightedElement(ele.firstElementChild)){
-          textNode = ele.firstChild.firstChild;
-        }else {
-          textNode = ele.firstChild;
-        }
-        
-        let tokenInfo  = findTokenInfoByNode(article, textNode);
-        let { sentenceInfo, tokenIndex } =  tokenInfo;
-        let token = sentenceInfo.tokens[tokenIndex];
-      
-        let searchResult = searchWord(query, { 
-          allowLemma: true,
-          lookupBase: 'Always',
-          transform: token.transform,
-          dictionaryOptions: buildDictionaryOptions(siteOptions) });
-
-        let phraseSearchResult = getPhraseSearchResult(tokenInfo, searchResult, siteOptions);
-        if(!isElementDetached(ele)){
-          showTooltip(documentConfig, definitionTooltipElement, ele, searchResult, phraseSearchResult, options);
-        }
+        //showTooltipForMeaToken(page, document, documentConfig, options, siteOptions, ele, definitionTooltipElement);
       }, TOOLTIP_DELAY_IN_MILLISECOND); 
       clearAndSetTooltipTimeout(timeout);      
     
@@ -273,6 +257,114 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
       clearAndSetTooltipTimeout(timeout);  
     });
   });
+}
+
+function showTooltipForMeaToken(page, document, documentConfig, options, siteOptions, meaTokenElement, definitionTooltipElement) {
+  let ele = meaTokenElement;      
+
+  let query = ele.getAttribute('data-query');
+        
+  let article = page.documentArticleMap.get(document);
+
+  let textNode;
+  if(isBionicHighlightedElement(ele.firstElementChild)){
+    textNode = ele.firstChild.firstChild;
+  }else {
+    textNode = ele.firstChild;
+  }
+  
+  let tokenInfo  = findTokenInfoByNode(article, textNode, 0);
+  let { sentenceInfo, tokenIndex } =  tokenInfo;
+  let token = sentenceInfo.tokens[tokenIndex];
+
+  let unknown = !ele.classList.contains('mea-hide');
+  let targetRect = ele.getBoundingClientRect();
+
+  if(!isElementDetached(ele)){
+    let searchResult = searchWord(query, { 
+      allowLemma: true,
+      lookupBase: 'Always',
+      transform: token.transform,
+      dictionaryOptions: buildDictionaryOptions(siteOptions) });
+
+    if (searchResult) {
+      let phraseSearchResult = getPhraseSearchResult(tokenInfo, searchResult, siteOptions);
+      if(!isElementDetached(ele)){
+        showTooltip(documentConfig, definitionTooltipElement, targetRect, unknown, searchResult, phraseSearchResult, options);
+      }
+    } else {
+      hideTooltip(definitionTooltipElement);
+    }
+  }
+}
+
+async function handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, position){
+  const definitionTooltipElement = getTooltipElement();
+  //console.log('timer 2');
+  //let query = ele.getAttribute('data-query');
+    
+  const { offsetNode, offset } = caretPosition;
+  
+  if(gCursorInTooltip){
+    return;
+  }
+
+  if(offsetNode.id == 'mea-vue-container'){
+    //in dialog
+    //console.log('in dialog');
+    return;
+  }
+
+  let targetRect = caretPosition.getClientRect();
+
+  // fix issue: cursor is at the end of the last line and caret at the head of current line
+  // cursor and caret cannot be too far
+    
+  let distanceX = Math.abs(targetRect.x - position.x);
+  
+  const MAX_DISTANCE = 20;
+  if(distanceX > MAX_DISTANCE){
+    hideTooltip();
+    return;
+  }
+
+  //console.log(caretPosition);
+  let article = page.documentArticleMap.get(document);
+  let tokenInfo = findTokenInfoByNode(article, offsetNode, offset);
+  const { sentenceInfo, tokenIndex } = tokenInfo;
+  let token = sentenceInfo.tokens[tokenIndex];
+  //console.log(token); 
+
+  let isWord = token.checked && token.checkWordResult.word != '';
+  if(!isWord){
+    return;
+  }
+  
+  let parentElement = offsetNode.parentElement;
+
+  if(isElementDetached(parentElement)){
+    hideTooltip(definitionTooltipElement); 
+    return;
+  }
+
+  let query = token.content;
+  let searchResult = searchWord(query, { 
+  allowLemma: true,
+  lookupBase: 'Always',
+  transform: token.transform,
+  dictionaryOptions: buildDictionaryOptions(siteOptions) });
+
+  if (searchResult) {
+    let targetWord = getTargetWord(searchResult);
+    let knownWords = await loadKnownWords();
+    let unknown = !isKnown(targetWord, knownWords);
+
+    let phraseSearchResult = getPhraseSearchResult(tokenInfo, searchResult, siteOptions);
+    showTooltip(documentConfig, definitionTooltipElement, targetRect, unknown, searchResult, phraseSearchResult, options);
+  } else {
+    hideTooltip(definitionTooltipElement);
+  }
+  
 }
 
 function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
@@ -339,7 +431,7 @@ function getPhraseSearchResult(tokenInfo, wordSearchResult, siteOptions){
   }  
 }
 
-function showTooltip(documentConfig, tooltipElement, targetElement, searchResult, phraseSearchResult, options){
+function showTooltip(documentConfig, tooltipElement, targetRect, unknown, searchResult, phraseSearchResult, options){
   
   let iframeLeft=0;
   let iframeTop=0;
@@ -348,14 +440,12 @@ function showTooltip(documentConfig, tooltipElement, targetElement, searchResult
     iframeLeft = rect.left;
     iframeTop = rect.top;
   }
-  let targetRect = targetElement.getBoundingClientRect();
-  
+
   gLogger.debug(targetRect);
 
   let baseTop = iframeTop + window.scrollY;
   let baseLeft = iframeLeft + window.scrollX;
 
-  let unknown = !targetElement.classList.contains('mea-hide');
   let targetWord = getTargetWord(searchResult);
   
   searchResultToHtml(tooltipElement, searchResult, targetWord, options.pronunciation.region, phraseSearchResult, unknown);
@@ -489,8 +579,11 @@ function moveActions(tooltipElement, top){
 }
 
 function hideTooltip(tooltipElement){
+  if(!tooltipElement){
+    tooltipElement = getTooltipElement();
+  }
   //console.log('hideTooltip');
   tooltipElement.style.visibility = 'hidden';
 }
 
-export { addTooltipEventListener, createTooltip, removeTooltip, showTooltip, hideTooltip }
+export { addTooltipEventListener, createTooltip, removeTooltip, showTooltip, hideTooltip, handleTooltipForCaretPosition }
