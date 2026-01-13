@@ -175,6 +175,8 @@ async function initPageAnnotations(page) {
     }
     */
 
+    page.startProcessingDocument();
+
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
@@ -202,6 +204,8 @@ async function initPageAnnotations(page) {
         }
     }
 
+    page.stopProcessingDocument();
+    
     flushUnrecognizedWords();
     
     //send message to background

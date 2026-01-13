@@ -10,6 +10,10 @@ function createMutationObserver(document, page){
   
   const config = { attributes: false, childList: true, subtree: true };
   const callback = (mutationList, observer) => {
+    if(page.isProcessingDocument()){
+      return;//ignore
+    }
+    
     let domChangesStart = page.domChanges;
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {

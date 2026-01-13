@@ -29,6 +29,9 @@ var page = {
   
   monitoring: false,
 
+  //only one process at a time. no DOM monitor when processing
+  processingDocument: false,
+
   domChanges: 0,
   domChangesMonitored:0,
 
@@ -73,6 +76,20 @@ var page = {
 
     //console.log("documentInfoMap:"+n);
     //console.log(this.documentInfoMap);
+  },
+
+  startProcessingDocument(){
+    this.processingDocument = true;
+    this.domChanges = 0;
+    this.domChangesMonitored = 0;
+  },
+  stopProcessingDocument(){
+    this.processingDocument = false;
+    this.domChanges = 0;
+    this.domChangesMonitored = 0;
+  },
+  isProcessingDocument(){
+    return this.processingDocument;
   }
 };
 
