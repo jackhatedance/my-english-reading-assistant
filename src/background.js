@@ -1,6 +1,6 @@
 'use strict';
 
-import { loadKnownWords, markWordAsKnown, markWordAsUnknown} from './vocabularyStore.js';
+import { loadKnownWords, markWordAsKnown, markWordAsUnknown, calculateKnownWordsCount} from './vocabularyStore.js';
 import {searchWord, isKnown} from './language.js'
 import { getOptions } from './service/optionService.js';
 import { migrateDictionary, migrateAllDictionaries } from './dictionary/customDictionary.js'
@@ -15,6 +15,7 @@ import { collect } from './track/google-analytics.js'
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
 
+var gVocabularyLevel = -1;
 
 initLog();
 
@@ -358,6 +359,27 @@ function setIcon(tabId, active){
   }
 }
 
+async function calcVocabularyLevel(){
+  let vocabulary = await loadKnownWords();
+  let vocabularySize = calculateKnownWordsCount(vocabulary);
+  return Math.floor(vocabularySize / 1000)*1000;    
+}
+
+async function getVocabularyLevel(){
+  if(gVocabularyLevel < 0){
+    gVocabularyLevel = await calcVocabularyLevel(); 
+  }
+
+  return gVocabularyLevel;
+}
+
 async function onTrackEvents(events){
-  await collect(events);
+  const vocabularyLevel = await getVocabularyLevel();
+
+  const userProperties = {
+    "vocabulary_level":{
+      value: vocabularyLevel,
+    }
+  };
+  await collect(userProperties, events);
 }

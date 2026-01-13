@@ -16,13 +16,15 @@ const gLogger = log.getLogger("google-analytics");
  * 
  * @param {*} events 
  */
-async function collect(events){
+async function collect(userProperties, events){
     const clientId = await getOrCreateClientId();
     const sessionId = await getOrCreateSessionId();
 
     for(const event of events){
         event.params.session_id = sessionId;
         event.params.engagement_time_msec = DEFAULT_ENGAGEMENT_TIME_IN_MSEC;
+
+        //event.params.debug_mode = true;
     }
 
     let lastErrorTime = await getLastErrorTimeOfGoogleAnalytics();
@@ -42,6 +44,7 @@ async function collect(events){
                     method: 'POST',
                     body: JSON.stringify({
                         client_id: clientId,
+                        user_properties: userProperties,
                         events: events,
                     }),
                 }
