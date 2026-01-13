@@ -8,10 +8,12 @@ function traverseNode(node, visitor) {
     }
     
     if(node.childNodes){
-       for (var i = 0; i < node.childNodes.length; i++) {
-            let childNode = node.childNodes[i];
-            traverseNode(childNode, visitor);
-        }
+       //copy children, in case children were modified during traverse
+      var children = Array.from(node.childNodes);
+      for (var i = 0; i < children.length; i++) {
+          let childNode = children[i];
+          traverseNode(childNode, visitor);
+      }
     }
 }
 
