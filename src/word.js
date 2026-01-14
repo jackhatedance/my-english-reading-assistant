@@ -92,7 +92,7 @@ function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumb
     let formatted = format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber, bionicOptions);
     //console.log('formatted:'+formatted);
 
-    return formatted;
+    return { targetWord: targetWord, outerHTML: formatted };
 }
 
 function updateWordAnnotation(textElement, searchResult, showAnnotation, simplifyDefinitionOptions, pronunciationRegion){

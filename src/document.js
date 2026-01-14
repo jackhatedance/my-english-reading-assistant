@@ -279,7 +279,7 @@ function removeDocumentEventListener(page, document) {
 }
 
 
-async function preprocessDocument(page, document, isIframe, siteProfile, documentConfig) {
+async function preprocessDocument(page, document, isIframe, siteProfile, documentConfig, knownWords) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -325,7 +325,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
-        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile);
+        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){

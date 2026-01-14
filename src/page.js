@@ -1,5 +1,6 @@
 'use strict';
 
+import { loadKnownWords } from './vocabularyStore.js';
 import { initializeCustomDictionaryService } from './dictionary/customDictionary.js';
 import { getAllDocuments, isDocumentAnnotationInitialized, resetDocumentAnnotationVisibility } from './document.js';
 import { initializeOptionService, getOptionsFromCache } from './service/optionService.js';
@@ -168,19 +169,18 @@ async function initPageAnnotations(page) {
     await initializeServiceOnlyOnce(siteProfile);
 
     let newDocumentArticleMap = new Map();
-    /*
-    knownWords = await loadKnownWords();
+    
+    var knownWords = await loadKnownWords();
     if (!knownWords) {
         knownWords = [];
     }
-    */
 
     page.startProcessingDocument();
 
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(page, document, false, siteProfile, documentConfig);
+        let article = await preprocessDocument(page, document, false, siteProfile, documentConfig, knownWords);
         newDocumentArticleMap.set(document, article);
     } else {
         let article = documentArticleMap.get(document);
@@ -194,7 +194,7 @@ async function initPageAnnotations(page) {
         if (iframeDocument) {
             if (!isDocumentAnnotationInitialized(iframeDocument)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(page, iframeDocument, true, siteProfile, iframeDocumentConfig);
+                let article = await preprocessDocument(page, iframeDocument, true, siteProfile, iframeDocumentConfig, knownWords);
                 
                 newDocumentArticleMap.set(iframeDocument, article);
             }else {

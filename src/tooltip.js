@@ -150,12 +150,14 @@ async function onMarkAsUnknown(tooltipElement, word) {
   let wordChanges = await markWordAsUnknown(targetWord);
   updateWordMarkToogle(tooltipElement, true);
 
-  let visible = isPageAnnotationVisible();
+  //let visible = isPageAnnotationVisible();
+  //always true in this scene
+  let visible = true;
   //resetPageAnnotationVisibilityAndNotify(gPage, visible);
   
   //need to create tokens for unknown words
   //TODO check if token already existed
-  await refreshPageAnnotation(gPage);
+  await refreshPageAnnotation(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);
 }

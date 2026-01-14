@@ -7,8 +7,8 @@ import { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnot
 import { getSegmentOffset } from './segment.js';
 import { getParagraphContentHash, getParagraphSegmentOffsets, getParagraphInstanceSelectionFromParagraphHashSelection, getArticleSelectionFromParagraphInstanceSelection, getSelectedTextOfNoteOfParagraph, getParagraphInstanceSelectionFromArticleSelection } from './paragraph.js';
 import { generateMiddleSetenceNumbers, getSentenceContentHash, getSentenceOffset, getSentenceIds, sentenceHashPositionToInstancePosition, getSentenceSegmentOffsets } from './sentence.js';
-import { searchWord, buildDictionaryOptions } from './language.js';
-import { TEXT_TAG } from './html.js';
+import { searchWord, buildDictionaryOptions, isKnown } from './language.js';
+import { TEXT_TAG, TOKEN_TAG } from './html.js';
 import { getSimplifyDefinitionOptions } from './service/site-option-service.js';
 import { trimPunctuations } from './text/textUtils.js';
 import { deleteUnrecognizedWord } from './service/dictionaryService.js';
@@ -22,12 +22,13 @@ const gLogger = log.getLogger('article');
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document, article, options, siteOptions, siteProfile) {
+function tokenizeTextNode(document, article, options, siteOptions, siteProfile, knownWords, partialTokenization=false) {
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
     
     var tokenCount = 0;
+    var tokenNodeCount = 0;
 
     for(const nodeInfo of article.originalTextNodes){
         const { node, offset, length, nodeContent } = nodeInfo;
@@ -84,9 +85,9 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile) 
             //let tokens = tokenizeNodeText((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), textContent);
             //console.log(siteOptions);
 
-            let tokenHtmls = [];
+            let tokenParts = [];
             for (let token of tokens) {
-                let tokenHtml;
+                let tokenPart;
                 
                 let query = token.content; 
                 //console.log('before trim punctuation:'+query);
@@ -102,44 +103,123 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile) 
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWord = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
+                    let annotatedWordResult = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
+                    const { targetWord, outerHTML} = annotatedWordResult;
+                        
+                    if(partialTokenization && targetWord != '' && isKnown(targetWord, knownWords)){	
+                        tokenPart = { type: 'text', content:token.originalContent };
+                    } else {
+                        tokenPart = { type: 'token', content: outerHTML };
+                        tokenNodeCount++;
+                    }
                     //console.log(x+'-> '+ annotatedWord);
                     //gTokenNumber++;
-                    tokenHtml = annotatedWord;
+                    
                 } else {
                     //console.log('search failed');
-                    let annotated = annotateNonword(token.originalContent, '', '', 0);
+                    if(partialTokenization){
+                        tokenPart = { type: 'text', content:token.originalContent };
+                    } else {
+                        let annotated = annotateNonword(token.originalContent, '', '', 0);
+                        tokenPart = { type: 'token', content: annotated };
+                        tokenNodeCount++;
+                    }
+                    
                     //gTokenNumber++;
-                    tokenHtml = annotated;
-
                     //return `<span class="mea-container mea-no-word" data-sentence-id="${sentenceId}" data-sentence-number="${sentenceNumber}">${x}</span>`;
                 }
                 //let tokenHtml = `<span class="mea-container mea-token">${token.content}</span>`;
-                tokenHtmls.push(tokenHtml);
+                tokenParts.push(tokenPart);
 
                 tokenCount ++;
             }
+            /*
             let tokensHtml = tokenHtmls.join('');
             let textTag = document.createElement(TEXT_TAG);
             textTag.classList.add('mea-element');
             textTag.classList.add('mea-text-node');
-            
+            */
             /** TODO?
              let unescapedTextContent = textContent.replace(/\u00a0/g, "&nbsp;")
                 .replace(/&/g, "&amp;");
              */
+            /*
             textTag.innerHTML = tokensHtml;
             node.parentNode.replaceChild(textTag, node);
+            */
+
+
+            //merge adjacent text nodes
+            let mergedTokenParts = [];
+            let mergedTokenPartIndex = -1;
+            let lastTokenPart;
+            for(var tokenPart of tokenParts){
+                
+                if(tokenPart.type =='text'){
+                    
+                    if(lastTokenPart?.type =='text'){//merge
+                        let mergedTokenPart = mergedTokenParts[mergedTokenPartIndex];
+                        mergedTokenPart.content += tokenPart.content;
+                    }else{
+                        mergedTokenPartIndex++;
+                        mergedTokenParts[mergedTokenPartIndex] = { type: 'text', content:tokenPart.content};
+                    }
+                }else{
+                    mergedTokenPartIndex++;
+                    mergedTokenParts[mergedTokenPartIndex] = { type: 'token', content: tokenPart.content};
+                }
+
+                lastTokenPart = tokenPart;
+            }
+
+            const parentElement = node.parentElement;
+            const nextSibling = node.nextSibling;
+            parentElement.removeChild(node);
+            for(const tokenPart of mergedTokenParts){
+                if (nextSibling) {
+
+                    let newNode = createTokenNode(document, tokenPart);
+                    parentElement.insertBefore(newNode, nextSibling);
+                    updateMeaTokenOutHTML(newNode, tokenPart);
+                } else {
+                    let newNode = createTokenNode(document, tokenPart);
+                    parentElement.appendChild(newNode);
+                    updateMeaTokenOutHTML(newNode, tokenPart);
+                }
+            }
         }
     }
 
     delete article.originalTextNodes;
 
-    gLogger.info(`${tokenCount} tokens generated`);
+    gLogger.info(`${tokenNodeCount}/${tokenCount} nodes/tokens generated`);
+}
+
+function createTokenNode(document, tokenPart){
+    const {type, content} = tokenPart;
+    if(type=='text'){
+        const node = document.createTextNode(content);
+        return node;
+    }else{
+        let element = document.createElement('mea-token');
+        
+        return element;
+    }
+}
+
+//TODO maybe use updateAnnotation method is better
+function updateMeaTokenOutHTML(element, tokenPart){
+    if(tokenPart.type=='token'){
+        element.outerHTML = tokenPart.content;
+    }
 }
 
 function detokenizeTextNode(document) {
    document.querySelectorAll(TEXT_TAG).forEach((element) => {
+        let textContent = element.textContent;
+        element.outerHTML = textContent;
+   });
+   document.querySelectorAll(TOKEN_TAG).forEach((element) => {
         let textContent = element.textContent;
         element.outerHTML = textContent;
    });

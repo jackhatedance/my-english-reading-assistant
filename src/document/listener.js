@@ -1,10 +1,10 @@
 import { loadKnownWords } from '../vocabularyStore.js';
 import { isKnown, searchWord, buildDictionaryOptions } from '../language.js';
 import { searchNote, getNotes } from '../service/noteService.js';
-import { getTargetWordFromElement, getQueryFromElement} from '../word.js';
+import { getTargetWordFromElement, getQueryFromElement, getTargetWord} from '../word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from '../sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from '../paragraph.js';
-import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findArticleNotes } from '../article.js';
+import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findArticleNotes, findTokenInfoByNode } from '../article.js';
 import { MenuItems } from '../menu.js';
 import { sendMessageToEmbeddedApp } from '../embed/iframe-embed.js';
 import { showDialog } from '../dialog.js' 
@@ -76,14 +76,21 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
     if (isSelectionCollapsed && clickWordEnabled) {
 
       //1. mark the word
-      let targetElement = event.target;
-      let highlightElement = targetElement.closest('.mea-word');
-      if(highlightElement){//find word
-        let query = getQueryFromElement(highlightElement);
+      let query;
+
+      //query = getQueryFromMeaToken(event);
+      query = getQueryFromCaretPosition(article, event);
+      
+      if(query){//find word
         let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
+
+        if(!searchResult){
+          return;
+        }
+
         dictionaryName = searchResult?.lookupResult?.dictionaryName;
 
-        word = getTargetWordFromElement(highlightElement);
+        word = getTargetWord(searchResult);
 
         let knownWords = await loadKnownWords();
         if(isKnown(word, knownWords)){
@@ -149,6 +156,39 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       
     }
   }
+}
+
+//old method
+function getQueryFromMeaToken(event){
+  let query;
+
+  let targetElement = event.target;
+  let highlightElement = targetElement.closest('.mea-word');
+  if(highlightElement){//find word
+    query = getQueryFromElement(highlightElement);
+  }
+
+  return query;
+}
+
+function getQueryFromCaretPosition(article, event){
+  let query;
+  
+  let x = event.clientX;
+  let y = event.clientY;
+  const caretPosition = document.caretPositionFromPoint(x, y);
+
+  const { offsetNode, offset } = caretPosition;
+  let tokenInfo = findTokenInfoByNode(article, offsetNode, offset);
+  const { sentenceInfo, tokenIndex } = tokenInfo;
+  let token = sentenceInfo.tokens[tokenIndex];
+
+  let isWord = token.checked && token.checkWordResult.word != '';
+  if(isWord){
+    query = token.content;  
+  }
+  
+  return query;
 }
 
 function mouseStopped(event, page, document, documentConfig, options, siteOptions) {
