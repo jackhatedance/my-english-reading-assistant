@@ -326,8 +326,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
-        let bIsPartialTokenizationEnabled = isPartialTokenizationEnabled(sysOptions.partialTokenization.mode, currentSiteOption.partialTokenization.mode, article.textContentLength, sysOptions.advanced.partialTokenizationContentLengthMin);
-        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords, bIsPartialTokenizationEnabled);
+        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
