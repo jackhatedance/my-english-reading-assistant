@@ -304,18 +304,15 @@ function parseDocument(document, options, siteOptions, skip = false) {
 
 function collectNodePositions(node, tags, collection){
     
-    if(tags.includes(node.nodeName) && collection.content.length >0){
-            
-        collection.pos += collection.content.length;
-        collection.content = '';
-        
-        if(collection.pos > 0){
+    if(tags.includes(node.nodeName)){
+        if(collection.pos > collection.lastPos){
             collection.positions.push(collection.pos);
+            collection.lastPos = collection.pos;
         }
     }
 
     if (node.nodeName === '#text') {
-        collection.content += node.textContent;
+        collection.pos += node.textContent.length;
     }
 }
 
@@ -445,12 +442,14 @@ function snapshot(document, article){
     let newLinePositionCollection = {
         positions: [],
         pos: 0,
+        lastPos: 0,
         content: ''
     };
 
     let newWordPositionCollection = {
         positions: [],
         pos: 0,
+        lastPos: 0,
         content: ''
     };
 
