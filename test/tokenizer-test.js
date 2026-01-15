@@ -16,7 +16,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Hello, world!", 0);
+      }, "Hello, world!", false, 0);
       //console.log(tokens);
       //assert(tokens.length === 2,"test");
       assert.equal(tokens.length, 3);
@@ -39,7 +39,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Hello, wor-ld", 0 , { newLinePositions: [11] });
+      }, "Hello, wor-ld", false, 0 , { newLinePositions: [11] });
       
       
       assert.equal(tokens.length, 3);
@@ -62,7 +62,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Hello, wor-ld", 0);
+      }, "Hello, wor-ld", false, 0);
       
       
       assert.equal(tokens.length, 3);
@@ -85,7 +85,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "good-bye, world!", 0 , { newLinePositions: [5] });
+      }, "good-bye, world!", false, 0, { newLinePositions: [5] });
       
       
       assert.equal(tokens.length, 3);
@@ -108,7 +108,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "national-secu-rity", 0 , { newLinePositions: [14] });
+      }, "national-secu-rity", false, 0, { newLinePositions: [14] });
       
       
       assert.equal(tokens.length, 3);
@@ -130,7 +130,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "his son-in-law", 0 , { newLinePositions: [11] });
+      }, "his son-in-law", false, 0, { newLinePositions: [11] });
       
       
       assert.equal(tokens.length, 3);
@@ -152,7 +152,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "public-in-formation", 0 , { newLinePositions: [10] });
+      }, "public-in-formation", false, 0, { newLinePositions: [10] });
       
       
       assert.equal(tokens.length, 3);
@@ -176,7 +176,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "lo-cal", 0 , { newLinePositions: [3] });
+      }, "lo-cal", false, 0, { newLinePositions: [3] });
       
       
       assert.equal(tokens.length, 1);
@@ -196,7 +196,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "think of.", 0 , { });
+      }, "think of.", false, 0, { });
       
       
       assert.equal(tokens.length, 3);
@@ -220,7 +220,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "think of. any", 0 , { });
+      }, "think of. any", false, 0, { });
       
       
       assert.equal(tokens.length, 5);
@@ -244,7 +244,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, '“You told him that you told me.”\n', 0 , { });
+      }, '“You told him that you told me.”\n', false, 0, { });
       
       
       assert.equal(tokens.length, 14);
@@ -266,7 +266,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "HelloWorld", 0);
+      }, "HelloWorld", false, 0);
       
       
       assert.equal(tokens.length, 2);
@@ -288,7 +288,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "GetID,", 0);
+      }, "GetID,", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -311,7 +311,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "DuPont,", 0);
+      }, "DuPont,", false, 0);
       
       
       assert.equal(tokens.length, 2);
@@ -333,7 +333,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "TikTok", 0);
+      }, "TikTok", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -354,7 +354,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Yes/No", 0);
+      }, "Yes/No", false, 0);
       
       
       assert.equal(tokens.length, 3);
@@ -377,7 +377,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Rus-sia's", 0 , { newLinePositions: [4] });
+      }, "Rus-sia's", false, 0, { newLinePositions: [4] });
       
       
       assert.equal(tokens.length, 1);
@@ -399,7 +399,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "he's", 0);
+      }, "he's", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -420,7 +420,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "he'll", 0);
+      }, "he'll", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -441,7 +441,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "Hello, Buendía.", 0);
+      }, "Hello, Buendía.", false, 0);
       
       
       assert.equal(tokens.length, 3);
@@ -463,7 +463,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "C¸atal Hu¨yu¨k, Çatalhöyük", 0);
+      }, "C¸atal Hu¨yu¨k, Çatalhöyük", false, 0);
       
       
       assert.equal(tokens.length, 5);
@@ -488,7 +488,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "CEOs", 0);
+      }, "CEOs", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -508,7 +508,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "D.C.", 0);
+      }, "D.C.", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -528,7 +528,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "U.S.-designated", 0);
+      }, "U.S.-designated", false, 0);
       
       
       assert.equal(tokens.length, 3);
@@ -551,7 +551,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, "’The", 0);
+      }, "’The", false, 0);
       
       
       assert.equal(tokens.length, 1);
@@ -571,7 +571,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, 'boyat', 0, { newWordPositions:[3]});
+      }, 'boyat', false, 0, { newWordPositions:[3]});
       
       
       assert.equal(tokens.length, 2);
@@ -591,7 +591,7 @@ describe('tokenizer', function () {
         }else {
           return null;
         }
-      }, 'spin-offs.[7]', 0, { newWordPositions:[10]});
+      }, 'spin-offs.[7]', false, 0, { newWordPositions:[10]});
       
       
       assert.equal(tokens.length, 4);
@@ -613,7 +613,7 @@ describe('tokenizer', function () {
       }else {
         return null;
       }
-    }, '“tower.”1', 0, { newWordPositions:[8]});
+    }, '“tower.”1', false, 0, { newWordPositions:[8]});
     
     
     assert.equal(tokens.length, 2);
@@ -633,7 +633,7 @@ describe('tokenizer', function () {
       }else {
         return null;
       }
-    }, '“crows.”', 0, { newWordPositions:[8]});
+    }, '“crows.”', false, 0, { newWordPositions:[8]});
     
     
     assert.equal(tokens.length, 1);

@@ -17,6 +17,9 @@ import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
 import { getMeaTokenElement, getFirstTextNode } from './token.js'
 
 const gLogger = log.getLogger('article');
+
+const CONTENT_TYPE_NORMAL = 'normal';
+const CONTENT_TYPE_NO_PARSE = 'noParse';
 /**
  * split text node to words, wrapped by span.
  * in order to show unknown word definition
@@ -192,7 +195,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
 
     delete article.originalTextNodes;
 
-    gLogger.info(`${tokenNodeCount}/${tokenCount} nodes/tokens generated`);
+    gLogger.info(`${tokenNodeCount}/${tokenCount} DOM nodes/tokens generated`);
 }
 
 function createTokenNode(document, tokenPart){
@@ -286,7 +289,20 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //let lines = getParagraphLines2(document.body);
         
         snapshot(document, article);
-        let lines = breakString(article.textContent, '\n');
+
+        let blocks = splitByNoParseBlocks(article.textContent, article.newTagPositions.noParseRangeCollection);
+        let lines = [];
+        for(const block of blocks){
+            if(block.type == CONTENT_TYPE_NO_PARSE){
+                lines.push(block);
+            } else {
+                let blockLines = breakString(block.content, '\n');
+                for(const blockLine of blockLines){
+                    lines.push({ type: CONTENT_TYPE_NORMAL, content: blockLine});
+                }
+            }
+        }
+        
         let newTagPositions = article.newTagPositions;
         //console.log('newTagPositions');
         //parse paragraph, token
@@ -298,9 +314,56 @@ function parseDocument(document, options, siteOptions, skip = false) {
         article.document = document;        
     }
 
+    gLogger.info(`${article.tokens.length} article tokens generated`);
+
     return article;
 }
 
+function splitByNoParseBlocks(content, noParseRangeCollection){
+    let blocks = [];
+
+    let lastOffset = 0;
+    let lastRange;
+    for(const range of noParseRangeCollection.ranges){
+        if(range.offset > lastOffset){
+            let blockContent = content.substring(lastOffset, range.offset);
+            let block = { type: CONTENT_TYPE_NORMAL, content: blockContent};
+            blocks.push(block);
+        }
+
+        let endOffset = range.offset + range.length;
+        let blockContent = content.substring(range.offset, endOffset);
+        let block = { type: CONTENT_TYPE_NO_PARSE, content: blockContent};
+        blocks.push(block);
+
+        lastOffset = endOffset;
+        lastRange = range;
+    }
+
+    if(lastOffset<content.length){
+        let blockContent = content.substring(lastOffset);
+        let block = { type: CONTENT_TYPE_NORMAL, content: blockContent};
+        blocks.push(block);
+    }
+
+    return blocks;
+}
+
+function collectNodeRanges(node, tags, collection){
+    
+    if(tags.includes(node.nodeName)){
+        let contentLength = node.textContent.length;
+        if(collection.pos > collection.lastPos && contentLength > 0){
+            let range = { offset: collection.pos, length: contentLength};
+            collection.ranges.push(range);
+            collection.lastPos = collection.pos;
+        }
+    }
+
+    if (node.nodeName === '#text') {
+        collection.pos += node.textContent.length;
+    }
+}
 
 function collectNodePositions(node, tags, collection){
     
@@ -321,11 +384,12 @@ function parseArticleTextContent(siteOptions, article, lines, newTagPositions){
     let offset =0;
     var paragraphNumber = 0;
     for(let line of lines){
+        let lineContentLength = line.content.length;
 
         let paragraphInfo ={
-            content : line,
+            content : line.content,
             offset: offset,
-            length: line.length,
+            length: lineContentLength,
             paragraphNumber : paragraphNumber,
             sentences: [],
         };
@@ -333,7 +397,7 @@ function parseArticleTextContent(siteOptions, article, lines, newTagPositions){
         parseParagraphContent(siteOptions, article, paragraphInfo, line, newTagPositions);
         addParagraph(article, paragraphInfo);
 
-        offset += line.length;
+        offset += lineContentLength;
         paragraphNumber++;
     }
     article.length = offset;
@@ -362,7 +426,9 @@ function extractIsbn(content) {
     */
 }
 
-function parseParagraphContent(siteOptions, article, paragraphInfo, content, newTagPositions){
+function parseParagraphContent(siteOptions, article, paragraphInfo, line, newTagPositions){
+    let content = line.content;
+
     //search isbn
     let isbns = extractIsbn(content);
     if(isbns){
@@ -374,7 +440,16 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
     //console.log('paragraph:'+content);
     let paragraphStartOffsetOfArticle = paragraphInfo.offset;
-    let sentences = split(content);
+    let sentences;
+    let noParse = line.type == CONTENT_TYPE_NO_PARSE;
+    if(noParse){
+        sentences = [{
+            range:[0, content.length],
+            raw: content,
+        }];
+    } else {
+        sentences = split(content);
+    }
 
     for (let sentence of sentences) {
              
@@ -386,7 +461,7 @@ function parseParagraphContent(siteOptions, article, paragraphInfo, content, new
 
         let sentenceId = getSentenceContentHash(sentence.raw);
 
-        let tokens = tokenizeSentence((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), sentence.raw, offsetOfArticle, newTagPositions);
+        let tokens = tokenizeSentence((text, lookupBase='Never')=>checkWord(siteOptions, text, lookupBase), sentence.raw, noParse, offsetOfArticle, newTagPositions);
 
         let sentenceInfo = {
             content: sentence.raw,
@@ -436,6 +511,14 @@ function snapshot(document, article){
     var textContents = [];
     let offset = 0;
 
+    const NO_PARSE_ELEMENTS = ['SCRIPT', 'NOSCRIPT', 'STYLE', 'SVG'];
+
+    let noParseRangeCollection = {
+        ranges: [],
+        pos: 0,
+        lastPos: -1,
+    };
+
     const NEW_LINE_ELEMENTS = ['DIV', 'P', 'BR'];
     const NEW_WORD_ELEMENTS = ['SUP'];
     
@@ -443,17 +526,17 @@ function snapshot(document, article){
         positions: [],
         pos: 0,
         lastPos: 0,
-        content: ''
     };
 
     let newWordPositionCollection = {
         positions: [],
         pos: 0,
         lastPos: 0,
-        content: ''
     };
 
     traverseNode(document.body, (node) => {
+        collectNodeRanges(node, NO_PARSE_ELEMENTS, noParseRangeCollection);
+
         collectNodePositions(node, NEW_LINE_ELEMENTS, newLinePositionCollection);
         collectNodePositions(node, NEW_WORD_ELEMENTS, newWordPositionCollection);
 
@@ -484,9 +567,11 @@ function snapshot(document, article){
     article.textContentLength = textContent.length;
 
     article.newTagPositions = {
-            newLinePositions: newLinePositionCollection.positions,
-            newWordPositions: newWordPositionCollection.positions,
-        };
+        noParseRangeCollection: noParseRangeCollection,
+        
+        newLinePositions: newLinePositionCollection.positions,
+        newWordPositions: newWordPositionCollection.positions,
+    };
     
 }
 

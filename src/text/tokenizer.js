@@ -6,21 +6,37 @@ import { lemmatizeVerb } from '../lemma.js'
 //import posTagger from 'wink-pos-tagger'
 
 
-function tokenizeSentence(checkWord, sentence, offsetOfArticle, newTagPositions = { }) {
+function tokenizeSentence(checkWord, sentence, noParse, offsetOfArticle, newTagPositions = { }) {
     /*
     var tagger = posTagger();
     let tags = tagger.tagSentence(sentence);
     console.log(tags);
     */
-   
+    let sentenceLength = sentence.length;
+    let parts;
+    if(noParse){
+        let mask = createBlankMask(sentence);
+        let part = {
+            originalContent: sentence,
+            mask: mask,
+            content: sentence,
+            checkWordResult: null,
+            checked: false,
+            //relative to sentence
+            offset: 0,
+            length: sentenceLength,
+        };
+
+        parts = [part];
+    } else {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-    let parts = _splitTextByRegex(sentence, regexp, 0, null, null);
+    parts = _splitTextByRegex(sentence, regexp, 0, null, null);
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
     parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
     parts = splitWords(checkWord, parts);
-
+    }
     //----end of split
 
     //add sentence position info
