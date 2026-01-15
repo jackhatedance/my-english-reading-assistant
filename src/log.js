@@ -31,6 +31,7 @@ const LOGGER_NAMES = [
   'dictionary',
   'custom-dictionary',
   'google-analytics',
+  'partial-tokenization',
 ];
 
 function initLog(){

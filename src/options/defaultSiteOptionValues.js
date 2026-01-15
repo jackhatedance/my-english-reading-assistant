@@ -19,7 +19,7 @@ function createFactoryDefaultSiteOptions(){
             interlaced: false,
             width: 5,
             
-            lineHeight: 1.2,
+            lineHeight: 1,
             maxMeaningNumber: 3,
             hideWordClass: false,
         },
@@ -52,6 +52,9 @@ function createFactoryDefaultSiteOptions(){
             hoverWord: null,
             selectText: null,
         },
+        partialTokenization:{
+            mode: '',
+        },
         notes:{
             enabled: false,
         }
@@ -82,6 +85,7 @@ function patchAll(options) {
     patch_v_1_9_0(options);
     patch_v_1_10_0(options);
     patch_v_1_13_0(options);
+    patch_v_1_17_0(options);
 }
 
 function patch_v_1_3_0(options){
@@ -229,6 +233,16 @@ function patch_v_1_13_0(options){
         delete options.siteCategory;
     }
     
+}
+
+function patch_v_1_17_0(options){
+
+    if(options.partialTokenization == null){
+        options.partialTokenization = {
+            mode: ''
+        };
+    }
+
 }
 
 function string2Number(str){

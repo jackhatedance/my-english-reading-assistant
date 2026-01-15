@@ -161,6 +161,13 @@
         "message":"Effective only when notes are enabled"
     },
 
+    "popup_site_partial_tokenization_label":{
+        "message":"Fast tokenization"
+    },
+    "popup_site_partial_tokenization_tip":{
+        "message":"useful for very large pages"
+    },
+
     "popup_site_category_Label":{
         "message":"Site category"
     },
@@ -415,6 +422,9 @@
     "options_advanced_max_meaning_number_max_label":{
         "message":"max meaning number max value"
     },
+    "options_advanced_partial_tokenization_start_length_label":{
+        "message":"fast tokenization content length min value"
+    },
 
     "options_advanced_log_label":{
         "message":"Log"
@@ -583,6 +593,22 @@
 
     "options_section_site_title":{
         "message":"Site"
+    },
+
+    "options_site_partial_tokenization_label":{
+        "message":"Fast tokenization"
+    },
+    "options_site_partial_tokenization_mode_label":{
+        "message":"Default partial tokenization mode"
+    },
+    "options_site_partial_tokenization_mode_auto":{
+        "message":"auto"
+    },
+    "options_site_partial_tokenization_mode_on":{
+        "message":"on"
+    },
+    "options_site_partial_tokenization_mode_off":{
+        "message":"off"
     },
 
     "options_section_book_title":{

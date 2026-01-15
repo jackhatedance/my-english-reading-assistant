@@ -161,6 +161,13 @@
         "message":"仅在启用笔记时有效"
     },
 
+    "popup_site_partial_tokenization_label":{
+        "message":"快速解析"
+    },
+    "popup_site_partial_tokenization_tip":{
+        "message":"对大网页有用"
+    },
+
     "popup_site_category_Label":{
         "message":"站点类别"
     },
@@ -414,6 +421,9 @@
     "options_advanced_max_meaning_number_max_label":{
         "message":"最大词义数量最大值"
     },
+    "options_advanced_partial_tokenization_start_length_label":{
+        "message":"快速解析内容长度最小值"
+    },
 
     "options_advanced_log_label":{
         "message":"日志"
@@ -582,6 +592,22 @@
 
     "options_section_site_title":{
         "message":"网站"
+    },
+    
+    "options_site_partial_tokenization_label":{
+        "message":"快速解析"
+    },
+    "options_site_partial_tokenization_mode_label":{
+        "message":"默认快速解析模式"
+    },
+    "options_site_partial_tokenization_mode_auto":{
+        "message":"自动"
+    },
+    "options_site_partial_tokenization_mode_on":{
+        "message":"开"
+    },
+    "options_site_partial_tokenization_mode_off":{
+        "message":"关"
     },
 
     "options_section_book_title":{

@@ -1,5 +1,8 @@
 'use strict';
 import { SWITCH_MODE_OPTION_OFF } from '../switch-mode.js'
+import { PARTIAL_TOKENIZATION_MODE_AUTO } from '../partial-tokenization-mode.js'
+
+const PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN = 50000;
 
 function createDefaultOptions(){
     return {
@@ -24,6 +27,9 @@ function createDefaultOptions(){
             hoverWord: true,
             selectText: true
         },
+        partialTokenization:{
+            mode: PARTIAL_TOKENIZATION_MODE_AUTO,
+        },
         advanced:{
             primaryAnnotationPositionMin: -0.2,
             primaryAnnotationPositionMax: 0.5,
@@ -31,6 +37,7 @@ function createDefaultOptions(){
             secondaryAnnotationPositionMax: -0.8,
             textFontSizeMax: 28,
             maxMeaningNumberMax: 20,
+            partialTokenizationContentLengthMin: PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN,
 
             debugLoggers: [],
         },
@@ -61,6 +68,7 @@ function patchAll(options) {
     patch_v_1_4_0(options);
     patch_v_1_11_0(options);
     patch_v_1_12_0(options);
+    patch_v_1_17_0(options);
 }
 
 function earlyPatch(options){
@@ -170,6 +178,10 @@ function patch_v_1_11_0(options){
         advancedOptions.textFontSizeMax = 28;
     }
 
+    if(!advancedOptions.hasOwnProperty('partialTokenizationContentLengthMin')){
+        advancedOptions.partialTokenizationContentLengthMin = PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN;
+    }
+
     if(!advancedOptions.hasOwnProperty('maxMeaningNumberMax')){
         advancedOptions.maxMeaningNumberMax = 20;
     }
@@ -205,6 +217,18 @@ function patch_v_1_12_0(options){
         };
     }
 
+}
+
+function patch_v_1_17_0(options){
+    
+    if(!options.hasOwnProperty('partialTokenization')){
+        options.partialTokenization = {};
+    }
+
+    let partialTokenizationOptions = options.partialTokenization;
+    if(!partialTokenizationOptions.hasOwnProperty('mode')){
+        partialTokenizationOptions.mode = PARTIAL_TOKENIZATION_MODE_AUTO;
+    }
 }
 
 export { createDefaultOptions, patchDefaultOptionValues };

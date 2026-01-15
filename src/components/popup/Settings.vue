@@ -131,6 +131,16 @@ provide('hoverWord', hoverWord);
 const selectText = ref(true);
 provide('selectText', selectText);
 
+const partialTokenizationMode = ref('');
+provide('partialTokenizationMode', partialTokenizationMode);
+function getPartialTokenizationModeValue(){
+  return convertUnsetToValue(partialTokenizationMode.value, '');
+}
+
+function setPartialTokenizationModeValue(value){
+  partialTokenizationMode.value = convertValueToUnset(value, '');
+}
+
 const siteCategory = ref('text');
 provide('siteCategory', siteCategory);
 
@@ -238,7 +248,10 @@ function buildOptions(){
       clickWord: getValueByOption(clickWord.value, trueFalseNullDict),
       hoverWord: getValueByOption(hoverWord.value, trueFalseNullDict),
       selectText: getValueByOption(selectText.value, trueFalseNullDict),
-    }, 
+    },
+    partialTokenization:{
+      mode: getPartialTokenizationModeValue(partialTokenizationMode.value)
+    },
     notes: {
       enabled: notesEnabled.value,
     }
@@ -426,6 +439,8 @@ function updateViewModel(siteOptions, settingsOnly = false){
   clickWord.value =  getOptionByValue(interactionOptions.clickWord, trueFalseNullDict);
   hoverWord.value =  getOptionByValue(interactionOptions.hoverWord, trueFalseNullDict);
   selectText.value =  getOptionByValue(interactionOptions.selectText, trueFalseNullDict);
+
+  setPartialTokenizationModeValue(siteOptions.partialTokenization.mode);
 
   let notesOptions = siteOptions.notes;
   notesEnabled.value = notesOptions.enabled;

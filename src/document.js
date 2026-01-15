@@ -26,6 +26,7 @@ import { sendMessageToBackground } from './message.js'
 import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_ADD_DOCUMENT_EVENT_LISTENER, STEP_PARSE_DOCUMENT, STEP_ADD_WORD_LISTENER } from './document/process.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 import { isFeatureEnabled, FEATURE_NOTE } from './feature-toggle.js'
+import { isPartialTokenizationEnabled } from './partial-tokenization-mode.js'
 
 var knownWords;
 
@@ -325,7 +326,8 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
-        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords);
+        let bIsPartialTokenizationEnabled = isPartialTokenizationEnabled(sysOptions.partialTokenization.mode, currentSiteOption.partialTokenization.mode, article.textContentLength, sysOptions.advanced.partialTokenizationContentLengthMin);
+        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords, bIsPartialTokenizationEnabled);
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){

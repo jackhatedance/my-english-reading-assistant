@@ -6,8 +6,11 @@ import { ElSwitch } from 'element-plus'
 import 'element-plus/es/components/switch/style/css'
 import { SELECT_OPTION_UNSET } from '../../../element-plus-utils.js'
 import { SITE_CATEGORY_TEXT, SITE_CATEGORY_VIDEO, SITE_CATEGORY_OTHER } from '../../../site-category.js'
+import { PARTIAL_TOKENIZATION_MODE_UNSET, PARTIAL_TOKENIZATION_MODE_OFF, PARTIAL_TOKENIZATION_MODE_ON, PARTIAL_TOKENIZATION_MODE_AUTO } from '../../../partial-tokenization-mode.js'
 import InformationTooltip from '../../common/InformationTooltip.vue'
 import RefreshTooltip from '../../common/RefreshTooltip.vue'
+
+const t = chrome.i18n.getMessage;
 
 const emit = defineEmits(['change-setting']);
 
@@ -22,6 +25,8 @@ const clickWord = inject('clickWord');
 const hoverWord = inject('hoverWord');
 const selectText = inject('selectText');
 
+const partialTokenizationMode = inject('partialTokenizationMode');
+
 const siteCategory = inject('siteCategory');
 const notesEnabled = inject('notesEnabled');
 const virtualSiteEnabled = inject('virtualSiteEnabled');
@@ -32,7 +37,18 @@ function getInteractionDefaultLabel(key){
   return interactionOptions[key] ? t('enabled') : t('disabled');
 }
 
-const t = chrome.i18n.getMessage;
+
+const defaultPartialTokenizationMode = computed(() => {
+  let partialTokenizationMode = options.value.partialTokenization.mode;
+
+  if(partialTokenizationMode == PARTIAL_TOKENIZATION_MODE_ON){
+    return t('options_site_partial_tokenization_mode_' + partialTokenizationMode);
+  }else if(partialTokenizationMode == PARTIAL_TOKENIZATION_MODE_AUTO){
+    return t('options_site_partial_tokenization_mode_auto');
+  }else {
+    return t('options_site_partial_tokenization_mode_off');
+  }
+});
 
 
 function onChangeSetting(){
@@ -79,6 +95,18 @@ init();
             <el-option value="true" :label="t('enabled')" />
             <el-option value="false" :label="t('disabled')" />
           </el-select> 
+        </div> 
+      </div>
+
+      <div class="field" >
+        <label>{{ t('popup_site_partial_tokenization_label') }}<InformationTooltip :content="t('popup_site_partial_tokenization_tip')" linkType="guide" linkKeyword="弹窗-快速解析" effect="dark"/></label>
+        <div class="inputs">
+          <el-select data-testid="partial-tokenization-mode" class="partial-tokenization-mode" v-model="partialTokenizationMode" @change="onChangeSetting" size="small">
+            <el-option :value="PARTIAL_TOKENIZATION_MODE_UNSET" :label="defaultPartialTokenizationMode + '(' +t('popupSiteSwitchModeUnset') + ')'" />
+            <el-option :value="PARTIAL_TOKENIZATION_MODE_ON" :label="t('options_site_partial_tokenization_mode_on')" />
+            <el-option :value="PARTIAL_TOKENIZATION_MODE_OFF" :label="t('options_site_partial_tokenization_mode_off')" />
+            <el-option :value="PARTIAL_TOKENIZATION_MODE_AUTO" :label="t('options_site_partial_tokenization_mode_auto')" />
+          </el-select>
         </div> 
       </div>
 

@@ -23,6 +23,8 @@ const textFontSizeMax = ref(28);
 
 const maxMeaningNumberMax = ref(20);
 
+const partialTokenizationContentLengthMin = ref(50000);
+
 const debugLoggers = ref([]);
 
 
@@ -39,6 +41,8 @@ async function onChangeSetting() {
     textFontSizeMax: textFontSizeMax.value,
 
     maxMeaningNumberMax: maxMeaningNumberMax.value,
+
+    partialTokenizationContentLengthMin: partialTokenizationContentLengthMin.value,
 
     debugLoggers: toRaw(debugLoggers.value),
   };
@@ -73,6 +77,8 @@ const init = async () => {
   textFontSizeMax.value = advancedOptions.textFontSizeMax;
 
   maxMeaningNumberMax.value = advancedOptions.maxMeaningNumberMax;
+
+  partialTokenizationContentLengthMin.value = advancedOptions.partialTokenizationContentLengthMin;
 
   debugLoggers.value = advancedOptions.debugLoggers;
   
@@ -121,8 +127,14 @@ init();
         </div>
 
         <div class="option">
-          <label>{{ t('options_advanced_secondary_text_font_size_max_label') }}</label>
+          <label>{{ t('options_advanced_max_meaning_number_max_label') }}</label>
           <el-input-number v-model="maxMeaningNumberMax" @change="onChangeSetting" :step="1" size="small" class="right"/>
+          
+        </div>
+
+        <div class="option">
+          <label>{{ t('options_advanced_partial_tokenization_start_length_label') }}</label>
+          <el-input-number v-model="partialTokenizationContentLengthMin" @change="onChangeSetting" :step="1000" size="small" class="right"/>
           
         </div>
       </div>
