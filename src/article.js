@@ -33,6 +33,9 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
     var tokenCount = 0;
     var tokenNodeCount = 0;
 
+    var knownWordsCount = 0;
+    var unknownWordsCount = 0;
+
     for(const nodeInfo of article.originalTextNodes){
         const { node, offset, length, nodeContent } = nodeInfo;
         //return 'stop' will no longer process it internal content
@@ -108,8 +111,20 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 if (searchResult) {// find the correct form which has definition in dictionary
                     let annotatedWordResult = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
                     const { targetWord, outerHTML} = annotatedWordResult;
-                        
-                    if(partialTokenization && targetWord != '' && isKnown(targetWord, knownWords)){	
+                    
+                    let bIsWord = targetWord != '';
+                    let bIsKnownWord;
+                    if(bIsWord){
+                        bIsKnownWord = isKnown(targetWord, knownWords);
+
+                        if(bIsKnownWord){
+                            knownWordsCount ++;
+                        } else{
+                            unknownWordsCount ++;
+                        }
+                    }
+
+                    if(partialTokenization && bIsWord && bIsKnownWord){	
                         tokenPart = { type: 'text', content:token.originalContent };
                     } else {
                         tokenPart = { type: 'token', content: outerHTML };
@@ -193,6 +208,9 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
         }
     }
 
+    article.knownWordsCount = knownWordsCount;
+    article.unknownWordsCount = unknownWordsCount;
+
     delete article.originalTextNodes;
 
     gLogger.info(`${tokenNodeCount}/${tokenCount} DOM tokens generated`);
@@ -266,11 +284,19 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //segment offset, first sentence number of the segment
         segmentOffsetParagraphMap: new Map(),
 
-        textNodes: [],
-        textNodeMap: new Map(),
 
         //found in content
         isbns: [],
+
+
+        // BEGIN of DOM stuff, which are not pure article stuff
+
+        textNodes: [],
+        textNodeMap: new Map(),
+
+        unknownWordsCount: 0,
+        knownWordsCount: 0,
+
     };
 
     //parse paragraph and sentence

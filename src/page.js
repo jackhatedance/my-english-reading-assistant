@@ -48,10 +48,10 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
                 unknownWordsCount++;
             }
 
-            elements = document.querySelectorAll('.mea-word.mea-hide');
-            for (var e of elements) {
-                knownWordsCount++;
-            }
+            
+            let article = documentArticleMap.get(document);
+            knownWordsCount += article.knownWordsCount;
+            
         }
 
         unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
@@ -210,7 +210,7 @@ async function initPageAnnotations(page) {
     
     //send message to background
     //console.log(`send PAGE_ANNOTATION_INITIALIZED: ${document.title}`);
-    let pageInfo = await getPageInfo(siteProfile, documentArticleMap);
+    let pageInfo = await getPageInfo(siteProfile, newDocumentArticleMap);
     sendMessageToBackground(siteProfile, 'PAGE_ANNOTATION_INITIALIZED', pageInfo);
 
 
