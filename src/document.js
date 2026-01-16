@@ -305,20 +305,19 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
 
       if(canProcessStep(documentConfig.processSteps, STEP_CHANGE_MEA_STYLE)){
         //console.log('preprocess document');
-        
-        var x = 0;
-        var intervalID = window.setInterval(async function () {
+        //TODO it seems that the loop is not necessary now. need verify before  removing the loop
+        for(var x=0; x <30;  x++){
 
             if (containsMeaStyle(document)) {
                 //console.log('containsMeaStyle');
                 changeStyle(document, sysOptions, currentSiteOption, siteProfile);
-                window.clearInterval(intervalID);
-            };
-
-            if (++x === 30) {
-                window.clearInterval(intervalID);
+                break;
+            } else{
+              gLogger.warn(`sleep ${x} times to wait for mea-style being loaded`);
+              await sleep(1000);
             }
-        }, 1000);
+
+        }
       }
       
       if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
