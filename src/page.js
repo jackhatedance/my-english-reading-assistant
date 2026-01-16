@@ -277,7 +277,7 @@ async function resetPageAnnotationVisibility(siteProfile, documentArticleMap, en
 function clearPagePreprocessMark(siteProfile) {
     let documents = getAllDocuments(siteProfile);
   
-    return documents.every((document) => {
+    documents.forEach((document) => {
       document.body.removeAttribute('mea-preprocessed');
     });
 }
