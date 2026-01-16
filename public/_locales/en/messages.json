@@ -423,7 +423,7 @@
         "message":"max meaning number max value"
     },
     "options_advanced_partial_tokenization_start_length_label":{
-        "message":"fast tokenization content length min value"
+        "message":"fast tokenization token amount min value"
     },
 
     "options_advanced_log_label":{

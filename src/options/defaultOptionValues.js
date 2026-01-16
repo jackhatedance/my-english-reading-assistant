@@ -2,7 +2,7 @@
 import { SWITCH_MODE_OPTION_OFF } from '../switch-mode.js'
 import { PARTIAL_TOKENIZATION_MODE_AUTO } from '../partial-tokenization-mode.js'
 
-const PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN = 50000;
+const PARTIAL_TOKENIZATION_TOKEN_LENGTH_MIN = 10000;
 
 function createDefaultOptions(){
     return {
@@ -37,7 +37,7 @@ function createDefaultOptions(){
             secondaryAnnotationPositionMax: -0.8,
             textFontSizeMax: 28,
             maxMeaningNumberMax: 20,
-            partialTokenizationContentLengthMin: PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN,
+            partialTokenizationTokenLengthMin: PARTIAL_TOKENIZATION_TOKEN_LENGTH_MIN,
 
             debugLoggers: [],
         },
@@ -178,8 +178,8 @@ function patch_v_1_11_0(options){
         advancedOptions.textFontSizeMax = 28;
     }
 
-    if(!advancedOptions.hasOwnProperty('partialTokenizationContentLengthMin')){
-        advancedOptions.partialTokenizationContentLengthMin = PARTIAL_TOKENIZATION_CONTENT_LENGTH_MIN;
+    if(!advancedOptions.hasOwnProperty('partialTokenizationTokenLengthMin')){
+        advancedOptions.partialTokenizationTokenLengthMin = PARTIAL_TOKENIZATION_TOKEN_LENGTH_MIN;
     }
 
     if(!advancedOptions.hasOwnProperty('maxMeaningNumberMax')){

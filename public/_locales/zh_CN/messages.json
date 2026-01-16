@@ -422,7 +422,7 @@
         "message":"最大词义数量最大值"
     },
     "options_advanced_partial_tokenization_start_length_label":{
-        "message":"快速解析内容长度最小值"
+        "message":"快速解析令牌数量最小值"
     },
 
     "options_advanced_log_label":{
