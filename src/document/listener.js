@@ -79,7 +79,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       let query;
 
       //query = getQueryFromMeaToken(event);
-      query = getQueryFromCaretPosition(article, event);
+      query = getQueryFromCaretPosition(document, article, event);
       
       if(query){//find word
         let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
@@ -171,7 +171,7 @@ function getQueryFromMeaToken(event){
   return query;
 }
 
-function getQueryFromCaretPosition(article, event){
+function getQueryFromCaretPosition(document, article, event){
   let query;
   
   let x = event.clientX;
