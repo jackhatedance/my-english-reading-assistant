@@ -195,7 +195,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
 
     delete article.originalTextNodes;
 
-    gLogger.info(`${tokenNodeCount}/${tokenCount} DOM nodes/tokens generated`);
+    gLogger.info(`${tokenNodeCount}/${tokenCount} DOM tokens generated`);
 }
 
 function createTokenNode(document, tokenPart){
@@ -351,16 +351,22 @@ function splitByNoParseBlocks(content, noParseRangeCollection){
 
 function collectNodeRanges(node, tags, collection){
     
-    if(tags.includes(node.nodeName)){
-        let contentLength = node.textContent.length;
-        if(collection.pos > collection.lastPos && contentLength > 0){
-            let range = { offset: collection.pos, length: contentLength};
-            collection.ranges.push(range);
-            collection.lastPos = collection.pos;
-        }
-    }
+    
 
     if (node.nodeName === '#text') {
+        let parentElement = node.parentElement;
+        
+        if(tags.includes(parentElement.nodeName)){
+            let contentLength = node.textContent.length;
+            if(collection.pos > collection.lastPos && contentLength > 0){
+                let range = { offset: collection.pos, length: contentLength};
+                collection.ranges.push(range);
+                collection.lastPos = collection.pos;
+            }
+        }else{
+            console.log(node.textContent);
+        }
+
         collection.pos += node.textContent.length;
     }
 }
