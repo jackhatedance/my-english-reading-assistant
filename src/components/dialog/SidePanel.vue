@@ -41,6 +41,14 @@ const page = ref();
 const activeTabName = ref('tab-actions');
 const menuItems = ref([]);
 
+//record actions that user has been done on the dialog, it will decide how to refresh the page.
+const actions = ref([]);
+const actionRecorder = (actionName) => {
+  actions.value.push(actionName);
+};
+
+provide('action-recorder', actionRecorder);
+
 async function getPageInfo() {
   let sender = null;
   //console.log('get pageInfo');
@@ -193,6 +201,7 @@ function onClickCloseButton() {
   props.sendMessageToContentPage({
     type: 'CLOSE_DIALOG',
     payload: {
+      actions: toRaw(actions.value),
     },
   },
     null, (response) => { });

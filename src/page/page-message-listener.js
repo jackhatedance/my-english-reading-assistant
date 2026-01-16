@@ -5,7 +5,7 @@ import { getPageInfo, isPageAnnotationVisible, initPageAnnotations, cleanPageAnn
 import { getCurrentSiteOptions, refreshCurrentSiteOptionsCache } from '../current-site-options.js'
 import { updateAdditionalDictionariesInCache } from '../dictionary/customDictionary.js'
 import { closeDialog } from '../dialog.js' 
-import { resetPageAnnotationVisibilityAndNotify } from './page-utils.js'
+import { resetPageAnnotationVisibilityAndNotify, refreshPageAnnotation } from './page-utils.js'
 
 function pageMessageListenerWithParams(page, request, sender, sendResponse) {
   //console.log(`receive request type: ${request.type}`);
@@ -112,9 +112,21 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
   } else if (request.type === 'CLOSE_DIALOG') {
     closeDialog();
 
-    //in case some word marked, refresh UI anyway
+    let needRefreshPageAnnotation = false;
+    let actions = request.payload.actions;
+    if(actions.includes('markAsUnknown')){
+      needRefreshPageAnnotation = true;
+    }
+
     let visible = isPageAnnotationVisible();
-    resetPageAnnotationVisibilityAndNotify(page, visible);
+      
+    if(needRefreshPageAnnotation){
+      refreshPageAnnotation(page, visible);
+    } else{
+      //in case some word marked, refresh UI anyway
+      resetPageAnnotationVisibilityAndNotify(page, visible);
+    }
+    
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
     resizeEmbeddedApp(width, height);

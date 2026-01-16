@@ -18,6 +18,8 @@ const props = defineProps({
     siteOptions: Object,
 });
 
+const actionRecorder = inject('action-recorder');
+
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 const t = chrome.i18n.getMessage;
 const markToggleTips = chrome.i18n.getMessage('sidepanelWordActionMarkToggle');
@@ -158,10 +160,13 @@ async function onMarkAsUnknown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsUnknown(targetWord);
 
+    actionRecorder('markAsUnknown');
+
     //console.log('send known words updated to content page');
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
+            action: 'markAsUnknown'
         },
     },
         null, (response) => { });
@@ -189,9 +194,12 @@ async function onMarkAsKnown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsKnown(targetWord);
 
+    actionRecorder('markAsKnown');
+
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
+            action: 'markAsKnown'
         },
     },
         null, (response) => { });
@@ -202,9 +210,13 @@ async function onClearMark() {
     let targetWord = props.word;
     let wordChanges = await removeWordMark(targetWord);
     updateKnown();
+
+    actionRecorder('clearMark');
+
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
+            action: 'clearMark'
         },
     },
         null, (response) => { });

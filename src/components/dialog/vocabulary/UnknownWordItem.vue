@@ -15,6 +15,8 @@ const props = defineProps({
 
 const emit = defineEmits(['markWord']);
 
+const actionRecorder = inject('action-recorder');
+
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
 
@@ -99,31 +101,37 @@ async function clickMarkAsKnown() {
     let baseForm = props.word.target;
     //console.log(`mark word as known ${baseForm}`);
     let wordChanges = await markWordAsKnown(baseForm);
-    sendMessageKnownWordsUpdated('known', wordChanges);
+    actionRecorder('markAsKnown');
+    sendMessageKnownWordsUpdated('markAsKnown', wordChanges);
 
     
 }
 async function clickMarkAsUnknown() {
     let baseForm = props.word.target;
     let wordChanges = await markWordAsUnknown(baseForm);
-    sendMessageKnownWordsUpdated('unknown', wordChanges);
+    
+    actionRecorder('markAsUnknown');
+    sendMessageKnownWordsUpdated('markAsUnknown', wordChanges);
 }
 async function clickClearMark() {
     let baseForm = props.word.target;
     let wordChanges = await removeWordMark(baseForm);
-    sendMessageKnownWordsUpdated('clear', wordChanges);
+
+    actionRecorder('clearMark');
+    sendMessageKnownWordsUpdated('clearMark', wordChanges);
 
      
 
 }
 
-function sendMessageKnownWordsUpdated(type, wordChanges) {
+function sendMessageKnownWordsUpdated(action, wordChanges) {
     let sender = null;
     let sendResponse = (response) => {};
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
         payload: {
             source: 'unknown-word-list',
+            action: action,
         },
     },
     sender, 
