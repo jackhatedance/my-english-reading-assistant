@@ -35,13 +35,15 @@ async function refreshPageAnnotation(page, visible){
   page.initDocumentMap(documentArticleMap, 4);
   let endTime1 = new Date().getTime();
   let elapseTime1 = endTime1 - startTime;
+  let elapseTime1Str = (elapseTime1/1000).toFixed(1);
   //gLogger.info(`initPageAnnotations ${elapseTime1} ms`);
 
   await resetPageAnnotationVisibilityAndNotify(page, visible);
   let endTime2 = new Date().getTime();
   let elapseTime2 = endTime2 - endTime1;
+  let elapseTime2Str = (elapseTime2/1000).toFixed(1);
   
-  gLogger.info(`page annotation ${elapseTime1}+${elapseTime2} ms`);
+  gLogger.info(`page annotation ${elapseTime1Str}+${elapseTime2Str} s`);
 }
 
 export { resetPageAnnotationVisibilityAndNotify, refreshPageAnnotation }
