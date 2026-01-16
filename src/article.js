@@ -351,8 +351,6 @@ function splitByNoParseBlocks(content, noParseRangeCollection){
 
 function collectNodeRanges(node, tags, collection){
     
-    
-
     if (node.nodeName === '#text') {
         let parentElement = node.parentElement;
         
@@ -364,7 +362,7 @@ function collectNodeRanges(node, tags, collection){
                 collection.lastPos = collection.pos;
             }
         }else{
-            console.log(node.textContent);
+            //console.log(node.textContent);
         }
 
         collection.pos += node.textContent.length;
