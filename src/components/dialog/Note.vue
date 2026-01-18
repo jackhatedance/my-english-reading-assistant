@@ -16,6 +16,8 @@ const props = defineProps({
     readonly: Boolean,
 });
 
+const actionRecorder = inject('action-recorder');
+
 const t = chrome.i18n.getMessage;
 const sendMessageToContentPage = inject('sendMessageToContentPage');
 
@@ -106,6 +108,8 @@ async function clickSave() {
 
     mode.value = 'view';
     sendMessageToActiveTab('NOTES_UPDATED');
+
+    actionRecorder('saveNote');
 }
 
 async function clickCancel() {

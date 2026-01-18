@@ -114,7 +114,8 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
 
     let needRefreshPageAnnotation = false;
     let actions = request.payload.actions;
-    if(actions.includes('markAsUnknown')){
+    if(actions.includes('markAsUnknown')
+      || actions.includes('saveNote')){
       needRefreshPageAnnotation = true;
     }
 
