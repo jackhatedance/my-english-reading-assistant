@@ -11,6 +11,8 @@ import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
 import { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache } from './current-site-options.js'
 import { fixSiteDomain } from './site.js'
+import { parseDocument } from './article.js'
+import { canProcessStep, STEP_PARSE_DOCUMENT } from './document/process.js'
 
 import log from 'loglevel'
 
@@ -168,6 +170,9 @@ async function initPageAnnotations(page) {
     //console.log('initPageAnnotations');
     await initializeServiceOnlyOnce(siteProfile);
 
+    let sysOptions = getOptionsFromCache();
+    let currentSiteOptions = await getCurrentSiteOptions(siteProfile);
+    
     let newDocumentArticleMap = new Map();
     
     var knownWords = await loadKnownWords();
@@ -180,7 +185,17 @@ async function initPageAnnotations(page) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = await preprocessDocument(page, document, false, siteProfile, documentConfig, knownWords);
+        let article = null;
+        if (documentConfig.canProcess) {
+            if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
+                article = parseDocument(document, sysOptions, currentSiteOptions);
+            }
+        } else{
+            //empty article
+            article = parseDocument(document, sysOptions, currentSiteOption, true);
+        }
+
+        await preprocessDocument(page, article, document, false, siteProfile, documentConfig, currentSiteOptions, knownWords);
         newDocumentArticleMap.set(document, article);
     } else {
         let article = documentArticleMap.get(document);
@@ -189,17 +204,27 @@ async function initPageAnnotations(page) {
 
     let iframeDocumentConfigs = siteProfile.getIframeDocumentConfigs(document);
     //console.log('start iframe annotattion');
-    for (var iframeDocumentConfig of iframeDocumentConfigs) {
-        let iframeDocument = iframeDocumentConfig.document;
-        if (iframeDocument) {
-            if (!isDocumentAnnotationInitialized(iframeDocument)) {
+    for (var documentConfig of iframeDocumentConfigs) {
+        let document = documentConfig.document;
+        if (document) {
+            if (!isDocumentAnnotationInitialized(document)) {
                 //console.log('start iframe preprocess document');
-                let article = await preprocessDocument(page, iframeDocument, true, siteProfile, iframeDocumentConfig, knownWords);
+                let article = null;
+                if (documentConfig.canProcess) {
+                    if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
+                        article = parseDocument(document, sysOptions, currentSiteOptions);
+                    }
+                } else{
+                    //empty article
+                    article = parseDocument(document, sysOptions, currentSiteOption, true);
+                }
+
+                await preprocessDocument(page, article, document, true, siteProfile, documentConfig, currentSiteOptions, knownWords);
                 
-                newDocumentArticleMap.set(iframeDocument, article);
+                newDocumentArticleMap.set(document, article);
             }else {
-                let article = documentArticleMap.get(iframeDocument);
-                newDocumentArticleMap.set(iframeDocument, article);
+                let article = documentArticleMap.get(document);
+                newDocumentArticleMap.set(document, article);
             }
         }
     }

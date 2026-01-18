@@ -280,7 +280,7 @@ function removeDocumentEventListener(page, document) {
 }
 
 
-async function preprocessDocument(page, document, isIframe, siteProfile, documentConfig, knownWords) {
+async function preprocessDocument(page, article, document, isIframe, siteProfile, documentConfig, currentSiteOption, knownWords) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -298,9 +298,6 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
     }
 
     let sysOptions = getOptionsFromCache();
-    let currentSiteOption = await getCurrentSiteOptions(siteProfile);
-
-    let article = null;
     if (documentConfig.canProcess) {
 
       if(canProcessStep(documentConfig.processSteps, STEP_CHANGE_MEA_STYLE)){
@@ -319,11 +316,6 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
 
         }
       }
-      
-      if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
-        article = parseDocument(document, sysOptions, currentSiteOption);
-      }
-
       let notes = await getNotes();
 	    let articleNotes = findArticleNotes(article, notes);
       article.notes = articleNotes;
@@ -350,11 +342,7 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
         //console.log(JSON.stringify(article));
         addWordEventListener(page, document, documentConfig, currentSiteOption);
       }
-    } else {
-        //empty article
-        article = parseDocument(document, sysOptions, currentSiteOption, true);
     }
-    return article;
 
 }
 
