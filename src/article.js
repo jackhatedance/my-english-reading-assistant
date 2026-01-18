@@ -38,7 +38,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
     var unknownWordsCount = 0;
 
     for(const nodeInfo of article.originalTextNodes){
-        const { node, offset, length, nodeContent } = nodeInfo;
+        const { node, offset, length, content } = nodeInfo;
         //return 'stop' will no longer process it internal content
         if(!siteProfile.canElementBeTokenized(node.parentElement)){
             continue;
@@ -48,7 +48,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
             if (!siteProfile.canNodeBeTokenized(node)) {
                 continue;
             }
-            let textContent = nodeContent;
+            let textContent = content;
             //console.log(node.parentElement.nodeName);
             gLogger.debug(textContent);
 

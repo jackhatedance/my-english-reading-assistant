@@ -163,7 +163,7 @@ async function doInitializeService(siteProfile){
 
 }
 
-async function initPageAnnotations(page) {
+async function initPageAnnotations(page, reuseArticle=false) {
     
     const { siteProfile, documentArticleMap } = page;
 
@@ -185,15 +185,7 @@ async function initPageAnnotations(page) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = null;
-        if (documentConfig.canProcess) {
-            if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
-                article = parseDocument(document, sysOptions, currentSiteOptions);
-            }
-        } else{
-            //empty article
-            article = parseDocument(document, sysOptions, currentSiteOption, true);
-        }
+        let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
 
         await preprocessDocument(page, article, document, false, siteProfile, documentConfig, currentSiteOptions, knownWords);
         newDocumentArticleMap.set(document, article);
@@ -209,15 +201,7 @@ async function initPageAnnotations(page) {
         if (document) {
             if (!isDocumentAnnotationInitialized(document)) {
                 //console.log('start iframe preprocess document');
-                let article = null;
-                if (documentConfig.canProcess) {
-                    if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
-                        article = parseDocument(document, sysOptions, currentSiteOptions);
-                    }
-                } else{
-                    //empty article
-                    article = parseDocument(document, sysOptions, currentSiteOption, true);
-                }
+                let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
 
                 await preprocessDocument(page, article, document, true, siteProfile, documentConfig, currentSiteOptions, knownWords);
                 
@@ -240,6 +224,30 @@ async function initPageAnnotations(page) {
 
 
     return newDocumentArticleMap;
+}
+
+function getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions){
+    let article;
+    
+    if(reuseArticle == true){
+        article = page.documentArticleMap.get(document);
+        
+        article.originalTextNodes = article.textNodes;
+        article.textNodes = [];
+        article.textNodeMap = new Map();
+
+        return article;
+    }
+    
+    if (documentConfig.canProcess) {
+        if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
+            article = parseDocument(document, sysOptions, currentSiteOptions);
+        }
+    } else {
+        //empty article
+        article = parseDocument(document, sysOptions, currentSiteOptions, true);
+    }
+    return article;
 }
 
 async function cleanPageAnnotations(page){
