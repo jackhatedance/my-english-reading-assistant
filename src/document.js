@@ -5,7 +5,7 @@ import log from 'loglevel'
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
-import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection } from './article.js';
+import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, findArticleNotes } from './article.js';
 import { getNotes } from './service/noteService.js';
 import { getCurrentSiteOptions } from './current-site-options.js'
 import { mouseUpEventListenerWithParams, mouseMoveEventListenerWithParams } from './document/listener.js'
@@ -323,6 +323,10 @@ async function preprocessDocument(page, document, isIframe, siteProfile, documen
       if(canProcessStep(documentConfig.processSteps, STEP_PARSE_DOCUMENT)){
         article = parseDocument(document, sysOptions, currentSiteOption);
       }
+
+      let notes = await getNotes();
+	    let articleNotes = findArticleNotes(article, notes);
+      article.notes = articleNotes;
 
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
         let bIsPartialTokenizationEnabled = isPartialTokenizationEnabled(sysOptions.partialTokenization.mode, currentSiteOption.partialTokenization.mode, article.tokens.length, sysOptions.advanced.partialTokenizationTokenLengthMin);

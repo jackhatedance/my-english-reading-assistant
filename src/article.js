@@ -15,6 +15,7 @@ import { deleteUnrecognizedWord } from './service/dictionaryService.js';
 import log from 'loglevel'
 import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
 import { getMeaTokenElement, getFirstTextNode } from './token.js'
+import { hasIntersections } from './utils/range.js'
 
 const gLogger = log.getLogger('article');
 
@@ -59,7 +60,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
             let nodeStartOffset = offset;
             let nodeEndOffset = offset + length;
 
-            let tokens = [];
+            let nodeTokens = [];
             while(true){
                 if(tokenIndex >= article.tokens.length){
                     break;
@@ -77,12 +78,16 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 let nodeTokenEndOffset = articleTokenEndOffset > nodeEndOffset ? nodeEndOffset : articleTokenEndOffset;
 
                 let nodeTokenOriginalContent = articleToken.originalContent.substring(nodeTokenStartOffset - articleTokenStartOffset, nodeTokenEndOffset - articleTokenStartOffset);
+                let nodeTokenContentLength = nodeTokenOriginalContent.length;
 
                 let nodeToken = {
                     originalContent: nodeTokenOriginalContent,
                     content: articleToken.content,
+                    
+                    offset: nodeTokenStartOffset,
+                    length: nodeTokenContentLength,
                 };
-                tokens.push(nodeToken);
+                nodeTokens.push(nodeToken);
                 //console.log('node token'+nodeToken.originalContent);
 
                 tokenIndex++;
@@ -92,13 +97,16 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
             //console.log(siteOptions);
 
             let tokenParts = [];
-            for (let token of tokens) {
+            for (let nodeToken of nodeTokens) {
                 let tokenPart;
                 
-                let query = token.content; 
+                //note
+                let hasNoteResult = hasNote(nodeToken, article.notes);
+                
+                let query = nodeToken.content; 
                 //console.log('before trim punctuation:'+query);
                 query = trimPunctuations(query);
-                //console.log('token to query:'+query);
+                //console.log('nodeTokens to query:'+query);
                 
                 let searchResult = searchWord(query, {                    
                     allowLemma: true,
@@ -109,7 +117,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWordResult = annotateWord(token.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
+                    let annotatedWordResult = annotateWord(nodeToken.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
                     const { targetWord, outerHTML} = annotatedWordResult;
                     
                     let bIsWord = targetWord != '';
@@ -124,8 +132,20 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                         }
                     }
 
-                    if(partialTokenization && bIsWord && bIsKnownWord){	
-                        tokenPart = { type: 'text', content:token.originalContent };
+                    let tokenPartType;
+                    if(partialTokenization){	
+                        let isUnknownWord = bIsWord && !bIsKnownWord;
+                        if(isUnknownWord || hasNoteResult){
+                            tokenPartType = 'token';    
+                        } else {
+                            tokenPartType = 'text'
+                        }
+                    } else {
+                        tokenPartType = 'token'
+                    }
+
+                    if(tokenPartType == 'text'){	
+                        tokenPart = { type: 'text', content: nodeToken.originalContent };
                     } else {
                         tokenPart = { type: 'token', content: outerHTML };
                         tokenNodeCount++;
@@ -135,10 +155,22 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                     
                 } else {
                     //console.log('search failed');
-                    if(partialTokenization){
-                        tokenPart = { type: 'text', content:token.originalContent };
+                    let tokenPartType;
+
+                    if(partialTokenization){	
+                        if(hasNoteResult){
+                            tokenPartType = 'token';    
+                        } else {
+                            tokenPartType = 'text'
+                        }
                     } else {
-                        let annotated = annotateNonword(token.originalContent, '', '', 0);
+                        tokenPartType = 'token'
+                    }
+
+                    if(tokenPartType == 'text'){	
+                        tokenPart = { type: 'text', content: nodeToken.originalContent };
+                    } else {
+                        let annotated = annotateNonword(nodeToken.originalContent, '', '', 0);
                         tokenPart = { type: 'token', content: annotated };
                         tokenNodeCount++;
                     }
@@ -216,6 +248,22 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
     gLogger.info(`${tokenNodeCount}/${tokenCount} DOM tokens generated`);
 }
 
+function hasNote(nodeToken, notes){
+    let nodeTokenRange = { min: nodeToken.offset, max: nodeToken.offset + nodeToken.length};
+    for(const note of notes){
+        for(const selection of note.articleSelections){
+            let selectionRange = { min: selection.start, max: selection.end};
+            let has = hasIntersections(nodeTokenRange, selectionRange);
+            if(has==true){
+                return true;
+            }
+        }
+        
+    }
+    return false;
+}
+
+
 function createTokenNode(document, tokenPart){
     const {type, content} = tokenPart;
     if(type=='text'){
@@ -288,6 +336,8 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //found in content
         isbns: [],
 
+
+        notes: [],
 
         // BEGIN of DOM stuff, which are not pure article stuff
 
@@ -1238,6 +1288,7 @@ function findArticleNotes(article, notes){
             }
 
             note.positions = positions;
+            note.articleSelections = articleSelections;
 
             filteredNotes.push(note);
         }
