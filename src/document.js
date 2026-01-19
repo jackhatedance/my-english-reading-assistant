@@ -27,6 +27,7 @@ import { canProcessStep, STEP_CHANGE_MEA_STYLE, STEP_TOKENIZE_TEXT_NODE, STEP_AD
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 import { isFeatureEnabled, FEATURE_NOTE } from './feature-toggle.js'
 import { isPartialTokenizationEnabled } from './partial-tokenization-mode.js'
+import { startOperation, endOperation, operationToString } from './utils/operation-time-util.js'
 
 var knownWords;
 
@@ -322,7 +323,12 @@ async function preprocessDocument(page, article, document, isIframe, siteProfile
 
       if(canProcessStep(documentConfig.processSteps, STEP_TOKENIZE_TEXT_NODE)){
         let bIsPartialTokenizationEnabled = isPartialTokenizationEnabled(sysOptions.partialTokenization.mode, currentSiteOption.partialTokenization.mode, article.tokens.length, sysOptions.advanced.partialTokenizationTokenLengthMin);
+
+        let operation = startOperation('tokenizeTextNode');
         tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords, bIsPartialTokenizationEnabled);
+        endOperation(operation);
+        gLogger.info(operationToString(operation));
+        
       }
 
       if(canProcessStep(documentConfig.processSteps, STEP_ADD_DOCUMENT_EVENT_LISTENER)){
