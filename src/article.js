@@ -342,6 +342,7 @@ function parseDocument(document, options, siteOptions, skip = false) {
         // BEGIN of DOM stuff, which are not pure article stuff
 
         textNodes: [],
+        //key is node, value is nodeInfo
         textNodeMap: new Map(),
 
         unknownWordsCount: 0,
@@ -798,6 +799,7 @@ function addParagraph(article, paragraphInfo){
 function addSentence(article, paragraph, sentenceInfo){
     let { sentences, sentenceMap, sentenceIdNumbersMap, segmentOffsetSentenceMap } = article;
 
+    //console.log(sentenceInfo.tokens);
     article.tokens.push(...sentenceInfo.tokens);
 
     sentences.push(sentenceInfo);
