@@ -17,7 +17,7 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pron
     let searchType = searchResult.searchType;
     let baseSearchType = searchResult.baseSearchType;
     let definition = searchResult.definition;
-    let targetWord = getTargetWord(searchResult);
+    let targetWord = getTargetWordFromSearchResult(searchResult);
     let pronunciation = getPronunciation(searchResult, targetWord, pronunciationRegion);
     
     let shortDefinition = definition;
@@ -44,8 +44,12 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pron
     return annotationParameters;
 }
 
-function getTargetWord(searchResult){
-    const { lookupResult, deepLookupResult, word, baseWord } = searchResult;
+function getTargetWordFromSearchResult(searchResult){
+    const { word, baseWord } = searchResult;
+    return getTargetWord(word, baseWord);
+}
+
+function getTargetWord(word, baseWord){
     if(!baseWord){
         return word;
     }
@@ -202,4 +206,4 @@ function getTargetWordFromElement(element) {
     return element.getAttribute('data-target-word');
 }
 
-export { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement, getTargetWordFromElement, getTargetWord };
+export { annotateWord, annotateNonword, updateWordAnnotation, updateNonWordAnnotation, getQueryFromElement, getWordFromElement, getBaseWordFromElement, getTargetWordFromElement, getTargetWordFromSearchResult, getTargetWord };

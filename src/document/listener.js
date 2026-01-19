@@ -1,7 +1,7 @@
 import { loadKnownWords } from '../vocabularyStore.js';
 import { isKnown, searchWord, buildDictionaryOptions } from '../language.js';
 import { searchNote, getNotes } from '../service/noteService.js';
-import { getTargetWordFromElement, getQueryFromElement, getTargetWord} from '../word.js';
+import { getTargetWordFromElement, getQueryFromElement, getTargetWordFromSearchResult} from '../word.js';
 import { containsSentenceInstancePosition, getSentenceHashSelectionFromInstanceSelection } from '../sentence.js';
 import { containsParagraphInstancePosition, getParagraphHashSelectionFromInstanceSelection, getParagraphInstanceSelectionsFromParagraphHashSelection } from '../paragraph.js';
 import { getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findArticleNotes, findTokenInfoByNode } from '../article.js';
@@ -90,7 +90,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
 
         dictionaryName = searchResult?.lookupResult?.dictionaryName;
 
-        word = getTargetWord(searchResult);
+        word = getTargetWordFromSearchResult(searchResult);
 
         let knownWords = await loadKnownWords();
         if(isKnown(word, knownWords)){

@@ -4,7 +4,7 @@ import { searchWord, buildDictionaryOptions, getWordPartObjects, isKnown } from 
 import { sendMessageMarkWordToBackground } from './message.js'; 
 import { loadKnownWords, markWordAsKnown, markWordAsUnknown, removeWordMark } from './vocabularyStore.js';
 import { isPageAnnotationVisible } from './page.js'
-import { getTargetWord } from './word.js'
+import { getTargetWordFromSearchResult } from './word.js'
 import { findTokenInfoByNode } from './article.js'
 import { findPhrase } from './phrase.js'
 import { isRegularTransform } from './lemma.js'
@@ -357,7 +357,7 @@ async function handleTooltipForCaretPosition(page, document, documentConfig, opt
   dictionaryOptions: buildDictionaryOptions(siteOptions) });
 
   if (searchResult) {
-    let targetWord = getTargetWord(searchResult);
+    let targetWord = getTargetWordFromSearchResult(searchResult);
     let knownWords = await loadKnownWords();
     let unknown = !isKnown(targetWord, knownWords);
 
@@ -448,7 +448,7 @@ function showTooltip(documentConfig, tooltipElement, targetRect, unknown, search
   let baseTop = iframeTop + window.scrollY;
   let baseLeft = iframeLeft + window.scrollX;
 
-  let targetWord = getTargetWord(searchResult);
+  let targetWord = getTargetWordFromSearchResult(searchResult);
   
   searchResultToHtml(tooltipElement, searchResult, targetWord, options.pronunciation.region, phraseSearchResult, unknown);
   tooltipElement.setAttribute('data-word', targetWord);

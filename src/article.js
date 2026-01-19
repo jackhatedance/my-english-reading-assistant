@@ -799,7 +799,7 @@ function addParagraph(article, paragraphInfo){
 function addSentence(article, paragraph, sentenceInfo){
     let { sentences, sentenceMap, sentenceIdNumbersMap, segmentOffsetSentenceMap } = article;
 
-    //console.log(sentenceInfo.tokens);
+    console.log(sentenceInfo.tokens);
     article.tokens.push(...sentenceInfo.tokens);
 
     sentences.push(sentenceInfo);
