@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject } from 'vue';
+import { ref, watch, onMounted, onBeforeUpdate, onUpdated, computed, inject, toRaw } from 'vue';
 
 import { getNote, setNote, deleteNote } from '../../service/noteService.js';
 import { NOTE_HIGHLIGH_TYPE_BACKGROUND_COLOR, NOTE_HIGHLIGH_TYPE_UNDERLINE, getDefaultType, getDefaultBackgroundColor, getDefaultUnderlineType} from '../../style/highlight-style.js'
@@ -109,7 +109,7 @@ async function clickSave() {
     mode.value = 'view';
     sendMessageToActiveTab('NOTES_UPDATED');
 
-    actionRecorder('saveNote');
+    actionRecorder({name: 'saveNote', selection: toRaw(props.note.selection)});
 }
 
 async function clickCancel() {

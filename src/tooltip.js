@@ -154,10 +154,12 @@ async function onMarkAsUnknown(tooltipElement, word) {
   //always true in this scene
   let visible = true;
   //resetPageAnnotationVisibilityAndNotify(gPage, visible);
-  
+  let refreshOptions = {
+    words: [word]
+  };
   //need to create tokens for unknown words
   //TODO check if token already existed
-  await refreshPageAnnotation(gPage, visible);
+  await refreshPageAnnotation(gPage, visible, refreshOptions);
 
   sendMessageMarkWordToBackground(wordChanges);
 }
@@ -170,7 +172,13 @@ async function onClearMark(tooltipElement, word) {
   let known = isKnown(word, knownWords);
   updateWordMarkToogle(tooltipElement, !known);
 
-  let visible = isPageAnnotationVisible();
+  let visible = true;
+
+  let refreshOptions = {
+    words: [word]
+  };
+  await refreshPageAnnotation(gPage, visible, refreshOptions);
+
   resetPageAnnotationVisibilityAndNotify(gPage, visible);
 
   sendMessageMarkWordToBackground(wordChanges);

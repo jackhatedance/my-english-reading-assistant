@@ -7,8 +7,8 @@ import { pronunciationsToText } from './dictionary/definition-formatter.js'
 import { simplifyDefinition } from './dictionary/simplify-definition.js'
 import { createSimplifyDefinitionOptions } from './service/site-option-service.js'
 import { encode } from 'html-entities';
-import { isRegularTransform } from './lemma.js'
 import { bionic } from './bionic/bionic-utils.js'
+import { getTargetWord } from './word/target-word.js'
 
 function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion) {
     let query = searchResult.query;
@@ -47,20 +47,6 @@ function buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pron
 function getTargetWordFromSearchResult(searchResult){
     const { word, baseWord } = searchResult;
     return getTargetWord(word, baseWord);
-}
-
-function getTargetWord(word, baseWord){
-    if(!baseWord){
-        return word;
-    }
-
-    let regularTransform = isRegularTransform(baseWord, word);
-    if(regularTransform){
-        return baseWord;
-    }else {
-        return word;
-    }
-
 }
 
 function getPronunciation(searchResult, targetWord, pronunciationRegion){

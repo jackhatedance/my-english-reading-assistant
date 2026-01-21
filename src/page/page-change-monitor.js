@@ -70,7 +70,7 @@ async function domMonitor(page) {
     
     let startTime = new Date().getTime();
 
-    let documentArticleMap = await initPageAnnotations(page);
+    let documentArticleMap = await initPageAnnotations(page, false, null);
     page.initDocumentMap(documentArticleMap, 4);
     let endTime1 = new Date().getTime();
     let elapseTime1 = endTime1 - startTime;

@@ -43,8 +43,8 @@ const menuItems = ref([]);
 
 //record actions that user has been done on the dialog, it will decide how to refresh the page.
 const actions = ref([]);
-const actionRecorder = (actionName) => {
-  actions.value.push(actionName);
+const actionRecorder = (action) => {
+  actions.value.push(action);
 };
 
 provide('action-recorder', actionRecorder);

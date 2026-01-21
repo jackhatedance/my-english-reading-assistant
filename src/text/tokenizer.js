@@ -3,6 +3,7 @@ import { guessWord } from './identify-word.js';
 import { createBlankMask, replaceMaskedChars, removeMaskedChars } from './textUtils.js';
 import { containsAbbreviation } from './transforms/abbreviation.js'
 import { lemmatizeVerb } from '../lemma.js'
+import { getTargetWord } from '../word/target-word.js'
 //import posTagger from 'wink-pos-tagger'
 
 
@@ -406,6 +407,7 @@ function guessPartWord(checkWord, part){
                 part.checkWordResult = checkWordResult;
                 part.checked = true;
                 part.baseWord = checkWordResult.baseWord; 
+                part.targetWord = getTargetWord(checkWordResult.word, checkWordResult.baseWord);
             }
             
         }

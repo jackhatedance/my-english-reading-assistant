@@ -23,7 +23,7 @@ async function resetPageAnnotationVisibilityAndNotify(page, enabled, source, typ
     sendMessageToEmbeddedApp(request, sender, sendResponse);
 }
 
-async function refreshPageAnnotation(page, visible){
+async function refreshPageAnnotation(page, visible, refreshOptions){
 
   gLogger.debug('start refresh page annotation');
 
@@ -31,7 +31,7 @@ async function refreshPageAnnotation(page, visible){
 
   let startTime = new Date().getTime();
 
-  let documentArticleMap = await initPageAnnotations(page, true);
+  let documentArticleMap = await initPageAnnotations(page, true, refreshOptions);
   page.initDocumentMap(documentArticleMap, 4);
   let endTime1 = new Date().getTime();
   let elapseTime1 = endTime1 - startTime;

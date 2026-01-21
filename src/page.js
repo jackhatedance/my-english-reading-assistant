@@ -163,7 +163,7 @@ async function doInitializeService(siteProfile){
 
 }
 
-async function initPageAnnotations(page, reuseArticle=false) {
+async function initPageAnnotations(page, reuseArticle, refreshOptions) {
     
     const { siteProfile, documentArticleMap } = page;
 
@@ -187,7 +187,7 @@ async function initPageAnnotations(page, reuseArticle=false) {
 
         let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
 
-        await preprocessDocument(page, article, document, false, siteProfile, documentConfig, currentSiteOptions, knownWords);
+        await preprocessDocument(page, article, document, false, siteProfile, documentConfig, currentSiteOptions, knownWords, refreshOptions);
         newDocumentArticleMap.set(document, article);
     } else {
         let article = documentArticleMap.get(document);
@@ -203,7 +203,7 @@ async function initPageAnnotations(page, reuseArticle=false) {
                 //console.log('start iframe preprocess document');
                 let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
 
-                await preprocessDocument(page, article, document, true, siteProfile, documentConfig, currentSiteOptions, knownWords);
+                await preprocessDocument(page, article, document, true, siteProfile, documentConfig, currentSiteOptions, knownWords, refreshOptions);
                 
                 newDocumentArticleMap.set(document, article);
             }else {

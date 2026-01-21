@@ -22,7 +22,7 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
     //console.log(`Current enabled is ${request.payload.enabled}`);
     if (request.payload.enabled) {
       if (!isAllDocumentsAnnotationInitialized(page.siteProfile)) {
-        initPageAnnotations(page).then((documentArticleMap) => {
+        initPageAnnotations(page, false, null).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 2);
           resetPageAnnotationVisibilityAndNotify(page, request.payload.enabled);
         });
@@ -55,7 +55,7 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
       }
 
       //init all documents
-      initPageAnnotations(page).then((documentArticleMap) => {
+      initPageAnnotations(page, false, null).then((documentArticleMap) => {
         page.initDocumentMap(documentArticleMap, 3);
         resetPageAnnotationVisibilityAndNotify(page, visible);
       });
@@ -110,23 +110,7 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
   } else if (request.type === 'OPTIONS_CHANGED') {
     refreshOptionsCache();
   } else if (request.type === 'CLOSE_DIALOG') {
-    closeDialog();
-
-    let needRefreshPageAnnotation = false;
-    let actions = request.payload.actions;
-    if(actions.includes('markAsUnknown')
-      || actions.includes('saveNote')){
-      needRefreshPageAnnotation = true;
-    }
-
-    let visible = isPageAnnotationVisible();
-      
-    if(needRefreshPageAnnotation){
-      refreshPageAnnotation(page, visible);
-    } else{
-      //in case some word marked, refresh UI anyway
-      resetPageAnnotationVisibilityAndNotify(page, visible);
-    }
+    onCloseDialog(page, request);
     
   } else if (request.type === 'RESIZE_IFRAME') {
     let {width, height} = request.payload;
@@ -146,6 +130,42 @@ function pageMessageListenerWithParams(page, request, sender, sendResponse) {
 
   //default sync return, for async result either return true or Promise
   sendResponse(response);
+}
+
+function onCloseDialog(page, request){
+  closeDialog();
+
+  let needRefreshPageAnnotation = false;
+  let actions = request.payload.actions;
+
+  const actionNames = actions.map(action => action.name);
+  if(actionNames.includes('markAsUnknown')
+    || actionNames.includes('clearMark')
+    || actionNames.includes('saveNote')){
+    needRefreshPageAnnotation = true;
+  }
+
+  let visible = isPageAnnotationVisible();
+
+  let words = [];
+  const wordActionNames = ['markAsUnknown', 'clearMark']
+  actions.filter(action => wordActionNames.includes(action.name))
+    .forEach(action => words.push(...action.words));
+
+  let noteSelections = [];
+  actions.filter(action => action.name == 'saveNote')
+    .forEach(action => noteSelections.push(action.selection));
+
+  const refreshOptions = {
+    words, noteSelections
+  };
+    
+  if(needRefreshPageAnnotation){
+    refreshPageAnnotation(page, visible, refreshOptions);
+  } else{
+    //in case some word marked, refresh UI anyway
+    resetPageAnnotationVisibilityAndNotify(page, visible);
+  }
 }
 
 export { pageMessageListenerWithParams }

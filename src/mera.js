@@ -122,7 +122,7 @@ function myMain() {
 
       let enabled = getEnabled(options.switch.mode, siteOptions.switch.mode, page.language);
       if (enabled) {
-        initPageAnnotations(page).then((documentArticleMap) => {
+        initPageAnnotations(page, false, null).then((documentArticleMap) => {
           page.initDocumentMap(documentArticleMap, 1);
           resetPageAnnotationVisibilityAndNotify(page, true);
         });

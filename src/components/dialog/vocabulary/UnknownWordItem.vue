@@ -98,26 +98,27 @@ async function clickMarkToggle() {
 }
 
 async function clickMarkAsKnown() {
-    let baseForm = props.word.target;
+    let taregtWord = props.word.target;
     //console.log(`mark word as known ${baseForm}`);
-    let wordChanges = await markWordAsKnown(baseForm);
-    actionRecorder('markAsKnown');
+    let wordChanges = await markWordAsKnown(taregtWord);
+    
+    actionRecorder({name: 'markAsKnown', word: taregtWord} );
     sendMessageKnownWordsUpdated('markAsKnown', wordChanges);
 
     
 }
 async function clickMarkAsUnknown() {
-    let baseForm = props.word.target;
-    let wordChanges = await markWordAsUnknown(baseForm);
+    let taregtWord = props.word.target;
+    let wordChanges = await markWordAsUnknown(taregtWord);
     
-    actionRecorder('markAsUnknown');
+    actionRecorder({name: 'markAsUnknown', word: taregtWord} );
     sendMessageKnownWordsUpdated('markAsUnknown', wordChanges);
 }
 async function clickClearMark() {
-    let baseForm = props.word.target;
-    let wordChanges = await removeWordMark(baseForm);
+    let taregtWord = props.word.target;
+    let wordChanges = await removeWordMark(taregtWord);
 
-    actionRecorder('clearMark');
+    actionRecorder({name: 'clearMark', word: taregtWord} );
     sendMessageKnownWordsUpdated('clearMark', wordChanges);
 
      

@@ -26,10 +26,11 @@ const CONTENT_TYPE_NO_PARSE = 'noParse';
  * in order to show unknown word definition
  * @param {*} document 
  */
-function tokenizeTextNode(document, article, options, siteOptions, siteProfile, knownWords, partialTokenization=false) {
+function tokenizeTextNode(document, article, options, siteOptions, siteProfile, knownWords, partialTokenization, refreshOptions) {
     let simplifyDefinitionOptions = getSimplifyDefinitionOptions(options, siteOptions);
 
     //console.log('simplifyDefinitionOptions:'+ JSON.stringify(simplifyDefinitionOptions));
+    let refreshRanges = getRefreshRanges(article, refreshOptions);
     
     var tokenCount = 0;
     var tokenNodeCount = 0;
@@ -39,6 +40,15 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
 
     for(const nodeInfo of article.originalTextNodes){
         const { node, offset, length, content } = nodeInfo;
+
+        const needCheckRefreshRanges = refreshRanges != null;
+        if(needCheckRefreshRanges){
+            let inRanges = inRefreshRanges(nodeInfo, refreshRanges);
+            if(!inRanges){
+                continue;
+            }
+        }
+
         //return 'stop' will no longer process it internal content
         if(!siteProfile.canElementBeTokenized(node.parentElement)){
             continue;
@@ -248,6 +258,47 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
     gLogger.info(`${tokenNodeCount}/${tokenCount} DOM tokens generated`);
 }
 
+
+function getRefreshRanges(article, refreshOptions){
+    if(refreshOptions==null){
+        return null;
+    }
+
+    let ranges = [];
+    
+    const {words, noteSelections } = refreshOptions;
+
+    //mark as unknown word
+    if(words!=null && words.length >0){
+        for(const word of words) {
+            let tokens = article.targetWordMap.get(word);
+            for(const token of tokens){
+                let offset = token.sentenceOffsetOfArticle + token.offset;
+                ranges.push({offset: offset, length : token.length });
+            }
+        }
+    }
+
+    if(noteSelections!=null && noteSelections.length > 0){
+        for(const noteSelection of noteSelections){
+            let articleSelections = getArticleSelectionsFromHashSelection(article, noteSelection);
+            console.log(articleSelections);
+            for(const articleSelection of articleSelections){
+                let offset = articleSelection.start;
+                let length = articleSelection.end - articleSelection.start;
+                ranges.push({offset: offset, length : length });
+            }
+        }
+    }
+
+    return ranges;
+}
+
+function inRefreshRanges(nodeInfo, refreshRanges){
+    const nodeRange = {min : nodeInfo.offset, max: nodeInfo.offset + nodeInfo.length};
+    return refreshRanges.some(range => hasIntersections({min: range.offset, max: range.offset + range.length}, nodeRange));
+}
+
 function hasNote(nodeToken, notes){
     let nodeTokenRange = { min: nodeToken.offset, max: nodeToken.offset + nodeToken.length};
     for(const note of notes){
@@ -313,6 +364,8 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //snapshot end
 
         tokens: [],
+        //target word, token Array
+        targetWordMap: new Map(),
 
         currentSentenceNumber: 0,
         sentences: [],
@@ -799,8 +852,19 @@ function addParagraph(article, paragraphInfo){
 function addSentence(article, paragraph, sentenceInfo){
     let { sentences, sentenceMap, sentenceIdNumbersMap, segmentOffsetSentenceMap } = article;
 
-    console.log(sentenceInfo.tokens);
+    //console.log(sentenceInfo.tokens);
     article.tokens.push(...sentenceInfo.tokens);
+
+    //add to targetWordMap
+    for(const token of sentenceInfo.tokens){
+        let targetWord = token.targetWord;
+        let tokens = article.targetWordMap.get(targetWord);
+        if(tokens==null){
+            tokens = [];
+            article.targetWordMap.set(targetWord, tokens);
+        }
+        tokens.push(token);
+    }
 
     sentences.push(sentenceInfo);
 
@@ -915,16 +979,17 @@ function getArticleSelectionsFromSentenceHashSelection(article, sentenceHashSele
     return articleSelections;
 }
 
-function getNodeSelectionsFromSentenceHashSelection(article, sentenceHashSelection) {
+function getArticleSelectionsFromHashSelection(article, selection){
+    let articleSelections = [];
 
-    let articleSelections = getArticleSelectionsFromSentenceHashSelection(article, sentenceHashSelection);
-
-    let nodeSelections = [];
-    for(const articleSelection of articleSelections){
-        let nodeSelection = getNodeSelectionFromArticleSelection(article, articleSelection);
-        nodeSelections.push(nodeSelection);
+    let selectionType = selection.type;
+    if(selectionType === 'paragraph'){
+        articleSelections = getArticleSelectionsFromParagraphHashSelection(article, selection);
+    } else {
+        articleSelections = getArticleSelectionsFromSentenceHashSelection(article, selection);
     }
-    return nodeSelections;
+
+    return articleSelections;
 }
 
 function getArticleSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
@@ -956,9 +1021,9 @@ function getArticleSelectionsFromParagraphHashSelection(article, paragraphHashSe
     return articleSelections;
 }
 
-function getNodeSelectionsFromParagraphHashSelection(article, paragraphHashSelection) {
-
-    let articleSelections = getArticleSelectionsFromParagraphHashSelection(article, paragraphHashSelection);
+function getNodeSelectionFromHashSelection(article, selection){
+    
+    let articleSelections = getArticleSelectionsFromHashSelection(article, selection);
     
     let nodeSelections = [];
     for(const articleSelection of articleSelections){
@@ -1306,4 +1371,5 @@ function findArticleNotes(article, notes){
     return filteredNotes;
 }
 
-export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };
+
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getArticleSelectionsFromHashSelection, getNodeSelectionFromHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };

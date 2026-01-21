@@ -5,7 +5,7 @@ import log from 'loglevel'
 import { loadKnownWords, } from './vocabularyStore.js';
 import { isKnown, } from './language.js';
 import { getTargetWordFromElement } from './word.js';
-import { getNodeSelectionsFromSentenceHashSelection, getNodeSelectionsFromParagraphHashSelection, findArticleNotes } from './article.js';
+import { getNodeSelectionFromHashSelection, findArticleNotes } from './article.js';
 import { getNotes } from './service/noteService.js';
 import { getCurrentSiteOptions } from './current-site-options.js'
 import { mouseUpEventListenerWithParams, mouseMoveEventListenerWithParams } from './document/listener.js'
@@ -143,14 +143,8 @@ async function resetDocumentAnnotationVisibility(article, window, enabled, types
       for (let note of notes) {
         //one sentence selection could map to multiple node selections
         //let nodeSelections = getNodeSelectionsFromSentenceHashSelection(document, note.selection);
-        let nodeSelections;
-        let selectionType = note.selection.type;
-        if(selectionType === 'paragraph'){
-          nodeSelections = getNodeSelectionsFromParagraphHashSelection(article, note.selection);
-        } else {
-          nodeSelections = getNodeSelectionsFromSentenceHashSelection(article, note.selection);
-        }
-
+        let nodeSelections = getNodeSelectionFromHashSelection(article, note.selection);
+        
         for (let nodeSelection of nodeSelections) {
           //console.log('find node selection:' + JSON.stringify(nodeSelection));
           if (nodeSelection) {
@@ -281,7 +275,7 @@ function removeDocumentEventListener(page, document) {
 }
 
 
-async function preprocessDocument(page, article, document, isIframe, siteProfile, documentConfig, currentSiteOption, knownWords) {
+async function preprocessDocument(page, article, document, isIframe, siteProfile, documentConfig, currentSiteOption, knownWords, refreshOptions) {
     //console.log('preprocess document');
     let { window } = documentConfig;
 
@@ -325,7 +319,7 @@ async function preprocessDocument(page, article, document, isIframe, siteProfile
         let bIsPartialTokenizationEnabled = isPartialTokenizationEnabled(sysOptions.partialTokenization.mode, currentSiteOption.partialTokenization.mode, article.tokens.length, sysOptions.advanced.partialTokenizationTokenLengthMin);
 
         let operation = startOperation('tokenizeTextNode');
-        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords, bIsPartialTokenizationEnabled);
+        tokenizeTextNode(document, article, sysOptions, currentSiteOption, siteProfile, knownWords, bIsPartialTokenizationEnabled, refreshOptions);
         endOperation(operation);
         gLogger.info(operationToString(operation));
         
