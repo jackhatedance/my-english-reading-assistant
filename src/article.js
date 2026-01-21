@@ -232,19 +232,23 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 lastTokenPart = tokenPart;
             }
 
-            const parentElement = node.parentElement;
-            const nextSibling = node.nextSibling;
-            parentElement.removeChild(node);
-            for(const tokenPart of mergedTokenParts){
-                if (nextSibling) {
+            let oneTextNode = mergedTokenParts.length == 1 && mergedTokenParts[0].type == 'text';
+            
+            if(!oneTextNode) {
+                const parentElement = node.parentElement;
+                const nextSibling = node.nextSibling;
+                parentElement.removeChild(node);
+                for(const tokenPart of mergedTokenParts){
+                    if (nextSibling) {
 
-                    let newNode = createTokenNode(document, tokenPart);
-                    parentElement.insertBefore(newNode, nextSibling);
-                    updateMeaTokenOutHTML(newNode, tokenPart);
-                } else {
-                    let newNode = createTokenNode(document, tokenPart);
-                    parentElement.appendChild(newNode);
-                    updateMeaTokenOutHTML(newNode, tokenPart);
+                        let newNode = createTokenNode(document, tokenPart);
+                        parentElement.insertBefore(newNode, nextSibling);
+                        updateMeaTokenOutHTML(newNode, tokenPart);
+                    } else {
+                        let newNode = createTokenNode(document, tokenPart);
+                        parentElement.appendChild(newNode);
+                        updateMeaTokenOutHTML(newNode, tokenPart);
+                    }
                 }
             }
         }
