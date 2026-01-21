@@ -98,7 +98,7 @@ init();
         </div> 
       </div>
 
-      <div class="field" >
+      <div class="field" v-show="false">
         <label>{{ t('popup_site_partial_tokenization_label') }}<InformationTooltip :content="t('popup_site_partial_tokenization_tip')" linkType="guide" linkKeyword="弹窗-快速解析" effect="dark"/></label>
         <div class="inputs">
           <el-select data-testid="partial-tokenization-mode" class="partial-tokenization-mode" v-model="partialTokenizationMode" @change="onChangeSetting" size="small">
