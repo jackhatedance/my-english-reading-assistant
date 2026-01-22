@@ -160,7 +160,7 @@ async function onMarkAsUnknown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsUnknown(targetWord);
 
-    actionRecorder({name: 'markAsUnknown', word: taregtWord} );
+    actionRecorder({name: 'markAsUnknown', word: targetWord} );
 
     //console.log('send known words updated to content page');
     sendMessageToContentPage({
@@ -194,7 +194,7 @@ async function onMarkAsKnown() {
     let targetWord = props.word;
     let wordChanges = await markWordAsKnown(targetWord);
 
-    actionRecorder({name: 'markAsKnown', word: targetword});
+    actionRecorder({name: 'markAsKnown', word: targetWord});
 
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
@@ -211,7 +211,7 @@ async function onClearMark() {
     let wordChanges = await removeWordMark(targetWord);
     updateKnown();
 
-    actionRecorder({name: 'clearMark', word: targetword});
+    actionRecorder({name: 'clearMark', word: targetWord});
 
     sendMessageToContentPage({
         type: 'KNOWN_WORDS_UPDATED',
