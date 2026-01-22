@@ -78,7 +78,7 @@ init();
       </div>
       <div class="input">
         <div>
-          <label>{{ t('options_site_partial_tokenization_mode_label') }}<ExternalLink type="guide" keyword="默认快速解析模式"/></label>
+          <label>{{ t('options_site_partial_tokenization_mode_label') }}<ExternalLink type="guide" keyword="快速解析模式"/></label>
           <el-select data-testid="partial-tokenizationh-mode" class="partial-tokenizationh-mode" v-model="selectedPartialTokenizationMode" @change="onChangePartialTokenization" >
             
             <el-option :value="PARTIAL_TOKENIZATION_MODE_ON" :label="t('options_site_partial_tokenization_mode_on')" />

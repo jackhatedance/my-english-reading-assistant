@@ -598,7 +598,7 @@
         "message":"快速解析"
     },
     "options_site_partial_tokenization_mode_label":{
-        "message":"默认快速解析模式"
+        "message":"快速解析模式"
     },
     "options_site_partial_tokenization_mode_auto":{
         "message":"自动"

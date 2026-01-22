@@ -16,6 +16,7 @@ import log from 'loglevel'
 import { containsDefinitionGroupNames } from './dictionary/entry-utils.js'
 import { getMeaTokenElement, getFirstTextNode } from './token.js'
 import { hasIntersections } from './utils/range.js'
+import { startOperation, endOperation, operationToString } from './utils/operation-time-util.js'
 
 const gLogger = log.getLogger('article');
 
@@ -421,8 +422,10 @@ function parseDocument(document, options, siteOptions, skip = false) {
 
     if(!skip) {    
         //let lines = getParagraphLines2(document.body);
-        
+        const snapshotOperation = startOperation('snapshot');
         snapshot(document, article);
+        endOperation(snapshotOperation);
+        gLogger.info(operationToString(snapshotOperation));
 
         let blocks = splitByNoParseBlocks(article.textContent, article.newTagPositions.noParseRangeCollection);
         let lines = [];
@@ -440,7 +443,11 @@ function parseDocument(document, options, siteOptions, skip = false) {
         let newTagPositions = article.newTagPositions;
         //console.log('newTagPositions');
         //parse paragraph, token
+        const parseArticleOperation = startOperation('parseArticle');
         parseArticleTextContent(siteOptions, article, lines, newTagPositions);
+        endOperation(parseArticleOperation);
+        gLogger.info(operationToString(parseArticleOperation));
+
         //parse text node(offset)
         //parseArticleTextNodes(article, document.body, options, siteOptions);
 

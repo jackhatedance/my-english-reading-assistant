@@ -599,7 +599,7 @@
         "message":"Fast tokenization"
     },
     "options_site_partial_tokenization_mode_label":{
-        "message":"Default partial tokenization mode"
+        "message":"fast tokenization mode"
     },
     "options_site_partial_tokenization_mode_auto":{
         "message":"auto"
