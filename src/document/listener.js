@@ -82,7 +82,10 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       query = getQueryFromCaretPosition(document, article, event);
       
       if(query){//find word
-        let searchResult = searchWord(query, { dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
+        let searchResult = searchWord(query, { 
+          allowLemma: true,
+          lookupBase: 'Always',
+          dictionaryOptions: buildDictionaryOptions(currentSiteOption) });
 
         if(!searchResult){
           return;
@@ -186,7 +189,7 @@ function getQueryFromCaretPosition(document, article, event){
   let isWord = token.checked && token.checkWordResult.word != '';
   if(isWord){
     query = token.content;  
-  }
+      }
   
   return query;
 }
