@@ -205,6 +205,8 @@ function onClickCloseButton() {
     },
   },
     null, (response) => { });
+  
+  actions.value = [];  
 }
 
 </script>

@@ -150,7 +150,7 @@ function onCloseDialog(page, request){
   let words = [];
   const wordActionNames = ['markAsUnknown', 'clearMark']
   actions.filter(action => wordActionNames.includes(action.name))
-    .forEach(action => words.push(...action.words));
+    .forEach(action => words.push(action.word));
 
   let noteSelections = [];
   actions.filter(action => action.name == 'saveNote')
