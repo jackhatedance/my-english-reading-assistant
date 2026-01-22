@@ -374,6 +374,11 @@ async function getVocabularyLevel(){
 }
 
 async function onTrackEvents(events){
+  //NOT send data durign e2e tests
+  if(self.playwright){
+    return;
+  }
+
   const vocabularyLevel = await getVocabularyLevel();
 
   const userProperties = {

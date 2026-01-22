@@ -37,6 +37,10 @@ export const test = base.extend<{
     if (!background)
       background = await context.waitForEvent('serviceworker');
 
+    await background.evaluate(() => {
+       self.playwright = true; 
+      });
+
     const extensionId = background.url().split('/')[2];
     await use(extensionId);
   },
