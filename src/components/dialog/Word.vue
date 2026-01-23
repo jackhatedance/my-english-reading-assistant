@@ -251,7 +251,7 @@ init();
             <iframe v-if="definitionFormat == 'text'" @load="onIframeLoad" sandbox="allow-scripts allow-same-origin" ref="dictionaryIframeText" id="dictionary-iframe-text" class="content-iframe" src="definition.html" ></iframe>
         </div>
         <div class="word-mark-actions">
-            <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button @click="onMarkToggle" :title='markToggleTips'>
+            <div :class="{ 'word-mark-action': true, unknown: !knownRef }"><button data-testid="markWordToggle" @click="onMarkToggle" :title='markToggleTips'>
                 <img :src='tickImgUrl' />
             </button></div>
             <div class="word-mark-action"><button @click="onClearMark" :title='clearMarkTips'>

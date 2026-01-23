@@ -214,7 +214,7 @@ function onClickCloseButton() {
 <template>
   <Unavailable v-show="isShowUnavailable"></Unavailable>
   <div class="dialog-header">
-    <button @click="onClickCloseButton">X</button>
+    <button data-testid="dialogCloseButton" @click="onClickCloseButton">X</button>
   </div>
   
   <div v-if="isShowTabs" class="tab-container">

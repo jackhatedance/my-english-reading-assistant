@@ -2,6 +2,37 @@ import { test, expect } from './fixtures';
 
 
 
+test('dialog actions mark word boys', async ({ testPage, extensionId, popupPage }) => {
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
+
+
+  let word = testPage.page.locator("#transform mea-token[data-query='boys']");
+  await word.click();
+
+  const iframeLocator = testPage.page.frameLocator('#mea-vueapp-iframe');
+
+  await iframeLocator.locator("#tab-vocabulary").click();
+  const wordStatisticsLocator = iframeLocator.locator('#wordStatistics');
+  await expect(wordStatisticsLocator).toContainText("17/211");
+
+  await iframeLocator.locator("#tab-actions").click();
+  await iframeLocator.getByTestId("markWordToggle").click();
+  
+  await iframeLocator.getByTestId("dialogCloseButton").click();
+
+  await testPage.page.waitForTimeout(2000);
+
+  await word.click();
+
+  await iframeLocator.locator("#tab-vocabulary").click();
+  await expect(wordStatisticsLocator).toContainText("19/211");
+
+});
+
+
 
 test('dialog vocabulary unknown word definition', async ({ testPage, extensionId, popupPage }) => {
   await testPage.goto();
@@ -16,7 +47,7 @@ test('dialog vocabulary unknown word definition', async ({ testPage, extensionId
   const iframeLocator = testPage.page.frameLocator('#mea-vueapp-iframe');
 
   const wordStatisticsLocator = iframeLocator.locator('#wordStatistics');
-  await expect(wordStatisticsLocator).toContainText("17%");
+  await expect(wordStatisticsLocator).toContainText("17/211");
 
   await iframeLocator.locator("#tab-vocabulary").click();
   await iframeLocator.getByTestId("showAllDefinitions").click();

@@ -36,9 +36,6 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
     var tokenCount = 0;
     var tokenNodeCount = 0;
 
-    var knownWordsCount = 0;
-    var unknownWordsCount = 0;
-
     for(const nodeInfo of article.originalTextNodes){
         const { node, offset, length, content } = nodeInfo;
 
@@ -136,11 +133,6 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                     if(bIsWord){
                         bIsKnownWord = isKnown(targetWord, knownWords);
 
-                        if(bIsKnownWord){
-                            knownWordsCount ++;
-                        } else{
-                            unknownWordsCount ++;
-                        }
                     }
 
                     let tokenPartType;
@@ -255,9 +247,6 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
         }
     }
 
-    article.knownWordsCount = knownWordsCount;
-    article.unknownWordsCount = unknownWordsCount;
-
     delete article.originalTextNodes;
 
     gLogger.info(`${tokenNodeCount}/${tokenCount} DOM tokens generated`);
@@ -369,6 +358,7 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //snapshot end
 
         tokens: [],
+        wordsCount: 0,
         //target word, token Array
         targetWordMap: new Map(),
 
@@ -404,7 +394,7 @@ function parseDocument(document, options, siteOptions, skip = false) {
         textNodeMap: new Map(),
 
         unknownWordsCount: 0,
-        knownWordsCount: 0,
+        
 
     };
 
@@ -452,12 +442,50 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //parseArticleTextNodes(article, document.body, options, siteOptions);
 
         article.contentLength = document.body.textContent.length;
-        article.document = document;        
+        article.document = document;
+        
+        countWords(article);
     }
 
     gLogger.info(`${article.tokens.length} article tokens generated`);
 
     return article;
+}
+
+function countWords(article){
+    let wordsCount=0;
+
+    for(const token of article.tokens){
+        const { targetWord } = token;
+        let bIsWord = targetWord != '';
+        if(bIsWord){
+            wordsCount ++;
+        }
+    }
+
+    article.wordsCount = wordsCount;
+}
+
+function countUnknownWords(article, knownWords){
+    let unknownWordsCount=0;
+
+    for(const token of article.tokens){
+        const { targetWord } = token;
+        let bIsWord = targetWord != null && targetWord != '';
+        let bIsKnownWord;
+        if(bIsWord){
+            if(targetWord==null){
+                console.log('target word null');
+            }
+            bIsKnownWord = isKnown(targetWord, knownWords);
+
+            if(!bIsKnownWord){
+                unknownWordsCount ++;
+            }
+        }
+    }
+
+    article.unknownWordsCount = unknownWordsCount;
 }
 
 function splitByNoParseBlocks(content, noParseRangeCollection){
@@ -1383,4 +1411,4 @@ function findArticleNotes(article, notes){
 }
 
 
-export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getArticleSelectionsFromHashSelection, getNodeSelectionFromHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, countUnknownWords, findTokenInArticle, getArticleSelectionsFromHashSelection, getNodeSelectionFromHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };

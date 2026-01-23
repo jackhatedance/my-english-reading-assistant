@@ -11,7 +11,7 @@ import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
 import { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache } from './current-site-options.js'
 import { fixSiteDomain } from './site.js'
-import { parseDocument } from './article.js'
+import { parseDocument, countUnknownWords } from './article.js'
 import { canProcessStep, STEP_PARSE_DOCUMENT } from './document/process.js'
 
 import log from 'loglevel'
@@ -35,7 +35,7 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
     let unknownWords;
     let unknownWordsCount = 0;
     let knownWordsCount = 0;
-    let totalWordCount;
+    let totalWordCount = 0;
     let unknownWordsRatio;
     let readingDifficulty;
     if(options.sections.includes('word')) {
@@ -52,13 +52,13 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
 
             
             let article = documentArticleMap.get(document);
-            knownWordsCount += article.knownWordsCount;
+            totalWordCount += article.wordsCount;
             
         }
 
         unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
 
-        totalWordCount = unknownWordsCount + knownWordsCount;
+        knownWordsCount = totalWordCount - unknownWordsCount;
         unknownWordsRatio = unknownWordsCount / totalWordCount;
         readingDifficulty = getReadingDifficulty(unknownWordsRatio);
     }
@@ -185,7 +185,7 @@ async function initPageAnnotations(page, reuseArticle, refreshOptions) {
     if (!isDocumentAnnotationInitialized(document)) {
         let documentConfig = siteProfile.getDocumentConfig(window, document);
 
-        let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
+        let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions, knownWords);
 
         await preprocessDocument(page, article, document, false, siteProfile, documentConfig, currentSiteOptions, knownWords, refreshOptions);
         newDocumentArticleMap.set(document, article);
@@ -201,7 +201,7 @@ async function initPageAnnotations(page, reuseArticle, refreshOptions) {
         if (document) {
             if (!isDocumentAnnotationInitialized(document)) {
                 //console.log('start iframe preprocess document');
-                let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions);
+                let article = getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions, knownWords);
 
                 await preprocessDocument(page, article, document, true, siteProfile, documentConfig, currentSiteOptions, knownWords, refreshOptions);
                 
@@ -226,12 +226,15 @@ async function initPageAnnotations(page, reuseArticle, refreshOptions) {
     return newDocumentArticleMap;
 }
 
-function getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions){
+function getArticle(page, reuseArticle, document, documentConfig, sysOptions, currentSiteOptions, knownWords){
     let article;
     
     if(reuseArticle == true){
         article = page.documentArticleMap.get(document);
         
+        //re-count unknown words
+        countUnknownWords(article, knownWords);
+
         article.originalTextNodes = article.textNodes;
         article.textNodes = [];
         article.textNodeMap = new Map();
