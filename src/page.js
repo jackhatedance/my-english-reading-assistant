@@ -11,7 +11,7 @@ import { getTargetWordFromElement } from './word.js';
 import { preprocessDocument, cleanDocumentAnnotations } from './document.js'
 import { getCurrentSiteOptions, getCurrentSiteOptionsFromCache, initializeCurrentSiteOptionCache } from './current-site-options.js'
 import { fixSiteDomain } from './site.js'
-import { parseDocument, countUnknownWords } from './article.js'
+import { parseDocument } from './article.js'
 import { canProcessStep, STEP_PARSE_DOCUMENT } from './document/process.js'
 
 import log from 'loglevel'
@@ -232,9 +232,6 @@ function getArticle(page, reuseArticle, document, documentConfig, sysOptions, cu
     if(reuseArticle == true){
         article = page.documentArticleMap.get(document);
         
-        //re-count unknown words
-        countUnknownWords(article, knownWords);
-
         article.originalTextNodes = article.textNodes;
         article.textNodes = [];
         article.textNodeMap = new Map();

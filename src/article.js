@@ -128,7 +128,7 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                     let annotatedWordResult = annotateWord(nodeToken.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
                     const { targetWord, outerHTML} = annotatedWordResult;
                     
-                    let bIsWord = targetWord != '';
+                    let bIsWord = targetWord != null && targetWord != '';
                     let bIsKnownWord;
                     if(bIsWord){
                         bIsKnownWord = isKnown(targetWord, knownWords);
@@ -393,8 +393,6 @@ function parseDocument(document, options, siteOptions, skip = false) {
         //key is node, value is nodeInfo
         textNodeMap: new Map(),
 
-        unknownWordsCount: 0,
-        
 
     };
 
@@ -457,35 +455,13 @@ function countWords(article){
 
     for(const token of article.tokens){
         const { targetWord } = token;
-        let bIsWord = targetWord != '';
+        let bIsWord = targetWord != null && targetWord != '';
         if(bIsWord){
             wordsCount ++;
         }
     }
 
     article.wordsCount = wordsCount;
-}
-
-function countUnknownWords(article, knownWords){
-    let unknownWordsCount=0;
-
-    for(const token of article.tokens){
-        const { targetWord } = token;
-        let bIsWord = targetWord != null && targetWord != '';
-        let bIsKnownWord;
-        if(bIsWord){
-            if(targetWord==null){
-                console.log('target word null');
-            }
-            bIsKnownWord = isKnown(targetWord, knownWords);
-
-            if(!bIsKnownWord){
-                unknownWordsCount ++;
-            }
-        }
-    }
-
-    article.unknownWordsCount = unknownWordsCount;
 }
 
 function splitByNoParseBlocks(content, noParseRangeCollection){
@@ -1411,4 +1387,4 @@ function findArticleNotes(article, notes){
 }
 
 
-export { tokenizeTextNode, detokenizeTextNode, parseDocument, countUnknownWords, findTokenInArticle, getArticleSelectionsFromHashSelection, getNodeSelectionFromHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };
+export { tokenizeTextNode, detokenizeTextNode, parseDocument, findTokenInArticle, getArticleSelectionsFromHashSelection, getNodeSelectionFromHashSelection, getSentenceInstanceSelectionFromNodeSelection, getParagraphInstanceSelectionFromNodeSelection, getSentenceInstanceSelectionsFromSentenceHashSelection, getSelectedTextOfNote, findTokenInfoByNode, parseArticleTextNodes, findArticleNotes };
