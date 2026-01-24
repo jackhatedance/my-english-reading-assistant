@@ -38,4 +38,20 @@ function saveTextAsFile(text, name, ext = 'txt') {
     downloadLink.click();
   }
 
-  export { saveTextAsFile };
+  function cursorNearCaret(caretPosition, cursorPosition){
+    let targetRect = caretPosition.getClientRect();
+
+    // fix issue: cursor is at the end of the last line and caret at the head of current line
+    // cursor and caret cannot be too far
+      
+    let distanceX = Math.abs(targetRect.x - cursorPosition.x);
+    
+    const MAX_DISTANCE = 20;
+    if(distanceX > MAX_DISTANCE){
+      return false;
+    }
+
+    return true;
+  }
+
+  export { saveTextAsFile, cursorNearCaret };

@@ -12,6 +12,7 @@ import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveIn
 import { getCurrentSiteOptions } from '../current-site-options.js'
 import { isFeatureEnabled, FEATURE_NOTE } from '../feature-toggle.js'
 import { handleTooltipForCaretPosition } from '../tooltip.js'
+import { cursorNearCaret } from '../html-utils.js'
 
 var gMouseMoveTimer;
 
@@ -179,7 +180,13 @@ function getQueryFromCaretPosition(document, article, event){
   
   let x = event.clientX;
   let y = event.clientY;
+  const cursorPosition = { x, y };
   const caretPosition = document.caretPositionFromPoint(x, y);
+
+  let isNear = cursorNearCaret(caretPosition, cursorPosition);
+  if(!isNear){
+    return;
+  }
 
   const { offsetNode, offset } = caretPosition;
   let tokenInfo = findTokenInfoByNode(article, offsetNode, offset);
@@ -198,9 +205,9 @@ function mouseStopped(event, page, document, documentConfig, options, siteOption
   let x = event.clientX;
   let y = event.clientY;
   const caretPosition = document.caretPositionFromPoint(x, y);
-  let position = {x, y};
+  let cursorPosition = {x, y};
   
-  handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, position);
+  handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, cursorPosition);
 }
 
 function mouseMoveEventListenerWithParams(event, page, document, documentConfig, options, siteOptions) {

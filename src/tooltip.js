@@ -13,6 +13,7 @@ import { isElementDetached } from './html.js'
 import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './interaction-utils.js'
 import { getCurrentSiteOptionsFromCache } from './current-site-options.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
+import { cursorNearCaret } from './html-utils.js'
 
 import log from 'loglevel'
 
@@ -308,7 +309,7 @@ function showTooltipForMeaToken(page, document, documentConfig, options, siteOpt
   }
 }
 
-async function handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, position){
+async function handleTooltipForCaretPosition(page, document, documentConfig, options, siteOptions, caretPosition, cursorPosition){
   const definitionTooltipElement = getTooltipElement();
   //console.log('timer 2');
   //let query = ele.getAttribute('data-query');
@@ -326,14 +327,7 @@ async function handleTooltipForCaretPosition(page, document, documentConfig, opt
   }
 
   let targetRect = caretPosition.getClientRect();
-
-  // fix issue: cursor is at the end of the last line and caret at the head of current line
-  // cursor and caret cannot be too far
-    
-  let distanceX = Math.abs(targetRect.x - position.x);
-  
-  const MAX_DISTANCE = 20;
-  if(distanceX > MAX_DISTANCE){
+  if(!cursorNearCaret(caretPosition, cursorPosition)){
     hideTooltip();
     return;
   }
