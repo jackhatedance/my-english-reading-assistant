@@ -176,7 +176,6 @@ function getQueryFromMeaToken(event){
 }
 
 function getQueryFromCaretPosition(document, article, event){
-  let query;
   
   let x = event.clientX;
   let y = event.clientY;
@@ -194,9 +193,7 @@ function getQueryFromCaretPosition(document, article, event){
   let token = sentenceInfo.tokens[tokenIndex];
 
   let isWord = token.checked && token.checkWordResult.word != '';
-  if(isWord){
-    query = token.content;  
-      }
+  let query = isWord ? token.word : token.content;
   
   return query;
 }

@@ -32,7 +32,7 @@ function tokenizeSentence(checkWord, sentence, noParse, offsetOfArticle, newTagP
     } else {
     //split by space, dash (dash is not hyphen)
     const regexp = /([^\s—]+)|([\s—]+)/g;
-    parts = _splitTextByRegex(sentence, regexp, 0, null, null);
+    parts = _splitTextByRegex(sentence, regexp, 0, null, null, null);
     parts = splitPartsTextByNewLines(checkWord, parts, offsetOfArticle, newTagPositions.newLinePositions);
     parts = splitPartsTextByNewWords(checkWord, parts, offsetOfArticle, newTagPositions.newWordPositions);
     //console.log(parts);
@@ -113,16 +113,16 @@ function splitCamelWords(checkWord, part, parts){
     let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
         //part.content = checkWordResult.word;
-        part.checkWordResult = checkWordResult;
-        part.checked = true;
+        setPartCheckWordResult(part, checkWordResult);
+
         parts.push(part);
     } else {
-        //step 2: split compound word
-        const regexp2 = /([A-Z][^A-Z\s]+)/g;
-        let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
-        for(const subPart of subParts){
-            parts.push(subPart);
-        }
+    //step 2: split compound word
+    const regexp2 = /([A-Z][^A-Z\s]+)/g;
+    let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
+    for(const subPart of subParts){
+        parts.push(subPart);
+    }
     }
 }
 
@@ -132,16 +132,15 @@ function splitSlashWords(checkWord, part, parts){
     let checkWordResult = checkWord(contentWithoutPunctuation, 'Always');            
     if(checkWordResult){
         //part.content = checkWordResult.word;
-        part.checkWordResult = checkWordResult;
-        part.chcked = true;
+        setPartCheckWordResult(part, checkWordResult);
         parts.push(part);
     } else {
-        //step 2: split word
-        const regexp2 = /([/])|([^/]+)/g;
-        let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
-        for(const subPart of subParts){
-            parts.push(subPart);
-        }
+    //step 2: split word
+    const regexp2 = /([/])|([^/]+)/g;
+    let subParts = _splitTextByRegex(originalContent, regexp2, part.offset);
+    for(const subPart of subParts){
+        parts.push(subPart);
+    }
     }
 }
 
@@ -153,8 +152,9 @@ function splitCompoundWord(checkWord, part, parts){
     let guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuation);            
     if(guessWordResult){
         //part.content = guessWordResult;
-        part.checkWordResult = checkWord(guessWordResult, 'Always');
-        part.checked = true;
+        let checkWordResult = checkWord(guessWordResult, 'Always');        
+        setPartCheckWordResult(part, checkWordResult);
+        
         parts.push(part);
     } else {
         //step 2: eliminate hyphen then check word
@@ -162,8 +162,9 @@ function splitCompoundWord(checkWord, part, parts){
         guessWordResult = guessWordOfNormal(checkWord, contentWithoutPunctuationAndHyphen);  
         if(guessWordResult){
             //part.content = guessWordResult;
-            part.checkWordResult = checkWord(guessWordResult, 'Always');
-            part.checked = true;
+            let checkWordResult = checkWord(guessWordResult, 'Always');        
+            setPartCheckWordResult(part, checkWordResult);
+
             parts.push(part);
         } else {
             //step 3: split compound word by hyphen
@@ -309,8 +310,9 @@ function guessContinuousTense(checkWord, parts, part){
 function guessPartPhraseBaseWord(checkWord, parts, part){
 
     if(!part.checked){
+        let baseWord = part.baseWord? part.baseWord : part.word;
         part.phrase = {
-            baseWord: part.content,
+            baseWord: baseWord,
         };
         return;
     }
@@ -403,12 +405,8 @@ function guessPartWord(checkWord, part){
         //part.content = guessResult.content;
         if(!part.checked) {
             let checkWordResult = checkWord(guessResult.content, 'Always');
-            if(checkWordResult){
-                part.checkWordResult = checkWordResult;
-                part.checked = true;
-                part.baseWord = checkWordResult.baseWord; 
-                part.targetWord = getTargetWord(checkWordResult.word, checkWordResult.baseWord);
-            }
+            
+            setPartCheckWordResult(part, checkWordResult);
             
         }
     }
@@ -472,20 +470,12 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
             let cleanContent = removeMaskedChars(content, submask);
             cleanContent = sameLengthTrimPunctuations(cleanContent);
             
-            let contentWithoutPunctuation = trimPunctuations(cleanContent);
-            //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
             partContent = cleanContent;
             
+            let contentWithoutPunctuation = trimPunctuations(cleanContent);
+            //console.log('contentWithoutPunctuation:'+contentWithoutPunctuation);
             if(checkWord){
                 checkWordResult = checkWord(contentWithoutPunctuation,'Always');
-                
-                if(checkWordResult){
-                    partContent = checkWordResult.word;
-                    checked = true;
-                } else {
-                    partContent = contentWithoutPunctuation;
-                    checked = false;
-                }
             }
         } else {
             partContent = content;
@@ -496,12 +486,13 @@ function _splitTextByRegex(originalSentence, regexp, baseIndex, mask, originalMa
             originalContent: originalContent,
             mask: submask,
             content: partContent,//puncutations either standard or replaced by space, same length with original content
-            checkWordResult: checkWordResult,
-            checked: checked,
             //relative to sentence
             offset: matchStartIndex + baseIndex,
             length: length,
         };
+
+        setPartCheckWordResult(part, checkWordResult);
+
         parts.push(part);
 
         lastMatchEndIndex = matchEndIndex;
@@ -821,6 +812,26 @@ function checkAndPushPart(parts, part){
     }
     
     parts.push(part);
+}
+
+function setPartCheckWordResult(part, checkWordResult){
+    part.checkWordResult = checkWordResult;
+
+    if(checkWordResult){
+        
+        part.word = checkWordResult.word; 
+        part.baseWord = checkWordResult.baseWord; 
+        part.targetWord = getTargetWord(checkWordResult.word, checkWordResult.baseWord);
+
+        part.checked = true;
+    } else {
+    
+        part.word = null; 
+        part.baseWord = null; 
+        part.targetWord = null;
+        
+        part.checked = false;
+    }
 }
 
 export { tokenizeSentence, tokenizeNodeText };

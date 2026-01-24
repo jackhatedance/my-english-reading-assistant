@@ -318,7 +318,23 @@ test('unfamiliar word tag SUP', async ({ testPage, extensionId, popupPage }) => 
   
 });
 
+test('tokenize last word of sentence said', async ({ testPage, extensionId, popupPage }) => {
+  
+  await testPage.goto();
+  
+  await popupPage.goto(extensionId);
+  await popupPage.toggle();
 
+
+  let word = testPage.page.locator("#last-word-of-sentence mea-token[data-query='said']");
+  await expect(word).toHaveText('said.');
+  await expect(word).toHaveAttribute('data-word', 'said');
+  await expect(word).toHaveAttribute('data-base-word', '');
+  await expect(word).toHaveAttribute('data-target-word', 'said');
+  await expect(word).toHaveAttribute('data-footnote', 'a. 上述的; say的过去式和过去分词');
+  await expect(word).toHaveAttribute('data-footnote-short', 'a. 上述的; say的过去式和过去分词');
+  
+});
 
 test('tokenize punctuation double quotation am', async ({ testPage, extensionId, popupPage }) => {
   

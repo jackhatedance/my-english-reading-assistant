@@ -17,6 +17,6 @@ test('unrecognized words capturing', async ({ optionsPage, testPage, extensionId
   
   await optionsPage.goto(extensionId); 
   await optionsPage.gotoTab('unrecognized-words');
-  await expect(optionsPage.unrecognizedWords).toHaveValue('am.\nAlice\ntokenization');
+  await expect(optionsPage.unrecognizedWords).toHaveValue('Alice\ntokenization');
   
 });

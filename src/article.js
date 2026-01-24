@@ -91,6 +91,8 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 let nodeToken = {
                     originalContent: nodeTokenOriginalContent,
                     content: articleToken.content,
+
+                    word: articleToken.word,
                     
                     offset: nodeTokenStartOffset,
                     length: nodeTokenContentLength,
@@ -111,9 +113,9 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 //note
                 let hasNoteResult = hasNote(nodeToken, article.notes);
                 
-                let query = nodeToken.content; 
+                let query = nodeToken.word? nodeToken.word: trimPunctuations(nodeToken.content); 
                 //console.log('before trim punctuation:'+query);
-                query = trimPunctuations(query);
+                
                 //console.log('nodeTokens to query:'+query);
                 
                 let searchResult = searchWord(query, {                    
@@ -796,7 +798,7 @@ function parseArticleTextNodes(article, element, options, siteOptions){
                 if(token.checkWordResult) {
                     let contentWithoutPunctuation = trimPunctuations(token.content);
                     //console.log(contentWithoutPunctuation);
-                    let searchResult = searchWord(token.checkWordResult.word, {
+                    let searchResult = searchWord(token.word, {
                         allowLemma: true,
                         lookupBase: 'Always',
                         transform: token.transform,

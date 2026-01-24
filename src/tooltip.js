@@ -351,7 +351,7 @@ async function handleTooltipForCaretPosition(page, document, documentConfig, opt
     return;
   }
 
-  let query = token.content;
+  let query = token.word? token.word : trimPunctuations(token.content);
   let searchResult = searchWord(query, { 
   allowLemma: true,
   lookupBase: 'Always',
