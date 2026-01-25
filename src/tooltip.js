@@ -14,6 +14,7 @@ import { INTERACTION_KEY_HOVER_WORD, getEffectiveInteractionOption } from './int
 import { getCurrentSiteOptionsFromCache } from './current-site-options.js'
 import { isBionicHighlightedElement } from './bionic/bionic-utils.js'
 import { cursorNearCaret } from './html-utils.js'
+import { trimPunctuations } from './text/textUtils.js';
 
 import log from 'loglevel'
 
