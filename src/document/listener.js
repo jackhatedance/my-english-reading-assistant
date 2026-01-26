@@ -11,7 +11,7 @@ import { showDialog } from '../dialog.js'
 import { INTERACTION_KEY_CLICK_WORD, INTERACTION_KEY_SELECT_TEXT, getEffectiveInteractionOption } from '../interaction-utils.js'
 import { getCurrentSiteOptions } from '../current-site-options.js'
 import { isFeatureEnabled, FEATURE_NOTE } from '../feature-toggle.js'
-import { handleTooltipForCaretPosition } from '../tooltip.js'
+import { handleTooltipForCaretPosition, hideTooltip } from '../tooltip.js'
 import { cursorNearCaret } from '../html-utils.js'
 
 var gMouseMoveTimer;
@@ -155,6 +155,7 @@ async function mouseUpEventListenerWithParams(event, document, options, currentS
       sendMessageToEmbeddedApp(request, sender, sendResponse);
 
       if(menuItems.length>0){
+        hideTooltip();
         showDialog(menuItems);
       }
       
