@@ -25,7 +25,7 @@ var page = {
   siteInfo: null,
   siteProfile: null,
 
-  documentArticleMap: null,
+  documentArticleMap: new Map(),
   
   monitoring: false,
 
