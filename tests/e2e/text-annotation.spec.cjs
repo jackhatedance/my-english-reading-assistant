@@ -316,6 +316,16 @@ test('unfamiliar word tag SUP', async ({ testPage, extensionId, popupPage }) => 
   await expect(word).toHaveAttribute('data-footnote', 'prep. 在; 向; 对');
   await expect(word).toHaveAttribute('data-footnote-short', 'prep. 在; 向; 对');
   
+
+
+  word = testPage.page.locator("#new-word-tag-sup mea-token[data-query='girls']");
+  await expect(word).toHaveText('girls');
+  await expect(word).toHaveAttribute('data-word', 'girls');
+  await expect(word).toHaveAttribute('data-base-word', 'girl');
+  await expect(word).toHaveAttribute('data-target-word', 'girl');
+  await expect(word).toHaveAttribute('data-footnote', 'n. 女孩; 少女; 女佣');
+  await expect(word).toHaveAttribute('data-footnote-short', 'n. 女孩; 少女; 女佣');
+  
 });
 
 test('tokenize last word of sentence said', async ({ testPage, extensionId, popupPage }) => {

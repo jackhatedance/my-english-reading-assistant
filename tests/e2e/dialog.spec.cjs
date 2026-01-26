@@ -47,7 +47,7 @@ test('dialog vocabulary unknown word definition', async ({ testPage, extensionId
   const iframeLocator = testPage.page.frameLocator('#mea-vueapp-iframe');
 
   const wordStatisticsLocator = iframeLocator.locator('#wordStatistics');
-  await expect(wordStatisticsLocator).toContainText("17/101");
+  await expect(wordStatisticsLocator).toContainText("17/102");
 
   await iframeLocator.locator("#tab-vocabulary").click();
   await iframeLocator.getByTestId("showAllDefinitions").click();
