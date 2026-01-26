@@ -255,7 +255,7 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   if(!tooltipEventListeners.meaWordMouseEnterListener){
     tooltipEventListeners.meaWordMouseEnterListener = () => {
       //this function must be sync. otherwise the timer won't work correctly.
-      //console.log('mouse enter');
+      console.log('mouse enter');
       let siteOptions = getCurrentSiteOptionsFromCache();
       let hoverWordEnabled = getEffectiveInteractionOption(options, siteOptions, INTERACTION_KEY_HOVER_WORD);
       if(!hoverWordEnabled){
@@ -277,7 +277,7 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   if(!tooltipEventListeners.meaWordMouseLeaveListener){
     tooltipEventListeners.meaWordMouseLeaveListener = () => {
       //this function must be sync. otherwise the timer won't work correctly.
-      //console.log('mouse leave');    
+      console.log('mouse leave');    
       let timeout = setTimeout(() => {
         hideTooltip(definitionTooltipElement);   
       }, 100); 
@@ -288,9 +288,9 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   const meaWords = document.querySelectorAll('.mea-word');
   //console.log(`add mouseenter event listener for mea-word`);
   meaWords.forEach(function(ele) {
-    ele.addEventListener('mouseenter', tooltipEventListeners.meaWordMouseEnterListener);
+    //ele.addEventListener('mouseenter', tooltipEventListeners.meaWordMouseEnterListener);
 
-    ele.addEventListener('mouseleave', tooltipEventListeners.meaWordMouseLeaveListener);
+    //ele.addEventListener('mouseleave', tooltipEventListeners.meaWordMouseLeaveListener);
   });
 }
 
