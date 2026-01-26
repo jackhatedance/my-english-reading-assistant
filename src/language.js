@@ -173,7 +173,7 @@ function searchWordWithDict(query, options, dicts){
             if(hasOnlyLinkOrFormDefinition(lookupResult.json)){
                 deepLookupResult = deepLookup(lookupResult, options);
 
-                if(deepLookupResult){
+                if(deepLookupResult && word != deepLookupResult.word){
                     baseSearchType='lemma';
                     baseWord = deepLookupResult.word;
                 }
@@ -183,7 +183,7 @@ function searchWordWithDict(query, options, dicts){
         if(!baseWord && options.lookupBase == 'Always'){
             let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
             
-            if(baseWordResult){
+            if(baseWordResult && word != baseWordResult.word){
                 //console.log(baseWordResult);
                 baseSearchType='lemma';
                 baseWord = baseWordResult.word;
@@ -195,7 +195,7 @@ function searchWordWithDict(query, options, dicts){
             
             let baseWordResult = getBaseWord(word, options, [lookupResult.dictionaryName], lookupResult);
             
-            if(baseWordResult){
+            if(baseWordResult && word != baseWordResult.word){
                 //console.log(baseWordResult);
                 baseSearchType='lemma';
                 baseWord = baseWordResult.word;

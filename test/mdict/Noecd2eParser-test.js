@@ -343,7 +343,20 @@ describe('mdict new-oxford-ec-dual parser', function () {
         assert.equal(parseResult[0].phrases[0], "be wrapped up in");
         assert.equal(parseResult[0].phrases[1], "wrap up");
         assert.equal(parseResult[0].phrases[2], "wrap something up");
-      });
+    });
+
+    it('noecd2e moose', async function () {
+        let html = this.lookup('moose');
+        let parseResult = this.parser.parse(html);
+        //console.log(JSON.stringify(parseResult));
+        //assert(tokens.length === 2,"test");
+  
+  
+        assert.equal(parseResult[0].definitionGroups.length, 1);
+        assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "<北美>同ELK");
+        assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "elk");
+        
+    });
   });
   
 });
