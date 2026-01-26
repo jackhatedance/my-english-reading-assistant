@@ -211,36 +211,49 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
   gPage = page;
   //console.log('addTooltipEventListener');
   const definitionTooltipElement = getTooltipElement();
-  
-  definitionTooltipElement.shadowRoot.addEventListener('click', (event) => {
-    let tooltipButton = event.target.closest('.mea-tooltip-button');
-    if(!tooltipButton){
-      let word = definitionTooltipElement.getAttribute('data-word');
-      let dictionary = definitionTooltipElement.getAttribute('data-dictionary');
-      
-      clickHandler(word, dictionary);
-    }
-  });
 
-  definitionTooltipElement.addEventListener('mouseenter', () => {
-    gCursorInTooltip = true;
-    //console.log('clearTimeout 1');
-    clearTooltipTimeout();
-  });
+  let tooltipEventListeners = page.tooltipEventListeners;
+  if(!tooltipEventListeners){
+    tooltipEventListeners = {};
+    page.tooltipEventListeners = tooltipEventListeners;
+  }
 
-  definitionTooltipElement.addEventListener('mouseleave', () => {
-    gCursorInTooltip = false;
-    let timeout = setTimeout(() => {
-      //console.log('timer 1');
-      hideTooltip(definitionTooltipElement); 
-    }, 100);
-    clearAndSetTooltipTimeout(timeout);
-  });
+  if(!tooltipEventListeners.clickListener){
+    tooltipEventListeners.clickListener = (event) => {
+      let tooltipButton = event.target.closest('.mea-tooltip-button');
+      if(!tooltipButton){
+        let word = definitionTooltipElement.getAttribute('data-word');
+        let dictionary = definitionTooltipElement.getAttribute('data-dictionary');
+        
+        clickHandler(word, dictionary);
+      }
+    };
+  }
+  definitionTooltipElement.shadowRoot.addEventListener('click', tooltipEventListeners.clickListener);
 
-  const meaWords = document.querySelectorAll('.mea-word');
-  //console.log(`add mouseenter event listener for mea-word`);
-  meaWords.forEach(function(ele) {
-    ele.addEventListener('mouseenter', function() {
+  if(!tooltipEventListeners.mouseEnterListener){
+    tooltipEventListeners.mouseEnterListener = () => {
+        gCursorInTooltip = true;
+        //console.log('clearTimeout 1');
+        clearTooltipTimeout();
+      };
+  }
+  definitionTooltipElement.addEventListener('mouseenter', tooltipEventListeners.mouseEnterListener);
+
+  if(!tooltipEventListeners.mouseLeaveListener){
+    tooltipEventListeners.mouseLeaveListener = () => {
+        gCursorInTooltip = false;
+        let timeout = setTimeout(() => {
+          //console.log('timer 1');
+          hideTooltip(definitionTooltipElement); 
+        }, 100);
+        clearAndSetTooltipTimeout(timeout);
+      };
+  }
+  definitionTooltipElement.addEventListener('mouseleave', tooltipEventListeners.mouseLeaveListener);
+
+  if(!tooltipEventListeners.meaWordMouseEnterListener){
+    tooltipEventListeners.meaWordMouseEnterListener = () => {
       //this function must be sync. otherwise the timer won't work correctly.
       //console.log('mouse enter');
       let siteOptions = getCurrentSiteOptionsFromCache();
@@ -258,16 +271,26 @@ function addTooltipEventListener(page, document, documentConfig, clickHandler, s
       }, TOOLTIP_DELAY_IN_MILLISECOND); 
       clearAndSetTooltipTimeout(timeout);      
     
-    });
+    };
+  }
 
-    ele.addEventListener('mouseleave', function() {
+  if(!tooltipEventListeners.meaWordMouseLeaveListener){
+    tooltipEventListeners.meaWordMouseLeaveListener = () => {
       //this function must be sync. otherwise the timer won't work correctly.
       //console.log('mouse leave');    
       let timeout = setTimeout(() => {
         hideTooltip(definitionTooltipElement);   
       }, 100); 
       clearAndSetTooltipTimeout(timeout);  
-    });
+    };
+  }
+
+  const meaWords = document.querySelectorAll('.mea-word');
+  //console.log(`add mouseenter event listener for mea-word`);
+  meaWords.forEach(function(ele) {
+    ele.addEventListener('mouseenter', tooltipEventListeners.meaWordMouseEnterListener);
+
+    ele.addEventListener('mouseleave', tooltipEventListeners.meaWordMouseLeaveListener);
   });
 }
 
