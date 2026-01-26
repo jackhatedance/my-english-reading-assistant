@@ -52,8 +52,9 @@ async function getPageInfo(siteProfile, documentArticleMap, options) {
 
             
             let article = documentArticleMap.get(document);
-            totalWordCount += article.wordsCount;
-            
+            if(article){
+                totalWordCount += article.wordsCount;
+            }
         }
 
         unknownWords = Array.from(unknownWordMap, ([name, value]) => ({ base: name, root: value.root }));
