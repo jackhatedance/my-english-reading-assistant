@@ -75,10 +75,9 @@ function getPronunciation(searchResult, targetWord, pronunciationRegion){
 
 }
 
-function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions, pronunciationRegion, siteOptions) {
+function annotateWord(token, searchResult, sentenceId, sentenceNumber, tokenNumber, simplifyDefinitionOptions, pronunciationRegion, bionicOptions) {
     let annotationParameters = buildAnnotationParameters(searchResult, simplifyDefinitionOptions, pronunciationRegion);
     let { pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts } = annotationParameters;
-    let bionicOptions = siteOptions.content.bionic;
     let formatted = format(token, pronunciation, definition, shortDefinition, middleDefinition, query, word, baseWord, targetWord, parts, sentenceId, sentenceNumber, tokenNumber, bionicOptions);
     //console.log('formatted:'+formatted);
 

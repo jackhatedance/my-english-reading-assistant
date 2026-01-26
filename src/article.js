@@ -127,7 +127,11 @@ function tokenizeTextNode(document, article, options, siteOptions, siteProfile, 
                 //console.log(JSON.stringify(searchResult));
                 //finally,
                 if (searchResult) {// find the correct form which has definition in dictionary
-                    let annotatedWordResult = annotateWord(nodeToken.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, siteOptions);
+                    let bionicOptions = structuredClone(siteOptions.content.bionic);
+                    if(partialTokenization){
+                        bionicOptions.enabled = false;
+                    }
+                    let annotatedWordResult = annotateWord(nodeToken.originalContent, searchResult, '', '', 0, simplifyDefinitionOptions, options.pronunciation.region, bionicOptions);
                     const { targetWord, outerHTML} = annotatedWordResult;
                     
                     let bIsWord = targetWord != null && targetWord != '';
