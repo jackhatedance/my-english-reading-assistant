@@ -679,28 +679,26 @@ function _splitPartByNewLines(checkWord, part, positions) {
     let originalContent = subtext;
     let guessWordResult = guessWordOfCrossLine(checkWord, originalContent, submask);
     let content;
-    let checked;
     let checkWordResult;
     if(guessWordResult){
         content = guessWordResult.content;
         if(guessWordResult.checkType=='content'){
-            checked = true;
             checkWordResult = checkWord(content, 'Always');
         }
     }else {
         content = originalContent;
-        checked = false;
     }
 
     let subpart = {
         originalContent: originalContent,
         mask: submask,
         content: content,
-        checked: checked,
-        checkWordResult: checkWordResult,
         offset: startTextIndex + part.offset,
         length: subtext.length,
     };
+
+    setPartCheckWordResult(subpart, checkWordResult);
+
     checkAndPushPart(parts2, subpart);       
     
     return parts2;
@@ -726,17 +724,7 @@ function _splitPartByNewWords(checkWord, part, positions) {
         
         let originalContent = subtext;
         
-        let content, checked;
-        /*
-        if(checkWordResult){
-            content = checkWordResult;
-            checked = true;
-        } else {
-            content = originalContent;
-            checked = false;
-        }
-            */
-        content = originalContent;
+        let content = originalContent;
         
         let subpart = {
             originalContent: originalContent,
@@ -760,24 +748,18 @@ function _splitPartByNewWords(checkWord, part, positions) {
     
     let originalContent = subtext;
     
-    let content, checked;
-    if(checkWordResult){
-        content = checkWordResult.word;
-        checked = true;
-    } else {
-        content = originalContent;
-        checked = false;
-    }
-
+    let content = subtext;
+    
     let subpart = {
         originalContent: originalContent,
         content: content,
         mask: submask,
-        checkWordResult: checkWordResult,
-        checked: checked,
         offset: startTextIndex + part.offset,
         length: originalContent.length,
     };
+
+    setPartCheckWordResult(subpart, checkWordResult);
+
     checkAndPushPart(parts2, subpart);     
     
     return parts2;
