@@ -180,7 +180,7 @@ const defaultSwitchMode = computed(() => {
 function onChangePageEnabled(){
     //emit('reload-page-info');
     //get REAL state from page, because the switch state may not same with page state
-    getPageInfo((pageInfo) => {
+    getContentPageInfo((pageInfo) => {
       let currentPageState = pageInfo.visible;
         toggleEnabled(currentPageState);
     });
@@ -328,7 +328,7 @@ function toggleEnabled(currentValue) {
     });
 }
 
-function getPageInfo(resolve){
+function getContentPageInfo(resolve){
     // Communicate with content script of
     // active tab by sending a message
     let queryOptions = { active: true, currentWindow: true };

@@ -49,7 +49,7 @@ const actionRecorder = (action) => {
 
 provide('action-recorder', actionRecorder);
 
-async function getPageInfo() {
+async function getContentPageInfo() {
   let sender = null;
   //console.log('get pageInfo');
   props.sendMessageToContentPage({
@@ -108,7 +108,7 @@ function messageListener(request, sender, sendResponse) {
   //console.log('receive message:'+request.type);
   let response = {};
   if (request.type === 'LOAD') {
-    getPageInfo();
+    getContentPageInfo();
   } else if (request.type === 'UPDATE_PAGE_INFO') {
     updatePageInfo(request.payload.pageInfo);
   } else if (request.type === 'RESET_PAGE_ANNOTATION_VISIBILITY_FINISHED') {
@@ -117,7 +117,7 @@ function messageListener(request, sender, sendResponse) {
       return;
     }
 
-    getPageInfo();
+    getContentPageInfo();
 
     // Log message coming from the `request` parameter
     //console.log(request.payload.message);

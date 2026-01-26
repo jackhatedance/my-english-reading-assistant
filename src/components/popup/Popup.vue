@@ -31,7 +31,7 @@ function onReloadPageInfo(){
 
 }
 
-function getPageInfo(resolve){
+function getContentPageInfo(resolve){
     // Communicate with content script of
     // active tab by sending a message
     let queryOptions = { active: true, currentWindow: true };
@@ -66,7 +66,7 @@ function getPageInfo(resolve){
 
 const init = async () => {
     options.value = getOptionsFromCache();
-    getPageInfo((_pageInfo) => {
+    getContentPageInfo((_pageInfo) => {
       pageInfo.value = _pageInfo;
     });
 };
