@@ -18,7 +18,7 @@ class TextDefinitionParser extends DefinitionParser {
         }
     }
 
-    parse(rawDefinition) {
+    parse(query, rawDefinition) {
         if(!rawDefinition){
             return [];
         }

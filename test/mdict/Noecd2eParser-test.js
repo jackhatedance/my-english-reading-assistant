@@ -23,7 +23,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e good', async function () {
       let html = this.lookup('good');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('good', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -53,7 +53,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e phrase good for', async function () {
       let html = this.lookup('good for');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('good for', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -65,7 +65,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e phrase take after', async function () {
       let html = this.lookup('take after');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('take after', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -75,7 +75,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e draggle', async function () {
       let html = this.lookup('draggle');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('draggle', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -89,7 +89,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e titter', async function () {
       let html = this.lookup('titter');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('titter', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -104,7 +104,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e -et', async function () {
       let html = this.lookup('-et');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('-et', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -117,7 +117,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e feathers link', async function () {
       let html = this.lookup('feathers');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('feathers', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -128,7 +128,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e prentice link uppercase', async function () {
       let html = this.lookup('prentice');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('prentice', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -139,7 +139,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e twelve', async function () {
       let html = this.lookup('twelve');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('twelve', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -153,7 +153,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e musty', async function () {
       let html = this.lookup('musty');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('musty', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -168,7 +168,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e these - plual', async function () {
       let html = this.lookup('these');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('these', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -185,7 +185,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e is - third person singular', async function () {
       let html = this.lookup('is');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('is', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -202,7 +202,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e but - parentheses, subdefinitions', async function () {
       let html = this.lookup('but');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('but', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -217,7 +217,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e rode - merge pronunciations', async function () {
       let html = this.lookup('rode');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('rode', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -231,7 +231,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e zoophyte', async function () {
       let html = this.lookup('zoophyte');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('zoophyte', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -245,7 +245,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e Nabokov', async function () {
       let html = this.lookup('Nabokov');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('Nabokov', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -259,7 +259,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e said', async function () {
       let html = this.lookup('said');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('said', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -273,7 +273,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e woven', async function () {
       let html = this.lookup('woven');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('woven', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -287,7 +287,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e guts', async function () {
       let html = this.lookup('guts');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('guts', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -299,7 +299,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e underscore', async function () {
       let html = this.lookup('underscore');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('underscore', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -312,7 +312,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e could', async function () {
       let html = this.lookup('could');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('could', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -323,7 +323,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e woke', async function () {
       let html = this.lookup('woke');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('woke', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -334,7 +334,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e wrap', async function () {
         let html = this.lookup('wrap');
-        let parseResult = this.parser.parse(html);
+        let parseResult = this.parser.parse('wrap', html);
         //console.log(JSON.stringify(parseResult));
         //assert(tokens.length === 2,"test");
   
@@ -347,7 +347,7 @@ describe('mdict new-oxford-ec-dual parser', function () {
 
     it('noecd2e moose', async function () {
         let html = this.lookup('moose');
-        let parseResult = this.parser.parse(html);
+        let parseResult = this.parser.parse('moose', html);
         //console.log(JSON.stringify(parseResult));
         //assert(tokens.length === 2,"test");
   
@@ -357,6 +357,21 @@ describe('mdict new-oxford-ec-dual parser', function () {
         assert.equal(parseResult[0].definitionGroups[0].definitions[0].link, "elk");
         
     });
+
+    it('noecd2e blah', async function () {
+        let html = this.lookup('blah');
+        //console.log(html);
+        let parseResult = this.parser.parse('blah', html);
+        //console.log(JSON.stringify(parseResult));
+        
+  
+        assert.equal(parseResult[0].definitionGroups.length, 2);
+        assert.equal(parseResult[0].definitionGroups[0].definitions[0].text, "informal  <非正式>如此等等; 如何如何(用来代替不想说下去的话)");
+        assert.equal(parseResult[0].definitionGroups[1].definitions[0].text, "废话, 空话");
+        assert.equal(parseResult[0].definitionGroups[1].definitions[1].text, "<北美>沮丧, 抑郁");
+        
+    });
+
   });
   
 });

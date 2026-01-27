@@ -13,11 +13,15 @@ describe('mdict oalecd9e parser', function () {
       this.lookup = function(word) {
         return this.mdx.lookup(word).definition;
       };
+      this.lookupAndParse = function(word) {
+        let html = this.lookup(word);
+        let parseResult = this.parser.parse(word, html);
+        return parseResult;
+      }
     });
 
     it('oalecd9e good', async function () {
-      let html = this.lookup('good');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('good');
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -64,8 +68,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e phrase do good', async function () {
-      let html = this.lookup('do good');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('do good');
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -75,8 +78,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e you', async function () {
-      let html = this.lookup('you');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('you');
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -101,8 +103,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e rode', async function () {
-      let html = this.lookup('rode');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('rode');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -119,8 +120,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e make', async function () {
-      let html = this.lookup('make');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('make');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -148,8 +148,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e zoom', async function () {
-      let html = this.lookup('zoom');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('zoom');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -181,8 +180,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e was link', async function () {
-      let html = this.lookup('was');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('was');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -208,8 +206,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e preside', async function () {
-      let html = this.lookup('preside');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('preside');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -225,8 +222,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e apple', async function () {
-      let html = this.lookup('apple');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('apple');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -243,8 +239,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e ad', async function () {
-      let html = this.lookup('ad');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('ad');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -263,8 +258,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e refer phraser verbs', async function () {
-      let html = this.lookup('refer');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('refer');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -283,8 +277,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e get', async function () {
-      let html = this.lookup('get');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('get');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -316,8 +309,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e phrase wrap up', async function () {
-      let html = this.lookup('wrap up');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('wrap up');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
 
@@ -329,8 +321,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e used', async function () {
-      let html = this.lookup('used');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('used');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -347,8 +338,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it('oalecd9e tech', async function () {
-      let html = this.lookup('tech');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('tech');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -366,8 +356,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e titty', async function () {
-      let html = this.lookup('titty');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('titty');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -384,8 +373,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it('oalecd9e -ally', async function () {
-      let html = this.lookup('-ally');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('-ally');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -399,8 +387,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e 'tis", async function () {
-      let html = this.lookup("'tis");
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse("'tis");
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -417,8 +404,7 @@ describe('mdict oalecd9e parser', function () {
     });
 
     it("oalecd9e condo", async function () {
-      let html = this.lookup('condo');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('condo');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -436,8 +422,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e covert", async function () {
-      let html = this.lookup('covert');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('covert');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -464,8 +449,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e behold exclude idiom def", async function () {
-      let html = this.lookup('behold');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('behold');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -485,8 +469,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e the", async function () {
-      let html = this.lookup('the');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('the');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       
@@ -532,8 +515,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e least", async function () {
-      let html = this.lookup('least');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('least');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       assert.equal(parseResult.length, 2);
@@ -572,8 +554,7 @@ describe('mdict oalecd9e parser', function () {
 
 
     it("oalecd9e well", async function () {
-      let html = this.lookup('well');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.lookupAndParse('well');
       //console.log(JSON.stringify(parseResult));
       //assert(tokens.length === 2,"test");
       assert.equal(parseResult.length, 5);

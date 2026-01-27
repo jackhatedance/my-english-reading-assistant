@@ -23,8 +23,8 @@ class MapDictionary extends Dictionary {
         return this.lookupFromMap(map, query);
     }
     
-    rawToJson(definition){
-        return this.definitionParser.parse(definition);
+    rawToJson(query, definition){
+        return this.definitionParser.parse(query, definition);
     }
 
     lookupFromIndex(query, options){
@@ -35,7 +35,7 @@ class MapDictionary extends Dictionary {
         return ['raw', 'text', 'json'].includes(format);
     }
 
-    createText(result, options){
+    createText(query, result, options){
         if(!result.raw){
             result.raw = this.lookupRaw(result.query);
         }

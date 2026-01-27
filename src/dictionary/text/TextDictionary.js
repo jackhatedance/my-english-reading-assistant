@@ -89,8 +89,8 @@ class TextDictionary extends Dictionary {
         return this.lookupFromMap(this.map, query);
     }
     
-    rawToJson(definition){
-        return this.definitionParser.parse(definition);
+    rawToJson(query, definition){
+        return this.definitionParser.parse(query, definition);
     }
 
     supportOutputFormat(format){

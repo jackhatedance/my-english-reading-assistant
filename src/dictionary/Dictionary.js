@@ -83,7 +83,7 @@ class Dictionary {
                 }
             }
 
-            this.createOutputFormats(result, options);
+            this.createOutputFormats(query, result, options);
             this.cleanOutputFormat(result, options);           
         }
 
@@ -184,53 +184,53 @@ class Dictionary {
         return html;
     }
 
-    createOutput(result, options, format){
+    createOutput(query, result, options, format){
         if(format == 'json'){
-            this.createJson(result, options);
+            this.createJson(query, result, options);
         } else if(format == 'text'){
-            this.createText(result, options);
+            this.createText(query, result, options);
         } else if(format == 'html'){
-            this.createHtml(result, options);
+            this.createHtml(query, result, options);
         }
     }
 
-    createJson(result, options){        
+    createJson(query, result, options){        
         if(result.raw){
-            result.json = this.rawToJson(result.raw);                    
+            result.json = this.rawToJson(query, result.raw);                    
         } else {
             throw new Error(`need raw but no raw`); 
         }
     }
 
-    createText(result, options){
+    createText(query, result, options){
         //either from raw or json
-        this.createJsonIfNotExist(result);
+        this.createJsonIfNotExist(query, result);
         result.text = this.jsonToText(result.json, options);   
     }
 
-    createHtml(result, options){
+    createHtml(query, result, options){
         //either from raw or json
-        this.createJsonIfNotExist(result);
+        this.createJsonIfNotExist(query, result);
         result.html = this.jsonToHtml(result);   
     }
 
-    createJsonIfNotExist(result){
+    createJsonIfNotExist(query, result){
         if(!result.json){
-            this.createJson(result);
+            this.createJson(query, result);
         }
     }
 
-    createOutputFormats(result, options){
-        this.createOutputFormat(result, options, 'json');
-        this.createOutputFormat(result, options, 'text');
-        this.createOutputFormat(result, options, 'html');
+    createOutputFormats(query, result, options){
+        this.createOutputFormat(query, result, options, 'json');
+        this.createOutputFormat(query, result, options, 'text');
+        this.createOutputFormat(query, result, options, 'html');
     }
 
-    createOutputFormat(result, options, format){
+    createOutputFormat(query, result, options, format){
         let option = this.findOutputFormatOption(options, format);
         if(option && !result[format]){
             if(this.supportOutputFormat(format) || option.optional == false){
-                this.createOutput(result, options, format);
+                this.createOutput(query, result, options, format);
             }            
         }        
     }

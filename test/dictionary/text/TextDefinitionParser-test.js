@@ -11,7 +11,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('Alice', async function () {
-      let parseResult = this.parser.parse('n. 爱丽丝');
+      let parseResult = this.parser.parse('Alice', 'n. 爱丽丝');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -23,7 +23,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text broke', async function () {
-      let parseResult = this.parser.parse('break的过去式');
+      let parseResult = this.parser.parse('broke', 'break的过去式');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -37,7 +37,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text spaniards', async function () {
-      let parseResult = this.parser.parse("/ˈspænjədz/ Spaniard的复数");
+      let parseResult = this.parser.parse('spaniards', "/ˈspænjədz/ Spaniard的复数");
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -51,7 +51,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text boys SysLarge', async function () {
-      let parseResult = this.parser.parse('n. 男孩子们；小伙子们（boy的复数）');
+      let parseResult = this.parser.parse('boys', 'n. 男孩子们；小伙子们（boy的复数）');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -66,7 +66,7 @@ describe('TextDefinitionParser test', function () {
     });
     
     it('text esquires SysLarge', async function () {
-      let parseResult = this.parser.parse('(esquire 的复数) n. 先生, 绅士');
+      let parseResult = this.parser.parse('esquires', '(esquire 的复数) n. 先生, 绅士');
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -80,7 +80,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text Bonaparte', async function () {
-      let parseResult = this.parser.parse("/'bәunәpɑ:t/ 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");
+      let parseResult = this.parser.parse('Bonaparte', "/'bәunәpɑ:t/ 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -95,7 +95,7 @@ describe('TextDefinitionParser test', function () {
     });
 
     it('text Bonaparte bracket2', async function () {
-      let parseResult = this.parser.parse("['bәunәpɑ:t] 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");
+      let parseResult = this.parser.parse('Bonaparte', "['bәunәpɑ:t] 波拿巴(①姓氏, 法国科西嘉岛上的家族 ②Napoleon, 1769-1821, 法国皇帝, 1804-1815在位)");
       
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
@@ -111,7 +111,7 @@ describe('TextDefinitionParser test', function () {
 
     it('text tired', async function () {
       let text = 'a. 疲累的, 疲乏的, 厌倦的';
-      let parseResult = this.parser.parse(text);
+      let parseResult = this.parser.parse('tired', text);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -125,7 +125,7 @@ describe('TextDefinitionParser test', function () {
 
     it('text tok', async function () {
       let text = 'abbr. 知识转让（Transfer of Knowledge）；知识理论（Theory of Knowledge）;n. (Tok)人名；(阿拉伯)图克；(土)托克；(东南亚国家华语)卓';
-      let parseResult = this.parser.parse(text);
+      let parseResult = this.parser.parse('tok', text);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -145,7 +145,7 @@ describe('TextDefinitionParser test', function () {
 
     it('text give phrases', async function () {
       let text = 'n. 弹性, 适应性; vt. 给, 授予, 供给, 产生, 发表, 付出, 献出, 让出; vi. 捐赠, 支持不住, 让步; phr. give in, give up';
-      let parseResult = this.parser.parse(text);
+      let parseResult = this.parser.parse('give', text);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       

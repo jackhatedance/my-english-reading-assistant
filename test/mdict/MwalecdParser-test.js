@@ -22,7 +22,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd good', async function () {
       let html = this.lookup('good');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('good', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -98,7 +98,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd phrase good for', async function () {
       let html = this.lookup('good for');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('good for', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -111,7 +111,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd phrase give in', async function () {
       let html = this.lookup('give in');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('give in', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -125,7 +125,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd rang', async function () {
       let html = this.lookup('rang');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('rang', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -143,7 +143,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd is', async function () {
       let html = this.lookup('is');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('is', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -161,7 +161,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd what', async function () {
       let html = this.lookup('what');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('what', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -199,7 +199,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd fumbling', async function () {
       let html = this.lookup('fumbling');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('fumbling', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -217,7 +217,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd zodiacal', async function () {
       let html = this.lookup('zodiacal');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('zodiacal', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -235,7 +235,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd zodiac', async function () {
       let html = this.lookup('zodiac');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('zodiac', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -254,7 +254,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd wkly abbreviation english', async function () {
       let html = this.lookup('wkly');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('wkly', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -270,7 +270,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd Xizang', async function () {
       let html = this.lookup('Xizang');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('Xizang', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -288,7 +288,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd yup', async function () {
       let html = this.lookup('yup');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('yup', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -309,7 +309,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd unison', async function () {
       let html = this.lookup('unison');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('unison', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -330,7 +330,7 @@ describe('mdict mwalecd parser', function () {
 
     it('json mwalecd weary', async function () {
       let html = this.lookup('weary');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('weary', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       

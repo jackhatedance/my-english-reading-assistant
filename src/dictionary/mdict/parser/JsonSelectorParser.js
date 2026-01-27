@@ -113,8 +113,8 @@ class JsonSelectorParser extends MdictDefinitionParser {
         }
     }
         
-    parse(rawDefinition) {
-        rawDefinition = this.beforeParse(rawDefinition);
+    parse(query, rawDefinition) {
+        rawDefinition = this.beforeParse(query, rawDefinition);
 
         let link = getLink(rawDefinition);
         if (link) {

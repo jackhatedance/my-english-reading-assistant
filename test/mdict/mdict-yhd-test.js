@@ -17,7 +17,7 @@ describe('mdict yhd parser', function () {
 
     it('yhd good', async function () {
       let html = this.lookup('good');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('good', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -34,7 +34,7 @@ describe('mdict yhd parser', function () {
 
     it('yhd zoot', async function () {
       let html = this.lookup('zoot');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('zoot', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       
@@ -47,7 +47,7 @@ describe('mdict yhd parser', function () {
 
     it('yhd varech', async function () {
       let html = this.lookup('varech');
-      let parseResult = this.parser.parse(html);
+      let parseResult = this.parser.parse('varech', html);
       //console.log(parseResult);
       //assert(tokens.length === 2,"test");
       

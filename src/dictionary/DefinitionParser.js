@@ -42,12 +42,12 @@ class DefinitionParser {
         }
     }
 
-    parse(rawDefinition) {
+    parse(query, rawDefinition) {
         throw new Error('not implemented');
     }
 
-    toJson(rawDefinition) {
-        return this.parse(rawDefinition);
+    toJson(query, rawDefinition) {
+        return this.parse(query, rawDefinition);
     }
 
     toHtml(rawDefinition, getResource) {
@@ -55,7 +55,7 @@ class DefinitionParser {
     }
 
 
-    beforeParse(rawDefinition){
+    beforeParse(query, rawDefinition){
         //subclass can modify rawDefinition here
         return rawDefinition;
     }

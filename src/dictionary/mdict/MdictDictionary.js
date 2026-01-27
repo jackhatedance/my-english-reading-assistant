@@ -144,14 +144,14 @@ class MdictDictionary extends Dictionary {
         return this.mdx.lookup(query)?.definition;
     }    
 
-    rawToJson(definition){
+    rawToJson(query, definition){
         if(!this.definitionParser){
             throw new Error(`no parser found`);
         }
 
         //console.log(definition);
 
-        return this.definitionParser.toJson(definition);
+        return this.definitionParser.toJson(query, definition);
     }
 
     async toEmbeddedHtml(html){        
@@ -232,7 +232,7 @@ class MdictDictionary extends Dictionary {
         return $.html();    
     }
 
-    createHtml(result){
+    createHtml(query, result){
         if(!result.raw){
             result.raw = this.lookupRaw(result.query);
         }
