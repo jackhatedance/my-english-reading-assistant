@@ -362,11 +362,6 @@ async function handleTooltipForCaretPosition(page, document, documentConfig, opt
   const { sentenceInfo, tokenIndex } = tokenInfo;
   let token = sentenceInfo.tokens[tokenIndex];
   //console.log(token); 
-
-  let isWord = token.checked && token.checkWordResult.word != '';
-  if(!isWord){
-    return;
-  }
   
   let parentElement = offsetNode.parentElement;
 
