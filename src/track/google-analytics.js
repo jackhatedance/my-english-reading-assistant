@@ -77,50 +77,45 @@ async function updateLastErrorTimeOfGoogleAnalytics() {
   
 }
 
-const pathTitleMap = {
-    "popup.html": "Popup",
-
-    "options.html#/general": "Options - General",
-    "options.html#/vocabulary": "Options - Vocabulary",
-    "options.html#/annotation": "Options - Annotation",
-    "options.html#/notes": "Options - Notes",
-    "options.html#/site": "Options - Site",
-    "options.html#/book": "Options - Book",
-    "options.html#/report": "Options - Report",
-    "options.html#/dictionary": "Options - Dictionary",
-    "options.html#/interaction": "Options - Interaction",
-    "options.html#/advanced": "Options - Advanced",
-    "options.html#/unrecognized-words": "Options - Unrecognized-words",
-
-}
-
 function parseUrl(url){
-    let pattern = /(?<protocol>[^:]+):\/\/(?<id>[^/]+)\/(?<path>.+)/;
+    let pattern = /(?<protocol>[^:]+):\/\/(?<id>[^/]+)\/(?<file>[^#]+)(#\/(?<route>.+))?/;
     
     let matchResult = url.match(pattern);
     if(matchResult){
-        let id = matchResult.groups.id;
-        let path = matchResult.groups.path;
+        let file = matchResult.groups.file;
+        let route = matchResult.groups.route;
         
-        return { id, path };            
-
+        return { file, route };
     }
 }
 
-function getTitleByUrl(url){
-    let urlObject = parseUrl(url);
-    let path = urlObject?.path;
-    if(path && pathTitleMap.hasOwnProperty(path)){
-        return pathTitleMap[path];
+function getTitleByDocument(document){
+    const url = parseUrl(document.location.href);
+    const { file, route } = url;
+
+    let title;
+    if(file){
+        let page = file;
+        if(file.endsWith('.html')){
+            page = file.slice(0, -5);
+        }
+
+        if(route){
+            title = `${page} - ${route}`;
+        } else {
+            title = page;
+        }
+    } else {
+        title = document.title;
     }
+
+    return title;
 }
 
 function generatePageViewEvent(){
 
-    let title = getTitleByUrl(document.location.href);
-    if(!title){
-        title = document.title;
-    }
+    let title = getTitleByDocument(document);
+    
     return {
             name: "page_view",
             params: {
