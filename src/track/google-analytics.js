@@ -77,12 +77,56 @@ async function updateLastErrorTimeOfGoogleAnalytics() {
   
 }
 
+const pathTitleMap = {
+    "popup.html": "Popup",
+
+    "options.html#/general": "Options - General",
+    "options.html#/vocabulary": "Options - Vocabulary",
+    "options.html#/annotation": "Options - Annotation",
+    "options.html#/notes": "Options - Notes",
+    "options.html#/site": "Options - Site",
+    "options.html#/book": "Options - Book",
+    "options.html#/report": "Options - Report",
+    "options.html#/dictionary": "Options - Dictionary",
+    "options.html#/interaction": "Options - Interaction",
+    "options.html#/advanced": "Options - Advanced",
+    "options.html#/unrecognized-words": "Options - Unrecognized-words",
+
+}
+
+function parseUrl(url){
+    let pattern = /(?<protocol>[^:]+):\/\/(?<id>[^/]+)\/(?<path>.+)/;
+    
+    let matchResult = url.match(pattern);
+    if(matchResult){
+        let id = matchResult.groups.id;
+        let path = matchResult.groups.path;
+        
+        return { id, path };            
+
+    }
+}
+
+function getTitleByUrl(url){
+    let urlObject = parseUrl(url);
+    let path = urlObject?.path;
+    if(path && pathTitleMap.hasOwnProperty(path)){
+        return pathTitleMap[path];
+    }
+}
+
 function generatePageViewEvent(){
+
+    let title = getTitleByUrl(document.location.href);
+    if(!title){
+        title = document.title;
+    }
     return {
             name: "page_view",
             params: {
-                page_title: document.title,
-                page_location: document.location.href
+                page_title: title,
+                page_location: document.location.href,
+                page_path: document.location.pathname
             },
         };
 }

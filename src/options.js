@@ -46,7 +46,11 @@ const router = createRouter({
     linkActiveClass: 'active',
     history: createWebHashHistory(),
     routes,
-})
+});
+
+router.afterEach((to, from) => {
+    sendTrackEventToBackground(generatePageViewEvent());
+});
 
 createApp(Options, { indexBuildingProgress })
     .use(router)
@@ -72,5 +76,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({});
 });
 
-
-sendTrackEventToBackground(generatePageViewEvent());
