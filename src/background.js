@@ -10,6 +10,7 @@ import { getTabInfo } from './service/tab-service.js';
 import { onTabCreated, onTabUpdated, onAnnotationInitialized, onAnnotationCleaned, onTabBlurred, onTabFocused, onTabRemoved, onWordMarked, onIdleStateChanged } from './service/activity-core-service.js'
 import { truncateString } from './utils/stringUtils.js'
 import { collect } from './track/google-analytics.js'
+import { getFirstInstallationTime, saveFirstInstallationTime } from './installation/installation.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -75,6 +76,8 @@ chrome.runtime.onInstalled.addListener(async function () {
     id: 'refresh'
   });
   */
+
+  saveFirstInstallationTime();
   
   let options = await getOptions();
   if(options.dictionary.automigration == true){
@@ -380,10 +383,21 @@ async function onTrackEvents(events){
   }
 
   const vocabularyLevel = await getVocabularyLevel();
+  
+  const firstInstallationTime = await getFirstInstallationTime();
 
+  let installedDays = 0;
+  if(firstInstallationTime){
+    const now = Date.now();
+    installedDays = ((now - firstInstallationTime) / (1000 * 60 * 60 * 24)).toFixed(0);
+  }
+  
   const userProperties = {
     "vocabulary_level":{
       value: vocabularyLevel,
+    },
+    "installed_days":{
+      value: installedDays,
     }
   };
   await collect(userProperties, events);
