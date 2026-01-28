@@ -11,6 +11,7 @@ import { onTabCreated, onTabUpdated, onAnnotationInitialized, onAnnotationCleane
 import { truncateString } from './utils/stringUtils.js'
 import { collect } from './track/google-analytics.js'
 import { getFirstInstallationTime, saveFirstInstallationTime } from './installation/installation.js'
+import { getAllDictionaryMetas } from './dictionary/customDictionary.js'
 // With background scripts you can communicate with popup
 // and contentScript files.
 // For more information on background script,
@@ -392,13 +393,18 @@ async function onTrackEvents(events){
     installedDays = ((now - firstInstallationTime) / (1000 * 60 * 60 * 24)).toFixed(0);
   }
   
+  let allDictionaryMetas = await getAllDictionaryMetas();
+
   const userProperties = {
     "vocabulary_level":{
       value: vocabularyLevel,
     },
     "installed_days":{
       value: installedDays,
-    }
+    },
+    "total_dictionaries":{
+      value: allDictionaryMetas.length,
+    },
   };
   await collect(userProperties, events);
 }
